@@ -1,0 +1,421 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\City;
+use App\Models\Shop;
+use App\Models\Category;
+use App\Services\CityDataService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+
+class LandingController extends Controller
+{
+    protected $cityDataService;
+
+    public function __construct(CityDataService $cityDataService)
+    {
+        $this->cityDataService = $cityDataService;
+    }
+
+    /**
+     * Display the landing page with cached city data - OPTIMIZED
+     */
+    public function index(Request $request)
+    {
+        $cityContext = $request->get('cityContext', []);
+        $selectedCity = $cityContext['selected_city'] ?? null;
+        
+        // For authenticated users, check their preferred city
+        if (auth()->check()) {
+            $user = auth()->user();
+            if ($user->preferred_city_id && !$selectedCity) {
+                // Redirect to user's preferred city landing page
+                $preferredCity = Cache::remember("user_city_{$user->preferred_city_id}", 3600, function () use ($user) {
+                    return City::where('id', $user->preferred_city_id)
+                               ->where('is_active', true)
+                               ->select(['id', 'name', 'slug'])
+                               ->first();
+                });
+                
+                if ($preferredCity) {
+                    session([
+                        'selected_city' => $preferredCity->slug,
+                        'selected_city_name' => $preferredCity->name,
+                        'selected_city_id' => $preferredCity->id
+                    ]);
+                    
+                    return redirect()->route('city.landing', ['city' => $preferredCity->slug]);
+                }
+            }
+        }
+
+        // Load lightweight cities data (just for display, not for modal)
+        // Modal will load its own cities via AJAX
+        $cities = Cache::remember('landing_cities_basic', 1800, function () {
+            return City::select(['id', 'name', 'slug', 'image'])
+                ->where('is_active', true)
+                ->withCount(['shops as active_shops_count' => function ($query) {
+                    $query->where('is_active', true)->where('is_verified', true);
+                }])
+                ->orderByDesc('active_shops_count')
+                ->limit(20) // Limit to top 20 cities for homepage display
+                ->get();
+        });
+        
+        // Get city-specific statistics (cached)
+        $stats = Cache::remember('landing_stats_' . ($selectedCity?->id ?? 'all'), 1800, function () use ($selectedCity) {
+            return $this->cityDataService->getCityStats($selectedCity?->id);
+        });
+        
+        // Get featured shops for the selected city or globally (cached)
+        $featuredShops = Cache::remember('landing_featured_' . ($selectedCity?->id ?? 'all'), 1800, function () use ($selectedCity) {
+            return $this->cityDataService->getFeaturedShops($selectedCity?->id, 6);
+        });
+        
+        // Get popular categories (cached)
+        $popularCategories = Cache::remember('landing_categories_' . ($selectedCity?->id ?? 'all'), 1800, function () use ($selectedCity) {
+            return $this->cityDataService->getPopularCategories($selectedCity?->id, 8);
+        });
+
+        // Get a sample shop for hero section (cached)
+        $sampleShop = Cache::remember('sample_shop_' . ($selectedCity?->slug ?? 'all'), 3600, function () use ($selectedCity) {
+            $query = Shop::select(['id', 'name', 'city_id'])
+                ->with('city:id,name')
+                ->where('is_active', true)
+                ->where('is_verified', true);
+                
+            if ($selectedCity) {
+                $query->where('city_id', $selectedCity->id);
+            }
+            
+            return $query->inRandomOrder()->first();
+        });
+
+        // SEO data - make it dynamic based on selected city
+        $seoData = $this->generateSeoData($selectedCity);
+        
+        return view('welcome', compact(
+            'cities', 
+            'stats', 
+            'seoData', 
+            'sampleShop', 
+            'featuredShops', 
+            'popularCategories',
+            'cityContext'
+        ));
+    }    /**
+     * Generate dynamic SEO data based on selected city
+     */
+    private function generateSeoData(?City $selectedCity = null): array
+    {
+        if ($selectedCity) {
+            return [
+                'title' => "اكتشف أفضل المتاجر والخدمات في {$selectedCity->name} - منصة اكتشف المدن",
+                'description' => "تصفح مئات المتاجر المحلية في {$selectedCity->name}. اكتشف أفضل العروض والخدمات، واقرأ تقييمات العملاء، واحصل على أفضل الصفقات في {$selectedCity->name}.",
+                'keywords' => "متاجر {$selectedCity->name}, تسوق {$selectedCity->name}, دليل المتاجر {$selectedCity->name}, خدمات {$selectedCity->name}, عروض {$selectedCity->name}",
+                'og_image' => $selectedCity->image ? asset('storage/' . $selectedCity->image) : asset('images/og-discover-cities.jpg'),
+                'canonical' => route('city.show', ['city' => $selectedCity->slug]),
+                'city_name' => $selectedCity->name,
+                'breadcrumbs' => [
+                    ['name' => 'الرئيسية', 'url' => route('home')],
+                    ['name' => $selectedCity->name, 'url' => route('city.show', ['city' => $selectedCity->slug])],
+                ]
+            ];
+        }
+
+        return [
+            'title' => 'اكتشف المدن - منصة استكشاف المتاجر المحلية في مصر',
+            'description' => 'اكتشف أفضل المتاجر والخدمات المحلية في مدينتك. ابحث، اقرأ التقييمات، واحصل على أفضل العروض من آلاف المتاجر المعتمدة في جميع أنحاء جمهورية مصر العربية.',
+            'keywords' => 'متاجر مصرية، تسوق محلي، دليل المتاجر، القاهرة، الإسكندرية، الجيزة، العاصمة الإدارية، المدن الجديدة، تقييمات المتاجر، عروض وخصومات',
+            'og_image' => asset('images/og-discover-cities.jpg'),
+            'canonical' => url('/'),
+            'breadcrumbs' => [
+                ['name' => 'الرئيسية', 'url' => route('home')]
+            ]
+        ];
+    }
+
+    /**
+     * Get city data for AJAX requests
+     */
+    public function getCityData($citySlug)
+    {
+        $city = Cache::remember("city_data_{$citySlug}", 1800, function () use ($citySlug) {
+            return City::where('slug', $citySlug)
+                ->where('is_active', true)
+                ->withCount(['shops as active_shops_count' => function ($query) {
+                    $query->where('is_active', true)->where('is_verified', true);
+                }])
+                ->first();
+        });
+
+        if (!$city) {
+            return response()->json(['error' => 'المدينة غير موجودة'], 404);
+        }
+
+        return response()->json([
+            'id' => $city->id,
+            'name' => $city->name,
+            'slug' => $city->slug,
+            'shops_count' => $city->active_shops_count,
+            'image' => $city->image ? asset('storage/' . $city->image) : asset('images/default-city.jpg'),
+        ]);
+    }
+
+    /**
+     * Enhanced search with city context
+     */
+    public function search(Request $request)
+    {
+        $query = $request->get('q', '');
+        $cityContext = $request->get('cityContext', []);
+        $selectedCityId = $cityContext['selected_city_id'] ?? null;
+        
+        if (empty($query)) {
+            return redirect()->route('home');
+        }
+
+        // Use service for search
+        $shops = $this->cityDataService->searchShops($query, $selectedCityId, [
+            'include_products' => true,
+            'include_services' => true
+        ])->paginate(20);
+
+        // Get search suggestions
+        $suggestions = $this->getSearchSuggestions($query, $selectedCityId);
+
+        $selectedCity = $cityContext['selected_city'] ?? null;
+        $seoData = [
+            'title' => "نتائج البحث عن \"{$query}\"" . ($selectedCity ? " في {$selectedCity->name}" : '') . " - اكتشف المدن",
+            'description' => "اكتشف المتاجر والخدمات المتعلقة بـ \"{$query}\"" . ($selectedCity ? " في {$selectedCity->name}" : '') . ". تصفح النتائج واقرأ التقييمات.",
+            'keywords' => "{$query}, متاجر" . ($selectedCity ? ", {$selectedCity->name}" : '') . ", دليل المتاجر, خدمات",
+            'og_image' => $selectedCity && $selectedCity->image ? asset('storage/' . $selectedCity->image) : asset('images/og-discover-cities.jpg'),
+            'canonical' => request()->url() . '?' . http_build_query($request->only(['q'])),
+            'noindex' => strlen($query) < 3, // Don't index very short searches
+        ];
+
+        return view('search-results', compact('shops', 'query', 'suggestions', 'seoData', 'cityContext'));
+    }
+
+    /**
+     * Get search suggestions for autocomplete and other helper methods
+     */
+    private function getSearchSuggestions(string $query, ?int $cityId = null): array
+    {
+        $cacheKey = "search_suggestions_{$query}_" . ($cityId ?? 'all');
+        
+        return Cache::remember($cacheKey, 300, function () use ($query, $cityId) {
+            $suggestions = [];
+            
+            // Shop suggestions
+            $shopQuery = Shop::where('is_active', true)
+                ->where('is_verified', true)
+                ->where('name', 'LIKE', "%{$query}%");
+                
+            if ($cityId) {
+                $shopQuery->where('city_id', $cityId);
+            }
+            
+            $suggestions['shops'] = $shopQuery->limit(5)->pluck('name');
+            
+            // Category suggestions
+            $suggestions['categories'] = Category::where('is_active', true)
+                ->where('name', 'LIKE', "%{$query}%")
+                ->limit(3)
+                ->pluck('name');
+                
+            return $suggestions;
+        });
+    }
+
+    /**
+     * Get search suggestions for autocomplete (API endpoint)
+     */
+    public function searchSuggestions(Request $request)
+    {
+        $term = $request->input('term');
+        $cityContext = $request->get('cityContext', []);
+        $cityId = $cityContext['selected_city_id'] ?? null;
+        
+        if (strlen($term) < 2) {
+            return response()->json([]);
+        }
+
+        $suggestions = $this->getSearchSuggestions($term, $cityId);
+        return response()->json($suggestions);
+    }
+
+    /**
+     * Show city selection modal
+     */
+    public function selectCity()
+    {
+        $cities = City::active()
+            ->withCount(['shops' => function($query) {
+                $query->where('is_active', true);
+            }])
+            ->orderBy('shops_count', 'desc')
+            ->get();
+
+        return view('select-city', compact('cities'));
+    }
+
+    /**
+     * Set selected city in session - OPTIMIZED VERSION
+     */
+    public function setCity(Request $request)
+    {
+        // Quick validation
+        $validated = $request->validate([
+            'city_slug' => 'required|string|max:255'
+        ]);
+
+        // Get city with minimal data needed - OPTIMIZED QUERY with caching
+        $city = Cache::remember("city_quick_{$validated['city_slug']}", 3600, function () use ($validated) {
+            return City::where('slug', $validated['city_slug'])
+                       ->where('is_active', true)
+                       ->select(['id', 'name', 'slug'])
+                       ->first();
+        });
+                   
+        if (!$city) {
+            return response()->json([
+                'success' => false,
+                'message' => 'المدينة المطلوبة غير موجودة'
+            ], 404);
+        }
+        
+        // Store in session quickly
+        session([
+            'selected_city' => $city->slug,
+            'selected_city_name' => $city->name,
+            'selected_city_id' => $city->id
+        ]);
+        
+        // Save to user preferences if authenticated (non-blocking)
+        if (auth()->check()) {
+            try {
+                auth()->user()->update([
+                    'preferred_city_id' => $city->id,
+                ]);
+            } catch (\Exception $e) {
+                // Log but don't fail the request
+                \Log::error('Failed to update user city preference: ' . $e->getMessage());
+            }
+        }
+        
+        // Clear skip flag
+        session()->forget('city_selection_skipped');
+
+        return response()->json([
+            'success' => true,
+            'message' => "تم اختيار {$city->name} بنجاح",
+            'redirect' => route('city.landing', ['city' => $city->slug]),
+            'city' => [
+                'name' => $city->name,
+                'slug' => $city->slug,
+                'id' => $city->id
+            ]
+        ]);
+    }
+
+    /**
+     * Skip city selection - user wants to browse all cities
+     */
+    public function skipCitySelection(Request $request)
+    {
+        session(['city_selection_skipped' => true]);
+        session()->forget(['selected_city', 'selected_city_name', 'selected_city_id']);
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'تم تخطي اختيار المدينة'
+        ]);
+    }
+
+    /**
+     * Show city-specific landing page
+     */
+    public function cityLanding(City $city)
+    {
+        // Update session to selected city
+        session([
+            'selected_city' => $city->slug,
+            'selected_city_name' => $city->name,
+            'selected_city_id' => $city->id
+        ]);
+
+        // Get city-specific data
+        $cityContext = [
+            'selected_city' => $city,
+            'selected_city_id' => $city->id,
+            'selected_city_name' => $city->name,
+            'selected_city_slug' => $city->slug,
+            'is_city_selected' => true,
+            'should_show_modal' => false,
+        ];
+
+        // Get city statistics
+        $stats = $this->cityDataService->getCityStats($city->id);
+
+        // Get categories with their shops for this city
+        $categoriesWithShops = Cache::remember("city_categories_shops_{$city->slug}", 3600, function () use ($city) {
+            return Category::whereHas('shops', function ($query) use ($city) {
+                $query->where('city_id', $city->id)
+                      ->where('is_active', true)
+                      ->where('is_verified', true);
+            })
+            ->withCount(['shops as shops_count' => function ($query) use ($city) {
+                $query->where('city_id', $city->id)
+                      ->where('is_active', true)
+                      ->where('is_verified', true);
+            }])
+            ->with(['shops' => function ($query) use ($city) {
+                $query->where('city_id', $city->id)
+                      ->where('is_active', true)
+                      ->where('is_verified', true)
+                      ->withAvg('ratings', 'rating')
+                      ->withCount('ratings')
+                      ->orderByDesc('is_featured')
+                      ->orderByDesc('ratings_avg_rating')
+                      ->take(4);
+            }])
+            ->orderByDesc('shops_count')
+            ->get();
+        });
+
+        // Get all cities for modal
+        $cities = $this->cityDataService->getCitiesForSelection();
+
+        // Generate SEO data for this city
+        $seoData = [
+            'title' => "اكتشف أفضل المتاجر في {$city->name} - منصة اكتشف المدن",
+            'description' => "استعرض {$stats['total_shops']} متجر في {$city->name}. اكتشف أفضل المطاعم، المتاجر، والخدمات مع تقييمات العملاء الحقيقية.",
+            'keywords' => "متاجر {$city->name}, تسوق {$city->name}, دليل {$city->name}, خدمات {$city->name}",
+            'canonical' => route('city.landing', ['city' => $city->slug]),
+        ];
+
+        return view('city-landing', compact(
+            'city',
+            'cityContext',
+            'stats',
+            'categoriesWithShops',
+            'cities',
+            'seoData'
+        ));
+    }
+
+    /**
+     * Change city (show modal again)
+     */
+    public function changeCity()
+    {
+        // Clear city selection
+        session()->forget(['selected_city', 'selected_city_name', 'selected_city_id']);
+        session()->flash('show_city_modal', true);
+
+        return redirect()->route('landing');
+    }
+}
