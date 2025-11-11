@@ -190,8 +190,6 @@ class LandingController extends Controller
         $seoData = [
             'title' => "نتائج البحث عن \"{$query}\"" . ($selectedCity ? " في {$selectedCity->name}" : '') . " - اكتشف المدن",
             'description' => "اكتشف المتاجر والخدمات المتعلقة بـ \"{$query}\"" . ($selectedCity ? " في {$selectedCity->name}" : '') . ". تصفح النتائج واقرأ التقييمات.",
-            'keywords' => "{$query}, متاجر" . ($selectedCity ? ", {$selectedCity->name}" : '') . ", دليل المتاجر, خدمات",
-            'og_image' => $selectedCity && $selectedCity->image ? asset('storage/' . $selectedCity->image) : asset('images/og-discover-cities.jpg'),
             'canonical' => request()->url() . '?' . http_build_query($request->only(['q'])),
             'noindex' => strlen($query) < 3, // Don't index very short searches
         ];
