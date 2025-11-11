@@ -15,6 +15,17 @@ use App\Http\Controllers\Auth\ShopOwnerLoginController;
 //Include debug routes
 require __DIR__.'/debug.php';
 
+
+
+Route::get('/clear-cache', function() {
+    \Artisan::call('cache:clear');
+    \Artisan::call('config:clear');
+    \Artisan::call('route:clear');
+    \Artisan::call('view:clear');
+    return "Cache Cleared";
+});
+
+
 // City Selection Page - Must be accessible without city requirement
 Route::get('/select-city', function () {
     // Load cities from database
