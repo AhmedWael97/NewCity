@@ -1,0 +1,1114 @@
+@extends('layouts.app')
+
+@section('content')
+    <!-- Shop Hero Section -->
+    <section class="shop-hero">
+        <div class="container">
+            <div class="shop-hero-content">
+                <div class="shop-hero-info">
+                    <div class="shop-breadcrumb">
+                        <a href="{{ url('/') }}">الرئيسية</a>
+                        <span>•</span>
+                        <a href="{{ route('city.shops', $shop->city->slug ?? '#') }}">{{ $shop->city->name ?? 'المدن' }}</a>
+                        <span>•</span>
+                        <span>{{ $shop->name }}</span>
+                    </div>
+                    
+                    <div class="shop-main-info">
+                        <h1 class="shop-title">{{ $shop->name }}</h1>
+                        <div class="shop-meta">
+                            <span class="shop-category">
+                                <i class="icon">🏪</i>
+                                {{ $shop->category->name ?? 'عام' }}
+                            </span>
+                            <span class="shop-location">
+                                <i class="icon">📍</i>
+                                {{ $shop->city->name ?? '' }}
+                            </span>
+                            <span class="shop-status {{ $shop->is_open_now ?? true ? 'open' : 'closed' }}">
+                                <i class="icon">🕒</i>
+                                {{ $shop->is_open_now ?? true ? 'مفتوح الآن' : 'مغلق حالياً' }}
+                            </span>
+                        </div>
+                        
+                        <div class="shop-rating">
+                            <x-rating.display 
+                                :rating="$shop->averageRating()" 
+                                :show-text="true"
+                                size="md"
+                                class="hero-rating"
+                            />
+                            <span class="review-count">({{ $shop->totalRatings() }} تقييم)</span>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="shop-hero-image">
+                    @if($shop->images && is_array($shop->images) && count($shop->images) > 0)
+                        <img src="{{ asset('storage/' . $shop->images[0]) }}" 
+                             alt="{{ $shop->name }}" 
+                             class="hero-img"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="hero-placeholder" style="display: none;">
+                            <div class="placeholder-icon">
+                                @switch($shop->category->name ?? 'عام')
+                                    @case('مطاعم')
+                                        �️
+                                        @break
+                                    @case('ملابس')
+                                        👕
+                                        @break
+                                    @case('إلكترونيات')
+                                        📱
+                                        @break
+                                    @case('صيدليات')
+                                        💊
+                                        @break
+                                    @case('سوبر ماركت')
+                                        🛒
+                                        @break
+                                    @case('مجوهرات')
+                                        💎
+                                        @break
+                                    @default
+                                        �🏪
+                                @endswitch
+                            </div>
+                            <span>{{ $shop->name }}</span>
+                            <p class="placeholder-subtitle">فشل في تحميل الصورة</p>
+                        </div>
+                    @else
+                        <div class="hero-placeholder">
+                            <div class="placeholder-icon">
+                                @switch($shop->category->name ?? 'عام')
+                                    @case('مطاعم')
+                                        �️
+                                        @break
+                                    @case('ملابس')
+                                        👕
+                                        @break
+                                    @case('إلكترونيات')
+                                        📱
+                                        @break
+                                    @case('صيدليات')
+                                        💊
+                                        @break
+                                    @case('سوبر ماركت')
+                                        🛒
+                                        @break
+                                    @case('مجوهرات')
+                                        💎
+                                        @break
+                                    @default
+                                        �🏪
+                                @endswitch
+                            </div>
+                            <span>{{ $shop->name }}</span>
+                            <p class="placeholder-subtitle">صورة غير متوفرة</p>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {{-- Banner Advertisement after shop hero --}}
+    <section class="py-3 bg-light">
+        <div class="container">
+            <x-ad-display type="banner" placement="shop_page" :city-id="$shop->city_id ?? null" />
+        </div>
+    </section>
+
+    <!-- Shop Content -->
+    <section class="shop-content">
+        <div class="container">
+            <div class="shop-layout">
+                <!-- Main Content -->
+                <main class="shop-main">
+                    <!-- Quick Actions -->
+                    <div class="shop-actions">
+                        <a href="tel:{{ $shop->phone ?? '' }}" class="action-btn call-btn">
+                            <i class="icon">📞</i>
+                            <span>اتصال</span>
+                        </a>
+                        <a href="#" class="action-btn directions-btn">
+                            <i class="icon">🧭</i>
+                            <span>الاتجاهات</span>
+                        </a>
+                        <button class="action-btn share-btn" onclick="shareShop()">
+                            <i class="icon">📤</i>
+                            <span>مشاركة</span>
+                        </button>
+                        <button class="action-btn favorite-btn" onclick="toggleFavorite()">
+                            <i class="icon">❤️</i>
+                            <span>مفضلة</span>
+                        </button>
+                    </div>
+
+                    <!-- Shop Description -->
+                    <div class="shop-section">
+                        <h3 class="section-title">نبذة عن المتجر</h3>
+                        <div class="section-content">
+                            <p class="shop-description">
+                                {{ $shop->description ?? 'متجر متميز يقدم أفضل المنتجات والخدمات لعملائه الكرام. نحرص على تقديم تجربة تسوق ممتازة وخدمة عملاء استثنائية.' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Products and Services Section -->
+                    @if(isset($products) && $products->count() > 0 || isset($services) && $services->count() > 0)
+                    <div class="shop-section shop-products-services">
+                        <div class="products-services-header">
+                            <h3 class="section-title">المنتجات والخدمات</h3>
+                            <div class="tab-navigation">
+                                @if(isset($products) && $products->count() > 0)
+                                    <button class="tab-btn active" data-tab="products">
+                                        <span class="tab-icon">📦</span>
+                                        <span class="tab-text">المنتجات ({{ $products->count() }})</span>
+                                    </button>
+                                @endif
+                                @if(isset($services) && $services->count() > 0)
+                                    <button class="tab-btn {{ !isset($products) || $products->count() == 0 ? 'active' : '' }}" data-tab="services">
+                                        <span class="tab-icon">🔧</span>
+                                        <span class="tab-text">الخدمات ({{ $services->count() }})</span>
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
+
+                        <!-- Products Tab Content -->
+                        @if(isset($products) && $products->count() > 0)
+                        <div class="tab-content {{ isset($products) && $products->count() > 0 ? 'active' : '' }}" id="products-tab">
+                            <div class="products-filters">
+                                <div class="filters-header">
+                                    <h5 class="filters-title">
+                                        <i class="filter-icon">🔍</i>
+                                        البحث والفرز
+                                    </h5>
+                                    <button class="clear-filters-btn" onclick="clearProductFilters()">
+                                        <i class="clear-icon">✖️</i>
+                                        مسح المرشحات
+                                    </button>
+                                </div>
+                                
+                                <div class="filter-controls">
+                                    <div class="search-box">
+                                        <div class="search-input-wrapper">
+                                            <i class="search-icon">🔍</i>
+                                            <input type="text" 
+                                                   id="product-search" 
+                                                   class="search-input" 
+                                                   placeholder="ابحث في المنتجات..."
+                                                   autocomplete="off">
+                                            <button class="search-clear" onclick="clearProductSearch()" style="display: none;">
+                                                <i class="clear-icon">✖️</i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="filter-selects">
+                                        <div class="select-wrapper">
+                                            <label for="product-category-filter" class="select-label">الفئة</label>
+                                            <select class="filter-select" id="product-category-filter">
+                                                <option value="">جميع الفئات</option>
+                                                @foreach($products->pluck('category')->unique()->filter() as $category)
+                                                    <option value="{{ $category }}">{{ $category }}</option>
+                                                @endforeach
+                                            </select>
+                                            <i class="select-arrow">▼</i>
+                                        </div>
+                                        
+                                        <div class="select-wrapper">
+                                            <label for="product-sort" class="select-label">الترتيب</label>
+                                            <select class="filter-select" id="product-sort">
+                                                <option value="name">الاسم (أ-ي)</option>
+                                                <option value="name_desc">الاسم (ي-أ)</option>
+                                                <option value="price_asc">السعر (من الأقل)</option>
+                                                <option value="price_desc">السعر (من الأعلى)</option>
+                                                <option value="featured">المميزة أولاً</option>
+                                                <option value="newest">الأحدث</option>
+                                            </select>
+                                            <i class="select-arrow">▼</i>
+                                        </div>
+                                        
+                                        <div class="select-wrapper">
+                                            <label for="product-price-range" class="select-label">نطاق السعر</label>
+                                            <select class="filter-select" id="product-price-range">
+                                                <option value="">جميع الأسعار</option>
+                                                <option value="0-50">أقل من 50 ج.م</option>
+                                                <option value="50-100">50 - 100 ج.م</option>
+                                                <option value="100-200">100 - 200 ج.م</option>
+                                                <option value="200-500">200 - 500 ج.م</option>
+                                                <option value="500+">أكثر من 500 ج.م</option>
+                                            </select>
+                                            <i class="select-arrow">▼</i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-results">
+                                    <span class="results-count" id="products-count">عرض جميع المنتجات ({{ $products->count() }})</span>
+                                    <div class="view-toggle">
+                                        <button class="view-btn active" data-view="grid" title="عرض شبكي">
+                                            <i class="view-icon">⊞</i>
+                                        </button>
+                                        <button class="view-btn" data-view="list" title="عرض قائمة">
+                                            <i class="view-icon">☰</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper all-products-swiper">
+                                <div class="swiper-wrapper">
+                                    @foreach($products as $product)
+                                        <div class="swiper-slide">
+                                            <x-product-card :product="$product" size="small" :featured="$product->is_featured ?? false" />
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="swiper-pagination all-products-pagination"></div>
+                            </div>
+                            
+                            @if($products->count() >= 12)
+                            <div class="load-more-section">
+                                <button class="btn btn-outline load-more-btn" data-type="products">
+                                    عرض المزيد من المنتجات
+                                </button>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
+
+                        <!-- Services Tab Content -->
+                        @if(isset($services) && $services->count() > 0)
+                        <div class="tab-content {{ !isset($products) || $products->count() == 0 ? 'active' : '' }}" id="services-tab">
+                            <div class="services-filters">
+                                <div class="filters-header">
+                                    <h5 class="filters-title">
+                                        <i class="filter-icon">🔍</i>
+                                        البحث والفرز
+                                    </h5>
+                                    <button class="clear-filters-btn" onclick="clearServiceFilters()">
+                                        <i class="clear-icon">✖️</i>
+                                        مسح المرشحات
+                                    </button>
+                                </div>
+                                
+                                <div class="filter-controls">
+                                    <div class="search-box">
+                                        <div class="search-input-wrapper">
+                                            <i class="search-icon">🔍</i>
+                                            <input type="text" 
+                                                   id="service-search" 
+                                                   class="search-input" 
+                                                   placeholder="ابحث في الخدمات..."
+                                                   autocomplete="off">
+                                            <button class="search-clear" onclick="clearServiceSearch()" style="display: none;">
+                                                <i class="clear-icon">✖️</i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="filter-selects">
+                                        <div class="select-wrapper">
+                                            <label for="service-category-filter" class="select-label">الفئة</label>
+                                            <select class="filter-select" id="service-category-filter">
+                                                <option value="">جميع الفئات</option>
+                                                @foreach($services->pluck('category')->unique()->filter() as $category)
+                                                    <option value="{{ $category }}">{{ $category }}</option>
+                                                @endforeach
+                                            </select>
+                                            <i class="select-arrow">▼</i>
+                                        </div>
+                                        
+                                        <div class="select-wrapper">
+                                            <label for="service-sort" class="select-label">الترتيب</label>
+                                            <select class="filter-select" id="service-sort">
+                                                <option value="name">الاسم (أ-ي)</option>
+                                                <option value="name_desc">الاسم (ي-أ)</option>
+                                                <option value="price_asc">السعر (من الأقل)</option>
+                                                <option value="price_desc">السعر (من الأعلى)</option>
+                                                <option value="duration_asc">المدة (من الأقصر)</option>
+                                                <option value="duration_desc">المدة (من الأطول)</option>
+                                                <option value="appointment">يتطلب موعد أولاً</option>
+                                                <option value="featured">المميزة أولاً</option>
+                                            </select>
+                                            <i class="select-arrow">▼</i>
+                                        </div>
+                                        
+                                        <div class="select-wrapper">
+                                            <label for="service-price-range" class="select-label">نطاق السعر</label>
+                                            <select class="filter-select" id="service-price-range">
+                                                <option value="">جميع الأسعار</option>
+                                                <option value="0-100">أقل من 100 ج.م</option>
+                                                <option value="100-250">100 - 250 ج.م</option>
+                                                <option value="250-500">250 - 500 ج.م</option>
+                                                <option value="500-1000">500 - 1000 ج.م</option>
+                                                <option value="1000+">أكثر من 1000 ج.م</option>
+                                            </select>
+                                            <i class="select-arrow">▼</i>
+                                        </div>
+                                        
+                                        <div class="select-wrapper">
+                                            <label for="service-appointment" class="select-label">نوع الحجز</label>
+                                            <select class="filter-select" id="service-appointment">
+                                                <option value="">جميع الخدمات</option>
+                                                <option value="required">يتطلب موعد</option>
+                                                <option value="not_required">لا يتطلب موعد</option>
+                                                <option value="instant">فوري</option>
+                                            </select>
+                                            <i class="select-arrow">▼</i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="filter-results">
+                                    <span class="results-count" id="services-count">عرض جميع الخدمات ({{ $services->count() }})</span>
+                                    <div class="view-toggle">
+                                        <button class="view-btn active" data-view="grid" title="عرض شبكي">
+                                            <i class="view-icon">⊞</i>
+                                        </button>
+                                        <button class="view-btn" data-view="list" title="عرض قائمة">
+                                            <i class="view-icon">☰</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="swiper all-services-swiper">
+                                <div class="swiper-wrapper">
+                                    @foreach($services as $service)
+                                        <div class="swiper-slide">
+                                            <x-service-card :service="$service" size="small" :featured="$service->is_featured ?? false" />
+                                        </div>
+                                    @endforeach
+                                </div>
+                                <div class="swiper-pagination all-services-pagination"></div>
+                            </div>
+                            
+                            @if($services->count() >= 12)
+                            <div class="load-more-section">
+                                <button class="btn btn-outline load-more-btn" data-type="services">
+                                    عرض المزيد من الخدمات
+                                </button>
+                            </div>
+                            @endif
+                        </div>
+                        @endif
+                    </div>
+                    @endif
+
+                    <!-- Shop Gallery -->
+                    @if($shop->images && is_array($shop->images) && count($shop->images) > 1)
+                    <div class="shop-section">
+                        <h3 class="section-title">معرض الصور</h3>
+                        <div class="shop-gallery">
+                            @foreach($shop->images as $image)
+                                <div class="gallery-item" onclick="openLightbox('{{ asset('storage/' . $image) }}')">
+                                    <img src="{{ asset('storage/' . $image) }}" 
+                                         alt="{{ $shop->name }}"
+                                         onerror="this.parentElement.style.display='none';">
+                                    <div class="gallery-overlay">
+                                        <i class="icon">🔍</i>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- Opening Hours -->
+                    <div class="shop-section">
+                        <h3 class="section-title">ساعات العمل</h3>
+                        <div class="opening-hours">
+                            @if(is_array($shop->opening_hours) && !empty($shop->opening_hours))
+                                @foreach($shop->opening_hours as $day => $hours)
+                                    @php
+                                        $dayNames = [
+                                            'sunday' => 'الأحد',
+                                            'monday' => 'الاثنين',
+                                            'tuesday' => 'الثلاثاء',
+                                            'wednesday' => 'الأربعاء',
+                                            'thursday' => 'الخميس',
+                                            'friday' => 'الجمعة',
+                                            'saturday' => 'السبت'
+                                        ];
+                                        $dayName = $dayNames[strtolower($day)] ?? ucfirst($day);
+                                    @endphp
+                                    <div class="hours-row">
+                                        <span class="day">{{ $dayName }}</span>
+                                        <span class="hours">
+                                            @if(is_array($hours) && isset($hours['open']) && isset($hours['close']))
+                                                {{ $hours['open'] }} - {{ $hours['close'] }}
+                                            @elseif(is_string($hours))
+                                                {{ $hours }}
+                                            @else
+                                                مغلق
+                                            @endif
+                                        </span>
+                                    </div>
+                                @endforeach
+                            @elseif(is_string($shop->opening_hours))
+                                <div class="hours-row">
+                                    <span class="day">ساعات العمل</span>
+                                    <span class="hours">{{ $shop->opening_hours }}</span>
+                                </div>
+                            @else
+                                <div class="hours-row">
+                                    <span class="day">ساعات العمل</span>
+                                    <span class="hours">يرجى الاتصال للاستفسار</span>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Reviews Section -->
+                    <div class="shop-section">
+                        <h3 class="section-title">آراء العملاء</h3>
+                        
+                        <!-- Rating Summary Component -->
+                        <x-rating.summary 
+                            :shop="$shop" 
+                            :show-breakdown="true" 
+                            :show-recent-reviews="true" 
+                            :max-reviews="5" 
+                        />
+                        
+                        <!-- Rating Form Component -->
+                        <x-rating.form :shop="$shop" :user-rating="$userRating" />
+                    </div>
+                </main>
+
+                <!-- Sidebar -->
+                <aside class="shop-sidebar">
+                    {{-- Sidebar Ads --}}
+                    <x-ad-display type="sidebar" placement="shop_page" :city-id="$shop->city_id ?? null" />
+                    
+                    <!-- Contact Info -->
+                    <div class="sidebar-card">
+                        <h4 class="card-title">معلومات الاتصال</h4>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <i class="icon">📍</i>
+                                <div>
+                                    <strong>العنوان</strong>
+                                    <p>{{ $shop->address ?? 'غير متوفر' }}</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="icon">📞</i>
+                                <div>
+                                    <strong>الهاتف</strong>
+                                    <p>{{ $shop->phone ?? 'غير متوفر' }}</p>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="icon">🌐</i>
+                                <div>
+                                    <strong>الموقع الإلكتروني</strong>
+                                    <p>{{ $shop->website ?? 'غير متوفر' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="sidebar-card">
+                        <h4 class="card-title">إحصائيات سريعة</h4>
+                        <div class="quick-stats">
+                            <div class="stat-item">
+                                <div class="stat-icon">👥</div>
+                                <div class="stat-info">
+                                    <span class="stat-number">1,234</span>
+                                    <span class="stat-label">زائر شهرياً</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">⭐</div>
+                                <div class="stat-info">
+                                    <span class="stat-number">4.8</span>
+                                    <span class="stat-label">التقييم</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">📅</div>
+                                <div class="stat-info">
+                                    <span class="stat-number">{{ $shop->created_at ? $shop->created_at->diffForHumans() : 'غير معروف' }}</span>
+                                    <span class="stat-label">منذ التسجيل</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Map Placeholder -->
+                    <div class="sidebar-card">
+                        <h4 class="card-title">الموقع على الخريطة</h4>
+                        <div class="map-placeholder">
+                            <div class="map-icon">🗺️</div>
+                            <p>خريطة تفاعلية</p>
+                            <button class="btn btn-primary btn-sm">عرض على الخريطة</button>
+                        </div>
+                    </div>
+
+                    <!-- Similar Shops -->
+                    <div class="sidebar-card">
+                        <h4 class="card-title">متاجر مشابهة</h4>
+                        <div class="similar-shops">
+                            <div class="similar-shop">
+                                <div class="shop-thumb">🏪</div>
+                                <div class="shop-info">
+                                    <h5>متجر العائلة</h5>
+                                    <p>⭐ 4.5 • {{ $shop->city->name ?? '' }}</p>
+                                </div>
+                            </div>
+                            <div class="similar-shop">
+                                <div class="shop-thumb">🏪</div>
+                                <div class="shop-info">
+                                    <h5>سوق المدينة</h5>
+                                    <p>⭐ 4.7 • {{ $shop->city->name ?? '' }}</p>
+                                </div>
+                            </div>
+                            <div class="similar-shop">
+                                <div class="shop-thumb">🏪</div>
+                                <div class="shop-info">
+                                    <h5>متجر الجودة</h5>
+                                    <p>⭐ 4.6 • {{ $shop->city->name ?? '' }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <div class="lightbox-content">
+            <span class="lightbox-close">&times;</span>
+            <img id="lightbox-img" src="" alt="">
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    function shareShop() {
+        if (navigator.share) {
+            navigator.share({
+                title: '{{ $shop->name }}',
+                text: 'اكتشف {{ $shop->name }} في {{ $shop->city->name ?? "" }}',
+                url: window.location.href
+            });
+        } else {
+            // Fallback - copy to clipboard
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                alert('تم نسخ الرابط!');
+            });
+        }
+    }
+
+    function toggleFavorite() {
+        const btn = document.querySelector('.favorite-btn');
+        const icon = btn.querySelector('.icon');
+        if (icon.textContent === '❤️') {
+            icon.textContent = '🤍';
+            alert('تم إزالة المتجر من المفضلة');
+        } else {
+            icon.textContent = '❤️';
+            alert('تم إضافة المتجر للمفضلة');
+        }
+    }
+
+    function openLightbox(src) {
+        document.getElementById('lightbox').style.display = 'flex';
+        document.getElementById('lightbox-img').src = src;
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close lightbox with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLightbox();
+        }
+    });
+
+    // Image error handling for hero and gallery images
+    function handleImageError(img) {
+        if (img.classList.contains('hero-img')) {
+            img.style.display = 'none';
+            const placeholder = img.nextElementSibling;
+            if (placeholder && placeholder.classList.contains('hero-placeholder')) {
+                placeholder.style.display = 'flex';
+            }
+        } else if (img.closest('.gallery-item')) {
+            img.closest('.gallery-item').style.display = 'none';
+        }
+    }
+
+    // Add error handling to all images
+    document.querySelectorAll('.hero-img, .shop-gallery img').forEach(img => {
+        img.addEventListener('error', function() {
+            handleImageError(this);
+        });
+        
+        // Check if image is already broken
+        if (!img.complete || img.naturalWidth === 0) {
+            handleImageError(img);
+        }
+    });
+
+   document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Swiper for All Products
+        if (document.querySelector('.all-products-swiper')) {
+            new Swiper('.all-products-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 16,
+                pagination: {
+                    el: '.all-products-pagination',
+                    clickable: true,
+                    type: 'bullets',
+                },
+                breakpoints: {
+                    768: { 
+                        slidesPerView: 2, 
+                        spaceBetween: 20 
+                    },
+                    1024: { 
+                        slidesPerView: 3, 
+                        spaceBetween: 24 
+                    }
+                }
+            });
+        }
+
+        // Initialize Swiper for All Services
+        if (document.querySelector('.all-services-swiper')) {
+            new Swiper('.all-services-swiper', {
+                slidesPerView: 1,
+                spaceBetween: 16,
+                pagination: {
+                    el: '.all-services-pagination',
+                    clickable: true,
+                    type: 'bullets',
+                },
+                breakpoints: {
+                    768: { 
+                        slidesPerView: 2, 
+                        spaceBetween: 20 
+                    },
+                    1024: { 
+                        slidesPerView: 3, 
+                        spaceBetween: 24 
+                    }
+                }
+            });
+        }
+
+        // Tab switching
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+                
+                // Remove active class from all tabs
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                this.classList.add('active');
+                const targetElement = document.getElementById(targetTab + '-tab');
+                if (targetElement) {
+                    targetElement.classList.add('active');
+                }
+            });
+        });
+
+        // Professional Search and Filter System
+        
+        // Global filter functions
+        function clearProductFilters() {
+            document.getElementById('product-search').value = '';
+            document.getElementById('product-category-filter').value = '';
+            document.getElementById('product-sort').value = 'name';
+            document.getElementById('product-price-range').value = '';
+            document.querySelector('#product-search + .search-clear').style.display = 'none';
+            applyProductFilters();
+        }
+        
+        function clearServiceFilters() {
+            document.getElementById('service-search').value = '';
+            document.getElementById('service-category-filter').value = '';
+            document.getElementById('service-sort').value = 'name';
+            document.getElementById('service-price-range').value = '';
+            document.getElementById('service-appointment').value = '';
+            document.querySelector('#service-search + .search-clear').style.display = 'none';
+            applyServiceFilters();
+        }
+        
+        function clearProductSearch() {
+            document.getElementById('product-search').value = '';
+            document.querySelector('#product-search + .search-clear').style.display = 'none';
+            applyProductFilters();
+        }
+        
+        function clearServiceSearch() {
+            document.getElementById('service-search').value = '';
+            document.querySelector('#service-search + .search-clear').style.display = 'none';
+            applyServiceFilters();
+        }
+        
+        // Products filtering and search
+        function applyProductFilters() {
+            const searchTerm = document.getElementById('product-search').value.toLowerCase().trim();
+            const categoryFilter = document.getElementById('product-category-filter').value;
+            const sortBy = document.getElementById('product-sort').value;
+            const priceRange = document.getElementById('product-price-range').value;
+            
+            const productSlides = document.querySelectorAll('.all-products-swiper .swiper-slide');
+            let visibleCount = 0;
+            
+            productSlides.forEach(slide => {
+                const card = slide.querySelector('.product-card');
+                if (!card) return;
+                
+                const productName = card.querySelector('.product-name')?.textContent.toLowerCase() || '';
+                const productCategory = card.dataset.category || '';
+                const productPrice = parseFloat(card.dataset.price || 0);
+                
+                let visible = true;
+                
+                // Search filter
+                if (searchTerm && !productName.includes(searchTerm)) {
+                    visible = false;
+                }
+                
+                // Category filter
+                if (categoryFilter && productCategory !== categoryFilter) {
+                    visible = false;
+                }
+                
+                // Price range filter
+                if (priceRange) {
+                    const [min, max] = priceRange.split('-');
+                    if (max === '+') {
+                        if (productPrice < parseFloat(min)) visible = false;
+                    } else {
+                        if (productPrice < parseFloat(min) || productPrice > parseFloat(max)) {
+                            visible = false;
+                        }
+                    }
+                }
+                
+                slide.style.display = visible ? 'block' : 'none';
+                if (visible) visibleCount++;
+            });
+            
+            // Update results count
+            document.getElementById('products-count').textContent = `عرض ${visibleCount} من أصل {{ $products->count() }} منتج`;
+        }
+        
+        // Services filtering and search
+        function applyServiceFilters() {
+            const searchTerm = document.getElementById('service-search').value.toLowerCase().trim();
+            const categoryFilter = document.getElementById('service-category-filter').value;
+            const sortBy = document.getElementById('service-sort').value;
+            const priceRange = document.getElementById('service-price-range').value;
+            const appointmentFilter = document.getElementById('service-appointment').value;
+            
+            const serviceSlides = document.querySelectorAll('.all-services-swiper .swiper-slide');
+            let visibleCount = 0;
+            
+            serviceSlides.forEach(slide => {
+                const card = slide.querySelector('.service-card');
+                if (!card) return;
+                
+                const serviceName = card.querySelector('.service-name')?.textContent.toLowerCase() || '';
+                const serviceCategory = card.dataset.category || '';
+                const servicePrice = parseFloat(card.dataset.price || 0);
+                const requiresAppointment = card.dataset.requiresAppointment === 'true';
+                
+                let visible = true;
+                
+                // Search filter
+                if (searchTerm && !serviceName.includes(searchTerm)) {
+                    visible = false;
+                }
+                
+                // Category filter
+                if (categoryFilter && serviceCategory !== categoryFilter) {
+                    visible = false;
+                }
+                
+                // Price range filter
+                if (priceRange) {
+                    const [min, max] = priceRange.split('-');
+                    if (max === '+') {
+                        if (servicePrice < parseFloat(min)) visible = false;
+                    } else {
+                        if (servicePrice < parseFloat(min) || servicePrice > parseFloat(max)) {
+                            visible = false;
+                        }
+                    }
+                }
+                
+                // Appointment filter
+                if (appointmentFilter) {
+                    if (appointmentFilter === 'required' && !requiresAppointment) visible = false;
+                    if (appointmentFilter === 'not_required' && requiresAppointment) visible = false;
+                }
+                
+                slide.style.display = visible ? 'block' : 'none';
+                if (visible) visibleCount++;
+            });
+            
+            // Update results count
+            document.getElementById('services-count').textContent = `عرض ${visibleCount} من أصل {{ $services->count() }} خدمة`;
+        }
+        
+        // Initialize search and filter events
+        function initializeSearchAndFilters() {
+            // Product search input
+            const productSearch = document.getElementById('product-search');
+            const productSearchClear = document.querySelector('.search-input-wrapper .search-clear');
+            
+            if (productSearch) {
+                productSearch.addEventListener('input', function() {
+                    const clearBtn = this.parentElement.querySelector('.search-clear');
+                    if (this.value.length > 0) {
+                        clearBtn.style.display = 'block';
+                    } else {
+                        clearBtn.style.display = 'none';
+                    }
+                    applyProductFilters();
+                });
+                
+                productSearch.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyProductFilters();
+                    }
+                });
+            }
+            
+            // Service search input
+            const serviceSearch = document.getElementById('service-search');
+            if (serviceSearch) {
+                serviceSearch.addEventListener('input', function() {
+                    const clearBtn = this.parentElement.querySelector('.search-clear');
+                    if (this.value.length > 0) {
+                        clearBtn.style.display = 'block';
+                    } else {
+                        clearBtn.style.display = 'none';
+                    }
+                    applyServiceFilters();
+                });
+                
+                serviceSearch.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        applyServiceFilters();
+                    }
+                });
+            }
+            
+            // Product filter selects
+            const productFilters = ['product-category-filter', 'product-sort', 'product-price-range'];
+            productFilters.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', applyProductFilters);
+                }
+            });
+            
+            // Service filter selects
+            const serviceFilters = ['service-category-filter', 'service-sort', 'service-price-range', 'service-appointment'];
+            serviceFilters.forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.addEventListener('change', applyServiceFilters);
+                }
+            });
+            
+            // View toggle functionality
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const viewType = this.dataset.view;
+                    const container = this.closest('.tab-content');
+                    
+                    // Update active state
+                    container.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Apply view class to swiper container
+                    const swiperContainer = container.querySelector('.swiper');
+                    if (swiperContainer) {
+                        swiperContainer.classList.toggle('list-view', viewType === 'list');
+                        swiperContainer.classList.toggle('grid-view', viewType === 'grid');
+                    }
+                });
+            });
+        }
+        
+        // Initialize search and filters when DOM is ready
+        initializeSearchAndFilters();
+
+        // Load more functionality
+        const loadMoreBtns = document.querySelectorAll('.load-more-btn');
+        loadMoreBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const type = this.dataset.type;
+                const shopId = window.location.pathname.split('/').pop();
+                
+                // Add loading state
+                this.innerHTML = 'جارٍ التحميل...';
+                this.disabled = true;
+                
+                // Simulate loading more items (replace with actual AJAX call)
+                setTimeout(() => {
+                    this.innerHTML = `عرض المزيد من ${type === 'products' ? 'المنتجات' : 'الخدمات'}`;
+                    this.disabled = false;
+                    // Hide button if no more items
+                    // this.style.display = 'none';
+                }, 1000);
+            });
+        });
+
+        // Product/Service action handlers
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-add-cart') || e.target.closest('.btn-add-cart')) {
+                const btn = e.target.classList.contains('btn-add-cart') ? e.target : e.target.closest('.btn-add-cart');
+                const productId = btn.dataset.productId;
+                
+                if (!btn.disabled) {
+                    // Add loading state
+                    const originalContent = btn.innerHTML;
+                    btn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">جارٍ الإضافة...</span>';
+                    btn.disabled = true;
+                    
+                    // Simulate API call
+                    setTimeout(() => {
+                        btn.innerHTML = '<span class="btn-icon">✅</span><span class="btn-text">تم الإضافة</span>';
+                        btn.style.background = 'linear-gradient(135deg, #27ae60, #229954)';
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalContent;
+                            btn.style.background = '';
+                            btn.disabled = false;
+                        }, 2000);
+                    }, 1000);
+                }
+            }
+            
+            if (e.target.classList.contains('btn-book-service') || e.target.closest('.btn-book-service')) {
+                const btn = e.target.classList.contains('btn-book-service') ? e.target : e.target.closest('.btn-book-service');
+                const serviceId = btn.dataset.serviceId;
+                const requiresAppointment = btn.dataset.requiresAppointment === 'true';
+                
+                const originalContent = btn.innerHTML;
+                
+                if (requiresAppointment) {
+                    btn.innerHTML = '<span class="btn-icon">📅</span><span class="btn-text">جارٍ الحجز...</span>';
+                    // Simulate appointment booking
+                    setTimeout(() => {
+                        btn.innerHTML = '<span class="btn-icon">✅</span><span class="btn-text">تم الحجز</span>';
+                        btn.style.background = 'linear-gradient(135deg, #27ae60, #229954)';
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalContent;
+                            btn.style.background = '';
+                        }, 2000);
+                    }, 1000);
+                } else {
+                    btn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">جارٍ الطلب...</span>';
+                    setTimeout(() => {
+                        btn.innerHTML = '<span class="btn-icon">✅</span><span class="btn-text">تم الطلب</span>';
+                        btn.style.background = 'linear-gradient(135deg, #27ae60, #229954)';
+                        
+                        setTimeout(() => {
+                            btn.innerHTML = originalContent;
+                            btn.style.background = '';
+                        }, 2000);
+                    }, 1000);
+                }
+            }
+            
+            if (e.target.classList.contains('btn-wishlist') || e.target.closest('.btn-wishlist')) {
+                const btn = e.target.classList.contains('btn-wishlist') ? e.target : e.target.closest('.btn-wishlist');
+                const icon = btn.querySelector('.wishlist-icon');
+                
+                if (icon) {
+                    const isWishlisted = icon.textContent === '❤️';
+                    icon.textContent = isWishlisted ? '🤍' : '❤️';
+                    
+                    // Add animation
+                    btn.style.transform = 'scale(1.2)';
+                    setTimeout(() => {
+                        btn.style.transform = '';
+                    }, 200);
+                }
+            }
+
+            // Slider navigation
+            if (e.target.classList.contains('slider-btn') || e.target.closest('.slider-btn')) {
+                const btn = e.target.classList.contains('slider-btn') ? e.target : e.target.closest('.slider-btn');
+                const sliderType = btn.dataset.slider;
+                const slider = document.getElementById(sliderType + '-slider');
+                
+                if (slider) {
+                    const scrollAmount = 240; // Width of card + gap
+                    const direction = btn.classList.contains('slider-btn-prev') ? -1 : 1;
+                    
+                    slider.scrollBy({
+                        left: scrollAmount * direction,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+
+        // Auto-hide slider buttons based on scroll position
+        function updateSliderButtons() {
+            const sliders = document.querySelectorAll('.products-slider, .services-slider');
+            
+            sliders.forEach(slider => {
+                const container = slider.closest('.products-slider-container, .services-slider-container');
+                const prevBtn = container.querySelector('.slider-btn-prev');
+                const nextBtn = container.querySelector('.slider-btn-next');
+                
+                if (prevBtn && nextBtn) {
+                    const isAtStart = slider.scrollLeft <= 0;
+                    const isAtEnd = slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 10;
+                    
+                    prevBtn.style.opacity = isAtStart ? '0.5' : '1';
+                    nextBtn.style.opacity = isAtEnd ? '0.5' : '1';
+                    prevBtn.style.pointerEvents = isAtStart ? 'none' : 'auto';
+                    nextBtn.style.pointerEvents = isAtEnd ? 'none' : 'auto';
+                }
+            });
+        }
+
+        // Add scroll listeners to sliders
+        document.querySelectorAll('.products-slider, .services-slider').forEach(slider => {
+            slider.addEventListener('scroll', updateSliderButtons);
+        });
+
+        // Initial button state
+        setTimeout(updateSliderButtons, 100);
+    });
+
+    
+</script>
+
+@endpush

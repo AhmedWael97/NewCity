@@ -1,0 +1,2727 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "City Shop Directory API",
+        "description": "API documentation for the City Shop Directory mobile application",
+        "contact": {
+            "name": "API Support",
+            "email": "admin@cityshops.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api/v1",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/v1/auth/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Register a new user",
+                "operationId": "fb835c97347e657e2a627790c4c5817a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "01234567890"
+                                    },
+                                    "user_role_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User registered successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                },
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login user",
+                "operationId": "fb66b153966d9fac2e999136ef0ade67",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login successful"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                },
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/auth/me": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Get current user profile",
+                "operationId": "2c81ebea41cfc3d02454e68f58910bd8",
+                "responses": {
+                    "200": {
+                        "description": "User profile data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout user",
+                "operationId": "307ed0512855922b2280792376bb2095",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully logged out"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/categories": {
+            "get": {
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get all categories",
+                "operationId": "52c3c8d702572c2b4347b0ecf7573e54",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by category name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Categories list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Category"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/cities": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get all cities",
+                "operationId": "10228b26f3f65f7349e87125b7a96dfa",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by city name, country, or state",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "Filter by country",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "state",
+                        "in": "query",
+                        "description": "Filter by state",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cities list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/City"
+                                                    }
+                                                },
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/cities/{city}": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get single city with shops",
+                "operationId": "a30304a1263217b7b28eaa0d159dc193",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "City ID or slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "City details with shops",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/City"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "City not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "City not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/cities/{city}/featured-shops": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get featured shops for a city",
+                "description": "Returns paginated list of featured shops for a specific city",
+                "operationId": "5121dc59091b58adfd3ff8b7d34011ee",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "City ID or slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of shops per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Featured shops list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "shops": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "description": {
+                                                                "type": "string"
+                                                            },
+                                                            "rating": {
+                                                                "type": "number",
+                                                                "format": "float"
+                                                            },
+                                                            "review_count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "featured_until": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "category": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "icon": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "City not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/cities/{city}/latest-shops": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get latest shops for a city",
+                "description": "Returns paginated list of recently added shops for a specific city",
+                "operationId": "fc6fa8aa97c65599b4f33294303bad56",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "City ID or slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of shops per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    },
+                    {
+                        "name": "days",
+                        "in": "query",
+                        "description": "Number of days to look back for latest shops",
+                        "schema": {
+                            "type": "integer",
+                            "default": 30
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Latest shops list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "shops": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "description": {
+                                                                "type": "string"
+                                                            },
+                                                            "rating": {
+                                                                "type": "number",
+                                                                "format": "float"
+                                                            },
+                                                            "review_count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "created_at": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "category": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "icon": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "City not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/cities/{city}/statistics": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get city statistics",
+                "description": "Returns aggregated statistics for a city (cached for 1 hour)",
+                "operationId": "4eb1c0f6d6a860e71b5c5c295e649f8c",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "City ID or slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "City statistics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "total_shops": {
+                                                    "type": "integer",
+                                                    "example": 150
+                                                },
+                                                "active_shops": {
+                                                    "type": "integer",
+                                                    "example": 142
+                                                },
+                                                "total_categories": {
+                                                    "type": "integer",
+                                                    "example": 25
+                                                },
+                                                "total_reviews": {
+                                                    "type": "integer",
+                                                    "example": 1250
+                                                },
+                                                "average_rating": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 4.35
+                                                },
+                                                "new_shops_this_month": {
+                                                    "type": "integer",
+                                                    "example": 8
+                                                },
+                                                "featured_shops_count": {
+                                                    "type": "integer",
+                                                    "example": 12
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "City not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/cities/{city}/banners": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get city promotional banners",
+                "description": "Returns active promotional banners for a specific city",
+                "operationId": "554d1cc4c41a4d04e73ef704879aa53d",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "City ID or slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "City banners",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "banners": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string",
+                                                                "example": "Summer Sale 2024"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "Get up to 50% off on selected items"
+                                                            },
+                                                            "image": {
+                                                                "type": "string",
+                                                                "example": "https://example.com/banner.jpg"
+                                                            },
+                                                            "link_type": {
+                                                                "type": "string",
+                                                                "enum": [
+                                                                    "internal",
+                                                                    "external",
+                                                                    "none"
+                                                                ],
+                                                                "example": "internal"
+                                                            },
+                                                            "link_url": {
+                                                                "type": "string",
+                                                                "example": "/shops/summer-deals"
+                                                            },
+                                                            "start_date": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "end_date": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "priority": {
+                                                                "type": "integer",
+                                                                "example": 10
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "City not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/search": {
+            "get": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Global search across shops, services, and cities",
+                "operationId": "601411bf04955ef5c81aec4d8bcc0dcc",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Search query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Search type filter",
+                        "schema": {
+                            "type": "string",
+                            "default": "all",
+                            "enum": [
+                                "shops",
+                                "services",
+                                "cities",
+                                "all"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "User latitude for distance calculation",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "User longitude for distance calculation",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "radius",
+                        "in": "query",
+                        "description": "Search radius in kilometers",
+                        "schema": {
+                            "type": "number",
+                            "format": "float",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search results",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "shops": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Shop"
+                                                    }
+                                                },
+                                                "services": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/UserService"
+                                                    }
+                                                },
+                                                "cities": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/City"
+                                                    }
+                                                },
+                                                "categories": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Category"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "meta": {
+                                            "properties": {
+                                                "total_results": {
+                                                    "type": "integer"
+                                                },
+                                                "search_query": {
+                                                    "type": "string"
+                                                },
+                                                "search_type": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/search/suggestions": {
+            "get": {
+                "tags": [
+                    "Search"
+                ],
+                "summary": "Get search suggestions",
+                "operationId": "113f3ae86f3578d47278efcec84211ea",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Partial search query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of suggestions to return",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "maximum": 20
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Search suggestions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "text": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": {
+                                                        "type": "string"
+                                                    },
+                                                    "category": {
+                                                        "type": "string"
+                                                    },
+                                                    "city": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/shops": {
+            "get": {
+                "tags": [
+                    "Shops"
+                ],
+                "summary": "Get all shops with filtering",
+                "operationId": "66d0890ffc0357b285f3ffe71bba8348",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search by shop name, description, or address",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Filter by category ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "featured",
+                        "in": "query",
+                        "description": "Filter featured shops only",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "latitude",
+                        "in": "query",
+                        "description": "User latitude for distance calculation",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "longitude",
+                        "in": "query",
+                        "description": "User longitude for distance calculation",
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "radius",
+                        "in": "query",
+                        "description": "Search radius in kilometers",
+                        "schema": {
+                            "type": "number",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shops list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Shop"
+                                                    }
+                                                },
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/favorites": {
+            "get": {
+                "tags": [
+                    "Shop Favorites"
+                ],
+                "summary": "Get user's favorite shops",
+                "operationId": "44ad96c8bba6c49d930983f9ac51e59a",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favorites retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/shops/{shopId}/favorite": {
+            "post": {
+                "tags": [
+                    "Shop Favorites"
+                ],
+                "summary": "Add shop to favorites",
+                "operationId": "d0a5ffc9305ae1988c363e6b8cb3b421",
+                "parameters": [
+                    {
+                        "name": "shopId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shop added to favorites"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Shop Favorites"
+                ],
+                "summary": "Remove shop from favorites",
+                "operationId": "b45a649fd71a2ea8ce80253bd56fa19f",
+                "parameters": [
+                    {
+                        "name": "shopId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shop removed from favorites"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/shops/{shopId}/is-favorite": {
+            "get": {
+                "tags": [
+                    "Shop Favorites"
+                ],
+                "summary": "Check if shop is in user's favorites",
+                "operationId": "eb508c9abd870a3e1b24736d95dddcaf",
+                "parameters": [
+                    {
+                        "name": "shopId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Favorite status retrieved"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/shops/{shopId}/reviews": {
+            "get": {
+                "tags": [
+                    "Shop Reviews"
+                ],
+                "summary": "Get shop reviews",
+                "operationId": "dcd1d176d22c9e70d4bda33642d550cb",
+                "parameters": [
+                    {
+                        "name": "shopId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shop reviews retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Shop Reviews"
+                ],
+                "summary": "Submit a shop review",
+                "operationId": "63a854a9b235b7f7fc959f02ffea8daa",
+                "parameters": [
+                    {
+                        "name": "shopId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "rating",
+                                    "comment"
+                                ],
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1
+                                    },
+                                    "comment": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Review submitted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/shops/{shopId}/reviews/{reviewId}": {
+            "put": {
+                "tags": [
+                    "Shop Reviews"
+                ],
+                "summary": "Update a shop review",
+                "operationId": "0513f975af05c55702161c37c9fb1c94",
+                "parameters": [
+                    {
+                        "name": "shopId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "reviewId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1
+                                    },
+                                    "comment": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Review updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Shop Reviews"
+                ],
+                "summary": "Delete a shop review",
+                "operationId": "e0b6e7a1ca86e68ded23e9eb978a7542",
+                "parameters": [
+                    {
+                        "name": "shopId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "reviewId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Review deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/profile": {
+            "get": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Get user profile",
+                "operationId": "972bb5b182e5f6d92a59f1385e55ffd9",
+                "responses": {
+                    "200": {
+                        "description": "Profile retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Update user profile",
+                "operationId": "ee075cba7255fd622ec6cf2911074852",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "phone": {
+                                        "type": "string"
+                                    },
+                                    "address": {
+                                        "type": "string"
+                                    },
+                                    "date_of_birth": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "city_id": {
+                                        "type": "integer"
+                                    },
+                                    "preferred_city_id": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Profile updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/avatar": {
+            "post": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Upload user avatar",
+                "operationId": "c6ec890ca7fadbf7bdc227674ed4f8e7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "avatar": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Avatar uploaded successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Delete user avatar",
+                "operationId": "fc142fb02cae9ae1d3a37e743d7009f5",
+                "responses": {
+                    "200": {
+                        "description": "Avatar deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/password": {
+            "put": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Change user password",
+                "operationId": "707bde017ddd8318da7ed7878cfa82b2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "new_password",
+                                    "new_password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "new_password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password changed successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/statistics": {
+            "get": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Get user statistics",
+                "operationId": "c532b5c53d88f8ea8b52c8ed88149500",
+                "responses": {
+                    "200": {
+                        "description": "Statistics retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user/account": {
+            "delete": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Delete user account",
+                "operationId": "4d5e647993ff331c78c0d5b35d7c7dde",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "password"
+                                ],
+                                "properties": {
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user-services": {
+            "get": {
+                "tags": [
+                    "User Services"
+                ],
+                "summary": "Get user services list",
+                "operationId": "1c2395ee07f3bb72286b87086b91978b",
+                "parameters": [
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Filter by service category ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search term",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "pricing_type",
+                        "in": "query",
+                        "description": "Filter by pricing type",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "fixed",
+                                "hourly",
+                                "per_km",
+                                "negotiable"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User services list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserService"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user-services/{id}": {
+            "get": {
+                "tags": [
+                    "User Services"
+                ],
+                "summary": "Get service details",
+                "operationId": "c283cb3d79ca36b5e2a5c1afa09cbe8f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Service ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Service details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserService"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/my-services": {
+            "get": {
+                "tags": [
+                    "User Services"
+                ],
+                "summary": "Get current user's services",
+                "operationId": "ee60cf3f265134ff4d29e85d64b99d8d",
+                "responses": {
+                    "200": {
+                        "description": "User's services",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UserService"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "User Services"
+                ],
+                "summary": "Create a new service",
+                "operationId": "5022dd083188a517fd15ebc586428125",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "description",
+                                    "service_category_id",
+                                    "city_id",
+                                    "pricing_type",
+                                    "phone"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Professional Plumbing Services"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Expert plumbing services for homes and offices"
+                                    },
+                                    "service_category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "city_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "pricing_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "fixed",
+                                            "hourly",
+                                            "per_km",
+                                            "negotiable"
+                                        ]
+                                    },
+                                    "price_from": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100
+                                    },
+                                    "price_to": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 500
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "01234567890"
+                                    },
+                                    "whatsapp": {
+                                        "type": "string",
+                                        "example": "01234567890"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "123 Main Street"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Service created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Service created successfully"
+                                        },
+                                        "service": {
+                                            "$ref": "#/components/schemas/UserService"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/my-services/{id}": {
+            "put": {
+                "tags": [
+                    "User Services"
+                ],
+                "summary": "Update a service",
+                "operationId": "f1b639e75a9c9091c49621a14b29d0c3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Service ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Service updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "User Services"
+                ],
+                "summary": "Delete a service",
+                "operationId": "33f805f7580960d898d7de78718a4892",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Service ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Service deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/user-services/{id}/contact": {
+            "post": {
+                "tags": [
+                    "User Services"
+                ],
+                "summary": "Record contact interaction",
+                "operationId": "20e7d980ae7dac9a1bbede43a43eefda",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Service ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "type"
+                                ],
+                                "properties": {
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "phone",
+                                            "whatsapp"
+                                        ],
+                                        "example": "phone"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Contact recorded successfully"
+                    }
+                }
+            }
+        },
+        "/api/service-categories": {
+            "get": {
+                "tags": [
+                    "User Services"
+                ],
+                "summary": "Get service categories",
+                "operationId": "43ddb5296b1d4169746f368d4bdaf9e7",
+                "responses": {
+                    "200": {
+                        "description": "Service categories list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ServiceCategory"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "01234567890"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "example": "http://example.com/storage/avatars/user.jpg",
+                        "nullable": true
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "role": {
+                        "type": "string",
+                        "example": "user"
+                    },
+                    "preferred_city_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "is_verified": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "date_of_birth": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "gender": {
+                        "type": "string",
+                        "enum": [
+                            "male",
+                            "female"
+                        ],
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "City": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Cairo"
+                    },
+                    "name_ar": {
+                        "type": "string",
+                        "example": "القاهرة"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "cairo"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description_ar": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "image": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "banner_image": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 30.0444
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 31.2357
+                    },
+                    "population": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "area_km2": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "is_capital": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "active_shops_count": {
+                        "type": "integer",
+                        "example": 150
+                    }
+                },
+                "type": "object"
+            },
+            "Category": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Restaurants"
+                    },
+                    "name_ar": {
+                        "type": "string",
+                        "example": "مطاعم"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "restaurants"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description_ar": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "color": {
+                        "type": "string",
+                        "example": "#007bff"
+                    },
+                    "parent_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "sort_order": {
+                        "type": "integer",
+                        "example": 0
+                    }
+                },
+                "type": "object"
+            },
+            "Shop": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Pizza Palace"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "pizza-palace"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "123 Main Street"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "01234567890"
+                    },
+                    "whatsapp": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "nullable": true
+                    },
+                    "website": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "facebook": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "instagram": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "latitude": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "longitude": {
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "opening_hours": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "is_open_now": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_verified": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "is_featured": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "average_rating": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.5
+                    },
+                    "total_ratings": {
+                        "type": "integer",
+                        "example": 25
+                    },
+                    "total_views": {
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "logo": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "banner_image": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "delivery_available": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "delivery_fee": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "minimum_order": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "distance_km": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Rating": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "rating": {
+                        "type": "integer",
+                        "maximum": 5,
+                        "minimum": 1,
+                        "example": 5
+                    },
+                    "comment": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "is_verified": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "ServiceCategory": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Plumbing"
+                    },
+                    "name_ar": {
+                        "type": "string",
+                        "example": "سباكة"
+                    },
+                    "slug": {
+                        "type": "string",
+                        "example": "plumbing"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description_ar": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "icon": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "color": {
+                        "type": "string",
+                        "example": "#007bff"
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "sort_order": {
+                        "type": "integer",
+                        "example": 0
+                    }
+                },
+                "type": "object"
+            },
+            "UserService": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Professional Plumbing Services"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Expert plumbing services for homes and offices"
+                    },
+                    "pricing_type": {
+                        "type": "string",
+                        "enum": [
+                            "fixed",
+                            "hourly",
+                            "per_km",
+                            "negotiable"
+                        ]
+                    },
+                    "price_from": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "price_to": {
+                        "type": "number",
+                        "format": "float",
+                        "nullable": true
+                    },
+                    "currency": {
+                        "type": "string",
+                        "example": "EGP"
+                    },
+                    "images": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "phone": {
+                        "type": "string",
+                        "example": "01234567890"
+                    },
+                    "whatsapp": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "location": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "address": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "availability": {
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "service_areas": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "requirements": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_verified": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "is_featured": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "rating": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 4.5
+                    },
+                    "total_reviews": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "total_views": {
+                        "type": "integer",
+                        "example": 50
+                    },
+                    "total_contacts": {
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            },
+            "ApiResponse": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Operation successful"
+                    },
+                    "data": {
+                        "type": "object",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationError": {
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "The given data was invalid."
+                    },
+                    "errors": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "description": "Enter your bearer token",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "User authentication endpoints"
+        },
+        {
+            "name": "Categories",
+            "description": "Category management endpoints"
+        },
+        {
+            "name": "Cities",
+            "description": "City management endpoints"
+        },
+        {
+            "name": "Search",
+            "description": "Search endpoints for shops, services, cities"
+        },
+        {
+            "name": "Shops",
+            "description": "Shop management endpoints"
+        },
+        {
+            "name": "Shop Favorites",
+            "description": "Endpoints for managing favorite shops"
+        },
+        {
+            "name": "Shop Reviews",
+            "description": "Endpoints for shop reviews management"
+        },
+        {
+            "name": "User Profile",
+            "description": "Endpoints for user profile management"
+        },
+        {
+            "name": "User Services",
+            "description": "User services management endpoints"
+        }
+    ]
+}

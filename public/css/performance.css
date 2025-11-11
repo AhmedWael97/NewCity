@@ -1,0 +1,121 @@
+/* Performance Optimizations for Better Page Speed */
+
+/* Improve font loading performance */
+.cairo-font {
+    font-display: swap; /* Improve text visibility during webfont load */
+}
+
+/* Reduce layout shifts with aspect ratios */
+.aspect-ratio-16-9 {
+    aspect-ratio: 16 / 9;
+}
+
+.aspect-ratio-4-3 {
+    aspect-ratio: 4 / 3;
+}
+
+.aspect-ratio-1-1 {
+    aspect-ratio: 1 / 1;
+}
+
+/* Optimize images */
+img {
+    height: auto;
+    max-width: 100%;
+}
+
+.lazy-load {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.lazy-load.loaded {
+    opacity: 1;
+}
+
+/* Critical path CSS for above-the-fold content */
+.hero-section,
+.main-nav,
+.city-hero-modern {
+    contain: layout style paint;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Optimize repaints */
+.shop-card,
+.category-card,
+.ad-item {
+    transform: translateZ(0); /* Force hardware acceleration */
+    will-change: transform;
+}
+
+.shop-card:hover,
+.category-card:hover {
+    will-change: auto;
+}
+
+/* Optimize scrolling */
+.smooth-scroll {
+    scroll-behavior: smooth;
+}
+
+/* Reduce paint areas */
+.contain-layout {
+    contain: layout;
+}
+
+.contain-paint {
+    contain: paint;
+}
+
+.contain-style {
+    contain: style;
+}
+
+/* Optimize loading states */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* Optimize critical resources */
+.critical-resource {
+    font-display: block;
+}
+
+/* Optimize third-party content */
+.third-party-content {
+    opacity: 0.8;
+}
+
+/* Reduce unused CSS */
+.d-none-print {
+    display: block !important;
+}
+
+@media print {
+    .d-none-print {
+        display: none !important;
+    }
+}

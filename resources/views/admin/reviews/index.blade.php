@@ -1,0 +1,207 @@
+@extends('layouts.admin')
+
+@section('title', 'Reviews Management')
+
+@section('content')
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Reviews Management</h1>
+    </div>
+
+    <!-- Filters -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Filter Reviews</h6>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('admin.reviews.index') }}" class="row g-3">
+                <div class="col-md-3">
+                    <label for="search" class="form-label">Search (User)</label>
+                    <input type="text" class="form-control" id="search" name="search" 
+                           value="{{ request('search') }}" placeholder="User name or email">
+                </div>
+                <div class="col-md-2">
+                    <label for="rating" class="form-label">Rating</label>
+                    <select class="form-control" id="rating" name="rating">
+                        <option value="">All Ratings</option>
+                        @for($i = 5; $i >= 1; $i--)
+                            <option value="{{ $i }}" {{ request('rating') == $i ? 'selected' : '' }}>
+                                {{ $i }} Stars
+                            </option>
+                        @endfor
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="shop_id" class="form-label">Shop</label>
+                    <select class="form-control" id="shop_id" name="shop_id">
+                        <option value="">All Shops</option>
+                        @foreach($shops as $shop)
+                            <option value="{{ $shop->id }}" {{ request('shop_id') == $shop->id ? 'selected' : '' }}>
+                                {{ $shop->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="is_approved" class="form-label">Status</label>
+                    <select class="form-control" id="is_approved" name="is_approved">
+                        <option value="">All</option>
+                        <option value="1" {{ request('is_approved') === '1' ? 'selected' : '' }}>Approved</option>
+                        <option value="0" {{ request('is_approved') === '0' ? 'selected' : '' }}>Pending</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary me-2">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    <a href="{{ route('admin.reviews.index') }}" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reviews Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">All Reviews ({{ $reviews->total() }})</h6>
+        </div>
+        <div class="card-body">
+            @if(session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            @endif
+
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Shop</th>
+                            <th>Rating</th>
+                            <th>Review</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($reviews as $review)
+                            <tr>
+                                <td>{{ $review->id }}</td>
+                                <td>
+                                    <strong>{{ $review->user->name }}</strong><br>
+                                    <small class="text-muted">{{ $review->user->email }}</small>
+                                </td>
+                                <td>
+                                    @if($review->reviewable)
+                                        <a href="{{ route('admin.shops.show', $review->reviewable->id) }}" 
+                                           class="text-decoration-none">
+                                            {{ $review->reviewable->name }}
+                                        </a>
+                                    @else
+                                        <span class="text-muted">Shop Deleted</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            <i class="fas fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted' }}"></i>
+                                        @endfor
+                                        <span class="ms-2 badge bg-primary text-white">{{ $review->rating }}/5</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                        {{ $review->review ?? 'No comment' }}
+                                    </div>
+                                </td>
+                                <td>
+                                    @if($review->is_approved ?? true)
+                                        <span class="badge bg-success text-white">Approved</span>
+                                    @else
+                                        <span class="badge bg-warning text-white">Pending</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    <small>{{ $review->created_at->format('M d, Y') }}</small><br>
+                                    <small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
+                                </td>
+                                <td>
+                                    <a href="{{ route('admin.reviews.show', $review->id) }}" 
+                                       class="btn btn-sm btn-info" title="View">
+                                        <i class="fas fa-eye text-white"></i>
+                                    </a>
+                                    
+                                    @if(!($review->is_approved ?? true))
+                                        <form action="{{ route('admin.reviews.approve', $review->id) }}" 
+                                              method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-sm btn-success" title="Approve">
+                                                <i class="fas fa-check text-white"></i>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <form action="{{ route('admin.reviews.reject', $review->id) }}" 
+                                              method="POST" class="d-inline">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-sm btn-warning" title="Reject">
+                                                <i class="fas fa-times text-white"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                    
+                                    <form action="{{ route('admin.reviews.destroy', $review->id) }}" 
+                                          method="POST" class="d-inline"
+                                          onsubmit="return confirm('Are you sure you want to delete this review?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                            <i class="fas fa-trash text-white"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="8" class="text-center py-4">
+                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                                    <p class="text-muted">No reviews found</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="d-flex justify-content-center mt-4">
+                {{ $reviews->links() }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #dataTable tbody td {
+        color: #000 !important;
+        vertical-align: middle;
+    }
+    .btn-close {
+        background-color: transparent;
+        border: none;
+        font-size: 1.5rem;
+        opacity: 0.5;
+    }
+    .btn-close:hover {
+        opacity: 1;
+    }
+</style>
+@endsection
