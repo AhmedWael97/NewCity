@@ -174,7 +174,7 @@ class CityController extends Controller
         $query = $request->get('q', '');
         
         if (empty($query)) {
-            return redirect()->route('city.show', $city->slug);
+            return redirect()->route('city.landing', $city->slug);
         }
 
         $shops = $this->cityDataService->searchShops($query, $city->id, [

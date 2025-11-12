@@ -63,6 +63,21 @@ class City extends Model
     }
 
     /**
+     * Get categories that have shops in this city
+     */
+    public function categories()
+    {
+        return $this->hasManyThrough(
+            Category::class,
+            Shop::class,
+            'city_id',      // Foreign key on shops table
+            'id',           // Foreign key on categories table
+            'id',           // Local key on cities table
+            'category_id'   // Local key on shops table
+        )->distinct();
+    }
+
+    /**
      * Get banners for this city
      */
     public function banners(): HasMany

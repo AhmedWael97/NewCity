@@ -132,10 +132,21 @@
                             <i class="icon">📞</i>
                             <span>اتصال</span>
                         </a>
-                        <a href="#" class="action-btn directions-btn">
-                            <i class="icon">🧭</i>
-                            <span>الاتجاهات</span>
-                        </a>
+                        @if($shop->latitude && $shop->longitude)
+                            <a href="https://www.google.com/maps/dir/?api=1&destination={{ $shop->latitude }},{{ $shop->longitude }}" 
+                               target="_blank" 
+                               class="action-btn directions-btn">
+                                <i class="icon">🧭</i>
+                                <span>الاتجاهات</span>
+                            </a>
+                        @else
+                            <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($shop->address) }}" 
+                               target="_blank" 
+                               class="action-btn directions-btn">
+                                <i class="icon">🧭</i>
+                                <span>الاتجاهات</span>
+                            </a>
+                        @endif
                         <button class="action-btn share-btn" onclick="shareShop()">
                             <i class="icon">📤</i>
                             <span>مشاركة</span>
@@ -598,18 +609,76 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
     function shareShop() {
+        const shopName = '{{ $shop->name }}';
+        const cityName = '{{ $shop->city->name ?? "" }}';
+        const shopUrl = window.location.href;
+        const message = `اكتشف ${shopName} في ${cityName}\n\n${shopUrl}`;
+        
         if (navigator.share) {
             navigator.share({
-                title: '{{ $shop->name }}',
-                text: 'اكتشف {{ $shop->name }} في {{ $shop->city->name ?? "" }}',
-                url: window.location.href
+                title: shopName,
+                text: `اكتشف ${shopName} في ${cityName}`,
+                url: shopUrl
+            }).catch(() => {
+                // If share fails, copy to clipboard
+                copyToClipboard(message);
             });
         } else {
-            // Fallback - copy to clipboard
-            navigator.clipboard.writeText(window.location.href).then(() => {
-                alert('تم نسخ الرابط!');
-            });
+            // Fallback - copy message and link to clipboard
+            copyToClipboard(message);
         }
+    }
+
+    function copyToClipboard(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyNotification();
+            }).catch(() => {
+                // Fallback for older browsers
+                fallbackCopyToClipboard(text);
+            });
+        } else {
+            fallbackCopyToClipboard(text);
+        }
+    }
+
+    function fallbackCopyToClipboard(text) {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showCopyNotification();
+        } catch (err) {
+            alert('فشل نسخ الرابط');
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function showCopyNotification() {
+        const notification = document.createElement('div');
+        notification.textContent = '✅ تم نسخ الرسالة والرابط!';
+        notification.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            z-index: 10000;
+            font-weight: bold;
+            animation: slideIn 0.3s ease-out;
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => document.body.removeChild(notification), 300);
+        }, 3000);
     }
 
     function toggleFavorite() {
@@ -1108,6 +1177,31 @@
         setTimeout(updateSliderButtons, 100);
     });
 
+    // Add CSS animations for notification
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
     
 </script>
 

@@ -86,7 +86,7 @@
                     @foreach($navCategories as $category)
                         <div class="category-dropdown" data-category="{{ $category->slug }}">
                             <a href="{{ route('category.shops', $category->slug) }}" 
-                               class="category-nav-item {{ request('category') == $category->id ? 'active' : '' }}">
+                               class="category-nav-item {{ request()->route('category') && request()->route('category')->slug == $category->slug ? 'active' : '' }}">
                                 {{ $category->icon }} {{ $category->name }}
                                 @if($category->children && $category->children->count() > 0)
                                     <span class="dropdown-arrow">▼</span>
