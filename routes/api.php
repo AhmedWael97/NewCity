@@ -44,6 +44,9 @@ Route::prefix('v1')->group(function () {
     // City selection for modal (optimized)
     Route::get('/cities-selection', [App\Http\Controllers\Api\CityController::class, 'forSelection']);
 
+    // User tracking (public endpoint - no auth required)
+    Route::post('/track', [App\Http\Controllers\Api\TrackingController::class, 'track']);
+
     // Advertisement tracking (public endpoints)
     Route::prefix('ads')->group(function () {
         Route::post('/impression', [App\Http\Controllers\Admin\AdvertisementController::class, 'recordImpression']);

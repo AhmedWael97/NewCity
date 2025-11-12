@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Pagination\Paginator;
 use App\Models\Category;
 use App\Models\City;
@@ -26,6 +27,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register event listeners
+        Event::listen(
+            \App\Events\UserActivityTracked::class,
+            \App\Listeners\StoreUserActivity::class
+        );
+
         // Set custom pagination view
         Paginator::defaultView('custom.pagination');
         Paginator::defaultSimpleView('custom.pagination');

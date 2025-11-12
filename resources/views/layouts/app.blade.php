@@ -51,6 +51,9 @@
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
 
+    <!-- User Tracking Script -->
+    <script src="{{ asset('js/user-tracking.js') }}" defer></script>
+
     @stack('styles')
 </head>
 
