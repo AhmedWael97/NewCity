@@ -40,7 +40,6 @@
                             />
                             <span class="review-count">({{ $shop->totalRatings() }} تقييم)</span>
                         </div>
-                        </div>
                     </div>
                 </div>
                 
@@ -556,40 +555,64 @@
                     <!-- Map Placeholder -->
                     <div class="sidebar-card">
                         <h4 class="card-title">الموقع على الخريطة</h4>
-                        <div class="map-placeholder">
-                            <div class="map-icon">🗺️</div>
-                            <p>خريطة تفاعلية</p>
-                            <button class="btn btn-primary btn-sm">عرض على الخريطة</button>
+                        <div class="map-placeholder" style="height: 250px; background: linear-gradient(135deg, #e8f5f3, #d1ebe7); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px;">
+                            <div class="map-icon" style="font-size: 64px; margin-bottom: 20px; animation: bounce 2s infinite;">🗺️</div>
+                            <h5 style="color: #016B61; margin-bottom: 10px; font-weight: bold;">{{ $shop->name }}</h5>
+                            <p style="color: #666; margin-bottom: 20px; font-size: 14px;">
+                                📍 {{ $shop->address ?? $shop->city->name ?? 'الموقع' }}
+                            </p>
+                            @if($shop->latitude && $shop->longitude)
+                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ $shop->latitude }},{{ $shop->longitude }}" 
+                                   target="_blank"
+                                   class="btn btn-primary"
+                                   style="padding: 12px 30px; font-size: 14px; font-weight: bold; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 15px;">
+                                     احصل على الاتجاهات
+                                </a>
+                            @elseif($shop->address)
+                                <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($shop->address) }}" 
+                                   target="_blank"
+                                   class="btn btn-primary"
+                                   style="padding: 12px 30px; font-size: 15px; font-weight: bold; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                                    🔍 ابحث عن الموقع
+                                </a>
+                            @endif
                         </div>
                     </div>
 
                     <!-- Similar Shops -->
+                    @if(isset($similarShops) && $similarShops->count() > 0)
                     <div class="sidebar-card">
                         <h4 class="card-title">متاجر مشابهة</h4>
                         <div class="similar-shops">
-                            <div class="similar-shop">
-                                <div class="shop-thumb">🏪</div>
-                                <div class="shop-info">
-                                    <h5>متجر العائلة</h5>
-                                    <p>⭐ 4.5 • {{ $shop->city->name ?? '' }}</p>
-                                </div>
-                            </div>
-                            <div class="similar-shop">
-                                <div class="shop-thumb">🏪</div>
-                                <div class="shop-info">
-                                    <h5>سوق المدينة</h5>
-                                    <p>⭐ 4.7 • {{ $shop->city->name ?? '' }}</p>
-                                </div>
-                            </div>
-                            <div class="similar-shop">
-                                <div class="shop-thumb">🏪</div>
-                                <div class="shop-info">
-                                    <h5>متجر الجودة</h5>
-                                    <p>⭐ 4.6 • {{ $shop->city->name ?? '' }}</p>
-                                </div>
-                            </div>
+                            @foreach($similarShops as $similarShop)
+                                <a href="{{ route('shop.show', $similarShop->slug) }}" class="similar-shop">
+                                    <div class="shop-thumb">
+                                        @if($similarShop->images && is_array($similarShop->images) && count($similarShop->images) > 0)
+                                            <img src="{{ asset('storage/' . $similarShop->images[0]) }}" 
+                                                 alt="{{ $similarShop->name }}"
+                                                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                            <span style="display: none;">{{ $similarShop->category->icon ?? '🏪' }}</span>
+                                        @else
+                                            {{ $similarShop->category->icon ?? '🏪' }}
+                                        @endif
+                                    </div>
+                                    <div class="shop-info">
+                                        <h5>{{ $similarShop->name }}</h5>
+                                        <p>
+                                            @if($similarShop->ratings_avg_rating)
+                                                ⭐ {{ number_format($similarShop->ratings_avg_rating, 1) }}
+                                            @else
+                                                ⭐ جديد
+                                            @endif
+                                            • {{ $similarShop->city->name ?? '' }}
+                                        </p>
+                                    </div>
+                                </a>
+                            @endforeach
                         </div>
                     </div>
+                    @endif
                 </aside>
             </div>
         </div>
@@ -1177,7 +1200,7 @@
         setTimeout(updateSliderButtons, 100);
     });
 
-    // Add CSS animations for notification
+    // Add CSS animations for notification and map icon
     const style = document.createElement('style');
     style.textContent = `
         @keyframes slideIn {
@@ -1198,6 +1221,14 @@
             to {
                 transform: translateX(400px);
                 opacity: 0;
+            }
+        }
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
             }
         }
     `;

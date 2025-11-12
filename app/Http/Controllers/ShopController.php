@@ -48,6 +48,19 @@ class ShopController extends Controller
                               ->first();
         }
 
+        // Get similar shops (same category and city, excluding current shop)
+        $similarShops = Shop::where('id', '!=', $shop->id)
+            ->where('category_id', $shop->category_id)
+            ->where('city_id', $shop->city_id)
+            ->where('is_active', true)
+            ->where('is_verified', true)
+            ->with(['city:id,name', 'category:id,name'])
+            ->withAvg('ratings', 'rating')
+            ->orderByDesc('ratings_avg_rating')
+            ->orderByDesc('is_featured')
+            ->limit(3)
+            ->get();
+
         $seoData = [
             'title' => $shop->name . ' — ' . ($shop->city->name ?? ''),
             'description' => substr($shop->description ?? $shop->name, 0, 160),
@@ -58,6 +71,6 @@ class ShopController extends Controller
 
         // Contact info is now globally available via ContactInfoServiceProvider
 
-        return view('shop', compact('shop', 'seoData', 'featuredProducts', 'featuredServices', 'products', 'services', 'userRating'));
+        return view('shop', compact('shop', 'seoData', 'featuredProducts', 'featuredServices', 'products', 'services', 'userRating', 'similarShops'));
     }
 }
