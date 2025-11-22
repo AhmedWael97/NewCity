@@ -45,7 +45,7 @@
                 
                 <div class="shop-hero-image">
                     @if($shop->images && is_array($shop->images) && count($shop->images) > 0)
-                        <img src="{{ asset('storage/' . $shop->images[0]) }}" 
+                        <img src="{{ $shop->images[0] }}" 
                              alt="{{ $shop->name }}" 
                              class="hero-img"
                              onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -416,8 +416,8 @@
                         <h3 class="section-title">معرض الصور</h3>
                         <div class="shop-gallery">
                             @foreach($shop->images as $image)
-                                <div class="gallery-item" onclick="openLightbox('{{ asset('storage/' . $image) }}')">
-                                    <img src="{{ asset('storage/' . $image) }}" 
+                                <div class="gallery-item" onclick="openLightbox('{{ $image }}')">
+                                    <img src="{{ $image }}" 
                                          alt="{{ $shop->name }}"
                                          onerror="this.parentElement.style.display='none';">
                                     <div class="gallery-overlay">
@@ -588,7 +588,7 @@
                                 <a href="{{ route('shop.show', $similarShop->slug) }}" class="similar-shop">
                                     <div class="shop-thumb">
                                         @if($similarShop->images && is_array($similarShop->images) && count($similarShop->images) > 0)
-                                            <img src="{{ asset('storage/' . $similarShop->images[0]) }}" 
+                                            <img src="{{ $similarShop->images[0] }}" 
                                                  alt="{{ $similarShop->name }}"
                                                  style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;"
                                                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">

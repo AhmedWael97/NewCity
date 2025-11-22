@@ -264,7 +264,7 @@
                 @forelse($cities as $city)
                     <div class="city-card" data-city-slug="{{ $city->slug }}">
                         <div class="city-image"
-                            style="background-image: url('{{ $city->image ? asset('storage/' . $city->image) : asset('images/default-city.jpg') }}'); background-size: cover; background-position: center;">
+                            style="background-image: url('{{ $city->image ? $city->image : asset('images/default-city.jpg') }}'); background-size: cover; background-position: center;">
                         </div>
                         <div class="city-info">
                             <h3>{{ $city->name }}</h3>

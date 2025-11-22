@@ -21,7 +21,7 @@
                             @if($selectedCity && $selectedCity->image)
                                 <div class="city-icon-modern rounded-circle overflow-hidden me-3 shadow"
                                     style="width: 60px; height: 60px;">
-                                    <img src="{{ asset('storage/' . $selectedCity->image) }}"
+                                    <img src="{{ $selectedCity->image }}"
                                         alt="{{ $cityContext['selected_city_name'] }}" class="w-100 h-100 object-fit-cover"
                                         onerror="this.parentElement.innerHTML='<div class=\'bg-white bg-opacity-20 rounded-circle p-2 d-flex align-items-center justify-content-center\' style=\'width: 60px; height: 60px;\'><i class=\'fas fa-map-marked-alt text-white\' style=\'font-size: 1.5rem;\'></i></div>'">
                                 </div>

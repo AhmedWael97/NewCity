@@ -92,7 +92,7 @@
                             @endphp
                             @if($hasImages)
                                 <img 
-                                    src="{{ asset('storage/' . $images[0]) }}" 
+                                    src="{{ $images[0] }}" 
                                     alt="{{ $shop->name }}"
                                     class="w-full h-full object-cover"
                                     loading="lazy"

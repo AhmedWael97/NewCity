@@ -47,7 +47,7 @@
                         <div class="review-header">
                             <div class="reviewer-info">
                                 @if ($rating->user->avatar)
-                                    <img src="{{ asset('storage/' . $rating->user->avatar) }}" alt="{{ $rating->user->name }}" class="reviewer-avatar">
+                                    <img src="{{ $rating->user->avatar }}" alt="{{ $rating->user->name }}" class="reviewer-avatar">
                                 @else
                                     <div class="reviewer-avatar-placeholder">{{ substr($rating->user->name, 0, 1) }}</div>
                                 @endif

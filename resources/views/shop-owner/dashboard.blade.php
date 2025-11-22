@@ -78,7 +78,7 @@
                             <!-- Shop Image -->
                             <div class="shop-image-container">
                                 @if($shop->images && is_array($shop->images) && count($shop->images) > 0)
-                                    <img src="{{ asset('storage/' . $shop->images[0]) }}" 
+                                    <img src="{{ $shop->images[0] }}" 
                                          alt="{{ $shop->name }}" 
                                          class="shop-image"
                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">

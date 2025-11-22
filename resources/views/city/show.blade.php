@@ -33,7 +33,7 @@
     @if($city->image)
         <div class="absolute inset-0">
             <img 
-                src="{{ asset('storage/' . $city->image) }}" 
+                src="{{ $city->image }}" 
                 alt="{{ $city->name }}"
                 class="w-full h-full object-cover"
             >
@@ -204,7 +204,7 @@
                         @endphp
                         @if($hasImages)
                             <img 
-                                src="{{ asset('storage/' . $images[0]) }}" 
+                                src="{{ $images[0] }}" 
                                 alt="{{ $shop->name }}"
                                 class="w-full h-full object-cover"
                                 loading="lazy"

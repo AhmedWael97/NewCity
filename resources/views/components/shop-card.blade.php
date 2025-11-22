@@ -8,7 +8,7 @@
         @endphp
         
         @if($hasImages)
-            <img src="{{ asset('storage/' . $images[0]) }}" 
+            <img src="{{ $images[0] }}" 
                  alt="{{ $shop->name }}" 
                  class="shop-image"
                  style="object-fit: cover; width: 100%; height: 100%;"

@@ -194,7 +194,7 @@
                                 @foreach($service->images as $image)
                                     <div class="col-md-3">
                                         <div class="position-relative">
-                                            <img src="{{ asset('storage/' . $image) }}" class="img-fluid rounded" alt="Service Image">
+                                            <img src="{{ $image }}" class="img-fluid rounded" alt="Service Image">
                                         </div>
                                     </div>
                                 @endforeach
