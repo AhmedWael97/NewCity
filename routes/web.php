@@ -17,6 +17,13 @@ require __DIR__.'/debug.php';
 
 
 
+Route::get('/link-storage', function() {
+    \Artisan::call('storage:link');
+    return "Storage Linked";
+});
+
+
+
 Route::get('/clear-cache', function() {
     \Artisan::call('cache:clear');
     \Artisan::call('config:clear');
