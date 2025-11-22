@@ -273,6 +273,8 @@ a {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
     width: 100%;
     padding: 0;
+    overflow: visible;
+    position: relative;
 }
 
 .categories-menu {
@@ -280,10 +282,29 @@ a {
     align-items: center;
     gap: 0;
     overflow-x: auto;
+    overflow-y: visible;
     padding: 0 30px;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
     min-height: 50px;
+}
+
+.categories-menu::-webkit-scrollbar {
+    height: 6px;
+}
+
+.categories-menu::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.categories-menu::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.categories-menu::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
 
 .categories-menu::-webkit-scrollbar {
@@ -313,7 +334,7 @@ a {
 
 /* Enhanced Dropdown Debug - Force Visibility Test */
 .category-dropdown {
-    position: relative;
+    position: static;
 }
 
 .category-dropdown:hover {
@@ -332,14 +353,15 @@ a {
     transform: rotate(180deg);
 }
 
-/* Debugging: Force show all submenus temporarily */
+/* Category Submenu */
 .category-submenu {
-    position: absolute;
-    top: 100%;
-    left: 0;
+    position: fixed;
+    top: 175px;
+    left: auto;
+    right: auto;
     background: white;
     min-width: 400px;
-    max-width: 500px;
+    max-width: 600px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     border-radius: 0 0 15px 15px;
     padding: 25px;
@@ -351,9 +373,11 @@ a {
     border-top: 4px solid var(--primary);
     border: 1px solid #e9ecef;
     pointer-events: auto;
+    max-height: none;
+    overflow: visible;
 }
 
-/* Debug: Show on hover with !important */
+/* Show on hover */
 .category-dropdown:hover .category-submenu {
     opacity: 1 !important;
     visibility: visible !important;
@@ -377,10 +401,10 @@ a {
 
 .submenu-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 12px;
-    max-height: 400px;
-    overflow-y: auto;
+    max-height: none;
+    overflow: visible;
 }
 
 .submenu-item {
@@ -1552,6 +1576,28 @@ a {
 @keyframes textFadeIn {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
 }
 
 /* Floating Particles */

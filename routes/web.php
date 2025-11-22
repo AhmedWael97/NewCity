@@ -107,24 +107,37 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
+// Public Service View (no auth required)
+Route::get('/user/services/{service}', [App\Http\Controllers\User\UserServiceController::class, 'show'])->name('user.services.show');
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
     Route::put('/profile/password', [AuthController::class, 'updatePassword'])->name('profile.password.update');
     
-    // User Services routes
+    // User Services routes (authenticated)
     Route::prefix('user/services')->name('user.services.')->group(function () {
         Route::get('/', [App\Http\Controllers\User\UserServiceController::class, 'index'])->name('index');
         Route::get('/create', [App\Http\Controllers\User\UserServiceController::class, 'create'])->name('create');
         Route::post('/', [App\Http\Controllers\User\UserServiceController::class, 'store'])->name('store');
-        Route::get('/{service}', [App\Http\Controllers\User\UserServiceController::class, 'show'])->name('show');
         Route::get('/{service}/edit', [App\Http\Controllers\User\UserServiceController::class, 'edit'])->name('edit');
         Route::put('/{service}', [App\Http\Controllers\User\UserServiceController::class, 'update'])->name('update');
         Route::delete('/{service}', [App\Http\Controllers\User\UserServiceController::class, 'destroy'])->name('destroy');
         Route::patch('/{service}/toggle-status', [App\Http\Controllers\User\UserServiceController::class, 'toggleStatus'])->name('toggle-status');
         Route::get('/{service}/analytics', [App\Http\Controllers\User\UserServiceController::class, 'analytics'])->name('analytics');
         Route::post('/{service}/record-contact', [App\Http\Controllers\User\UserServiceController::class, 'recordContact'])->name('record-contact');
+    });
+    
+    // Service Review routes
+    Route::prefix('services')->name('services.')->group(function () {
+        Route::get('/{service}/reviews', [App\Http\Controllers\ServiceReviewController::class, 'index'])->name('reviews.index');
+        Route::get('/{service}/reviews/create', [App\Http\Controllers\ServiceReviewController::class, 'create'])->name('reviews.create');
+        Route::post('/{service}/reviews', [App\Http\Controllers\ServiceReviewController::class, 'store'])->name('reviews.store');
+        Route::get('/reviews/{review}/edit', [App\Http\Controllers\ServiceReviewController::class, 'edit'])->name('reviews.edit');
+        Route::put('/reviews/{review}', [App\Http\Controllers\ServiceReviewController::class, 'update'])->name('reviews.update');
+        Route::delete('/reviews/{review}', [App\Http\Controllers\ServiceReviewController::class, 'destroy'])->name('reviews.destroy');
     });
     
     // Rating routes
@@ -151,6 +164,11 @@ Route::middleware(['auth'])->prefix('shop-owner')->name('shop-owner.')->group(fu
 // City-specific landing page
 Route::get('/city-landing/{city:slug}', [LandingController::class, 'cityLanding'])
     ->name('city.landing')
+    ->middleware(['city.context']);
+
+// City services page
+Route::get('/city/{city:slug}/services', [LandingController::class, 'cityServices'])
+    ->name('city.services')
     ->middleware(['city.context']);
 
 // City selection routes (selectCity removed - now using direct view route above)

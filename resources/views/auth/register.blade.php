@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.minimal')
 
 @section('content')
 <div class="auth-container">
@@ -344,7 +344,7 @@
 .auth-card {
     background: rgba(255, 255, 255, 0.98);
     border-radius: 20px;
-    padding: 40px;
+    padding: 30px;
     box-shadow: 
         0 15px 35px rgba(0, 0, 0, 0.1),
         0 5px 15px rgba(0, 0, 0, 0.08);
@@ -370,8 +370,8 @@
 }
 
 .logo-circle {
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     background: linear-gradient(135deg, #667eea, #764ba2);
     border-radius: 50%;
     display: flex;
@@ -388,24 +388,24 @@
 }
 
 .logo-icon {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: white;
 }
 
 .auth-title {
-    font-size: 2.5rem;
+    font-size: 1.8rem;
     font-weight: 800;
     background: linear-gradient(135deg, #667eea, #764ba2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     letter-spacing: -0.5px;
 }
 
 .auth-subtitle {
     color: #6c757d;
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 400;
     line-height: 1.6;
     margin-bottom: 0;
@@ -428,8 +428,8 @@
 }
 
 .step-circle {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background: #e9ecef;
     color: #6c757d;
@@ -437,9 +437,9 @@
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    font-size: 1.1rem;
+    font-size: 1rem;
     transition: all 0.3s ease;
-    border: 3px solid #e9ecef;
+    border: 2px solid #e9ecef;
 }
 
 .progress-step.active .step-circle {
@@ -451,9 +451,9 @@
 }
 
 .step-label {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #6c757d;
-    margin-top: 8px;
+    margin-top: 6px;
     font-weight: 500;
     text-align: center;
 }
@@ -464,49 +464,39 @@
 }
 
 .progress-line {
-    width: 80px;
-    height: 3px;
+    width: 60px;
+    height: 2px;
     background: #e9ecef;
-    margin: 0 20px;
+    margin: 0 15px;
     border-radius: 2px;
     position: relative;
     overflow: hidden;
 }
 
 /* === FORM STEPS === */
+.auth-form {
+    position: relative;
+    min-height: 500px;
+}
+
 .auth-form .form-step {
     display: none;
     animation: fadeInUp 0.5s ease;
-    min-height: 400px; /* Debug: ensure content has space */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .auth-form .form-step.active {
     display: block !important;
-}
-
-/* Ensure first step is visible by default */
-.auth-form .form-step[data-step="1"] {
-    display: block !important;
-}
-
-/* Debug: Force visibility of step content */
-.auth-form .form-step[data-step="1"] .user-type-selector {
-    display: grid !important;
+    position: relative;
     opacity: 1 !important;
     visibility: visible !important;
-}
-
-/* Force all form content to be visible */
-.auth-form .form-step .step-header {
-    display: block !important;
-}
-
-.auth-form .form-step .user-type-option {
-    display: block !important;
-}
-
-.auth-form .form-step .user-type-card {
-    display: flex !important;
 }
 
 @keyframes fadeInUp {
@@ -521,19 +511,19 @@
 }
 
 .step-header {
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .step-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .step-subtitle {
     color: #6c757d;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     margin-bottom: 0;
 }
 
@@ -558,9 +548,9 @@
 }
 
 .user-type-card {
-    padding: 35px 25px;
+    padding: 25px 20px;
     border: 2px solid #e9ecef;
-    border-radius: 20px;
+    border-radius: 15px;
     text-align: center;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     background: white;
@@ -615,7 +605,7 @@
 }
 
 .type-icon {
-    font-size: 3.5rem;
+    font-size: 2.8rem;
     display: block;
     filter: grayscale(1);
     transition: filter 0.3s ease;
@@ -627,10 +617,10 @@
 }
 
 .card-title {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #333;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .card-description {

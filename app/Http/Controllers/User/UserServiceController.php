@@ -30,10 +30,10 @@ class UserServiceController extends Controller
         $analytics = [
             'total_services' => $services->total(),
             'active_services' => UserService::where('user_id', $user->id)->active()->count(),
-            'total_views' => $this->getTotalViews($user->id),
-            'total_contacts' => $this->getTotalContacts($user->id),
-            'monthly_views' => $this->getMonthlyViews($user->id),
-            'monthly_contacts' => $this->getMonthlyContacts($user->id),
+            'total_views' => 0,
+            'total_contacts' => 0,
+            'monthly_views' => 0,
+            'monthly_contacts' => 0,
         ];
 
         return view('user.services.index', compact('services', 'analytics'));
@@ -56,24 +56,26 @@ class UserServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+        
+        // Ensure user has a city assigned
+        if (!$user->city_id) {
+            return back()->withErrors(['city_id' => 'يجب تحديد مدينتك في الملف الشخصي أولاً'])->withInput();
+        }
+        
         $request->validate([
             'service_category_id' => 'required|exists:service_categories,id',
-            'city_id' => 'required|exists:cities,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
-            'pricing_type' => 'required|in:fixed,hourly,distance,negotiable',
-            'base_price' => 'nullable|numeric|min:0',
-            'hourly_rate' => 'nullable|numeric|min:0',
-            'distance_rate' => 'nullable|numeric|min:0',
-            'minimum_charge' => 'nullable|numeric|min:0',
-            'contact_phone' => 'required|string|max:20',
-            'contact_whatsapp' => 'nullable|string|max:20',
-            'experience_years' => 'nullable|integer|min:0|max:50',
+            'pricing_type' => 'required|in:fixed,hourly,per_km,negotiable',
+            'price_from' => 'nullable|numeric|min:0',
+            'price_to' => 'nullable|numeric|min:0',
+            'phone' => 'required|string|max:20',
+            'whatsapp' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'requirements' => 'nullable|string|max:1000',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'subscription_plan_id' => 'required|exists:subscription_plans,id',
         ]);
-
-        $user = Auth::user();
         
         // Handle image uploads
         $imagePaths = [];
@@ -84,51 +86,96 @@ class UserServiceController extends Controller
             }
         }
 
-        // Create service
+        // Prepare availability JSON
+        $availability = null;
+        if ($request->has('availability_days')) {
+            $availability = [
+                'days' => $request->availability_days ?? [],
+                'hours_from' => $request->hours_from ?? '09:00',
+                'hours_to' => $request->hours_to ?? '17:00',
+            ];
+        }
+
+        // Prepare service areas JSON
+        $serviceAreas = null;
+        if ($request->has('service_areas') && !empty($request->service_areas)) {
+            $serviceAreas = array_filter($request->service_areas);
+        }
+
+        // Create service - always use user's city
         $service = UserService::create([
             'user_id' => $user->id,
             'service_category_id' => $request->service_category_id,
-            'city_id' => $request->city_id,
+            'city_id' => $user->city_id, // Force user's city
             'title' => $request->title,
             'description' => $request->description,
             'pricing_type' => $request->pricing_type,
-            'base_price' => $request->base_price,
-            'hourly_rate' => $request->hourly_rate,
-            'distance_rate' => $request->distance_rate,
-            'minimum_charge' => $request->minimum_charge,
-            'contact_phone' => $request->contact_phone,
-            'contact_whatsapp' => $request->contact_whatsapp,
-            'experience_years' => $request->experience_years,
+            'price_from' => $request->price_from,
+            'price_to' => $request->price_to,
+            'phone' => $request->phone,
+            'whatsapp' => $request->whatsapp,
+            'address' => $request->address,
+            'requirements' => $request->requirements,
             'images' => $imagePaths,
-            'subscription_plan_id' => $request->subscription_plan_id,
-            'subscription_expires_at' => $this->calculateSubscriptionExpiry($request->subscription_plan_id),
-            'availability_schedule' => $request->availability_schedule ?? [],
-            'service_area' => $request->service_area ?? [],
-            'requirements' => $request->requirements ?? [],
-            'vehicle_info' => $request->vehicle_info ?? [],
-            'certifications' => $request->certifications ?? [],
-            'status' => 'pending',
+            'availability' => $availability,
+            'service_areas' => $serviceAreas,
             'is_active' => true,
+            'is_verified' => false,
         ]);
 
         return redirect()->route('user.services.index')
-            ->with('success', 'تم إرسال خدمتك للمراجعة بنجاح');
+            ->with('success', 'تم إضافة خدمتك بنجاح');
     }
 
     /**
-     * Show service details
+     * Display service details (public view)
      */
     public function show(UserService $service)
     {
-        $this->authorize('view', $service);
+        // Load relationships
+        $service->load(['user', 'city', 'category']);
         
-        // Record view for analytics
-        $this->recordAnalytics($service->id, 'view');
+        // Check if user is the owner (for showing owner-specific actions)
+        $isOwner = Auth::check() && $service->user_id === Auth::id();
         
-        // Get detailed analytics
-        $analytics = $this->getServiceAnalytics($service->id);
+        // Track view only if viewer is not the owner
+        if (!$isOwner) {
+            $service->increment('total_views');
+            
+            // Track analytics if system exists
+            try {
+                ServiceAnalytics::create([
+                    'user_service_id' => $service->id,
+                    'type' => 'view',
+                    'ip_address' => request()->ip(),
+                    'user_agent' => request()->userAgent(),
+                    'viewed_at' => now(),
+                ]);
+            } catch (\Exception $e) {
+                // Silent fail if analytics table doesn't exist
+            }
+        }
         
-        return view('user.services.show', compact('service', 'analytics'));
+        // Get analytics only if user is the owner
+        $analytics = null;
+        if ($isOwner) {
+            $analytics = [
+                'total_views' => $service->total_views ?? 0,
+                'total_contacts' => $service->total_contacts ?? 0,
+                'this_month_views' => 0,
+                'this_month_contacts' => 0,
+            ];
+        }
+        
+        // Get related services (same category, different service)
+        $relatedServices = UserService::where('service_category_id', $service->service_category_id)
+            ->where('id', '!=', $service->id)
+            ->where('is_active', true)
+            ->inRandomOrder()
+            ->limit(4)
+            ->get();
+        
+        return view('user.services.show', compact('service', 'analytics', 'isOwner', 'relatedServices'));
     }
 
     /**
@@ -136,13 +183,15 @@ class UserServiceController extends Controller
      */
     public function edit(UserService $service)
     {
-        $this->authorize('update', $service);
+        // Check if user owns this service
+        if ($service->user_id !== Auth::id()) {
+            abort(403, 'غير مصرح لك بتعديل هذه الخدمة');
+        }
         
         $categories = ServiceCategory::where('is_active', true)->get();
         $cities = City::where('is_active', true)->get();
-        $subscriptionPlans = SubscriptionPlan::where('is_active', true)->get();
 
-        return view('user.services.edit', compact('service', 'categories', 'cities', 'subscriptionPlans'));
+        return view('user.services.edit', compact('service', 'categories', 'cities'));
     }
 
     /**
@@ -150,21 +199,22 @@ class UserServiceController extends Controller
      */
     public function update(Request $request, UserService $service)
     {
-        $this->authorize('update', $service);
+        // Check if user owns this service
+        if ($service->user_id !== Auth::id()) {
+            abort(403, 'غير مصرح لك بتعديل هذه الخدمة');
+        }
         
         $request->validate([
             'service_category_id' => 'required|exists:service_categories,id',
-            'city_id' => 'required|exists:cities,id',
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:1000',
-            'pricing_type' => 'required|in:fixed,hourly,distance,negotiable',
-            'base_price' => 'nullable|numeric|min:0',
-            'hourly_rate' => 'nullable|numeric|min:0',
-            'distance_rate' => 'nullable|numeric|min:0',
-            'minimum_charge' => 'nullable|numeric|min:0',
-            'contact_phone' => 'required|string|max:20',
-            'contact_whatsapp' => 'nullable|string|max:20',
-            'experience_years' => 'nullable|integer|min:0|max:50',
+            'pricing_type' => 'required|in:fixed,hourly,per_km,negotiable',
+            'price_from' => 'nullable|numeric|min:0',
+            'price_to' => 'nullable|numeric|min:0',
+            'phone' => 'required|string|max:20',
+            'whatsapp' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:500',
+            'requirements' => 'nullable|string|max:1000',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -188,25 +238,37 @@ class UserServiceController extends Controller
             }
         }
 
+        // Prepare availability JSON
+        $availability = null;
+        if ($request->has('availability_days')) {
+            $availability = [
+                'days' => $request->availability_days ?? [],
+                'hours_from' => $request->hours_from ?? '09:00',
+                'hours_to' => $request->hours_to ?? '17:00',
+            ];
+        }
+
+        // Prepare service areas JSON
+        $serviceAreas = null;
+        if ($request->has('service_areas') && !empty($request->service_areas)) {
+            $serviceAreas = array_filter($request->service_areas);
+        }
+
         $service->update([
             'service_category_id' => $request->service_category_id,
-            'city_id' => $request->city_id,
+            // city_id is not updated - services are always in user's city
             'title' => $request->title,
             'description' => $request->description,
             'pricing_type' => $request->pricing_type,
-            'base_price' => $request->base_price,
-            'hourly_rate' => $request->hourly_rate,
-            'distance_rate' => $request->distance_rate,
-            'minimum_charge' => $request->minimum_charge,
-            'contact_phone' => $request->contact_phone,
-            'contact_whatsapp' => $request->contact_whatsapp,
-            'experience_years' => $request->experience_years,
+            'price_from' => $request->price_from,
+            'price_to' => $request->price_to,
+            'phone' => $request->phone,
+            'whatsapp' => $request->whatsapp,
+            'address' => $request->address,
+            'requirements' => $request->requirements,
             'images' => array_values($imagePaths),
-            'availability_schedule' => $request->availability_schedule ?? $service->availability_schedule,
-            'service_area' => $request->service_area ?? $service->service_area,
-            'requirements' => $request->requirements ?? $service->requirements,
-            'vehicle_info' => $request->vehicle_info ?? $service->vehicle_info,
-            'certifications' => $request->certifications ?? $service->certifications,
+            'availability' => $availability,
+            'service_areas' => $serviceAreas,
         ]);
 
         return redirect()->route('user.services.show', $service)
@@ -218,7 +280,10 @@ class UserServiceController extends Controller
      */
     public function destroy(UserService $service)
     {
-        $this->authorize('delete', $service);
+        // Check if user owns this service
+        if ($service->user_id !== Auth::id()) {
+            abort(403, 'غير مصرح لك بحذف هذه الخدمة');
+        }
         
         // Delete images
         if ($service->images) {
@@ -238,7 +303,10 @@ class UserServiceController extends Controller
      */
     public function toggleStatus(UserService $service)
     {
-        $this->authorize('update', $service);
+        // Check if user owns this service
+        if ($service->user_id !== Auth::id()) {
+            abort(403, 'غير مصرح لك بتعديل هذه الخدمة');
+        }
         
         $service->update([
             'is_active' => !$service->is_active
@@ -253,12 +321,27 @@ class UserServiceController extends Controller
      */
     public function analytics(UserService $service)
     {
-        $this->authorize('view', $service);
+        // Check if user owns this service
+        if ($service->user_id !== Auth::id()) {
+            abort(403, 'غير مصرح لك بعرض تحليلات هذه الخدمة');
+        }
         
-        $analytics = $this->getServiceAnalytics($service->id);
-        $chartData = $this->getChartData($service->id);
+        $analytics = [
+            'total_views' => 0,
+            'total_contacts' => 0,
+            'this_month_views' => 0,
+            'this_month_contacts' => 0,
+        ];
         
-        return view('user.services.analytics', compact('service', 'analytics', 'chartData'));
+        $chartData = [
+            'labels' => [],
+            'views' => [],
+            'contacts' => [],
+        ];
+        
+        $daily_data = [];
+        
+        return view('user.services.analytics', compact('service', 'analytics', 'chartData', 'daily_data'));
     }
 
     /**
@@ -266,8 +349,7 @@ class UserServiceController extends Controller
      */
     public function recordContact(UserService $service, Request $request)
     {
-        $this->recordAnalytics($service->id, 'contact', $request->contact_type ?? 'phone');
-        
+        // Analytics recording disabled until service_analytics table is created
         return response()->json(['success' => true]);
     }
 

@@ -36,6 +36,13 @@ class ShopFavoriteController extends Controller
     {
         $user = Auth::user();
         
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'يجب تسجيل الدخول لعرض المفضلة'
+            ], 401);
+        }
+        
         $favorites = $user->favoriteShops()
             ->with(['city:id,name', 'category:id,name'])
             ->paginate(15);
@@ -67,14 +74,22 @@ class ShopFavoriteController extends Controller
      */
     public function store($shopId)
     {
-        $shop = Shop::findOrFail($shopId);
         $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'يجب تسجيل الدخول لإضافة المتجر للمفضلة'
+            ], 401);
+        }
+        
+        $shop = Shop::findOrFail($shopId);
 
         // Check if already favorited
         if ($user->favoriteShops()->where('shop_id', $shopId)->exists()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Shop is already in favorites'
+                'message' => 'المتجر موجود بالفعل في المفضلة'
             ], 422);
         }
 
@@ -82,7 +97,7 @@ class ShopFavoriteController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Shop added to favorites',
+            'message' => 'تم إضافة المتجر للمفضلة بنجاح',
             'data' => [
                 'shop' => $shop->only(['id', 'name', 'slug', 'images'])
             ]
@@ -109,14 +124,22 @@ class ShopFavoriteController extends Controller
      */
     public function destroy($shopId)
     {
-        $shop = Shop::findOrFail($shopId);
         $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'يجب تسجيل الدخول لإزالة المتجر من المفضلة'
+            ], 401);
+        }
+        
+        $shop = Shop::findOrFail($shopId);
 
         $user->favoriteShops()->detach($shopId);
 
         return response()->json([
             'success' => true,
-            'message' => 'Shop removed from favorites'
+            'message' => 'تم إزالة المتجر من المفضلة بنجاح'
         ]);
     }
 
@@ -140,8 +163,19 @@ class ShopFavoriteController extends Controller
      */
     public function check($shopId)
     {
-        $shop = Shop::findOrFail($shopId);
         $user = Auth::user();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'يجب تسجيل الدخول للتحقق من حالة المفضلة',
+                'data' => [
+                    'is_favorite' => false
+                ]
+            ], 401);
+        }
+        
+        $shop = Shop::findOrFail($shopId);
 
         $isFavorite = $user->favoriteShops()->where('shop_id', $shopId)->exists();
 

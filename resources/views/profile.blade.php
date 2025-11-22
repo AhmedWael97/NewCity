@@ -256,19 +256,19 @@
                     </div>
                     
                     <div class="stat-item">
-                        <div class="stat-number">{{ Auth::user()->shops()->approved()->count() }}</div>
+                        <div class="stat-number">{{ Auth::user()->shops()->where('status', 'approved')->count() }}</div>
                         <div class="stat-label">متاجر موافق عليها</div>
                         <div class="stat-icon">✅</div>
                     </div>
                     
                     <div class="stat-item">
-                        <div class="stat-number">{{ Auth::user()->shops()->pending()->count() }}</div>
+                        <div class="stat-number">{{ Auth::user()->shops()->where('status', 'pending')->count() }}</div>
                         <div class="stat-label">قيد المراجعة</div>
                         <div class="stat-icon">⏳</div>
                     </div>
                     
                     <div class="stat-item">
-                        <div class="stat-number">{{ Auth::user()->shops()->rejected()->count() }}</div>
+                        <div class="stat-number">{{ Auth::user()->shops()->where('status', 'rejected')->count() }}</div>
                         <div class="stat-label">مرفوضة</div>
                         <div class="stat-icon">❌</div>
                     </div>
@@ -733,4 +733,3 @@
 }
 </style>
 @endpush
-@endsection

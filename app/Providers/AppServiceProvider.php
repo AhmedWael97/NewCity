@@ -93,5 +93,20 @@ class AppServiceProvider extends ServiceProvider
                 'stats' => $stats
             ]);
         });
+        
+        // Share default SEO data with all views using layouts.app
+        View::composer('layouts.app', function ($view) {
+            if (!$view->offsetExists('seoData')) {
+                $defaultSeoData = [
+                    'title' => 'اكتشف المدن - منصة استكشاف المتاجر المحلية في مصر',
+                    'description' => 'اكتشف أفضل المتاجر والخدمات المحلية في مدينتك',
+                    'keywords' => 'متاجر, مصر, تسوق, دليل المتاجر',
+                    'canonical' => url()->current(),
+                    'og_image' => asset('images/og-default.jpg'),
+                ];
+                
+                $view->with('seoData', $defaultSeoData);
+            }
+        });
     }
 }

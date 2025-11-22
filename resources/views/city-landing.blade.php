@@ -155,6 +155,178 @@
             </div>
         </section>
 
+        {{-- Services Discovery Banner --}}
+        <section class="services-discovery-banner py-5">
+            <div class="container">
+                <div class="discovery-card bg-gradient position-relative overflow-hidden rounded-4 shadow-lg">
+                    <div class="row align-items-center">
+                        <div class="col-lg-7 p-5">
+                            <div class="discovery-content">
+                                <h2 class="display-6 fw-bold mb-3 text-white">
+                                    <i class="fas fa-tools me-2"></i>
+                                    اكتشف خدمات محلية من أهل {{ $cityContext['selected_city_name'] }}
+                                </h2>
+                                <p class="lead mb-4 text-white" style="opacity: 0.95;">
+                                    سباكة، كهرباء، نجارة، تصليح أجهزة، وأكثر من 30 خدمة مقدمة من متخصصين موثوقين في منطقتك
+                                </p>
+                                <div class="d-flex flex-wrap gap-3 mb-4">
+                                    <div class="feature-badge bg-white bg-opacity-20 rounded-pill px-4 py-2 text-white">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        خدمات متنوعة
+                                    </div>
+                                    <div class="feature-badge bg-white bg-opacity-20 rounded-pill px-4 py-2 text-white">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        قريبة منك
+                                    </div>
+                                    <div class="feature-badge bg-white bg-opacity-20 rounded-pill px-4 py-2 text-white">
+                                        <i class="fas fa-star me-2"></i>
+                                        موثوقة
+                                    </div>
+                                </div>
+                                <a href="{{ route('city.services', ['city' => $selectedCity->slug ?? 'all']) }}" 
+                                   class="btn btn-light btn-lg rounded-pill px-5 shadow-lg text-dark fw-bold">
+                                    <i class="fas fa-search me-2"></i>
+                                    استكشف الخدمات الآن
+                                    <i class="fas fa-arrow-left ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 d-none d-lg-block">
+                            <div class="discovery-illustration p-4">
+                                <div class="services-icons-grid">
+                                    <div class="service-icon-float">
+                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
+                                            <i class="fas fa-wrench text-primary" style="font-size: 2rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-icon-float" style="animation-delay: 0.5s;">
+                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
+                                            <i class="fas fa-paint-roller text-success" style="font-size: 2rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-icon-float" style="animation-delay: 1s;">
+                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
+                                            <i class="fas fa-bolt text-warning" style="font-size: 2rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-icon-float" style="animation-delay: 1.5s;">
+                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
+                                            <i class="fas fa-hammer text-danger" style="font-size: 2rem;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Background Decoration --}}
+                    <div class="position-absolute top-0 end-0 opacity-10">
+                        <i class="fas fa-tools" style="font-size: 15rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {{-- User Services Section (Hidden - will be on separate page) --}}
+        @if(false && isset($serviceCategoriesWithServices) && $serviceCategoriesWithServices->count() > 0)
+        <section class="services-section py-5">
+            <div class="container">
+                <div class="section-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <h2 class="h3 mb-2 fw-bold">
+                                <i class="fas fa-tools text-primary me-2"></i>
+                                خدمات مقدمة من المستخدمين
+                            </h2>
+                            <p class="text-muted mb-0">اكتشف أفضل الخدمات المقدمة من أهل {{ $cityContext['selected_city_name'] }}</p>
+                        </div>
+                        @auth
+                        <a href="{{ route('user.services.create') }}" class="btn btn-primary rounded-pill px-4">
+                            <i class="fas fa-plus me-2"></i>
+                            أضف خدمتك
+                        </a>
+                        @endauth
+                    </div>
+                </div>
+
+                @foreach($serviceCategoriesWithServices as $serviceCategory)
+                    <div class="service-category-section mb-5">
+                        <div class="category-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div class="d-flex align-items-center">
+                                    <div class="category-icon-large bg-success bg-opacity-10 rounded-circle p-3 me-3">
+                                        <i class="{{ $serviceCategory->icon ?? 'fas fa-wrench' }} text-success" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="h5 mb-1 fw-bold">{{ $serviceCategory->name }}</h3>
+                                        <p class="text-muted mb-0">
+                                            <i class="fas fa-concierge-bell me-1"></i>
+                                            {{ $serviceCategory->services_count }} خدمة متاحة
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-4">
+                            @foreach($serviceCategory->userServices as $service)
+                                <div class="col-lg-3 col-md-6">
+                                    <div class="service-card bg-white rounded-3 shadow-sm h-100 overflow-hidden">
+                                        @if($service->images && is_array($service->images) && count($service->images) > 0)
+                                            <div class="service-image" style="height: 180px; overflow: hidden;">
+                                                <img src="{{ $service->images[0] }}" 
+                                                     alt="{{ $service->title }}" 
+                                                     class="w-100 h-100 object-fit-cover"
+                                                     onerror="this.src='/images/placeholder-service.jpg'">
+                                            </div>
+                                        @else
+                                            <div class="service-image bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+                                                <i class="{{ $serviceCategory->icon ?? 'fas fa-wrench' }} text-muted" style="font-size: 3rem;"></i>
+                                            </div>
+                                        @endif
+                                        
+                                        <div class="p-3">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <div class="service-provider-avatar bg-primary bg-opacity-10 rounded-circle p-2 me-2">
+                                                    <i class="fas fa-user text-primary"></i>
+                                                </div>
+                                                <small class="text-muted">{{ $service->user->name }}</small>
+                                            </div>
+                                            
+                                            <h5 class="service-title h6 mb-2 fw-bold">
+                                                <a href="{{ route('user.services.show', $service->slug) }}" class="text-decoration-none text-dark">
+                                                    {{ Str::limit($service->title, 40) }}
+                                                </a>
+                                            </h5>
+                                            
+                                            <p class="service-description text-muted small mb-3">
+                                                {{ Str::limit($service->description, 60) }}
+                                            </p>
+                                            
+                                            <div class="d-flex align-items-center justify-content-between">
+                                                <div class="service-price">
+                                                    @if($service->price_type === 'fixed')
+                                                        <span class="text-success fw-bold">{{ number_format($service->price) }} جنيه</span>
+                                                    @else
+                                                        <span class="text-muted"><i class="fas fa-handshake me-1"></i>تفاوض</span>
+                                                    @endif
+                                                </div>
+                                                <a href="{{ route('user.services.show', $service->slug) }}" class="btn btn-sm btn-outline-primary rounded-pill">
+                                                    التفاصيل
+                                                    <i class="fas fa-arrow-left ms-1"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+        @endif
+
         {{-- Featured and Popular Shops --}}
         <section class="featured-shops py-5 bg-light">
             <div class="container">
@@ -786,6 +958,96 @@
                     background-color: #f8f9fa !important;
                     text-decoration: none;
                     color: inherit;
+                }
+            }
+
+            /* Services Discovery Banner */
+            .services-discovery-banner {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            }
+
+            .discovery-card {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                min-height: 400px;
+            }
+
+            .discovery-content {
+                position: relative;
+                z-index: 2;
+            }
+
+            .discovery-content h2,
+            .discovery-content p {
+                color: black !important;
+                opacity: 0.8;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            }
+
+            .feature-badge {
+                backdrop-filter: blur(10px);
+                color: black !important;
+                opacity: 0.8;
+                font-weight: 500;
+            }
+
+            .btn-light {
+                background: #ffffff !important;
+                color: #333 !important;
+                font-weight: 600;
+                border: none;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .btn-light:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2) !important;
+                color: #667eea !important;
+            }
+
+            .services-icons-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+                padding: 40px;
+            }
+
+            .service-icon-float {
+                animation: float 3s ease-in-out infinite;
+            }
+
+            .icon-bubble {
+                width: 100px;
+                height: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: transform 0.3s ease;
+            }
+
+            .icon-bubble:hover {
+                transform: scale(1.1);
+            }
+
+            @keyframes float {
+                0%, 100% {
+                    transform: translateY(0px);
+                }
+                50% {
+                    transform: translateY(-20px);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .discovery-card {
+                    min-height: 300px;
+                }
+                
+                .discovery-content h2 {
+                    font-size: 1.5rem;
+                }
+                
+                .discovery-content p {
+                    font-size: 1rem;
                 }
             }
         </style>

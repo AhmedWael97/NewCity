@@ -30,6 +30,22 @@ class CityBanner extends Model
     ];
 
     /**
+     * Get the full URL for the banner image
+     */
+    public function getImageAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        
+        return url('storage/' . $value);
+    }
+
+    /**
      * Get the city this banner belongs to
      */
     public function city()

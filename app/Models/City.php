@@ -39,6 +39,46 @@ class City extends Model
     ];
 
     /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
+    /**
+     * Get the full URL for the city image
+     */
+    public function getImageAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        
+        return url('storage/' . $value);
+    }
+
+    /**
+     * Get the full URL for the hero image
+     */
+    public function getHeroImageAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        
+        return url('storage/' . $value);
+    }
+
+    /**
      * Get all shops in this city
      */
     public function shops(): HasMany

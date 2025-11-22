@@ -333,15 +333,18 @@ class CityController extends Controller
      */
     public function latestShops(Request $request, City $city)
     {
+
+        
         $limit = $request->input('limit', 15);
-        $days = $request->input('days', 30);
 
         $shops = $city->shops()
-            ->latest($days)
+            ->where('is_active', true)
             ->with(['category:id,name,icon'])
             ->select(['id', 'name', 'slug', 'description', 'category_id', 'city_id', 'rating', 'review_count', 'created_at'])
+            ->orderBy('created_at', 'desc')
             ->paginate($limit);
 
+        
         return response()->json([
             'success' => true,
             'data' => [

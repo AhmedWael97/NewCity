@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserService extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'user_id',
         'service_category_id',
         'city_id',
+        'slug',
+        'hashed_id',
         'title',
         'description',
         'pricing_type',
@@ -42,7 +43,6 @@ class UserService extends Model
         'availability_schedule' => 'array',
         'service_area' => 'array',
         'requirements' => 'array',
-        'images' => 'array',
         'vehicle_info' => 'array',
         'certifications' => 'array',
         'is_active' => 'boolean',
@@ -50,6 +50,30 @@ class UserService extends Model
         'featured_until' => 'datetime',
         'subscription_expires_at' => 'datetime',
     ];
+
+    protected $appends = ['hashed_id'];
+
+    /**
+     * Boot the model
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($service) {
+            if (empty($service->slug)) {
+                $slug = \Illuminate\Support\Str::slug($service->title);
+                $count = 1;
+                $originalSlug = $slug;
+                
+                while (static::where('slug', $slug)->exists()) {
+                    $slug = $originalSlug . '-' . $count++;
+                }
+                
+                $service->slug = $slug;
+            }
+        });
+    }
 
     /**
      * Get the user that owns the service
@@ -65,6 +89,14 @@ class UserService extends Model
     public function serviceCategory()
     {
         return $this->belongsTo(ServiceCategory::class);
+    }
+
+    /**
+     * Get the service category (alias for compatibility)
+     */
+    public function category()
+    {
+        return $this->serviceCategory();
     }
 
     /**
@@ -108,25 +140,46 @@ class UserService extends Model
     }
 
     /**
+     * Get the images attribute with full URLs
+     */
+    public function getImagesAttribute($value)
+    {
+        $images = json_decode($value, true) ?? [];
+        
+        if (empty($images)) {
+            return [];
+        }
+        
+        // Convert to full URLs
+        return array_map(function($image) {
+            if (!$image) {
+                return null;
+            }
+            if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+                return $image;
+            }
+            return url('storage/' . $image);
+        }, $images);
+    }
+
+    /**
      * Get the first image
      */
     public function getFirstImageAttribute()
     {
-        if (is_array($this->images) && count($this->images) > 0) {
-            return asset('storage/' . $this->images[0]);
+        $images = $this->images;
+        if (!empty($images)) {
+            return $images[0];
         }
-        return asset('images/default-service.jpg');
+        return url('images/default-service.jpg');
     }
 
     /**
-     * Get images array safely
+     * Get images array safely with full URLs (alias)
      */
     public function getImagesArrayAttribute()
     {
-        if (is_string($this->images)) {
-            return json_decode($this->images, true) ?? [];
-        }
-        return is_array($this->images) ? $this->images : [];
+        return $this->images;
     }
 
     /**
@@ -175,9 +228,8 @@ class UserService extends Model
     public function getMonthlyViewsAttribute()
     {
         return $this->analytics()
-            ->where('metric_type', 'view')
             ->where('date', '>=', now()->startOfMonth())
-            ->sum('value');
+            ->sum('views');
     }
 
     /**
@@ -186,9 +238,8 @@ class UserService extends Model
     public function getMonthlyContactsAttribute()
     {
         return $this->analytics()
-            ->where('metric_type', 'contact')
             ->where('date', '>=', now()->startOfMonth())
-            ->sum('value');
+            ->sum('contacts');
     }
 
     /**
@@ -196,8 +247,7 @@ class UserService extends Model
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', true)
-                    ->where('status', 'approved');
+        return $query->where('is_active', true);
     }
 
     /**
@@ -230,5 +280,37 @@ class UserService extends Model
     public function scopeWithActiveSubscription($query)
     {
         return $query->where('subscription_expires_at', '>', now());
+    }
+
+    /**
+     * Get hashed ID for URL
+     */
+    public function getHashedIdAttribute()
+    {
+        return base64_encode($this->id * 7919 + 1234); // Simple obfuscation
+    }
+
+    /**
+     * Decode hashed ID to get actual ID
+     */
+    public static function decodeHashedId($hashedId)
+    {
+        try {
+            $decoded = base64_decode($hashedId);
+            if ($decoded === false) {
+                return null;
+            }
+            return ($decoded - 1234) / 7919;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
+
+    /**
+     * Get route key name for model binding
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
 }

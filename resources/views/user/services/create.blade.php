@@ -2,163 +2,62 @@
 
 @section('title', 'إضافة خدمة جديدة')
 
-@push('styles')
-<style>
-    .form-step {
-        display: none;
-    }
-    
-    .form-step.active {
-        display: block;
-    }
-    
-    .step-indicator {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 2rem;
-    }
-    
-    .step-indicator .step {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #e9ecef;
-        color: #6c757d;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 10px;
-        font-weight: bold;
-        position: relative;
-    }
-    
-    .step-indicator .step.active {
-        background: #007bff;
-        color: white;
-    }
-    
-    .step-indicator .step.completed {
-        background: #28a745;
-        color: white;
-    }
-    
-    .step-indicator .step:not(:last-child)::after {
-        content: '';
-        position: absolute;
-        left: 100%;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 20px;
-        height: 2px;
-        background: #e9ecef;
-        margin-left: 10px;
-    }
-    
-    .step-indicator .step.completed:not(:last-child)::after {
-        background: #28a745;
-    }
-    
-    .image-preview {
-        position: relative;
-        display: inline-block;
-        margin: 5px;
-    }
-    
-    .image-preview img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        border-radius: 8px;
-        border: 2px solid #dee2e6;
-    }
-    
-    .image-preview .remove-image {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background: #dc3545;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        font-size: 12px;
-        cursor: pointer;
-    }
-    
-    .pricing-option {
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .pricing-option:hover,
-    .pricing-option.selected {
-        border-color: #007bff;
-        background: #f8f9ff;
-    }
-    
-    .availability-day {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0.75rem;
-        border: 1px solid #e9ecef;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-    }
-    
-    .availability-day.active {
-        background: #e3f2fd;
-        border-color: #2196f3;
-    }
-</style>
-@endpush
-
 @section('content')
-<div class="container py-4">
-    <!-- Header -->
+<div class="container py-5" dir="rtl">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="text-center mb-4">
-                <h1 class="h3 mb-2">إضافة خدمة جديدة</h1>
-                <p class="text-muted">أضف خدمتك ووصل إلى آلاف العملاء في مدينتك</p>
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div class="mb-4">
+                <h2 class="fw-bold">إضافة خدمة جديدة</h2>
+                <p class="text-muted">قم بإضافة خدمتك وابدأ في الوصول للعملاء</p>
             </div>
 
-            <!-- Step Indicator -->
-            <div class="step-indicator">
-                <div class="step active" data-step="1">1</div>
-                <div class="step" data-step="2">2</div>
-                <div class="step" data-step="3">3</div>
-                <div class="step" data-step="4">4</div>
+            <!-- Progress Steps -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="step-indicator d-flex align-items-center justify-content-between mb-0">
+                        <div class="step-item active" data-step="1">
+                            <div class="step-circle">1</div>
+                            <div class="step-label">معلومات أساسية</div>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step-item" data-step="2">
+                            <div class="step-circle">2</div>
+                            <div class="step-label">التسعير والتواصل</div>
+                        </div>
+                        <div class="step-line"></div>
+                        <div class="step-item" data-step="3">
+                            <div class="step-circle">3</div>
+                            <div class="step-label">الصور والتفاصيل</div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Form -->
-            <form id="serviceForm" action="{{ route('user.services.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('user.services.store') }}" method="POST" enctype="multipart/form-data" id="serviceForm">
                 @csrf
-                
+
                 <!-- Step 1: Basic Information -->
                 <div class="form-step active" data-step="1">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-info-circle me-2"></i>
-                                المعلومات الأساسية
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="service_category_id" class="form-label">فئة الخدمة <span class="text-danger">*</span></label>
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">المعلومات الأساسية</h4>
+
+                            <div class="row g-3">
+                                <!-- Service Category -->
+                                <div class="col-md-6">
+                                    <label for="service_category_id" class="form-label">
+                                        نوع الخدمة <span class="text-danger">*</span>
+                                    </label>
                                     <select class="form-select @error('service_category_id') is-invalid @enderror" 
-                                            id="service_category_id" name="service_category_id" required>
-                                        <option value="">اختر فئة الخدمة</option>
+                                            id="service_category_id" 
+                                            name="service_category_id" 
+                                            required>
+                                        <option value="">اختر نوع الخدمة</option>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}" {{ old('service_category_id') == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name }}
+                                                {{ $category->name_ar }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -167,421 +66,562 @@
                                     @enderror
                                 </div>
 
-                                <div class="col-md-6 mb-3">
-                                    <label for="city_id" class="form-label">المدينة <span class="text-danger">*</span></label>
-                                    <select class="form-select @error('city_id') is-invalid @enderror" 
-                                            id="city_id" name="city_id" required>
-                                        <option value="">اختر المدينة</option>
-                                        @foreach($cities as $city)
-                                            <option value="{{ $city->id }}" {{ old('city_id') == $city->id ? 'selected' : '' }}>
-                                                {{ $city->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                <!-- City -->
+                                <div class="col-md-6">
+                                    <label for="city_id" class="form-label">
+                                        المدينة <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           value="{{ Auth::user()->city->name ?? 'غير محدد' }}" 
+                                           readonly 
+                                           style="background-color: #e9ecef;">
+                                    <input type="hidden" 
+                                           name="city_id" 
+                                           value="{{ Auth::user()->city_id }}" 
+                                           required>
+                                    <small class="text-muted">يمكنك إضافة الخدمة في مدينتك فقط</small>
                                     @error('city_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="text-danger mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <div class="col-12 mb-3">
-                                    <label for="title" class="form-label">عنوان الخدمة <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('title') is-invalid @enderror" 
-                                           id="title" name="title" value="{{ old('title') }}" 
-                                           placeholder="مثال: خدمة توصيل سريع في جميع أنحاء المدينة" required>
+                                <!-- Title -->
+                                <div class="col-12">
+                                    <label for="title" class="form-label">
+                                        عنوان الخدمة <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control @error('title') is-invalid @enderror" 
+                                           id="title" 
+                                           name="title" 
+                                           value="{{ old('title') }}" 
+                                           placeholder="مثال: صيانة مكيفات سبليت - خدمة سريعة"
+                                           maxlength="255"
+                                           required>
                                     @error('title')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <div class="col-12 mb-3">
-                                    <label for="description" class="form-label">وصف الخدمة <span class="text-danger">*</span></label>
+                                <!-- Description -->
+                                <div class="col-12">
+                                    <label for="description" class="form-label">
+                                        وصف الخدمة <span class="text-danger">*</span>
+                                    </label>
                                     <textarea class="form-control @error('description') is-invalid @enderror" 
-                                              id="description" name="description" rows="4" 
-                                              placeholder="اكتب وصفاً مفصلاً عن خدمتك..." required>{{ old('description') }}</textarea>
+                                              id="description" 
+                                              name="description" 
+                                              rows="4" 
+                                              maxlength="1000"
+                                              placeholder="اكتب وصفاً تفصيلياً للخدمة التي تقدمها..."
+                                              required>{{ old('description') }}</textarea>
+                                    <div class="form-text">الحد الأقصى 1000 حرف</div>
                                     @error('description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="experience_years" class="form-label">سنوات الخبرة</label>
-                                    <select class="form-select" id="experience_years" name="experience_years">
-                                        <option value="">اختر سنوات الخبرة</option>
-                                        <option value="0" {{ old('experience_years') == '0' ? 'selected' : '' }}>مبتدئ</option>
-                                        <option value="1" {{ old('experience_years') == '1' ? 'selected' : '' }}>سنة واحدة</option>
-                                        @for($i = 2; $i <= 20; $i++)
-                                            <option value="{{ $i }}" {{ old('experience_years') == $i ? 'selected' : '' }}>
-                                                {{ $i }} سنوات
-                                            </option>
-                                        @endfor
-                                        <option value="20" {{ old('experience_years') == '20' ? 'selected' : '' }}>أكثر من 20 سنة</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 2: Pricing -->
-                <div class="form-step" data-step="2">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-dollar-sign me-2"></i>
-                                التسعير
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <label class="form-label">نوع التسعير <span class="text-danger">*</span></label>
-                                
-                                <div class="pricing-option" data-type="fixed">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="pricing_type" value="fixed" id="pricing_fixed" class="form-check-input me-3">
-                                        <div>
-                                            <h6 class="mb-1">سعر ثابت</h6>
-                                            <small class="text-muted">سعر واحد لجميع الخدمات</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pricing-option" data-type="hourly">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="pricing_type" value="hourly" id="pricing_hourly" class="form-check-input me-3">
-                                        <div>
-                                            <h6 class="mb-1">تسعير بالساعة</h6>
-                                            <small class="text-muted">سعر محدد لكل ساعة عمل</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pricing-option" data-type="distance">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="pricing_type" value="distance" id="pricing_distance" class="form-check-input me-3">
-                                        <div>
-                                            <h6 class="mb-1">تسعير بالمسافة</h6>
-                                            <small class="text-muted">سعر محدد لكل كيلومتر</small>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="pricing-option" data-type="negotiable">
-                                    <div class="d-flex align-items-center">
-                                        <input type="radio" name="pricing_type" value="negotiable" id="pricing_negotiable" class="form-check-input me-3">
-                                        <div>
-                                            <h6 class="mb-1">قابل للتفاوض</h6>
-                                            <small class="text-muted">يتم تحديد السعر حسب طبيعة الخدمة</small>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
-                            <!-- Pricing Fields -->
-                            <div class="row">
-                                <div class="col-md-6 mb-3" id="base_price_field" style="display: none;">
-                                    <label for="base_price" class="form-label">السعر الأساسي (جنيه)</label>
-                                    <input type="number" class="form-control" id="base_price" name="base_price" 
-                                           value="{{ old('base_price') }}" min="0" step="0.01">
-                                </div>
-
-                                <div class="col-md-6 mb-3" id="hourly_rate_field" style="display: none;">
-                                    <label for="hourly_rate" class="form-label">السعر بالساعة (جنيه)</label>
-                                    <input type="number" class="form-control" id="hourly_rate" name="hourly_rate" 
-                                           value="{{ old('hourly_rate') }}" min="0" step="0.01">
-                                </div>
-
-                                <div class="col-md-6 mb-3" id="distance_rate_field" style="display: none;">
-                                    <label for="distance_rate" class="form-label">السعر بالكيلومتر (جنيه)</label>
-                                    <input type="number" class="form-control" id="distance_rate" name="distance_rate" 
-                                           value="{{ old('distance_rate') }}" min="0" step="0.01">
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="minimum_charge" class="form-label">الحد الأدنى للتحصيل (جنيه)</label>
-                                    <input type="number" class="form-control" id="minimum_charge" name="minimum_charge" 
-                                           value="{{ old('minimum_charge') }}" min="0" step="0.01">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 3: Contact & Images -->
-                <div class="form-step" data-step="3">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0">
-                                <i class="fas fa-images me-2"></i>
-                                التواصل والصور
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <!-- Contact Information -->
-                            <div class="row mb-4">
-                                <div class="col-md-6 mb-3">
-                                    <label for="contact_phone" class="form-label">رقم الهاتف <span class="text-danger">*</span></label>
-                                    <input type="tel" class="form-control @error('contact_phone') is-invalid @enderror" 
-                                           id="contact_phone" name="contact_phone" value="{{ old('contact_phone') }}" 
-                                           placeholder="01xxxxxxxxx" required>
-                                    @error('contact_phone')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="col-md-6 mb-3">
-                                    <label for="contact_whatsapp" class="form-label">واتساب</label>
-                                    <input type="tel" class="form-control" id="contact_whatsapp" name="contact_whatsapp" 
-                                           value="{{ old('contact_whatsapp') }}" placeholder="01xxxxxxxxx">
-                                </div>
-                            </div>
-
-                            <!-- Image Upload -->
-                            <div class="mb-4">
-                                <label for="images" class="form-label">صور الخدمة</label>
-                                <input type="file" class="form-control @error('images.*') is-invalid @enderror" 
-                                       id="images" name="images[]" multiple accept="image/*">
-                                <div class="form-text">يمكنك رفع حتى 5 صور. الحد الأقصى لحجم كل صورة 2 ميجابايت.</div>
-                                @error('images.*')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                
-                                <!-- Image Preview Container -->
-                                <div id="imagePreview" class="mt-3"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 4: Subscription & Submit -->
-                <div class="form-step" data-step="4">
-                    <div class="card shadow-sm">
-                        <div class="card-header bg-warning text-dark">
-                            <h5 class="mb-0">
-                                <i class="fas fa-crown me-2"></i>
-                                خطة الاشتراك
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-4">
-                                <label class="form-label">اختر خطة الاشتراك <span class="text-danger">*</span></label>
-                                
-                                <div class="row">
-                                    @foreach($subscriptionPlans as $plan)
-                                        <div class="col-md-4 mb-3">
-                                            <div class="card subscription-plan h-100" data-plan="{{ $plan->id }}">
-                                                <div class="card-body text-center">
-                                                    <input type="radio" name="subscription_plan_id" value="{{ $plan->id }}" 
-                                                           id="plan_{{ $plan->id }}" class="form-check-input mb-3" required>
-                                                    
-                                                    <h5 class="card-title">{{ $plan->name }}</h5>
-                                                    <div class="h3 text-primary mb-2">{{ number_format($plan->price) }} جنيه</div>
-                                                    <p class="text-muted">{{ $plan->duration_value }} {{ $plan->duration_type == 'monthly' ? 'شهر' : 'سنة' }}</p>
-                                                    
-                                                    <hr>
-                                                    
-                                                    <ul class="list-unstyled text-start">
-                                                        @if($plan->features)
-                                                            @foreach(json_decode($plan->features, true) as $feature)
-                                                                <li class="mb-1">
-                                                                    <i class="fas fa-check text-success me-2"></i>
-                                                                    {{ $feature }}
-                                                                </li>
-                                                            @endforeach
-                                                        @endif
-                                                    </ul>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-
-                            <!-- Terms and Conditions -->
-                            <div class="form-check mb-4">
-                                <input type="checkbox" class="form-check-input" id="terms" required>
-                                <label class="form-check-label" for="terms">
-                                    أوافق على <a href="#" class="text-primary">الشروط والأحكام</a> و <a href="#" class="text-primary">سياسة الخصوصية</a>
-                                </label>
-                            </div>
-
-                            <!-- Submit Button -->
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5">
-                                    <i class="fas fa-paper-plane me-2"></i>
-                                    إرسال الخدمة للمراجعة
+                            <div class="mt-4 d-flex justify-content-end">
+                                <button type="button" class="btn btn-primary px-4" onclick="nextStep(2)">
+                                    التالي <i class="bi bi-arrow-left me-2"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Navigation Buttons -->
-                <div class="d-flex justify-content-between mt-4">
-                    <button type="button" id="prevBtn" class="btn btn-outline-secondary" style="display: none;">
-                        <i class="fas fa-arrow-right me-2"></i>السابق
-                    </button>
-                    <button type="button" id="nextBtn" class="btn btn-primary">
-                        التالي<i class="fas fa-arrow-left ms-2"></i>
-                    </button>
+                <!-- Step 2: Pricing & Contact -->
+                <div class="form-step" data-step="2">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">التسعير ومعلومات التواصل</h4>
+
+                            <div class="row g-3">
+                                <!-- Pricing Type -->
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        نوع التسعير <span class="text-danger">*</span>
+                                    </label>
+                                    <div class="row g-3">
+                                        <div class="col-sm-6 col-lg-3">
+                                            <div class="pricing-option">
+                                                <input type="radio" class="btn-check" name="pricing_type" id="pricing_fixed" value="fixed" {{ old('pricing_type') == 'fixed' ? 'checked' : '' }}>
+                                                <label class="btn btn-outline-primary w-100" for="pricing_fixed">
+                                                    <i class="bi bi-tag-fill d-block fs-4 mb-2"></i>
+                                                    سعر ثابت
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-lg-3">
+                                            <div class="pricing-option">
+                                                <input type="radio" class="btn-check" name="pricing_type" id="pricing_hourly" value="hourly" {{ old('pricing_type') == 'hourly' ? 'checked' : '' }}>
+                                                <label class="btn btn-outline-primary w-100" for="pricing_hourly">
+                                                    <i class="bi bi-clock-fill d-block fs-4 mb-2"></i>
+                                                    بالساعة
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-lg-3">
+                                            <div class="pricing-option">
+                                                <input type="radio" class="btn-check" name="pricing_type" id="pricing_per_km" value="per_km" {{ old('pricing_type') == 'per_km' ? 'checked' : '' }}>
+                                                <label class="btn btn-outline-primary w-100" for="pricing_per_km">
+                                                    <i class="bi bi-speedometer2 d-block fs-4 mb-2"></i>
+                                                    بالكيلومتر
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 col-lg-3">
+                                            <div class="pricing-option">
+                                                <input type="radio" class="btn-check" name="pricing_type" id="pricing_negotiable" value="negotiable" {{ old('pricing_type', 'negotiable') == 'negotiable' ? 'checked' : '' }}>
+                                                <label class="btn btn-outline-primary w-100" for="pricing_negotiable">
+                                                    <i class="bi bi-chat-dots-fill d-block fs-4 mb-2"></i>
+                                                    تفاوض
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @error('pricing_type')
+                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Price Range -->
+                                <div class="col-md-6">
+                                    <label for="price_from" class="form-label">السعر من (جنيه مصري)</label>
+                                    <input type="number" 
+                                           class="form-control @error('price_from') is-invalid @enderror" 
+                                           id="price_from" 
+                                           name="price_from" 
+                                           value="{{ old('price_from') }}" 
+                                           min="0" 
+                                           step="0.01"
+                                           placeholder="100">
+                                    @error('price_from')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="price_to" class="form-label">السعر إلى (جنيه مصري)</label>
+                                    <input type="number" 
+                                           class="form-control @error('price_to') is-invalid @enderror" 
+                                           id="price_to" 
+                                           name="price_to" 
+                                           value="{{ old('price_to') }}" 
+                                           min="0" 
+                                           step="0.01"
+                                           placeholder="500">
+                                    @error('price_to')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Contact Information -->
+                                <div class="col-md-6">
+                                    <label for="phone" class="form-label">
+                                        رقم الهاتف <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="tel" 
+                                           class="form-control @error('phone') is-invalid @enderror" 
+                                           id="phone" 
+                                           name="phone" 
+                                           value="{{ old('phone', Auth::user()->phone) }}" 
+                                           placeholder="01XXXXXXXXX"
+                                           required>
+                                    @error('phone')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="whatsapp" class="form-label">رقم الواتساب</label>
+                                    <input type="tel" 
+                                           class="form-control @error('whatsapp') is-invalid @enderror" 
+                                           id="whatsapp" 
+                                           name="whatsapp" 
+                                           value="{{ old('whatsapp') }}" 
+                                           placeholder="01XXXXXXXXX">
+                                    @error('whatsapp')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                <!-- Address -->
+                                <div class="col-12">
+                                    <label for="address" class="form-label">العنوان</label>
+                                    <input type="text" 
+                                           class="form-control @error('address') is-invalid @enderror" 
+                                           id="address" 
+                                           name="address" 
+                                           value="{{ old('address') }}" 
+                                           placeholder="الحي - الشارع"
+                                           maxlength="500">
+                                    @error('address')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary px-4" onclick="prevStep(1)">
+                                    <i class="bi bi-arrow-right me-2"></i> السابق
+                                </button>
+                                <button type="button" class="btn btn-primary px-4" onclick="nextStep(3)">
+                                    التالي <i class="bi bi-arrow-left me-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Images & Details -->
+                <div class="form-step" data-step="3">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">الصور والتفاصيل الإضافية</h4>
+
+                            <div class="row g-3">
+                                <!-- Images -->
+                                <div class="col-12">
+                                    <label class="form-label">صور الخدمة</label>
+                                    <div class="border-2 border-dashed rounded p-4 text-center" style="border-style: dashed !important;">
+                                        <input type="file" 
+                                               class="form-control d-none" 
+                                               id="images" 
+                                               name="images[]" 
+                                               accept="image/jpeg,image/png,image/jpg"
+                                               multiple
+                                               onchange="previewImages(this)">
+                                        <label for="images" class="d-block cursor-pointer" style="cursor: pointer;">
+                                            <i class="bi bi-cloud-upload fs-1 text-primary d-block mb-3"></i>
+                                            <p class="mb-2">اضغط لاختيار الصور</p>
+                                            <p class="text-muted small">يمكنك رفع عدة صور (JPEG, PNG, JPG - حد أقصى 2MB لكل صورة)</p>
+                                        </label>
+                                    </div>
+                                    @error('images.*')
+                                        <div class="text-danger mt-2">{{ $message }}</div>
+                                    @enderror
+                                    
+                                    <!-- Image Preview -->
+                                    <div id="imagePreview" class="row g-2 mt-3"></div>
+                                </div>
+
+                                <!-- Availability -->
+                                <div class="col-12">
+                                    <label class="form-label">أوقات العمل</label>
+                                    <div class="row g-2">
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="availability_days[]" value="sunday" id="day_sunday" {{ in_array('sunday', old('availability_days', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="day_sunday">الأحد</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="availability_days[]" value="monday" id="day_monday" {{ in_array('monday', old('availability_days', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="day_monday">الإثنين</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="availability_days[]" value="tuesday" id="day_tuesday" {{ in_array('tuesday', old('availability_days', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="day_tuesday">الثلاثاء</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="availability_days[]" value="wednesday" id="day_wednesday" {{ in_array('wednesday', old('availability_days', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="day_wednesday">الأربعاء</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="availability_days[]" value="thursday" id="day_thursday" {{ in_array('thursday', old('availability_days', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="day_thursday">الخميس</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="availability_days[]" value="friday" id="day_friday" {{ in_array('friday', old('availability_days', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="day_friday">الجمعة</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="availability_days[]" value="saturday" id="day_saturday" {{ in_array('saturday', old('availability_days', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label" for="day_saturday">السبت</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="hours_from" class="form-label">من الساعة</label>
+                                    <input type="time" class="form-control" id="hours_from" name="hours_from" value="{{ old('hours_from', '09:00') }}">
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="hours_to" class="form-label">إلى الساعة</label>
+                                    <input type="time" class="form-control" id="hours_to" name="hours_to" value="{{ old('hours_to', '17:00') }}">
+                                </div>
+
+                                <!-- Service Areas -->
+                                <div class="col-12">
+                                    <label class="form-label">مناطق تقديم الخدمة</label>
+                                    <div class="row g-2">
+                                        @foreach($cities as $city)
+                                            <div class="col-md-4">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" 
+                                                           type="checkbox" 
+                                                           name="service_areas[]" 
+                                                           value="{{ $city->id }}" 
+                                                           id="area_{{ $city->id }}"
+                                                           {{ in_array($city->id, old('service_areas', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="area_{{ $city->id }}">
+                                                        {{ $city->name }}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- Requirements -->
+                                <div class="col-12">
+                                    <label for="requirements" class="form-label">متطلبات أو ملاحظات إضافية</label>
+                                    <textarea class="form-control" 
+                                              id="requirements" 
+                                              name="requirements" 
+                                              rows="3" 
+                                              maxlength="1000"
+                                              placeholder="اذكر أي متطلبات خاصة أو ملاحظات تود إضافتها...">{{ old('requirements') }}</textarea>
+                                    <div class="form-text">الحد الأقصى 1000 حرف</div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary px-4" onclick="prevStep(2)">
+                                    <i class="bi bi-arrow-right me-2"></i> السابق
+                                </button>
+                                <button type="submit" class="btn btn-success px-5">
+                                    <i class="bi bi-check-circle me-2"></i> نشر الخدمة
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
-@endsection
 
-@push('scripts')
+<style>
+.step-indicator {
+    position: relative;
+}
+
+.step-item {
+    text-align: center;
+    flex: 1;
+    position: relative;
+}
+
+.step-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin: 0 auto 10px;
+    transition: all 0.3s;
+}
+
+.step-item.active .step-circle {
+    background: #0d6efd;
+    color: white;
+}
+
+.step-item.completed .step-circle {
+    background: #198754;
+    color: white;
+}
+
+.step-label {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.step-item.active .step-label {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.step-line {
+    height: 2px;
+    background: #e9ecef;
+    flex: 1;
+    margin: 0 -10px;
+    position: relative;
+    top: -35px;
+}
+
+.form-step {
+    display: none;
+}
+
+.form-step.active {
+    display: block;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.pricing-option .btn-check:checked + .btn {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.image-preview-item {
+    position: relative;
+}
+
+.image-preview-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.image-preview-item .remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.image-preview-item .remove-image:hover {
+    background: #dc3545;
+    transform: scale(1.1);
+}
+</style>
+
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    let currentStep = 1;
-    const totalSteps = 4;
+let currentStep = 1;
 
-    // Step navigation
-    const nextBtn = document.getElementById('nextBtn');
-    const prevBtn = document.getElementById('prevBtn');
+function nextStep(step) {
+    // Validate current step before moving
+    if (!validateStep(currentStep)) {
+        return;
+    }
 
-    nextBtn.addEventListener('click', function() {
-        if (validateStep(currentStep)) {
-            if (currentStep < totalSteps) {
-                currentStep++;
-                showStep(currentStep);
-            }
-        }
-    });
+    document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.remove('active');
+    document.querySelector(`.step-item[data-step="${currentStep}"]`).classList.add('completed');
+    
+    currentStep = step;
+    
+    document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+    document.querySelector(`.step-item[data-step="${step}"]`).classList.add('active');
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    prevBtn.addEventListener('click', function() {
-        if (currentStep > 1) {
-            currentStep--;
-            showStep(currentStep);
-        }
-    });
+function prevStep(step) {
+    document.querySelector(`.form-step[data-step="${currentStep}"]`).classList.remove('active');
+    document.querySelector(`.step-item[data-step="${currentStep}"]`).classList.remove('active');
+    
+    currentStep = step;
+    
+    document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
-    function showStep(step) {
-        // Hide all steps
-        document.querySelectorAll('.form-step').forEach(stepDiv => {
-            stepDiv.classList.remove('active');
-        });
-
-        // Show current step
-        document.querySelector(`.form-step[data-step="${step}"]`).classList.add('active');
-
-        // Update step indicators
-        document.querySelectorAll('.step-indicator .step').forEach((stepIndicator, index) => {
-            stepIndicator.classList.remove('active', 'completed');
-            if (index + 1 < step) {
-                stepIndicator.classList.add('completed');
-            } else if (index + 1 === step) {
-                stepIndicator.classList.add('active');
-            }
-        });
-
-        // Update navigation buttons
-        prevBtn.style.display = step > 1 ? 'block' : 'none';
-        nextBtn.textContent = step === totalSteps ? 'إرسال' : 'التالي';
-        
-        if (step === totalSteps) {
-            nextBtn.innerHTML = '<i class="fas fa-paper-plane me-2"></i>إرسال الخدمة للمراجعة';
-            nextBtn.onclick = function() {
-                document.getElementById('serviceForm').submit();
-            };
+function validateStep(step) {
+    let isValid = true;
+    const currentForm = document.querySelector(`.form-step[data-step="${step}"]`);
+    
+    // Get all required fields in current step
+    const requiredFields = currentForm.querySelectorAll('[required]');
+    
+    requiredFields.forEach(field => {
+        if (!field.value || field.value.trim() === '') {
+            field.classList.add('is-invalid');
+            isValid = false;
         } else {
-            nextBtn.innerHTML = 'التالي<i class="fas fa-arrow-left ms-2"></i>';
+            field.classList.remove('is-invalid');
         }
-    }
-
-    function validateStep(step) {
-        const currentStepDiv = document.querySelector(`.form-step[data-step="${step}"]`);
-        const requiredFields = currentStepDiv.querySelectorAll('[required]');
-        let isValid = true;
-
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                field.classList.add('is-invalid');
-                isValid = false;
-            } else {
-                field.classList.remove('is-invalid');
-            }
-        });
-
-        return isValid;
-    }
-
-    // Pricing type selection
-    document.querySelectorAll('.pricing-option').forEach(option => {
-        option.addEventListener('click', function() {
-            const type = this.dataset.type;
-            const radio = this.querySelector('input[type="radio"]');
-            
-            // Remove selected class from all options
-            document.querySelectorAll('.pricing-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            
-            // Add selected class to clicked option
-            this.classList.add('selected');
-            radio.checked = true;
-            
-            // Show/hide pricing fields
-            document.querySelectorAll('[id$="_field"]').forEach(field => {
-                field.style.display = 'none';
-            });
-            
-            if (type === 'fixed') {
-                document.getElementById('base_price_field').style.display = 'block';
-            } else if (type === 'hourly') {
-                document.getElementById('hourly_rate_field').style.display = 'block';
-            } else if (type === 'distance') {
-                document.getElementById('distance_rate_field').style.display = 'block';
-            }
-        });
     });
+    
+    if (!isValid) {
+        alert('الرجاء ملء جميع الحقول المطلوبة');
+    }
+    
+    return isValid;
+}
 
-    // Image preview
-    document.getElementById('images').addEventListener('change', function(e) {
-        const preview = document.getElementById('imagePreview');
-        preview.innerHTML = '';
-        
-        Array.from(e.target.files).forEach((file, index) => {
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const div = document.createElement('div');
-                    div.className = 'image-preview';
-                    div.innerHTML = `
+function previewImages(input) {
+    const preview = document.getElementById('imagePreview');
+    preview.innerHTML = '';
+    
+    if (input.files) {
+        Array.from(input.files).forEach((file, index) => {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const col = document.createElement('div');
+                col.className = 'col-md-3';
+                col.innerHTML = `
+                    <div class="image-preview-item">
                         <img src="${e.target.result}" alt="Preview">
-                        <button type="button" class="remove-image" data-index="${index}">
-                            <i class="fas fa-times"></i>
+                        <button type="button" class="remove-image" onclick="removeImage(${index})">
+                            <i class="bi bi-x"></i>
                         </button>
-                    `;
-                    preview.appendChild(div);
-                };
-                reader.readAsDataURL(file);
+                    </div>
+                `;
+                preview.appendChild(col);
             }
+            
+            reader.readAsDataURL(file);
         });
-    });
+    }
+}
 
-    // Remove image
-    document.addEventListener('click', function(e) {
-        if (e.target.closest('.remove-image')) {
-            e.target.closest('.image-preview').remove();
+function removeImage(index) {
+    const input = document.getElementById('images');
+    const dt = new DataTransfer();
+    const files = Array.from(input.files);
+    
+    files.forEach((file, i) => {
+        if (i !== index) {
+            dt.items.add(file);
         }
     });
+    
+    input.files = dt.files;
+    previewImages(input);
+}
 
-    // Subscription plan selection
-    document.querySelectorAll('.subscription-plan').forEach(plan => {
-        plan.addEventListener('click', function() {
-            const radio = this.querySelector('input[type="radio"]');
-            
-            // Remove selected class from all plans
-            document.querySelectorAll('.subscription-plan').forEach(p => {
-                p.classList.remove('border-primary');
-            });
-            
-            // Add selected class to clicked plan
-            this.classList.add('border-primary');
-            radio.checked = true;
-        });
+// Remove validation error on input
+document.querySelectorAll('input, select, textarea').forEach(element => {
+    element.addEventListener('input', function() {
+        this.classList.remove('is-invalid');
     });
 });
 </script>
-@endpush
+@endsection

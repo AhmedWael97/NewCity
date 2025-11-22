@@ -172,6 +172,8 @@ class LandingController extends Controller
         $query = $request->get('q', '');
         $cityContext = $request->get('cityContext', []);
         $selectedCityId = $cityContext['selected_city_id'] ?? null;
+        $cityId = $request->get('city', $selectedCityId);
+        $category = $request->get('category', '');
         
         if (empty($query)) {
             return redirect()->route('home');
@@ -186,15 +188,32 @@ class LandingController extends Controller
         // Get search suggestions
         $suggestions = $this->getSearchSuggestions($query, $selectedCityId);
 
+        // Get all cities for filter dropdown
+        $cities = City::active()
+            ->select(['id', 'name', 'slug'])
+            ->orderBy('name')
+            ->get();
+
         $selectedCity = $cityContext['selected_city'] ?? null;
         $seoData = [
             'title' => "نتائج البحث عن \"{$query}\"" . ($selectedCity ? " في {$selectedCity->name}" : '') . " - اكتشف المدن",
             'description' => "اكتشف المتاجر والخدمات المتعلقة بـ \"{$query}\"" . ($selectedCity ? " في {$selectedCity->name}" : '') . ". تصفح النتائج واقرأ التقييمات.",
+            'keywords' => $query . ($selectedCity ? ", {$selectedCity->name}" : '') . ", متاجر, تسوق, بحث, دليل المتاجر",
             'canonical' => request()->url() . '?' . http_build_query($request->only(['q'])),
             'noindex' => strlen($query) < 3, // Don't index very short searches
         ];
 
-        return view('search-results', compact('shops', 'query', 'suggestions', 'seoData', 'cityContext'));
+        // Prepare stats for the view
+        $stats = [
+            'total_results' => $shops->total(),
+            'city_filter' => $selectedCity?->name ?? null,
+            'category_filter' => $category ?: null,
+        ];
+
+        // Alias shops as results for the view
+        $results = $shops;
+
+        return view('search-results', compact('shops', 'query', 'suggestions', 'seoData', 'cityContext', 'stats', 'cities', 'cityId', 'category', 'results'));
     }
 
     /**
@@ -356,7 +375,12 @@ class LandingController extends Controller
         ];
 
         // Get city statistics
-        $stats = $this->cityDataService->getCityStats($city->id);
+        $stats = $this->cityDataService->getCityStats($city->id) ?? [
+            'total_shops' => 0,
+            'active_shops' => 0,
+            'featured_shops' => 0,
+            'total_categories' => 0,
+        ];
 
         // Get categories with their shops for this city
         $categoriesWithShops = Cache::remember("city_categories_shops_{$city->slug}", 3600, function () use ($city) {
@@ -384,6 +408,28 @@ class LandingController extends Controller
             ->get();
         });
 
+        // Get service categories with services for this city
+        $serviceCategoriesWithServices = Cache::remember("city_service_categories_{$city->slug}", 3600, function () use ($city) {
+            return \App\Models\ServiceCategory::whereHas('userServices', function ($query) use ($city) {
+                $query->where('city_id', $city->id)
+                      ->where('is_active', true);
+            })
+            ->withCount(['userServices as services_count' => function ($query) use ($city) {
+                $query->where('city_id', $city->id)
+                      ->where('is_active', true);
+            }])
+            ->with(['userServices' => function ($query) use ($city) {
+                $query->where('city_id', $city->id)
+                      ->where('is_active', true)
+                      ->with('user')
+                      ->latest()
+                      ->take(4);
+            }])
+            ->orderByDesc('services_count')
+            ->limit(3)
+            ->get();
+        });
+
         // Get all cities for modal
         $cities = $this->cityDataService->getCitiesForSelection();
 
@@ -400,6 +446,71 @@ class LandingController extends Controller
             'cityContext',
             'stats',
             'categoriesWithShops',
+            'serviceCategoriesWithServices',
+            'cities',
+            'seoData'
+        ));
+    }
+
+    /**
+     * Show city services page
+     */
+    public function cityServices(City $city)
+    {
+        // Update session to selected city
+        session([
+            'selected_city' => $city->slug,
+            'selected_city_name' => $city->name,
+            'selected_city_id' => $city->id
+        ]);
+
+        // Get city-specific data
+        $cityContext = [
+            'selected_city' => $city,
+            'selected_city_id' => $city->id,
+            'selected_city_name' => $city->name,
+            'selected_city_slug' => $city->slug,
+            'is_city_selected' => true,
+            'should_show_modal' => false,
+        ];
+
+        // Get service categories with services for this city
+        $serviceCategoriesWithServices = Cache::remember("city_service_categories_{$city->slug}", 3600, function () use ($city) {
+            return \App\Models\ServiceCategory::whereHas('userServices', function ($query) use ($city) {
+                $query->where('city_id', $city->id)
+                      ->where('is_active', true);
+            })
+            ->withCount(['userServices as services_count' => function ($query) use ($city) {
+                $query->where('city_id', $city->id)
+                      ->where('is_active', true);
+            }])
+            ->with(['userServices' => function ($query) use ($city) {
+                $query->where('city_id', $city->id)
+                      ->where('is_active', true)
+                      ->with('user')
+                      ->latest()
+                      ->paginate(12);
+            }])
+            ->where('is_active', true)
+            ->orderByDesc('services_count')
+            ->get();
+        });
+
+        // Get all cities for modal
+        $cities = $this->cityDataService->getCitiesForSelection();
+
+        // Generate SEO data
+        $seoData = [
+            'title' => "خدمات محلية في {$city->name} - منصة اكتشف المدن",
+            'description' => "اكتشف أفضل الخدمات المحلية في {$city->name}. سباكة، كهرباء، نجارة، صيانة وأكثر من مقدمي خدمات موثوقين.",
+            'keywords' => "خدمات {$city->name}, سباكة {$city->name}, كهرباء {$city->name}, صيانة {$city->name}",
+            'canonical' => route('city.services', ['city' => $city->slug]),
+        ];
+
+        return view('city.services', compact(
+            'city',
+            'cityContext',
+            'serviceCategoriesWithServices',
             'cities',
             'seoData'
         ));

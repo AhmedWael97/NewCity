@@ -40,7 +40,6 @@ class Shop extends Model
     protected $casts = [
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
-        'images' => 'array',
         'opening_hours' => 'array',
         'rating' => 'decimal:2',
         'review_count' => 'integer',
@@ -91,17 +90,33 @@ class Shop extends Model
     }
 
     /**
-     * Get the images as an array (handles both string and array formats)
+     * Get the images attribute with full URLs
+     */
+    public function getImagesAttribute($value)
+    {
+        $images = json_decode($value, true) ?: [];
+        
+        if (empty($images)) {
+            return [];
+        }
+        
+        return array_map(function($image) {
+            if (!$image) {
+                return null;
+            }
+            if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+                return $image;
+            }
+            return url('storage/' . $image);
+        }, $images);
+    }
+
+    /**
+     * Get the images as an array (alias for compatibility)
      */
     public function getImagesArrayAttribute()
     {
-        $images = $this->images;
-        
-        if (is_string($images)) {
-            return json_decode($images, true) ?: [];
-        }
-        
-        return is_array($images) ? $images : [];
+        return $this->images;
     }
 
     /**

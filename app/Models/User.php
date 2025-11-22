@@ -69,6 +69,22 @@ class User extends Authenticatable
     const TYPE_ADMIN = 'admin';
 
     /**
+     * Get the full URL for the user avatar
+     */
+    public function getAvatarAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+        
+        if (str_starts_with($value, 'http://') || str_starts_with($value, 'https://')) {
+            return $value;
+        }
+        
+        return url('storage/' . $value);
+    }
+
+    /**
      * Get the user's city
      */
     public function city(): BelongsTo

@@ -240,7 +240,7 @@
                 
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <span>أفضل يوم</span>
-                    <strong>{{ $analytics['daily_data']->sortByDesc('total')->first()['date'] ?? 'لا يوجد' }}</strong>
+                    <strong>{{ !empty($daily_data) ? collect($daily_data)->sortByDesc('total')->first()['date'] ?? 'لا يوجد' : 'لا يوجد' }}</strong>
                 </div>
                 
                 <div class="d-flex justify-content-between align-items-center">
@@ -272,23 +272,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($analytics['daily_data']->take(7) as $date => $data)
+                            @forelse($daily_data as $date => $data)
                                 <tr>
                                     <td>{{ \Carbon\Carbon::parse($date)->format('Y-m-d') }}</td>
                                     <td>
                                         <span class="badge bg-primary">
-                                            {{ $data->where('metric_type', 'view')->sum('total') }}
+                                            {{ $data['views'] ?? 0 }}
                                         </span>
                                     </td>
                                     <td>
                                         <span class="badge bg-success">
-                                            {{ $data->where('metric_type', 'contact')->sum('total') }}
+                                            {{ $data['contacts'] ?? 0 }}
                                         </span>
                                     </td>
                                     <td>
                                         @php
-                                            $views = $data->where('metric_type', 'view')->sum('total');
-                                            $contacts = $data->where('metric_type', 'contact')->sum('total');
+                                            $views = $data['views'] ?? 0;
+                                            $contacts = $data['contacts'] ?? 0;
                                             $conversion = $views > 0 ? ($contacts / $views) * 100 : 0;
                                         @endphp
                                         <span class="badge bg-{{ $conversion > 5 ? 'success' : ($conversion > 2 ? 'warning' : 'secondary') }}">
@@ -307,7 +307,13 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        لا توجد بيانات تحليلية حتى الآن
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

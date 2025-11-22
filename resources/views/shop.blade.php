@@ -704,16 +704,94 @@
         }, 3000);
     }
 
-    function toggleFavorite() {
+    async function toggleFavorite() {
+        // Check if user is authenticated
+        @guest
+            showToast('يجب تسجيل الدخول لاستخدام هذه الميزة', 'warning');
+            setTimeout(() => {
+                window.location.href = '{{ route("login") }}';
+            }, 1500);
+            return;
+        @endguest
+
         const btn = document.querySelector('.favorite-btn');
         const icon = btn.querySelector('.icon');
-        if (icon.textContent === '❤️') {
-            icon.textContent = '🤍';
-            alert('تم إزالة المتجر من المفضلة');
-        } else {
-            icon.textContent = '❤️';
-            alert('تم إضافة المتجر للمفضلة');
+        const shopId = {{ $shop->id }};
+        const isFavorite = icon.textContent === '❤️';
+        
+        // Disable button while processing
+        btn.disabled = true;
+        
+        try {
+            const response = await fetch(`/api/v1/shops/${shopId}/favorite`, {
+                method: isFavorite ? 'DELETE' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || '')
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                // Toggle icon
+                icon.textContent = isFavorite ? '🤍' : '❤️';
+                showToast(data.message, 'success');
+            } else {
+                // Handle error
+                if (response.status === 401) {
+                    showToast('يجب تسجيل الدخول لاستخدام هذه الميزة', 'warning');
+                    setTimeout(() => {
+                        window.location.href = '{{ route("login") }}';
+                    }, 1500);
+                } else {
+                    showToast(data.message || 'حدث خطأ ما', 'error');
+                }
+            }
+        } catch (error) {
+            console.error('Error toggling favorite:', error);
+            showToast('حدث خطأ في الاتصال', 'error');
+        } finally {
+            btn.disabled = false;
         }
+    }
+
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        const icons = {
+            success: '✅',
+            error: '❌',
+            warning: '⚠️',
+            info: 'ℹ️'
+        };
+        const colors = {
+            success: 'linear-gradient(135deg, #10b981, #059669)',
+            error: 'linear-gradient(135deg, #ef4444, #dc2626)',
+            warning: 'linear-gradient(135deg, #f59e0b, #d97706)',
+            info: 'linear-gradient(135deg, #3b82f6, #2563eb)'
+        };
+        
+        toast.innerHTML = `${icons[type]} ${message}`;
+        toast.style.cssText = `
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: ${colors[type]};
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            z-index: 10000;
+            font-weight: bold;
+            animation: slideIn 0.3s ease-out;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease-out';
+            setTimeout(() => document.body.removeChild(toast), 300);
+        }, 3000);
     }
 
     function openLightbox(src) {

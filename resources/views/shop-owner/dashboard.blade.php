@@ -211,18 +211,21 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
 }
 
 .welcome-content h2 {
     font-size: 1.8rem;
     font-weight: bold;
     margin-bottom: 10px;
+    color: white;
 }
 
 .welcome-content p {
     font-size: 1.1rem;
     opacity: 0.9;
     margin: 0;
+    color: white;
 }
 
 .welcome-stats {
@@ -232,18 +235,22 @@
 
 .stat-item {
     text-align: center;
+   
 }
 
 .stat-number {
     font-size: 2.5rem;
     font-weight: bold;
     line-height: 1;
+    
 }
 
 .stat-label {
     font-size: 0.9rem;
     opacity: 0.8;
     margin-top: 5px;
+    color:black !important;
+    
 }
 
 .section-title {

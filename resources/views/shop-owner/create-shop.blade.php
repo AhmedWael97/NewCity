@@ -23,6 +23,21 @@
             <form action="{{ route('shop-owner.shops.store') }}" method="POST" enctype="multipart/form-data" class="shop-form">
                 @csrf
                 
+                <!-- Validation Errors -->
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <div class="alert-header">
+                            <i class="alert-icon">⚠️</i>
+                            <h4 class="alert-title">يوجد بعض الأخطاء في البيانات المدخلة</h4>
+                        </div>
+                        <ul class="alert-list">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                
                 <!-- Basic Information Section -->
                 <div class="form-section">
                     <div class="section-header">
@@ -332,6 +347,48 @@ document.addEventListener('DOMContentLoaded', function() {
     min-height: 100vh;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     padding: 20px 0;
+}
+
+.alert {
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.alert-danger {
+    background: #fee;
+    border: 2px solid #fcc;
+    color: #c33;
+}
+
+.alert-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.alert-icon {
+    font-size: 1.5rem;
+}
+
+.alert-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin: 0;
+    color: #c33;
+}
+
+.alert-list {
+    margin: 0;
+    padding-right: 20px;
+    list-style: disc;
+}
+
+.alert-list li {
+    margin-bottom: 6px;
+    line-height: 1.5;
 }
 
 .page-header {
@@ -736,4 +793,3 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 </style>
 @endpush
-@endsection

@@ -29,7 +29,6 @@ class Service extends Model
     ];
 
     protected $casts = [
-        'images' => 'array',
         'requirements' => 'array',
         'benefits' => 'array',
         'price' => 'decimal:2',
@@ -48,6 +47,24 @@ class Service extends Model
                 $service->slug = Str::slug($service->name . '-' . Str::random(6));
             }
         });
+    }
+
+    /**
+     * Get the images as an array with full URLs
+     */
+    public function getImagesAttribute($value)
+    {
+        $images = json_decode($value, true) ?: [];
+        
+        return array_map(function($image) {
+            if (!$image) {
+                return null;
+            }
+            if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+                return $image;
+            }
+            return url('storage/' . $image);
+        }, $images);
     }
 
     /**

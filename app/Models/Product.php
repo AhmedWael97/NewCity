@@ -29,7 +29,6 @@ class Product extends Model
     ];
 
     protected $casts = [
-        'images' => 'array',
         'specifications' => 'array',
         'price' => 'decimal:2',
         'original_price' => 'decimal:2',
@@ -47,6 +46,24 @@ class Product extends Model
                 $product->slug = Str::slug($product->name . '-' . Str::random(6));
             }
         });
+    }
+
+    /**
+     * Get the images as an array with full URLs
+     */
+    public function getImagesAttribute($value)
+    {
+        $images = json_decode($value, true) ?: [];
+        
+        return array_map(function($image) {
+            if (!$image) {
+                return null;
+            }
+            if (str_starts_with($image, 'http://') || str_starts_with($image, 'https://')) {
+                return $image;
+            }
+            return url('storage/' . $image);
+        }, $images);
     }
 
     /**

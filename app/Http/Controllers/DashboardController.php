@@ -11,12 +11,6 @@ use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('verified');
-    }
-
     public function index()
     {
         $user = Auth::user();
@@ -44,8 +38,8 @@ class DashboardController extends Controller
 
     private function regularUserDashboard()
     {
-        // Regular user dashboard logic
-        return view('dashboard');
+        // Redirect regular users to their profile page
+        return redirect()->route('profile');
     }
 
     public function createShop()
