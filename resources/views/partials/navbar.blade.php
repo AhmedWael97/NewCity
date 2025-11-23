@@ -3,8 +3,8 @@
         <!-- Top Navigation -->
         <div class="nav-top">
             <div class="nav-brand">
-                <a href="{{ url('/') }}">
-                    <h2>🏙️ اكتشف المدن</h2>
+                <a href="{{ url('/') }}" style="display: flex; align-items: center; text-decoration: none;">
+                    <img src="{{ asset('images/senu-logo.svg') }}" alt="SENÚ سنو" style="height: 60px;">
                 </a>
             </div>
 

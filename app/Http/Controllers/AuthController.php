@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers;
 
@@ -14,7 +14,7 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         $seoData = [
-            'title' => 'تسجيل الدخول - اكتشف المدن',
+            'title' => 'تسجيل الدخول - SENÚ سنو',
             'description' => 'سجل دخولك للوصول إلى حسابك واكتشف أفضل المتاجر والخدمات في مدينتك',
             'keywords' => 'تسجيل دخول, حساب, متاجر, خدمات, مدن',
             'canonical' => route('login')
@@ -55,7 +55,7 @@ class AuthController extends Controller
     public function showRegistrationForm()
     {
         $seoData = [
-            'title' => 'إنشاء حساب جديد - اكتشف المدن',
+            'title' => 'إنشاء حساب جديد - SENÚ سنو',
             'description' => 'أنشئ حسابك الآن وابدأ في اكتشاف المتاجر والخدمات أو أضف متجرك الخاص',
             'keywords' => 'تسجيل, حساب جديد, صاحب متجر, متاجر, خدمات',
             'canonical' => route('register')
@@ -111,7 +111,7 @@ class AuthController extends Controller
     public function showProfile()
     {
         $seoData = [
-            'title' => 'الملف الشخصي - اكتشف المدن',
+            'title' => 'الملف الشخصي - SENÚ سنو',
             'description' => 'إدارة معلوماتك الشخصية وإعدادات حسابك',
             'keywords' => 'ملف شخصي, إعدادات, حساب, معلومات شخصية',
             'canonical' => route('profile')

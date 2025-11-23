@@ -5,20 +5,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ data_get($seoData, 'title', 'اكتشف المدن') }}</title>
-    <meta name="description" content="{{ data_get($seoData, 'description', 'منصة لاكتشاف المتاجر المحلية') }}">
-    <meta name="keywords" content="{{ data_get($seoData, 'keywords', 'متاجر, مصر, اكتشف') }}">
+    <title>{{ data_get($seoData, 'title', 'SENÚ سنو') }}</title>
+    <meta name="description" content="{{ data_get($seoData, 'description', 'منصة لاكتشاف المتاجر والخدمات المحلية') }}">
+    <meta name="keywords" content="{{ data_get($seoData, 'keywords', 'متاجر, خدمات, مصر, سنو') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="author" content="اكتشف المدن">
+    <meta name="author" content="SENÚ سنو">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ data_get($seoData, 'canonical', url('/')) }}">
 
-    <meta property="og:title" content="{{ data_get($seoData, 'title', 'اكتشف المدن') }}">
+    <meta property="og:title" content="{{ data_get($seoData, 'title', 'SENÚ سنو') }}">
     <meta property="og:description" content="{{ data_get($seoData, 'description', '') }}">
     <meta property="og:image" content="{{ data_get($seoData, 'og_image', asset('images/og-default.jpg')) }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ar_EG">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
 
     @stack('head')
 

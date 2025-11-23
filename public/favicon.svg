@@ -1,0 +1,42 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="faviconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a5899;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3a7d;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="128" height="128" fill="#ffffff" rx="20"/>
+  
+  <!-- Cartouche -->
+  <g transform="translate(64, 64)">
+    <!-- Outer border -->
+    <rect x="-35" y="-50" width="70" height="100" rx="35" fill="none" 
+          stroke="url(#faviconGrad)" stroke-width="4"/>
+    
+    <!-- Base -->
+    <rect x="-35" y="48" width="70" height="4" fill="url(#faviconGrad)"/>
+    
+    <!-- Simplified hieroglyphs -->
+    <!-- S -->
+    <text x="0" y="-25" font-family="Georgia" font-size="20" font-weight="bold" 
+          fill="url(#faviconGrad)" text-anchor="middle">S</text>
+    
+    <!-- Water symbol -->
+    <path d="M -20 -5 Q -10 -10, 0 -5 T 20 -5" stroke="url(#faviconGrad)" 
+          stroke-width="2" fill="none"/>
+    
+    <!-- N -->
+    <text x="-8" y="15" font-family="Georgia" font-size="18" font-weight="bold" 
+          fill="url(#faviconGrad)" text-anchor="middle">N</text>
+    
+    <!-- U -->
+    <text x="8" y="32" font-family="Georgia" font-size="18" font-weight="bold" 
+          fill="url(#faviconGrad)" text-anchor="middle">U</text>
+    
+    <!-- Small bird -->
+    <ellipse cx="0" cy="42" rx="8" ry="5" fill="url(#faviconGrad)"/>
+    <circle cx="-6" cy="40" r="3" fill="url(#faviconGrad)"/>
+  </g>
+</svg>
