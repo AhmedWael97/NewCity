@@ -23,6 +23,11 @@ Route::get('/link-storage', function() {
 });
 
 
+Route::get('/new-migrate', function() {
+    \Artisan::call('migrate', ['--force' => true]);
+    return "Migration Completed";
+});
+
 
 Route::get('/clear-cache', function() {
     \Artisan::call('cache:clear');
