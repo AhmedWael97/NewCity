@@ -7,6 +7,7 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ShopOwner\DashboardController as ShopOwnerDashboardController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\SitemapController;
@@ -164,11 +165,20 @@ Route::middleware('auth')->group(function () {
 
 // Shop Owner routes
 Route::middleware(['auth'])->prefix('shop-owner')->name('shop-owner.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/create-shop', [DashboardController::class, 'createShop'])->name('create-shop');
-    Route::post('/shops', [DashboardController::class, 'storeShop'])->name('shops.store');
-    Route::get('/shops/{shop}/edit', [DashboardController::class, 'editShop'])->name('shops.edit');
-    Route::put('/shops/{shop}', [DashboardController::class, 'updateShop'])->name('shops.update');
+    // Routes accessible to all authenticated users (for upgrade flow)
+    Route::get('/create-shop', [ShopOwnerDashboardController::class, 'createShop'])->name('create-shop');
+    Route::post('/upgrade', [ShopOwnerDashboardController::class, 'upgradeToShopOwner'])->name('upgrade');
+    
+    // Routes only for shop owners
+    Route::middleware(['shop-owner'])->group(function () {
+        Route::get('/dashboard', [ShopOwnerDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/subscriptions', [ShopOwnerDashboardController::class, 'subscriptions'])->name('subscriptions');
+        Route::get('/payment', [ShopOwnerDashboardController::class, 'showPayment'])->name('payment');
+        Route::post('/process-payment', [ShopOwnerDashboardController::class, 'processPayment'])->name('process-payment');
+        Route::post('/shops', [ShopOwnerDashboardController::class, 'storeShop'])->name('shops.store');
+        Route::get('/shops/{shop}/edit', [ShopOwnerDashboardController::class, 'editShop'])->name('shops.edit');
+        Route::put('/shops/{shop}', [ShopOwnerDashboardController::class, 'updateShop'])->name('shops.update');
+    });
 });
 
 // Welcome/Landing page - removed as we now use home route above that redirects

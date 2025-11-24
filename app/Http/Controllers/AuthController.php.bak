@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers;
 
@@ -39,7 +39,7 @@ class AuthController extends Controller
             
             // Redirect based on user type
             if ($user->isAdmin()) {
-                return redirect()->intended('/dashboard');
+                return redirect()->intended('/admin/dashboard');
             } elseif ($user->isShopOwner()) {
                 return redirect()->intended(route('shop-owner.dashboard'));
             } else {

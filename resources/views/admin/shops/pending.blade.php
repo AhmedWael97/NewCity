@@ -134,37 +134,30 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="dropdown action-dropdown">
-                                            <button class="btn btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                <i class="fas fa-ellipsis-v"></i>
+                                        <div class="btn-group" role="group">
+                                            <a href="{{ route('admin.shops.show', $shop) }}" 
+                                               class="btn btn-sm btn-info" 
+                                               title="عرض التفاصيل">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            
+                                            <form method="POST" action="{{ route('admin.shops.verify', $shop) }}" 
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('هل أنت متأكد من الموافقة على هذا المتجر؟')">
+                                                @csrf
+                                                <button type="submit" 
+                                                        class="btn btn-sm btn-success" 
+                                                        title="الموافقة">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            
+                                            <button type="button" 
+                                                    class="btn btn-sm btn-danger" 
+                                                    onclick="rejectShop({{ $shop->id }})"
+                                                    title="رفض">
+                                                <i class="fas fa-times"></i>
                                             </button>
-                                            <ul class="dropdown-menu dropdown-menu-end">
-                                                <li>
-                                                    <a class="dropdown-item" href="{{ route('admin.shops.show', $shop) }}">
-                                                        <i class="fas fa-eye text-info"></i>
-                                                        عرض التفاصيل
-                                                    </a>
-                                                </li>
-                                                <li><hr class="dropdown-divider"></li>
-                                                <li>
-                                                    <form method="POST" action="{{ route('admin.shops.verify', $shop) }}" 
-                                                          class="d-inline w-100"
-                                                          onsubmit="return confirm('هل أنت متأكد من الموافقة على هذا المتجر؟')">
-                                                        @csrf
-                                                        <button type="submit" class="dropdown-item">
-                                                            <i class="fas fa-check text-success"></i>
-                                                            الموافقة على المتجر
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                                <li>
-                                                    <button type="button" class="dropdown-item text-danger" 
-                                                            onclick="rejectShop({{ $shop->id }})">
-                                                        <i class="fas fa-times text-danger"></i>
-                                                        رفض المتجر
-                                                    </button>
-                                                </li>
-                                            </ul>
                                         </div>
                                     </td>
                                 </tr>
@@ -226,6 +219,20 @@
 </div>
 
 @endsection
+
+@push('styles')
+<style>
+.table tbody td {
+    color: #000 !important;
+}
+.table tbody td .text-muted {
+    color: #6c757d !important;
+}
+.table tbody td .fw-bold, .badge-info, .badge-secondary {
+    color: #000 !important;
+}
+</style>
+@endpush
 
 @section('scripts')
 <script>

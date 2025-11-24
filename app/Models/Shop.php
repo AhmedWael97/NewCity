@@ -40,6 +40,7 @@ class Shop extends Model
     protected $casts = [
         'latitude' => 'decimal:8',
         'longitude' => 'decimal:8',
+        'images' => 'array',
         'opening_hours' => 'array',
         'rating' => 'decimal:2',
         'review_count' => 'integer',
@@ -56,6 +57,49 @@ class Shop extends Model
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
     const STATUS_SUSPENDED = 'suspended';
+
+    /**
+     * Boot method to auto-generate slug
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($shop) {
+            if (empty($shop->slug)) {
+                $shop->slug = self::generateUniqueSlug($shop->name);
+            }
+        });
+
+        static::updating(function ($shop) {
+            if ($shop->isDirty('name') && empty($shop->slug)) {
+                $shop->slug = self::generateUniqueSlug($shop->name);
+            }
+        });
+    }
+
+    /**
+     * Generate a unique slug
+     */
+    private static function generateUniqueSlug($name)
+    {
+        $slug = \Illuminate\Support\Str::slug($name);
+        
+        // If slug is empty (Arabic text), use transliteration or ID
+        if (empty($slug)) {
+            $slug = 'shop-' . uniqid();
+        }
+        
+        $originalSlug = $slug;
+        $count = 1;
+
+        while (self::where('slug', $slug)->exists()) {
+            $slug = $originalSlug . '-' . $count;
+            $count++;
+        }
+
+        return $slug;
+    }
 
     /**
      * Get the owner of this shop
@@ -148,6 +192,33 @@ class Shop extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Get the shop subscriptions
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(ShopSubscription::class);
+    }
+
+    /**
+     * Get the active subscription for this shop
+     */
+    public function activeSubscription()
+    {
+        return $this->hasOne(ShopSubscription::class)
+            ->where('status', 'active')
+            ->where('ends_at', '>', now())
+            ->latest();
+    }
+
+    /**
+     * Check if shop has an active subscription
+     */
+    public function hasActiveSubscription(): bool
+    {
+        return $this->activeSubscription()->exists();
     }
 
     /**

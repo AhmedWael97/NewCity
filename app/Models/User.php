@@ -117,6 +117,24 @@ class User extends Authenticatable
     }
 
     /**
+     * Get all shop subscriptions through user's shops
+     */
+    public function shopSubscriptions()
+    {
+        return $this->hasManyThrough(ShopSubscription::class, Shop::class);
+    }
+
+    /**
+     * Get active shop subscriptions through user's shops
+     */
+    public function activeShopSubscriptions()
+    {
+        return $this->hasManyThrough(ShopSubscription::class, Shop::class)
+            ->where('shop_subscriptions.status', 'active')
+            ->where('shop_subscriptions.ends_at', '>', now());
+    }
+
+    /**
      * Get the ratings that belong to the user
      */
     public function ratings(): HasMany

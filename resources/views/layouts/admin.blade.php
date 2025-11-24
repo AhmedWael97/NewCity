@@ -288,6 +288,16 @@
             display: none;
         }
 
+        /* Hide scrollbar but keep scrolling functionality */
+        .sidebar-menu {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        .sidebar-menu::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
         .dropdown-menu {
             border: 1px solid #e3e6f0;
             box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
@@ -723,7 +733,7 @@
         </div>
 
         <!-- Sidebar Menu -->
-        <div class="sidebar-menu p-3">
+        <div class="sidebar-menu p-3 overflow-auto" style="max-height: calc(100vh - 100px);">
             <ul class="nav flex-column">
                 <!-- Dashboard -->
                 <li class="nav-item">
@@ -824,6 +834,19 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.payments.index') }}">
+                        <i class="fas fa-money-check-alt"></i>
+                        <span>المدفوعات</span>
+                        @php
+                            $pendingPayments = \App\Models\ShopSubscription::where('payment_status', 'pending')->count();
+                        @endphp
+                        @if($pendingPayments > 0)
+                            <span class="badge bg-warning text-dark me-2">{{ $pendingPayments }}</span>
+                        @endif
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.tickets.*') ? 'active' : '' }}" 
                        href="{{ route('admin.tickets.index') }}">
                         <i class="fas fa-ticket-alt"></i>
@@ -832,7 +855,7 @@
                             $pendingTickets = \App\Models\SupportTicket::where('status', 'open')->count();
                         @endphp
                         @if($pendingTickets > 0)
-                            <span class="badge badge-warning me-2">{{ $pendingTickets }}</span>
+                            <span class="badge bg-warning text-dark me-2">{{ $pendingTickets }}</span>
                         @endif
                     </a>
                 </li>

@@ -102,6 +102,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
         Route::get('/analytics/overview', [SubscriptionController::class, 'analytics'])->name('analytics');
     });
 
+    // Payment Management
+    Route::prefix('payments')->as('payments.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AdminPaymentController::class, 'index'])->name('index');
+        Route::get('/pending', [App\Http\Controllers\Admin\AdminPaymentController::class, 'pending'])->name('pending');
+        Route::get('/{subscription}', [App\Http\Controllers\Admin\AdminPaymentController::class, 'show'])->name('show');
+        Route::post('/{subscription}/verify', [App\Http\Controllers\Admin\AdminPaymentController::class, 'verifyPayment'])->name('verify');
+        Route::post('/{subscription}/reject', [App\Http\Controllers\Admin\AdminPaymentController::class, 'rejectPayment'])->name('reject');
+        Route::post('/{subscription}/refund', [App\Http\Controllers\Admin\AdminPaymentController::class, 'refund'])->name('refund');
+    });
+
+    // Shop Approval Management
+    Route::prefix('shop-approvals')->as('shop-approvals.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AdminShopApprovalController::class, 'index'])->name('index');
+        Route::get('/{shop}', [App\Http\Controllers\Admin\AdminShopApprovalController::class, 'show'])->name('show');
+        Route::post('/{shop}/approve', [App\Http\Controllers\Admin\AdminShopApprovalController::class, 'approve'])->name('approve');
+        Route::post('/{shop}/reject', [App\Http\Controllers\Admin\AdminShopApprovalController::class, 'reject'])->name('reject');
+        Route::post('/{shop}/request-changes', [App\Http\Controllers\Admin\AdminShopApprovalController::class, 'requestChanges'])->name('request-changes');
+    });
+
     // Support Tickets
     Route::prefix('tickets')->as('tickets.')->group(function () {
         Route::get('/', [SupportTicketController::class, 'index'])->name('index');

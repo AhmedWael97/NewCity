@@ -23,11 +23,75 @@
             margin: 0;
             padding: 0;
         }
+        
+        .minimal-header {
+            padding: 1.5rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .minimal-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .minimal-logo:hover {
+            transform: translateY(-2px);
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: #fff;
+            margin-left: 1rem;
+        }
+        
+        .logo-text {
+            color: #fff;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .logo-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            font-weight: 400;
+            margin: 0;
+        }
+        
+        @media (max-width: 576px) {
+            .logo-icon {
+                font-size: 2rem;
+            }
+            .logo-text {
+                font-size: 1.4rem;
+            }
+            .logo-subtitle {
+                font-size: 0.8rem;
+            }
+        }
     </style>
     
     @stack('styles')
 </head>
 <body>
+    <!-- Minimal Header with Logo -->
+    <header class="minimal-header">
+        <div class="container">
+            <a href="{{ url('/') }}" class="minimal-logo">
+                <i class="fas fa-city logo-icon"></i>
+                <div class="text-center">
+                    <h1 class="logo-text">{{ config('app.name', 'دليل المدينة') }}</h1>
+                    <p class="logo-subtitle">اكتشف أفضل المتاجر والخدمات</p>
+                </div>
+            </a>
+        </div>
+    </header>
+    
     @yield('content')
     
     <!-- Bootstrap JS -->

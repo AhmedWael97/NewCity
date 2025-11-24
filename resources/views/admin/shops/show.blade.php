@@ -117,7 +117,7 @@
                         <div class="row">
                             @foreach($shop->images as $image)
                                 <div class="col-md-4 mb-3">
-                                    <img src="{{ Storage::url($image) }}" 
+                                    <img src="{{ $image }}" 
                                          alt="{{ $shop->name }}" 
                                          class="img-fluid rounded shadow">
                                 </div>
@@ -178,30 +178,30 @@
                         <strong>الحالة:</strong>
                         @switch($shop->status)
                             @case('pending')
-                                <span class="badge badge-warning">في الانتظار</span>
+                                <span class="badge bg-warning text-dark">في الانتظار</span>
                                 @break
                             @case('approved')
-                                <span class="badge badge-success">مقبول</span>
+                                <span class="badge bg-success">مقبول</span>
                                 @break
                             @case('rejected')
-                                <span class="badge badge-danger">مرفوض</span>
+                                <span class="badge bg-danger">مرفوض</span>
                                 @break
                             @case('suspended')
-                                <span class="badge badge-secondary">معلق</span>
+                                <span class="badge bg-secondary">معلق</span>
                                 @break
                             @default
-                                <span class="badge badge-light">{{ $shop->status }}</span>
+                                <span class="badge bg-light text-dark">{{ $shop->status }}</span>
                         @endswitch
                     </div>
 
                     <div class="mb-3">
                         <strong>التحقق:</strong>
                         @if($shop->is_verified)
-                            <span class="badge badge-success">
+                            <span class="badge bg-success">
                                 <i class="fas fa-check"></i> محقق
                             </span>
                         @else
-                            <span class="badge badge-secondary">
+                            <span class="badge bg-secondary">
                                 <i class="fas fa-times"></i> غير محقق
                             </span>
                         @endif
@@ -210,22 +210,22 @@
                     <div class="mb-3">
                         <strong>مميز:</strong>
                         @if($shop->is_featured)
-                            <span class="badge badge-primary">
+                            <span class="badge bg-primary">
                                 <i class="fas fa-star"></i> مميز
                             </span>
                         @else
-                            <span class="badge badge-light">عادي</span>
+                            <span class="badge bg-light text-dark">عادي</span>
                         @endif
                     </div>
 
                     <div class="mb-3">
                         <strong>نشط:</strong>
                         @if($shop->is_active)
-                            <span class="badge badge-success">
+                            <span class="badge bg-success">
                                 <i class="fas fa-check"></i> نشط
                             </span>
                         @else
-                            <span class="badge badge-secondary">
+                            <span class="badge bg-secondary">
                                 <i class="fas fa-pause"></i> غير نشط
                             </span>
                         @endif
@@ -234,7 +234,7 @@
                     <div class="mb-3">
                         <strong>التقييم:</strong>
                         @if($shop->rating > 0)
-                            <span class="badge badge-warning">
+                            <span class="badge bg-warning text-dark">
                                 {{ number_format($shop->rating, 1) }} 
                                 <i class="fas fa-star"></i>
                             </span>
@@ -295,7 +295,7 @@
                         </div>
                         <div class="mb-2">
                             <strong>نوع المستخدم:</strong>
-                            <span class="badge badge-{{ $shop->owner->user_type == 'admin' ? 'danger' : ($shop->owner->user_type == 'shop_owner' ? 'success' : 'secondary') }}">
+                            <span class="badge bg-{{ $shop->owner->user_type == 'admin' ? 'danger' : ($shop->owner->user_type == 'shop_owner' ? 'success' : 'secondary') }}">
                                 {{ $shop->owner->user_type == 'regular' ? 'عادي' : ($shop->owner->user_type == 'shop_owner' ? 'صاحب متجر' : 'مدير') }}
                             </span>
                         </div>

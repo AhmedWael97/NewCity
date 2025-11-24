@@ -23,6 +23,26 @@
             <form action="{{ route('shop-owner.shops.store') }}" method="POST" enctype="multipart/form-data" class="shop-form">
                 @csrf
                 
+                <!-- Hidden subscription plan field (from URL parameter) -->
+                <input type="hidden" name="subscription_plan_id" value="{{ request('plan') ?? old('subscription_plan_id') }}">
+                
+                <!-- Selected Plan Info -->
+                @if(isset($subscriptionPlan))
+                    <div class="alert alert-info mb-4">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1">الباقة المختارة: <strong>{{ $subscriptionPlan->name }}</strong></h5>
+                                <p class="mb-0">
+                                    السعر: {{ number_format($subscriptionPlan->monthly_price, 2) }} جنيه شهرياً
+                                </p>
+                            </div>
+                            <a href="{{ route('shop-owner.subscriptions') }}" class="btn btn-sm btn-outline-primary">
+                                تغيير الباقة
+                            </a>
+                        </div>
+                    </div>
+                @endif
+                
                 <!-- Validation Errors -->
                 @if ($errors->any())
                     <div class="alert alert-danger">

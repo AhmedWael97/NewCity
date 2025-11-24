@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Shop;
 use App\Models\Category;
 use App\Models\City;
+use App\Services\PaymentService;
 use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
@@ -44,6 +45,19 @@ class DashboardController extends Controller
 
     public function createShop()
     {
+        // Check if a subscription plan is selected
+        if (!request()->has('plan')) {
+            return redirect()->route('shop-owner.subscriptions')
+                ->with('info', 'يجب عليك اختيار باقة اشتراك قبل إضافة متجر جديد.');
+        }
+
+        // Verify the plan exists and is active
+        $subscriptionPlan = \App\Models\SubscriptionPlan::active()->find(request('plan'));
+        if (!$subscriptionPlan) {
+            return redirect()->route('shop-owner.subscriptions')
+                ->with('error', 'الباقة المختارة غير متاحة. يرجى اختيار باقة أخرى.');
+        }
+
         $seoData = [
             'title' => 'إضافة متجر جديد - اكتشف المدن',
             'description' => 'أضف متجرك الجديد وابدأ في جذب العملاء من خلال منصة اكتشف المدن',
@@ -54,12 +68,96 @@ class DashboardController extends Controller
         $categories = Category::all();
         $cities = City::all();
         
-        return view('shop-owner.create-shop', compact('categories', 'cities', 'seoData'));
+        return view('shop-owner.create-shop', compact('categories', 'cities', 'seoData', 'subscriptionPlan'));
+    }
+
+    public function subscriptions()
+    {
+        $seoData = [
+            'title' => 'باقات الاشتراك - اكتشف المدن',
+            'description' => 'اختر الباقة المناسبة لمتجرك وابدأ في جذب العملاء',
+            'keywords' => 'باقات اشتراك, خطط تسعير, متاجر',
+            'canonical' => route('shop-owner.subscriptions')
+        ];
+
+        $plans = \App\Models\SubscriptionPlan::active()->ordered()->get();
+        $userShops = Auth::user()->shops()->with('activeSubscription.subscriptionPlan')->get();
+        
+        return view('shop-owner.subscriptions', compact('plans', 'userShops', 'seoData'));
+    }
+
+    public function showPayment(Request $request)
+    {
+        // Validate plan parameter
+        $plan = \App\Models\SubscriptionPlan::active()->findOrFail($request->plan);
+        $billingCycle = $request->get('cycle', 'monthly');
+        
+        // Calculate amount
+        $amount = $billingCycle === 'yearly' ? $plan->yearly_price : $plan->monthly_price;
+        
+        // Get active payment methods
+        $paymentMethods = PaymentService::getActivePaymentMethods();
+        
+        $seoData = [
+            'title' => 'الدفع - اكتشف المدن',
+            'description' => 'اختر طريقة الدفع المناسبة',
+            'keywords' => 'دفع, اشتراك, متاجر',
+            'canonical' => route('shop-owner.payment')
+        ];
+        
+        return view('shop-owner.payment', compact('plan', 'billingCycle', 'amount', 'paymentMethods', 'seoData'));
+    }
+
+    public function processPayment(Request $request)
+    {
+        $request->validate([
+            'plan_id' => 'required|exists:subscription_plans,id',
+            'billing_cycle' => 'required|in:monthly,yearly',
+            'payment_method' => 'required|string',
+            'payment_notes' => 'nullable|string|max:1000',
+            'transfer_receipt' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'transfer_reference' => 'nullable|string|max:255'
+        ]);
+
+        $plan = \App\Models\SubscriptionPlan::findOrFail($request->plan_id);
+        
+        // Prepare payment details
+        $paymentDetails = [
+            'notes' => $request->payment_notes,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent()
+        ];
+
+        // Handle file upload for bank transfer
+        if ($request->hasFile('transfer_receipt')) {
+            $path = $request->file('transfer_receipt')->store('payment-receipts', 'public');
+            $paymentDetails['receipt_path'] = $path;
+        }
+
+        if ($request->filled('transfer_reference')) {
+            $paymentDetails['transfer_reference'] = $request->transfer_reference;
+        }
+
+        // Store payment info in session to use after shop creation
+        session([
+            'pending_payment' => [
+                'plan_id' => $plan->id,
+                'billing_cycle' => $request->billing_cycle,
+                'payment_method' => $request->payment_method,
+                'payment_details' => $paymentDetails
+            ]
+        ]);
+
+        // Redirect to shop creation
+        return redirect()->route('shop-owner.create-shop', ['plan' => $plan->id])
+            ->with('success', 'تم تسجيل بيانات الدفع. الآن أكمل معلومات المتجر.');
     }
 
     public function storeShop(Request $request)
     {
+        // Check if user has selected a subscription package
         $request->validate([
+            'subscription_plan_id' => 'required|exists:subscription_plans,id',
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'city_id' => 'required|exists:cities,id',
@@ -90,7 +188,30 @@ class DashboardController extends Controller
             $shopData['images'] = $images;
         }
 
-        Shop::create($shopData);
+        $shop = Shop::create($shopData);
+
+        // Get payment info from session
+        $pendingPayment = session('pending_payment');
+        
+        if ($pendingPayment) {
+            // Use PaymentService to process subscription payment
+            $paymentService = new PaymentService();
+            $subscriptionPlan = \App\Models\SubscriptionPlan::findOrFail($pendingPayment['plan_id']);
+            
+            $paymentService->processSubscriptionPayment(
+                $shop,
+                $subscriptionPlan,
+                $pendingPayment['payment_method'],
+                $pendingPayment['billing_cycle'],
+                $pendingPayment['payment_details']
+            );
+            
+            // Clear payment session
+            session()->forget('pending_payment');
+            
+            return redirect()->route('shop-owner.dashboard')
+                ->with('success', 'تم إرسال طلب إضافة المتجر وبيانات الدفع بنجاح! سيتم مراجعته خلال 24-48 ساعة.');
+        }
 
         return redirect()->route('shop-owner.dashboard')
             ->with('success', 'تم إرسال طلب إضافة المتجر بنجاح! سيتم مراجعته خلال 24-48 ساعة.');

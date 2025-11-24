@@ -6,28 +6,23 @@ use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use App\Models\City;
 use App\Models\Category;
+use App\Models\SubscriptionPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class DashboardController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware(function ($request, $next) {
-            if (!Auth::user()->isShopOwner()) {
-                abort(403, 'غير مصرح لك بالوصول لهذه الصفحة');
-            }
-            return $next($request);
-        });
-    }
-
     /**
      * Show shop owner dashboard
      */
     public function index()
     {
+        // Ensure user is shop owner
+        if (!Auth::user()->isShopOwner()) {
+            abort(403, 'غير مصرح لك بالوصول لهذه الصفحة');
+        }
+        
         $user = Auth::user();
         $shops = $user->shops()->with(['city', 'category'])->latest()->get();
         
@@ -39,6 +34,15 @@ class DashboardController extends Controller
      */
     public function createShop()
     {
+        // Check if user is regular user - show upgrade page
+        if (Auth::user()->isRegular()) {
+            $subscriptionPlans = SubscriptionPlan::where('is_active', true)
+                ->orderBy('monthly_price')
+                ->get();
+            
+            return view('shop-owner.upgrade-account', compact('subscriptionPlans'));
+        }
+        
         $cities = City::where('is_active', true)->orderBy('name')->get();
         $categories = Category::where('is_active', true)->orderBy('name')->get();
         
@@ -46,10 +50,58 @@ class DashboardController extends Controller
     }
 
     /**
+     * Upgrade regular user to shop owner
+     */
+    public function upgradeToShopOwner(Request $request)
+    {
+        $user = Auth::user();
+        
+        // Only allow regular users to upgrade
+        if (!$user->isRegular()) {
+            return redirect()->route('shop-owner.dashboard')
+                ->with('error', 'حسابك بالفعل من نوع صاحب متجر');
+        }
+        
+        // Upgrade user type
+        $user->user_type = 'shop_owner';
+        $user->save();
+        
+        // Redirect to subscription selection
+        return redirect()->route('shop-owner.subscriptions')
+            ->with('success', 'تم ترقية حسابك إلى صاحب متجر! الرجاء اختيار خطة الاشتراك.');
+    }
+
+    /**
+     * Show subscription plans
+     */
+    public function subscriptions()
+    {
+        if (!Auth::user()->isShopOwner()) {
+            return redirect()->route('shop-owner.create-shop')
+                ->with('error', 'يجب ترقية حسابك أولاً');
+        }
+        
+        $plans = SubscriptionPlan::where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('monthly_price')
+            ->get();
+            
+        $userShops = Auth::user()->shops()->get();
+        
+        return view('shop-owner.subscriptions', compact('plans', 'userShops'));
+    }
+
+    /**
      * Store new shop
      */
     public function storeShop(Request $request)
     {
+        // Ensure user is shop owner
+        if (!Auth::user()->isShopOwner()) {
+            return redirect()->route('shop-owner.create-shop')
+                ->with('error', 'يجب أن تكون صاحب متجر لإضافة متجر');
+        }
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string|max:1000',

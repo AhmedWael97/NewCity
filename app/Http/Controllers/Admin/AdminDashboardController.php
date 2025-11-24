@@ -101,7 +101,7 @@ class AdminDashboardController extends Controller
         $recent_ratings = Rating::with(['user', 'shop'])->latest()->take(5)->get();
 
         // Recent Subscriptions
-        $recentSubscriptions = ShopSubscription::with(['shop', 'plan'])
+        $recentSubscriptions = ShopSubscription::with(['shop', 'subscriptionPlan'])
             ->latest()
             ->take(5)
             ->get();

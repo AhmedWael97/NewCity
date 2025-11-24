@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class ShopOwnerMiddleware
+class EnsureUserIsShopOwner
 {
     /**
      * Handle an incoming request.
@@ -16,24 +16,14 @@ class ShopOwnerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if user is authenticated
         if (!Auth::check()) {
             return redirect()->route('login')
                 ->with('error', 'يجب تسجيل الدخول أولاً.');
         }
 
-        // Check if the authenticated user has shop_owner or admin user type
-        $user = Auth::user();
-        if (!in_array($user->user_type, ['shop_owner', 'admin'])) {
+        if (!Auth::user()->isShopOwner()) {
             return redirect()->route('profile')
                 ->with('error', 'هذه الصفحة مخصصة لأصحاب المتاجر فقط. يرجى ترقية حسابك إلى حساب صاحب متجر.');
-        }
-
-        // Check if user is active
-        if (!$user->is_active) {
-            Auth::logout();
-            return redirect()->route('login')
-                ->with('error', 'حسابك غير نشط. يرجى التواصل مع الإدارة.');
         }
 
         return $next($request);
