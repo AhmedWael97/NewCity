@@ -128,31 +128,31 @@
                                 <td>{{ $category->name_en ?: 'غير محدد' }}</td>
                                 <td>
                                     @if($category->parent)
-                                        <span class="badge badge-info">{{ $category->parent->name_ar }}</span>
+                                        <span class="badge bg-info text-white">{{ $category->parent->name_ar }}</span>
                                     @else
-                                        <span class="badge badge-primary">تصنيف رئيسي</span>
+                                        <span class="badge bg-primary text-white">تصنيف رئيسي</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-secondary">{{ $category->sort_order ?? 0 }}</span>
+                                    <span class="badge bg-secondary text-white">{{ $category->sort_order ?? 0 }}</span>
                                 </td>
                                 <td>
-                                    <span class="badge badge-primary">{{ $category->shops_count ?? 0 }}</span>
+                                    <span class="badge bg-primary text-white">{{ $category->shops_count ?? 0 }}</span>
                                 </td>
                                 <td>
                                     @if($category->children_count > 0)
-                                        <span class="badge badge-warning">{{ $category->children_count }}</span>
+                                        <span class="badge bg-warning text-dark">{{ $category->children_count }}</span>
                                     @else
                                         <span class="text-muted">لا يوجد</span>
                                     @endif
                                 </td>
                                 <td>
                                     @if($category->is_active)
-                                        <span class="badge badge-success">
+                                        <span class="badge bg-success text-white">
                                             <i class="fas fa-check"></i> نشط
                                         </span>
                                     @else
-                                        <span class="badge badge-secondary">
+                                        <span class="badge bg-secondary text-white">
                                             <i class="fas fa-pause"></i> غير نشط
                                         </span>
                                     @endif

@@ -62,8 +62,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     
     // Review Management
     Route::resource('reviews', App\Http\Controllers\Admin\AdminReviewController::class)->only(['index', 'show', 'destroy']);
-    Route::patch('reviews/{review}/approve', [App\Http\Controllers\Admin\AdminReviewController::class, 'approve'])->name('reviews.approve');
-    Route::patch('reviews/{review}/reject', [App\Http\Controllers\Admin\AdminReviewController::class, 'reject'])->name('reviews.reject');
+    Route::patch('reviews/{review}/verify', [App\Http\Controllers\Admin\AdminReviewController::class, 'verify'])->name('reviews.verify');
+    Route::patch('reviews/{review}/unverify', [App\Http\Controllers\Admin\AdminReviewController::class, 'unverify'])->name('reviews.unverify');
     
     // Favorites Management
     Route::get('favorites', [App\Http\Controllers\Admin\AdminFavoriteController::class, 'index'])->name('favorites.index');

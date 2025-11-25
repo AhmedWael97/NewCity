@@ -20,7 +20,7 @@
                     <!-- City Header Image -->
                     <div class="card-header p-0" style="height: 120px; overflow: hidden;">
                         @if($city->hero_image)
-                            <img src="{{ Storage::url($city->hero_image) }}" 
+                            <img src="{{ $city->hero_image }}" 
                                  alt="{{ $city->name_ar }}" 
                                  class="w-100 h-100" 
                                  style="object-fit: cover;">
@@ -40,9 +40,9 @@
                             </div>
                             
                             @if($city->enable_custom_styling)
-                                <span class="badge badge-success">تصميم مخصص</span>
+                                <span class="badge bg-success text-white">تصميم مخصص</span>
                             @else
-                                <span class="badge badge-secondary">تصميم افتراضي</span>
+                                <span class="badge bg-secondary text-white">تصميم افتراضي</span>
                             @endif
                         </div>
 
@@ -74,7 +74,7 @@
                         @if($city->font_family && $city->font_family !== 'default')
                             <div class="mb-3">
                                 <small class="text-muted">الخط:</small>
-                                <span class="badge badge-light">{{ ucfirst(str_replace('_', ' ', $city->font_family)) }}</span>
+                                <span class="badge bg-light text-dark">{{ ucfirst(str_replace('_', ' ', $city->font_family)) }}</span>
                             </div>
                         @endif
 

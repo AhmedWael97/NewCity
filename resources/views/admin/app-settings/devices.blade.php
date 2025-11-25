@@ -94,16 +94,16 @@
                                 <td>{{ $device->device_name ?? '-' }}</td>
                                 <td>
                                     @if($device->app_version)
-                                        <span class="badge badge-info">v{{ $device->app_version }}</span>
+                                        <span class="badge bg-info text-white">v{{ $device->app_version }}</span>
                                     @else
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
                                 <td>
                                     @if($device->is_active)
-                                        <span class="badge badge-success">نشط</span>
+                                        <span class="badge bg-success text-white">نشط</span>
                                     @else
-                                        <span class="badge badge-secondary">غير نشط</span>
+                                        <span class="badge bg-secondary text-white">غير نشط</span>
                                     @endif
                                 </td>
                                 <td>

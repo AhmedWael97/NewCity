@@ -334,12 +334,14 @@ class AnalyticsController extends Controller
             ->count();
 
         // Count users who viewed only one shop (simplified bounce rate)
-        $singleViewSessions = ShopAnalytics::join('shops', 'shop_analytics.shop_id', '=', 'shops.id')
+        $singleViewSessions = ShopAnalytics::select(DB::raw('COUNT(DISTINCT shop_analytics.user_ip) as count'))
+            ->join('shops', 'shop_analytics.shop_id', '=', 'shops.id')
             ->where('shops.city_id', $cityId)
             ->where('shop_analytics.event_type', 'shop_view')
             ->where('shop_analytics.created_at', '>=', Carbon::now()->subDays(30))
             ->groupBy('shop_analytics.user_ip')
             ->havingRaw('COUNT(*) = 1')
+            ->get()
             ->count();
 
         return $totalSessions > 0 ? round(($singleViewSessions / $totalSessions) * 100, 2) : 0;

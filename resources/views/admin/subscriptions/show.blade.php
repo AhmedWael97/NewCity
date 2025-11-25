@@ -9,7 +9,7 @@
         <h1 class="h3 mb-0 text-gray-800">
             <i class="fas fa-crown"></i> {{ $subscription->name }}
             @if($subscription->is_popular)
-                <span class="badge badge-warning">الأكثر شعبية</span>
+                <span class="badge bg-warning text-dark">الأكثر شعبية</span>
             @endif
         </h1>
         <div>

@@ -116,21 +116,21 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-info">
+                                    <span class="badge bg-info text-white">
                                         <i class="fas fa-map-marker-alt"></i> {{ $banner->city->name }}
                                     </span>
                                 </td>
                                 <td>
                                     @if($banner->link_type == 'internal')
-                                        <span class="badge badge-primary">داخلي</span>
+                                        <span class="badge bg-primary text-white">داخلي</span>
                                     @elseif($banner->link_type == 'external')
-                                        <span class="badge badge-success">خارجي</span>
+                                        <span class="badge bg-success text-white">خارجي</span>
                                     @else
-                                        <span class="badge badge-secondary">بدون رابط</span>
+                                        <span class="badge bg-secondary text-white">بدون رابط</span>
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-warning" style="font-size: 14px;">
+                                    <span class="badge bg-warning text-dark" style="font-size: 14px;">
                                         {{ $banner->priority }}
                                     </span>
                                 </td>

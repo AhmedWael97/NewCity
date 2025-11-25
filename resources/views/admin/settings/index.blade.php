@@ -99,27 +99,27 @@
                     <div class="list-group list-group-flush">
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <strong>PHP Version:</strong>
-                            <span class="badge badge-info">{{ PHP_VERSION }}</span>
+                            <span class="badge bg-info text-white">{{ PHP_VERSION }}</span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <strong>Laravel Version:</strong>
-                            <span class="badge badge-success">{{ app()->version() }}</span>
+                            <span class="badge bg-success text-white">{{ app()->version() }}</span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <strong>Mail Driver:</strong>
-                            <span class="badge badge-secondary">{{ $settings['mail_driver'] }}</span>
+                            <span class="badge bg-secondary text-white">{{ $settings['mail_driver'] }}</span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <strong>Cache Driver:</strong>
-                            <span class="badge badge-secondary">{{ $settings['cache_driver'] }}</span>
+                            <span class="badge bg-secondary text-white">{{ $settings['cache_driver'] }}</span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <strong>Session Driver:</strong>
-                            <span class="badge badge-secondary">{{ $settings['session_driver'] }}</span>
+                            <span class="badge bg-secondary text-white">{{ $settings['session_driver'] }}</span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
                             <strong>Queue Driver:</strong>
-                            <span class="badge badge-secondary">{{ $settings['queue_driver'] }}</span>
+                            <span class="badge bg-secondary text-white">{{ $settings['queue_driver'] }}</span>
                         </div>
                     </div>
                 </div>

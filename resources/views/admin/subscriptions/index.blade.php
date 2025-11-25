@@ -122,7 +122,7 @@
                                     <td>
                                         <strong>{{ $plan->name }}</strong>
                                         @if($plan->is_popular)
-                                            <span class="badge badge-warning">الأكثر شعبية</span>
+                                            <span class="badge bg-warning text-dark">الأكثر شعبية</span>
                                         @endif
                                     </td>
                                     <td>{{ Str::limit($plan->description, 50) }}</td>
@@ -133,7 +133,7 @@
                                         <strong class="text-info">{{ number_format($plan->yearly_price, 2) }} ج.م</strong>
                                     </td>
                                     <td>
-                                        <span class="badge badge-primary badge-pill">{{ $plan->subscriptions_count }}</span>
+                                        <span class="badge bg-primary text-white rounded-pill">{{ $plan->subscriptions_count }}</span>
                                     </td>
                                     <td>
                                         <form action="{{ route('admin.subscription-plans.toggle-status', $plan) }}" method="POST" style="display: inline;">

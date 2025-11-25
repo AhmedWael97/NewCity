@@ -182,7 +182,7 @@
                             <tr>
                                 <td>
                                     @if($ad->image_path)
-                                        <img src="{{ Storage::url($ad->image_path) }}" 
+                                        <img src="{{ $ad->image_path }}" 
                                              alt="{{ $ad->title }}" 
                                              class="img-thumbnail" 
                                              style="width: 60px; height: 40px; object-fit: cover;">
@@ -202,16 +202,16 @@
                                 <td>
                                     @switch($ad->type)
                                         @case('banner')
-                                            <span class="badge badge-info">بانر</span>
+                                            <span class="badge bg-info text-white">بانر</span>
                                             @break
                                         @case('hero')
-                                            <span class="badge badge-primary">رئيسي</span>
+                                            <span class="badge bg-primary text-white">رئيسي</span>
                                             @break
                                         @case('sponsored_listing')
-                                            <span class="badge badge-warning">قائمة مموّلة</span>
+                                            <span class="badge bg-warning text-dark">قائمة مموّلة</span>
                                             @break
                                         @case('sidebar')
-                                            <span class="badge badge-secondary">جانبي</span>
+                                            <span class="badge bg-secondary text-white">جانبي</span>
                                             @break
                                     @endswitch
                                 </td>
@@ -223,7 +223,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="badge badge-light">{{ strtoupper($ad->pricing_model) }}</span>
+                                    <span class="badge bg-light text-dark">{{ strtoupper($ad->pricing_model) }}</span>
                                     <br><small>${{ number_format($ad->price_amount, 2) }}</small>
                                 </td>
                                 <td>{{ number_format($ad->impressions) }}</td>
@@ -232,19 +232,19 @@
                                 <td>
                                     @switch($ad->status)
                                         @case('active')
-                                            <span class="badge badge-success">نشط</span>
+                                            <span class="badge bg-success text-white">نشط</span>
                                             @break
                                         @case('paused')
-                                            <span class="badge badge-warning">متوقف</span>
+                                            <span class="badge bg-warning text-dark">متوقف</span>
                                             @break
                                         @case('pending_review')
-                                            <span class="badge badge-info">في المراجعة</span>
+                                            <span class="badge bg-info text-white">في المراجعة</span>
                                             @break
                                         @case('rejected')
-                                            <span class="badge badge-danger">مرفوض</span>
+                                            <span class="badge bg-danger text-white">مرفوض</span>
                                             @break
                                         @case('completed')
-                                            <span class="badge badge-secondary">مكتمل</span>
+                                            <span class="badge bg-secondary text-white">مكتمل</span>
                                             @break
                                     @endswitch
                                 </td>

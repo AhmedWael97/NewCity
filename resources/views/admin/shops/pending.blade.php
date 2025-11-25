@@ -8,7 +8,7 @@
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">
             <i class="fas fa-clock"></i> المتاجر المعلقة
-            <span class="badge badge-warning ms-2">{{ $shops->total() }}</span>
+            <span class="badge bg-warning text-dark ms-2">{{ $shops->total() }}</span>
         </h1>
         <div>
             <a href="{{ route('admin.shops.index') }}" class="btn btn-secondary btn-sm">
@@ -122,10 +122,10 @@
                                         </div>
                                     </td>
                                     <td class="d-none-lg">
-                                        <span class="badge badge-info">{{ $shop->city->name }}</span>
+                                        <span class="badge bg-info text-white">{{ $shop->city->name }}</span>
                                     </td>
                                     <td class="d-none-lg">
-                                        <span class="badge badge-secondary">{{ $shop->category->name }}</span>
+                                        <span class="badge bg-secondary text-white">{{ $shop->category->name }}</span>
                                     </td>
                                     <td class="d-none-sm">
                                         <div class="text-truncate-sm">
@@ -228,7 +228,7 @@
 .table tbody td .text-muted {
     color: #6c757d !important;
 }
-.table tbody td .fw-bold, .badge-info, .badge-secondary {
+.table tbody td .fw-bold, .bg-info, .bg-secondary {
     color: #000 !important;
 }
 </style>

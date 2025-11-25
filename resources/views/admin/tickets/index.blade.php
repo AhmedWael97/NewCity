@@ -247,7 +247,7 @@
                                         <strong>{{ Str::limit($ticket->subject, 40) }}</strong>
                                     </a>
                                     @if(!$ticket->admin_read_at)
-                                        <span class="badge badge-warning badge-sm ml-1">جديد</span>
+                                        <span class="badge bg-warning text-dark badge-sm ml-1">جديد</span>
                                     @endif
                                 </td>
                                 <td>

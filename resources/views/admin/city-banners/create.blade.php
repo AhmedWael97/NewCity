@@ -21,6 +21,38 @@
                     <h6 class="m-0 font-weight-bold text-primary">معلومات الإعلان</h6>
                 </div>
                 <div class="card-body">
+                    @if ($errors->any())
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <h6 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> يوجد أخطاء في النموذج:</h6>
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if(session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    @endif
+
                     <form action="{{ route('admin.city-banners.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
@@ -140,8 +172,9 @@
 
                         <div class="form-group">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" 
-                                       {{ old('is_active', true) ? 'checked' : '' }}>
+                                <input type="hidden" name="is_active" value="0">
+                                <input type="checkbox" value="1" class="custom-control-input" id="is_active" name="is_active" 
+                                       {{ old('is_active', 1) ? 'checked' : '' }}>
                                 <label class="custom-control-label" for="is_active">
                                     تفعيل الإعلان
                                 </label>
@@ -207,6 +240,39 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+<style>
+    .invalid-feedback {
+        display: block !important;
+        color: #dc3545 !important;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .is-invalid {
+        border-color: #dc3545 !important;
+    }
+    
+    .is-invalid:focus {
+        border-color: #dc3545 !important;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+    }
+    
+    .alert {
+        margin-bottom: 1.5rem;
+    }
+    
+    .alert ul {
+        padding-left: 1.5rem;
+    }
+    
+    .alert-heading {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>

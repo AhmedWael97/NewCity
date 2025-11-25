@@ -149,7 +149,7 @@
                     <h6 class="m-0 font-weight-bold text-success">صورة الملف الشخصي</h6>
                 </div>
                 <div class="card-body text-center">
-                    <img src="{{ Storage::url($user->profile_image) }}" 
+                    <img src="{{ $user->profile_image }}" 
                          alt="{{ $user->name }}" 
                          class="img-fluid rounded-circle" 
                          style="max-width: 200px; max-height: 200px;">

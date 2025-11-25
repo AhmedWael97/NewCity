@@ -129,7 +129,7 @@
                                                 <div class="mt-2">
                                                     <small class="text-muted">الصورة الحالية:</small>
                                                     <br>
-                                                    <img src="{{ Storage::url($category->image) }}" alt="{{ $category->name }}" 
+                                                    <img src="{{ $category->image }}" alt="{{ $category->name }}" 
                                                          class="img-thumbnail" style="max-width: 150px; max-height: 150px;">
                                                 </div>
                                             @endif
@@ -319,7 +319,7 @@
                                     <div class="row">
                                         @foreach($category->children as $child)
                                         <div class="col-md-3 mb-2">
-                                            <span class="badge badge-info">{{ $child->name }}</span>
+                                            <span class="badge bg-info text-white">{{ $child->name }}</span>
                                         </div>
                                         @endforeach
                                     </div>

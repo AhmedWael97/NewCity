@@ -125,20 +125,20 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="badge badge-info">{{ $city->slug }}</span>
+                                    <span class="badge bg-info text-white">{{ $city->slug }}</span>
                                 </td>
                                 <td>{{ $city->country }}</td>
                                 <td>{{ $city->state ?: 'غير محدد' }}</td>
                                 <td>
-                                    <span class="badge badge-primary">{{ $city->shops_count ?? 0 }}</span>
+                                    <span class="badge bg-primary text-white">{{ $city->shops_count ?? 0 }}</span>
                                 </td>
                                 <td>
                                     @if($city->is_active)
-                                        <span class="badge badge-success">
+                                        <span class="badge bg-success text-white">
                                             <i class="fas fa-check"></i> نشط
                                         </span>
                                     @else
-                                        <span class="badge badge-secondary">
+                                        <span class="badge bg-secondary text-white">
                                             <i class="fas fa-pause"></i> غير نشط
                                         </span>
                                     @endif

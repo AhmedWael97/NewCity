@@ -118,7 +118,7 @@
                     @forelse($topSearchTerms->take(15) as $searchTerm)
                         <div class="d-flex justify-content-between align-items-center py-1 {{ !$loop->last ? 'border-bottom' : '' }}">
                             <div class="font-weight-bold">{{ $searchTerm->search_term }}</div>
-                            <span class="badge badge-warning">{{ number_format($searchTerm->search_count) }} بحث</span>
+                            <span class="badge bg-warning text-dark">{{ number_format($searchTerm->search_count) }} بحث</span>
                         </div>
                     @empty
                         <div class="text-center text-muted py-4">

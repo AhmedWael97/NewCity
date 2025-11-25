@@ -839,7 +839,7 @@
                         <i class="fas fa-money-check-alt"></i>
                         <span>المدفوعات</span>
                         @php
-                            $pendingPayments = \App\Models\ShopSubscription::where('payment_status', 'pending')->count();
+                            $pendingPayments = \App\Models\ShopSubscription::where('status', 'pending')->count();
                         @endphp
                         @if($pendingPayments > 0)
                             <span class="badge bg-warning text-dark me-2">{{ $pendingPayments }}</span>

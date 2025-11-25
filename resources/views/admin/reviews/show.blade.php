@@ -26,22 +26,22 @@
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">Review Information</h6>
                     <div>
-                        @if(!($review->is_approved ?? true))
-                            <form action="{{ route('admin.reviews.approve', $review->id) }}" 
+                        @if(!$review->is_verified)
+                            <form action="{{ route('admin.reviews.verify', $review->id) }}" 
                                   method="POST" class="d-inline">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="btn btn-sm btn-success">
-                                    <i class="fas fa-check"></i> Approve Review
+                                    <i class="fas fa-check"></i> Verify Review
                                 </button>
                             </form>
                         @else
-                            <form action="{{ route('admin.reviews.reject', $review->id) }}" 
+                            <form action="{{ route('admin.reviews.unverify', $review->id) }}" 
                                   method="POST" class="d-inline">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="btn btn-sm btn-warning">
-                                    <i class="fas fa-times"></i> Reject Review
+                                    <i class="fas fa-times"></i> Unverify Review
                                 </button>
                             </form>
                         @endif
@@ -71,19 +71,19 @@
                     <div class="mb-4">
                         <h5 class="font-weight-bold">Review Comment</h5>
                         <div class="bg-light p-3 rounded">
-                            <p class="mb-0" style="white-space: pre-wrap;">{{ $review->review ?? 'No comment provided' }}</p>
+                            <p class="mb-0" style="white-space: pre-wrap;">{{ $review->comment ?? 'No comment provided' }}</p>
                         </div>
                     </div>
 
                     <div class="mb-4">
                         <h5 class="font-weight-bold">Status</h5>
-                        @if($review->is_approved ?? true)
+                        @if($review->is_verified)
                             <span class="badge bg-success text-white fs-6 px-3 py-2">
-                                <i class="fas fa-check-circle"></i> Approved
+                                <i class="fas fa-check-circle"></i> Verified
                             </span>
                         @else
-                            <span class="badge bg-warning text-white fs-6 px-3 py-2">
-                                <i class="fas fa-clock"></i> Pending Approval
+                            <span class="badge bg-secondary text-white fs-6 px-3 py-2">
+                                <i class="fas fa-clock"></i> Unverified
                             </span>
                         @endif
                     </div>
@@ -159,16 +159,16 @@
             </div>
 
             <!-- Shop Info -->
-            @if($review->reviewable)
+            @if($review->shop)
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary">Shop Information</h6>
                     </div>
                     <div class="card-body">
-                        @if($review->reviewable->images_array && count($review->reviewable->images_array) > 0)
+                        @if($review->shop->images_array && count($review->shop->images_array) > 0)
                             <div class="text-center mb-3">
-                                <img src="{{ asset('storage/' . $review->reviewable->images_array[0]) }}" 
-                                     alt="{{ $review->reviewable->name }}"
+                                <img src="{{ asset('storage/' . $review->shop->images_array[0]) }}" 
+                                     alt="{{ $review->shop->name }}"
                                      class="img-fluid rounded"
                                      style="max-height: 150px; object-fit: cover;">
                             </div>
@@ -176,30 +176,30 @@
                         
                         <p class="mb-2">
                             <strong>Shop Name:</strong><br>
-                            {{ $review->reviewable->name }}
+                            {{ $review->shop->name }}
                         </p>
                         <p class="mb-2">
                             <strong>Average Rating:</strong><br>
                             <div class="d-flex align-items-center">
                                 @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star {{ $i <= round($review->reviewable->rating) ? 'text-warning' : 'text-muted' }}"></i>
+                                    <i class="fas fa-star {{ $i <= round($review->shop->rating) ? 'text-warning' : 'text-muted' }}"></i>
                                 @endfor
-                                <span class="ms-2">{{ number_format($review->reviewable->rating, 1) }}/5</span>
+                                <span class="ms-2">{{ number_format($review->shop->rating, 1) }}/5</span>
                             </div>
                         </p>
                         <p class="mb-2">
                             <strong>Total Reviews:</strong><br>
-                            {{ $review->reviewable->review_count }} reviews
+                            {{ $review->shop->review_count }} reviews
                         </p>
                         <p class="mb-2">
                             <strong>Status:</strong><br>
-                            <span class="badge bg-{{ $review->reviewable->status === 'approved' ? 'success' : 'warning' }} text-white">
-                                {{ ucfirst($review->reviewable->status) }}
+                            <span class="badge bg-{{ $review->shop->status === 'approved' ? 'success' : 'warning' }} text-white">
+                                {{ ucfirst($review->shop->status) }}
                             </span>
                         </p>
                         
                         <div class="mt-3">
-                            <a href="{{ route('admin.shops.show', $review->reviewable->id) }}" 
+                            <a href="{{ route('admin.shops.show', $review->shop->id) }}" 
                                class="btn btn-sm btn-primary w-100">
                                 <i class="fas fa-store"></i> View Shop Details
                             </a>

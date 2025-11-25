@@ -112,7 +112,7 @@
                                 <option value="">اختر المدينة</option>
                                 @foreach($cities as $city)
                                     <option value="{{ $city->id }}" {{ old('city_id') == $city->id ? 'selected' : '' }}>
-                                        {{ $city->name_ar }}
+                                        {{ $city->name }}
                                     </option>
                                 @endforeach
                             </select>

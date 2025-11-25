@@ -153,7 +153,7 @@
 
                         <div class="form-group">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" 
+                                <input type="checkbox" class="custom-control-input" value="1" id="is_active" name="is_active" 
                                        {{ old('is_active', $cityBanner->is_active) ? 'checked' : '' }}>
                                 <label class="custom-control-label" for="is_active">
                                     تفعيل الإعلان
@@ -187,15 +187,15 @@
                     <p><strong>تم الإنشاء:</strong><br>{{ $cityBanner->created_at->format('Y-m-d H:i') }}</p>
                     <p><strong>آخر تحديث:</strong><br>{{ $cityBanner->updated_at->format('Y-m-d H:i') }}</p>
                     <p><strong>الحالة:</strong><br>
-                        <span class="badge badge-{{ $cityBanner->is_active ? 'success' : 'secondary' }}">
+                        <span class="badge {{ $cityBanner->is_active ? 'bg-success' : 'bg-secondary' }}">
                             {{ $cityBanner->is_active ? 'نشط' : 'غير نشط' }}
                         </span>
                     </p>
                     <p><strong>الحالة الحالية:</strong><br>
                         @if($cityBanner->isActive())
-                            <span class="badge badge-success">يعمل حالياً</span>
+                            <span class="badge bg-success text-white">يعمل حالياً</span>
                         @else
-                            <span class="badge badge-warning">خارج الفترة الزمنية</span>
+                            <span class="badge bg-warning text-dark">خارج الفترة الزمنية</span>
                         @endif
                     </p>
                 </div>

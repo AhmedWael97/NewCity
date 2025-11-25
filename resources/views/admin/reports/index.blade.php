@@ -127,15 +127,15 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     مستخدمين محققين
-                                    <span class="badge badge-primary badge-pill">{{ $userStats['verified_users'] }}</span>
+                                    <span class="badge bg-primary text-white rounded-pill">{{ $userStats['verified_users'] }}</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     أصحاب متاجر
-                                    <span class="badge badge-success badge-pill">{{ $userStats['shop_owners'] }}</span>
+                                    <span class="badge bg-success text-white rounded-pill">{{ $userStats['shop_owners'] }}</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     مستخدمين جدد هذا الشهر
-                                    <span class="badge badge-info badge-pill">{{ $userStats['new_users_this_month'] }}</span>
+                                    <span class="badge bg-info text-white rounded-pill">{{ $userStats['new_users_this_month'] }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -144,15 +144,15 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     متاجر نشطة
-                                    <span class="badge badge-success badge-pill">{{ $shopStats['active_shops'] }}</span>
+                                    <span class="badge bg-success text-white rounded-pill">{{ $shopStats['active_shops'] }}</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     متاجر مميزة
-                                    <span class="badge badge-warning badge-pill">{{ $shopStats['featured_shops'] }}</span>
+                                    <span class="badge bg-warning text-dark rounded-pill">{{ $shopStats['featured_shops'] }}</span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     تقييمات هذا الشهر
-                                    <span class="badge badge-info badge-pill">{{ $ratingStats['ratings_this_month'] }}</span>
+                                    <span class="badge bg-info text-white rounded-pill">{{ $ratingStats['ratings_this_month'] }}</span>
                                 </li>
                             </ul>
                         </div>

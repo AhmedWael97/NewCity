@@ -159,28 +159,28 @@
                                 <td>{{ $user->email }}</td>
                                 <td>
                                     @if($user->role == 'admin')
-                                        <span class="badge badge-danger">مدير</span>
+                                        <span class="badge bg-danger text-white">مدير</span>
                                     @elseif($user->role == 'shop_owner')
-                                        <span class="badge badge-warning">صاحب متجر</span>
+                                        <span class="badge bg-warning text-dark">صاحب متجر</span>
                                     @else
-                                        <span class="badge badge-info">مستخدم</span>
+                                        <span class="badge bg-info text-white">مستخدم</span>
                                     @endif
                                 </td>
                                 <td>{{ $user->city->name ?? 'غير محدد' }}</td>
                                 <td>
                                     @if($user->status == 'active')
-                                        <span class="badge badge-success">نشط</span>
+                                        <span class="badge bg-success text-white">نشط</span>
                                     @else
-                                        <span class="badge badge-secondary">غير نشط</span>
+                                        <span class="badge bg-secondary text-white">غير نشط</span>
                                     @endif
                                 </td>
                                 <td>
                                     @if($user->email_verified_at)
-                                        <span class="badge badge-success">
+                                        <span class="badge bg-success text-white">
                                             <i class="fas fa-check"></i> محقق
                                         </span>
                                     @else
-                                        <span class="badge badge-warning">
+                                        <span class="badge bg-warning text-dark">
                                             <i class="fas fa-clock"></i> غير محقق
                                         </span>
                                     @endif

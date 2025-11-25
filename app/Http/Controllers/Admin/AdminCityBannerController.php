@@ -79,7 +79,7 @@ class AdminCityBannerController extends Controller
             $image = $request->file('image');
             $filename = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('banners', $filename, 'public');
-            $validated['image'] = Storage::url($path);
+            $validated['image'] = $path;
         }
 
         $validated['is_active'] = $request->has('is_active') ? 1 : 0;
@@ -124,15 +124,19 @@ class AdminCityBannerController extends Controller
         // Handle image upload
         if ($request->hasFile('image')) {
             // Delete old image if exists
-            if ($cityBanner->image && Str::startsWith($cityBanner->image, '/storage/')) {
-                $oldPath = str_replace('/storage/', '', $cityBanner->image);
+            if ($cityBanner->image) {
+                $oldPath = $cityBanner->image;
+                // Handle both formats: relative path and full URL
+                if (Str::startsWith($oldPath, '/storage/')) {
+                    $oldPath = str_replace('/storage/', '', $oldPath);
+                }
                 Storage::disk('public')->delete($oldPath);
             }
 
             $image = $request->file('image');
             $filename = time() . '_' . Str::slug($validated['title']) . '.' . $image->getClientOriginalExtension();
             $path = $image->storeAs('banners', $filename, 'public');
-            $validated['image'] = Storage::url($path);
+            $validated['image'] = $path;
         }
 
         $validated['is_active'] = $request->has('is_active') ? 1 : 0;
@@ -150,8 +154,12 @@ class AdminCityBannerController extends Controller
     public function destroy(CityBanner $cityBanner)
     {
         // Delete image if exists
-        if ($cityBanner->image && Str::startsWith($cityBanner->image, '/storage/')) {
-            $path = str_replace('/storage/', '', $cityBanner->image);
+        if ($cityBanner->image) {
+            $path = $cityBanner->image;
+            // Handle both formats: relative path and full URL
+            if (Str::startsWith($path, '/storage/')) {
+                $path = str_replace('/storage/', '', $path);
+            }
             Storage::disk('public')->delete($path);
         }
 

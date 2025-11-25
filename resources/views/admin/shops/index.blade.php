@@ -206,7 +206,7 @@
                                     </td>
                                     <td class="d-none-sm">
                                         @if($shop->images && count($shop->images) > 0)
-                                            <img src="{{ Storage::url($shop->images[0]) }}" 
+                                            <img src="{{ $shop->images[0] }}" 
                                                  alt="{{ $shop->name }}" 
                                                  class="rounded" 
                                                  style="width: 40px; height: 40px; object-fit: cover;">

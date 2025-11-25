@@ -34,7 +34,7 @@
                         </div>
                         <div class="col-md-6">
                             <strong>الرابط (Slug):</strong>
-                            <p><span class="badge badge-info">{{ $city->slug }}</span></p>
+                            <p><span class="badge bg-info text-white">{{ $city->slug }}</span></p>
                         </div>
                     </div>
 
@@ -76,11 +76,11 @@
                             <strong>الحالة:</strong>
                             <p>
                                 @if($city->is_active)
-                                    <span class="badge badge-success">
+                                    <span class="badge bg-success text-white">
                                         <i class="fas fa-check"></i> نشط
                                     </span>
                                 @else
-                                    <span class="badge badge-secondary">
+                                    <span class="badge bg-secondary text-white">
                                         <i class="fas fa-pause"></i> غير نشط
                                     </span>
                                 @endif
@@ -186,11 +186,11 @@
                             <td>{{ $shop->category->name ?? 'غير محدد' }}</td>
                             <td>
                                 @if($shop->status == 'active')
-                                    <span class="badge badge-success">نشط</span>
+                                    <span class="badge bg-success text-white">نشط</span>
                                 @elseif($shop->status == 'pending')
-                                    <span class="badge badge-warning">قيد المراجعة</span>
+                                    <span class="badge bg-warning text-dark">قيد المراجعة</span>
                                 @else
-                                    <span class="badge badge-secondary">غير نشط</span>
+                                    <span class="badge bg-secondary text-white">غير نشط</span>
                                 @endif
                             </td>
                             <td>

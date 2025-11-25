@@ -185,17 +185,17 @@
                                 <td>
                                     @switch($rating->status ?? 'pending')
                                         @case('verified')
-                                            <span class="badge badge-success">
+                                            <span class="badge bg-success text-white">
                                                 <i class="fas fa-check"></i> محقق
                                             </span>
                                             @break
                                         @case('rejected')
-                                            <span class="badge badge-danger">
+                                            <span class="badge bg-danger text-white">
                                                 <i class="fas fa-times"></i> مرفوض
                                             </span>
                                             @break
                                         @default
-                                            <span class="badge badge-warning">
+                                            <span class="badge bg-warning text-dark">
                                                 <i class="fas fa-clock"></i> في الانتظار
                                             </span>
                                     @endswitch

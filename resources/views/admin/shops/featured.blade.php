@@ -151,10 +151,10 @@
                 <div class="card-body">
                     <p><strong>الاسم:</strong><br>{{ $shop->name }}</p>
                     <p><strong>المدينة:</strong><br>
-                        <span class="badge badge-info">{{ $shop->city->name }}</span>
+                        <span class="badge bg-info text-white">{{ $shop->city->name }}</span>
                     </p>
                     <p><strong>التصنيف:</strong><br>
-                        <span class="badge badge-secondary">{{ $shop->category->name_ar ?? 'N/A' }}</span>
+                        <span class="badge bg-secondary text-white">{{ $shop->category->name_ar ?? 'N/A' }}</span>
                     </p>
                     <p><strong>الحالة:</strong><br>
                         <span class="badge badge-{{ $shop->status === 'active' ? 'success' : 'danger' }}">
@@ -200,7 +200,7 @@
                         </div>
                         
                         <p><strong>الأولوية:</strong><br>
-                            <span class="badge badge-warning" style="font-size: 16px;">
+                            <span class="badge bg-warning text-dark" style="font-size: 16px;">
                                 {{ $shop->featured_priority }}
                             </span>
                         </p>
@@ -213,15 +213,15 @@
                                     ({{ $shop->featured_until->diffForHumans() }})
                                 </small>
                             @else
-                                <span class="badge badge-info">دائم</span>
+                                <span class="badge bg-info text-white">دائم</span>
                             @endif
                         </p>
 
                         <p><strong>الحالة:</strong><br>
                             @if($shop->isFeatured())
-                                <span class="badge badge-success">نشط</span>
+                                <span class="badge bg-success text-white">نشط</span>
                             @else
-                                <span class="badge badge-danger">منتهي</span>
+                                <span class="badge bg-danger text-white">منتهي</span>
                             @endif
                         </p>
                     @else

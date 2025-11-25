@@ -20,7 +20,7 @@
             <div class="card border-left-info">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-info">حالة النظام</h6>
-                    <div id="system-health-indicator" class="badge badge-success">صحي</div>
+                    <div id="system-health-indicator" class="badge bg-success text-white">صحي</div>
                 </div>
                 <div class="card-body">
                     <div class="row" id="system-health-details">
@@ -28,28 +28,28 @@
                             <div class="health-item">
                                 <i class="fas fa-database fa-2x text-success mb-2"></i>
                                 <p class="mb-0 small">قاعدة البيانات</p>
-                                <span class="badge badge-success">متصل</span>
+                                <span class="badge bg-success text-white">متصل</span>
                             </div>
                         </div>
                         <div class="col-md-3 text-center">
                             <div class="health-item">
                                 <i class="fas fa-hdd fa-2x text-success mb-2"></i>
                                 <p class="mb-0 small">التخزين</p>
-                                <span class="badge badge-success">متاح</span>
+                                <span class="badge bg-success text-white">متاح</span>
                             </div>
                         </div>
                         <div class="col-md-3 text-center">
                             <div class="health-item">
                                 <i class="fas fa-memory fa-2x text-success mb-2"></i>
                                 <p class="mb-0 small">التخزين المؤقت</p>
-                                <span class="badge badge-success">يعمل</span>
+                                <span class="badge bg-success text-white">يعمل</span>
                             </div>
                         </div>
                         <div class="col-md-3 text-center">
                             <div class="health-item">
                                 <i class="fas fa-tasks fa-2x text-success mb-2"></i>
                                 <p class="mb-0 small">المهام</p>
-                                <span class="badge badge-success">طبيعي</span>
+                                <span class="badge bg-success text-white">طبيعي</span>
                             </div>
                         </div>
                     </div>
@@ -344,9 +344,9 @@
                                     $appStatus = \App\Models\AppSetting::where('key', 'app_status')->first();
                                 @endphp
                                 @if($appStatus && $appStatus->value === 'active')
-                                    <span class="badge badge-success">نشط</span>
+                                    <span class="badge bg-success text-white">نشط</span>
                                 @else
-                                    <span class="badge badge-danger">غير نشط</span>
+                                    <span class="badge bg-danger text-white">غير نشط</span>
                                 @endif
                             </div>
                             <div class="text-muted small mt-1">حالة التطبيق</div>

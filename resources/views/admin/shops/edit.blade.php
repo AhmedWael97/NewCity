@@ -79,7 +79,7 @@
                                         <option value="">اختر المدينة</option>
                                         @foreach($cities as $city)
                                             <option value="{{ $city->id }}" {{ old('city_id', $shop->city_id) == $city->id ? 'selected' : '' }}>
-                                                {{ $city->name_ar }}
+                                                {{ $city->name }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -189,7 +189,7 @@
                                     @foreach($shop->images as $index => $image)
                                         <div class="col-md-3 mb-3">
                                             <div class="card">
-                                                <img src="{{ Storage::url($image) }}" class="card-img-top" alt="Shop Image" style="height: 150px; object-fit: cover;">
+                                                <img src="{{ $image }}" class="card-img-top" alt="Shop Image" style="height: 150px; object-fit: cover;">
                                                 <div class="card-body p-2">
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="checkbox" name="remove_images[]" value="{{ $index }}" id="remove_{{ $index }}">

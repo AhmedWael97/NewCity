@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\ServiceReview;
+use App\Models\Rating;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 
@@ -14,8 +14,7 @@ class AdminReviewController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ServiceReview::with(['user:id,name,email', 'reviewable'])
-            ->where('reviewable_type', Shop::class);
+        $query = Rating::with(['user:id,name,email', 'shop:id,name']);
 
         // Search filter
         if ($request->filled('search')) {
@@ -33,12 +32,12 @@ class AdminReviewController extends Controller
 
         // Shop filter
         if ($request->filled('shop_id')) {
-            $query->where('reviewable_id', $request->shop_id);
+            $query->where('shop_id', $request->shop_id);
         }
 
-        // Status filter (if you want to add approval status)
-        if ($request->filled('is_approved')) {
-            $query->where('is_approved', $request->is_approved);
+        // Verified filter
+        if ($request->filled('is_verified')) {
+            $query->where('is_verified', $request->is_verified);
         }
 
         $reviews = $query->latest()->paginate(20);
@@ -50,36 +49,36 @@ class AdminReviewController extends Controller
     /**
      * Display the specified review.
      */
-    public function show(ServiceReview $review)
+    public function show(Rating $review)
     {
-        $review->load(['user', 'reviewable']);
+        $review->load(['user', 'shop']);
         return view('admin.reviews.show', compact('review'));
     }
 
     /**
-     * Approve a review.
+     * Verify a review.
      */
-    public function approve(ServiceReview $review)
+    public function verify(Rating $review)
     {
-        $review->update(['is_approved' => true]);
-        return back()->with('success', 'Review approved successfully.');
+        $review->update(['is_verified' => true]);
+        return back()->with('success', 'Review verified successfully.');
     }
 
     /**
-     * Reject a review.
+     * Unverify a review.
      */
-    public function reject(ServiceReview $review)
+    public function unverify(Rating $review)
     {
-        $review->update(['is_approved' => false]);
-        return back()->with('success', 'Review rejected successfully.');
+        $review->update(['is_verified' => false]);
+        return back()->with('success', 'Review unverified successfully.');
     }
 
     /**
      * Remove the specified review from storage.
      */
-    public function destroy(ServiceReview $review)
+    public function destroy(Rating $review)
     {
-        $shopId = $review->reviewable_id;
+        $shopId = $review->shop_id;
         $review->delete();
 
         // Recalculate shop rating
@@ -96,9 +95,7 @@ class AdminReviewController extends Controller
     {
         $shop = Shop::find($shopId);
         if ($shop) {
-            $reviews = ServiceReview::where('reviewable_type', Shop::class)
-                ->where('reviewable_id', $shopId)
-                ->get();
+            $reviews = Rating::where('shop_id', $shopId)->get();
 
             $shop->review_count = $reviews->count();
             $shop->rating = $reviews->count() > 0 ? round($reviews->avg('rating'), 2) : 0;
