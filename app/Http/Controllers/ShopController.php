@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Shop;
+use App\Models\ShopAnalytics;
 
 class ShopController extends Controller
 {
@@ -31,6 +32,12 @@ class ShopController extends Controller
                 }
             ])
             ->firstOrFail();
+
+        // Track shop view
+        ShopAnalytics::track($shop->id, 'shop_view', Auth::id(), [
+            'city_id' => $shop->city_id,
+            'category_id' => $shop->category_id
+        ]);
 
         // Get featured products and services separately for highlights
         $featuredProducts = $shop->activeProducts->where('is_featured', true)->take(6);

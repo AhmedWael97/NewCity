@@ -127,21 +127,23 @@
                 <main class="shop-main">
                     <!-- Quick Actions -->
                     <div class="shop-actions">
-                        <a href="tel:{{ $shop->phone ?? '' }}" class="action-btn call-btn">
+                        <a href="tel:{{ $shop->phone ?? '' }}" class="action-btn call-btn" onclick="trackPhoneCall()">
                             <i class="icon">📞</i>
                             <span>اتصال</span>
                         </a>
                         @if($shop->latitude && $shop->longitude)
                             <a href="https://www.google.com/maps/dir/?api=1&destination={{ $shop->latitude }},{{ $shop->longitude }}" 
                                target="_blank" 
-                               class="action-btn directions-btn">
+                               class="action-btn directions-btn"
+                               onclick="trackMapClick()">
                                 <i class="icon">🧭</i>
                                 <span>الاتجاهات</span>
                             </a>
                         @else
                             <a href="https://www.google.com/maps/search/?api=1&query={{ urlencode($shop->address) }}" 
                                target="_blank" 
-                               class="action-btn directions-btn">
+                               class="action-btn directions-btn"
+                               onclick="trackMapClick()">
                                 <i class="icon">🧭</i>
                                 <span>الاتجاهات</span>
                             </a>
@@ -631,6 +633,54 @@
 <!-- Swiper JS -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script>
+    // Track phone call click
+    function trackPhoneCall() {
+        fetch('/api/v1/track', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                event_type: 'contact_click',
+                event_category: 'shop',
+                event_action: 'phone_call',
+                event_label: 'Shop Phone Call',
+                event_data: {
+                    shop_id: {{ $shop->id }},
+                    shop_name: '{{ addslashes($shop->name) }}',
+                    city_id: {{ $shop->city_id ?? 'null' }},
+                    action_type: 'phone_call'
+                }
+            })
+        }).catch(() => {});
+    }
+
+    // Track map/directions click
+    function trackMapClick() {
+        fetch('/api/v1/track', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                event_type: 'contact_click',
+                event_category: 'shop',
+                event_action: 'map_directions',
+                event_label: 'Shop Map Directions',
+                event_data: {
+                    shop_id: {{ $shop->id }},
+                    shop_name: '{{ addslashes($shop->name) }}',
+                    city_id: {{ $shop->city_id ?? 'null' }},
+                    action_type: 'map_directions'
+                }
+            })
+        }).catch(() => {});
+    }
+
     function shareShop() {
         const shopName = '{{ $shop->name }}';
         const cityName = '{{ $shop->city->name ?? "" }}';

@@ -36,6 +36,20 @@ class UserTrackingService
                 'ip_address' => request()->ip(),
             ], $additionalData);
 
+            // Save to ShopAnalytics if shop-related event
+            if (isset($additionalData['shop_id']) && in_array($eventType, ['contact_click', 'shop_view'])) {
+                \App\Models\ShopAnalytics::track(
+                    $additionalData['shop_id'],
+                    $additionalData['event_action'] ?? $eventType,
+                    Auth::id(),
+                    [
+                        'source' => $additionalData['event_action'] ?? $eventType,
+                        'device_type' => $this->getDeviceType(),
+                        'action_type' => $additionalData['action_type'] ?? null
+                    ]
+                );
+            }
+
             // Dispatch event to queue
             event(new UserActivityTracked($eventData));
         } catch (\Exception $e) {

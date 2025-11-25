@@ -87,13 +87,13 @@
                         <tr>
                             <th class="border-0">#</th>
                             <th class="border-0">اسم المتجر</th>
-                            <th class="border-0">المالك</th>
                             <th class="border-0">المدينة</th>
-                            <th class="border-0">الفئة</th>
                             <th class="border-0">الحالة</th>
                             <th class="border-0 text-center">المشاهدات</th>
-                            <th class="border-0 text-center">الزوار الفريدين</th>
-                            <th class="border-0 text-center">نقرات الاتصال</th>
+                            <th class="border-0 text-center">الزوار</th>
+                            <th class="border-0 text-center">📞 اتصال</th>
+                            <th class="border-0 text-center">🗺️ خريطة</th>
+                            <th class="border-0 text-center">إجمالي</th>
                             <th class="border-0 text-center">معدل التحويل</th>
                             <th class="border-0 text-center">الإجراءات</th>
                         </tr>
@@ -104,48 +104,44 @@
                                 <td class="align-middle">{{ ($shops->currentPage() - 1) * $shops->perPage() + $loop->iteration }}</td>
                                 <td class="align-middle">
                                     <div class="d-flex align-items-center">
-                                        <div class="avatar-sm rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3">
+                                        <div class="avatar-sm rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
                                             {{ strtoupper(substr($shop->name, 0, 1)) }}
                                         </div>
                                         <div>
                                             <h6 class="mb-0 fw-bold">{{ $shop->name }}</h6>
-                                            <small class="text-muted">{{ Str::limit($shop->description, 50) }}</small>
+                                            <small class="text-muted">{{ $shop->category->name ?? '' }} • {{ $shop->user->name ?? '' }}</small>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="align-middle">
-                                    <span class="text-dark fw-medium">{{ $shop->user->name ?? 'غير محدد' }}</span>
-                                    <br>
-                                    <small class="text-muted">{{ $shop->user->email ?? '' }}</small>
-                                </td>
-                                <td class="align-middle">
-                                    <span class="badge bg-info">{{ $shop->city->name ?? 'غير محدد' }}</span>
-                                </td>
-                                <td class="align-middle">
-                                    <span class="badge bg-secondary">{{ $shop->category->name ?? 'غير محدد' }}</span>
+                                    <span class="badge bg-info text-white">{{ $shop->city->name ?? 'غير محدد' }}</span>
                                 </td>
                                 <td class="align-middle">
                                     @if($shop->is_active)
-                                        <span class="badge bg-success">نشط</span>
+                                        <span class="badge bg-success text-white">نشط</span>
                                     @else
-                                        <span class="badge bg-danger">غير نشط</span>
+                                        <span class="badge bg-danger text-white">غير نشط</span>
                                     @endif
                                 </td>
                                 <td class="align-middle text-center">
                                     <div class="fw-bold text-primary">{{ number_format($shop->analytics['total_views'] ?? 0) }}</div>
-                                    <small class="text-muted">الشهر الحالي: {{ number_format($shop->analytics['monthly_views'] ?? 0) }}</small>
+                                    <small class="text-muted d-block">{{ number_format($shop->analytics['monthly_views'] ?? 0) }} هذا الشهر</small>
                                 </td>
                                 <td class="align-middle text-center">
                                     <div class="fw-bold text-success">{{ number_format($shop->analytics['unique_visitors'] ?? 0) }}</div>
                                 </td>
                                 <td class="align-middle text-center">
-                                    <div class="fw-bold text-warning">{{ number_format($shop->analytics['contact_clicks'] ?? 0) }}</div>
+                                    <div class="fw-bold text-info">{{ number_format($shop->analytics['phone_calls'] ?? 0) }}</div>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <div class="fw-bold text-warning">{{ number_format($shop->analytics['map_clicks'] ?? 0) }}</div>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <div class="fw-bold text-danger">{{ number_format($shop->analytics['contact_clicks'] ?? 0) }}</div>
                                 </td>
                                 <td class="align-middle text-center">
                                     @php
-                                        $views = $shop->analytics['total_views'] ?? 0;
-                                        $contacts = $shop->analytics['contact_clicks'] ?? 0;
-                                        $conversionRate = $views > 0 ? ($contacts / $views) * 100 : 0;
+                                        $conversionRate = $shop->analytics['conversion_rate'] ?? 0;
                                     @endphp
                                     <div class="fw-bold {{ $conversionRate > 5 ? 'text-success' : ($conversionRate > 2 ? 'text-warning' : 'text-danger') }}">
                                         {{ number_format($conversionRate, 2) }}%

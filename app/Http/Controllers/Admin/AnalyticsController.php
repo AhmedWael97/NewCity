@@ -161,22 +161,42 @@ class AnalyticsController extends Controller
 
         foreach ($shops as $shop) {
             // Get analytics for each shop
+            $totalViews = ShopAnalytics::where('shop_id', $shop->id)
+                ->where('event_type', 'shop_view')
+                ->count();
+            
+            $monthlyViews = ShopAnalytics::where('shop_id', $shop->id)
+                ->where('event_type', 'shop_view')
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->count();
+            
+            $uniqueVisitors = ShopAnalytics::where('shop_id', $shop->id)
+                ->where('event_type', 'shop_view')
+                ->distinct('user_ip')
+                ->count('user_ip');
+            
+            // Count phone calls
+            $phoneCalls = ShopAnalytics::where('shop_id', $shop->id)
+                ->where('event_type', 'phone_call')
+                ->count();
+            
+            // Count map/directions clicks
+            $mapClicks = ShopAnalytics::where('shop_id', $shop->id)
+                ->where('event_type', 'map_directions')
+                ->count();
+            
+            // Total contact clicks (calls + maps)
+            $contactClicks = $phoneCalls + $mapClicks;
+            
             $shop->analytics = [
-                'total_views' => ShopAnalytics::where('shop_id', $shop->id)
-                    ->where('event_type', 'shop_view')
-                    ->count(),
-                'views_this_month' => ShopAnalytics::where('shop_id', $shop->id)
-                    ->where('event_type', 'shop_view')
-                    ->whereMonth('created_at', now()->month)
-                    ->count(),
-                'unique_visitors' => ShopAnalytics::where('shop_id', $shop->id)
-                    ->where('event_type', 'shop_view')
-                    ->distinct('user_ip')
-                    ->count('user_ip'),
-                'contact_clicks' => ShopAnalytics::where('shop_id', $shop->id)
-                    ->where('event_type', 'contact_click')
-                    ->count(),
-                'conversion_rate' => 0 // Calculate based on your business logic
+                'total_views' => $totalViews,
+                'monthly_views' => $monthlyViews,
+                'unique_visitors' => $uniqueVisitors,
+                'phone_calls' => $phoneCalls,
+                'map_clicks' => $mapClicks,
+                'contact_clicks' => $contactClicks,
+                'conversion_rate' => $totalViews > 0 ? ($contactClicks / $totalViews) * 100 : 0
             ];
         }
 
