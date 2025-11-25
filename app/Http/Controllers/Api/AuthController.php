@@ -26,17 +26,21 @@ class AuthController extends Controller
      * @OA\Post(
      *     path="/api/v1/auth/register",
      *     summary="Register a new user",
+     *     description="Register a new user account. User type can be 'regular' (default) or 'shop_owner'. Shop owners can create and manage shops.",
      *     tags={"Authentication"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"name","email","password","password_confirmation"},
-     *             @OA\Property(property="name", type="string", example="John Doe"),
-     *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="password123"),
+     *             required={"name","email","password","password_confirmation","phone","user_type","city_id"},
+     *             @OA\Property(property="name", type="string", maxLength=255, example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", maxLength=255, example="john@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", minLength=8, example="password123"),
      *             @OA\Property(property="password_confirmation", type="string", format="password", example="password123"),
-     *             @OA\Property(property="phone", type="string", example="01234567890"),
-     *             @OA\Property(property="user_role_id", type="integer", example=1)
+     *             @OA\Property(property="phone", type="string", maxLength=20, example="+1234567890"),
+     *             @OA\Property(property="user_type", type="string", enum={"regular", "shop_owner"}, example="regular", description="Type of user account"),
+     *             @OA\Property(property="city_id", type="integer", example=1, description="User's city ID"),
+     *             @OA\Property(property="address", type="string", maxLength=500, example="123 Main Street", description="Optional address"),
+     *             @OA\Property(property="date_of_birth", type="string", format="date", example="1990-01-01", description="Optional date of birth")
      *         )
      *     ),
      *     @OA\Response(
@@ -46,8 +50,16 @@ class AuthController extends Controller
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="message", type="string", example="User registered successfully"),
      *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="user", ref="#/components/schemas/User"),
-     *                 @OA\Property(property="token", type="string"),
+     *                 @OA\Property(property="user", type="object",
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="name", type="string"),
+     *                     @OA\Property(property="email", type="string"),
+     *                     @OA\Property(property="phone", type="string"),
+     *                     @OA\Property(property="user_type", type="string"),
+     *                     @OA\Property(property="city_id", type="integer"),
+     *                     @OA\Property(property="is_verified", type="boolean")
+     *                 ),
+     *                 @OA\Property(property="token", type="string", example="1|abcdef123456..."),
      *                 @OA\Property(property="token_type", type="string", example="Bearer")
      *             )
      *         )
@@ -58,7 +70,10 @@ class AuthController extends Controller
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
      *             @OA\Property(property="message", type="string", example="Validation failed"),
-     *             @OA\Property(property="errors", type="object")
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="email", type="array", @OA\Items(type="string", example="The email has already been taken.")),
+     *                 @OA\Property(property="password", type="array", @OA\Items(type="string", example="The password must be at least 8 characters."))
+     *             )
      *         )
      *     )
      * )
@@ -69,9 +84,12 @@ class AuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'string', Password::defaults(), 'confirmed'],
-            'phone' => 'nullable|string|max:20',
-            'user_role_id' => 'nullable|exists:user_roles,id',
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'phone' => 'required|string|max:20',
+            'user_type' => 'required|in:regular,shop_owner',
+            'city_id' => 'required|exists:cities,id',
+            'address' => 'nullable|string|max:500',
+            'date_of_birth' => 'nullable|date|before:today',
         ]);
 
         if ($validator->fails()) {
@@ -82,16 +100,16 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Default to customer role if not specified
-        $defaultRole = UserRole::where('slug', 'customer')->first();
-        $userRoleId = $request->user_role_id ?? $defaultRole?->id ?? 1;
-
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'phone' => $request->phone,
-            'user_role_id' => $userRoleId,
+            'user_type' => $request->user_type,
+            'city_id' => $request->city_id,
+            'address' => $request->address,
+            'date_of_birth' => $request->date_of_birth,
+            'is_verified' => $request->user_type === 'regular', // Regular users are auto-verified
         ]);
 
         $token = $user->createToken('auth-token')->plainTextToken;
@@ -100,7 +118,7 @@ class AuthController extends Controller
             'success' => true,
             'message' => 'User registered successfully',
             'data' => [
-                'user' => $user->load('userRole'),
+                'user' => $user->load('city'),
                 'token' => $token,
                 'token_type' => 'Bearer'
             ]

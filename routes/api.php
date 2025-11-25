@@ -20,6 +20,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/cities/{city}/latest-shops', [App\Http\Controllers\Api\CityController::class, 'latestShops']);
     Route::get('/cities/{city}/statistics', [App\Http\Controllers\Api\CityController::class, 'statistics']);
     Route::get('/cities/{city}/banners', [App\Http\Controllers\Api\CityController::class, 'banners']);
+    Route::get('/cities/{city}/services', [App\Http\Controllers\Api\CityController::class, 'services']);
     
     Route::get('/categories', [App\Http\Controllers\Api\CategoryController::class, 'index']);
     Route::get('/shops', [App\Http\Controllers\Api\ShopController::class, 'index']);

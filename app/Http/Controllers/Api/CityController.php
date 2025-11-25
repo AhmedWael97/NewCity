@@ -483,4 +483,181 @@ class CityController extends Controller
             ]
         ]);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/cities/{city}/services",
+     *     summary="Get services in a city with sorting options",
+     *     description="Returns all user services in a specific city with various sorting and filtering options",
+     *     tags={"Cities"},
+     *     @OA\Parameter(
+     *         name="city",
+     *         in="path",
+     *         description="City ID or slug",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="sort",
+     *         in="query",
+     *         description="Sort order",
+     *         @OA\Schema(
+     *             type="string",
+     *             enum={"latest", "oldest", "rating_high", "rating_low", "price_low", "price_high", "featured", "name_asc", "name_desc"},
+     *             default="latest"
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         name="category_id",
+     *         in="query",
+     *         description="Filter by service category ID",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="pricing_type",
+     *         in="query",
+     *         description="Filter by pricing type",
+     *         @OA\Schema(type="string", enum={"fixed", "hourly", "per_km", "negotiable"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="search",
+     *         in="query",
+     *         description="Search in service title and description",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Number of items per page",
+     *         @OA\Schema(type="integer", default=15)
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         @OA\Schema(type="integer", default=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="City services list",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="services", type="array", @OA\Items(
+     *                     @OA\Property(property="id", type="integer"),
+     *                     @OA\Property(property="title", type="string"),
+     *                     @OA\Property(property="description", type="string"),
+     *                     @OA\Property(property="slug", type="string"),
+     *                     @OA\Property(property="pricing_type", type="string"),
+     *                     @OA\Property(property="base_price", type="number"),
+     *                     @OA\Property(property="rating", type="number", format="float"),
+     *                     @OA\Property(property="is_verified", type="boolean"),
+     *                     @OA\Property(property="is_featured", type="boolean"),
+     *                     @OA\Property(property="user", type="object",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="name", type="string")
+     *                     ),
+     *                     @OA\Property(property="serviceCategory", type="object",
+     *                         @OA\Property(property="id", type="integer"),
+     *                         @OA\Property(property="name", type="string"),
+     *                         @OA\Property(property="icon", type="string")
+     *                     )
+     *                 )),
+     *                 @OA\Property(property="meta", type="object",
+     *                     @OA\Property(property="total", type="integer"),
+     *                     @OA\Property(property="per_page", type="integer"),
+     *                     @OA\Property(property="current_page", type="integer"),
+     *                     @OA\Property(property="last_page", type="integer")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=404, description="City not found")
+     * )
+     */
+    public function services(Request $request, City $city)
+    {
+        if (!$city->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'City not found'
+            ], 404);
+        }
+
+        $query = \App\Models\UserService::query()
+            ->with(['user:id,name,avatar', 'serviceCategory:id,name,icon,slug'])
+            ->where('city_id', $city->id)
+            ->where('is_active', true)
+            ->where('is_verified', true);
+
+        // Filter by category
+        if ($request->filled('category_id')) {
+            $query->where('service_category_id', $request->category_id);
+        }
+
+        // Filter by pricing type
+        if ($request->filled('pricing_type')) {
+            $query->where('pricing_type', $request->pricing_type);
+        }
+
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Apply sorting
+        $sort = $request->input('sort', 'latest');
+        switch ($sort) {
+            case 'latest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'oldest':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'rating_high':
+                $query->orderBy('rating', 'desc');
+                break;
+            case 'rating_low':
+                $query->orderBy('rating', 'asc');
+                break;
+            case 'price_low':
+                $query->orderBy('base_price', 'asc');
+                break;
+            case 'price_high':
+                $query->orderBy('base_price', 'desc');
+                break;
+            case 'featured':
+                $query->orderByRaw('is_featured DESC, featured_until DESC NULLS LAST')
+                      ->orderBy('rating', 'desc');
+                break;
+            case 'name_asc':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'name_desc':
+                $query->orderBy('title', 'desc');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+        }
+
+        $perPage = $request->input('per_page', 15);
+        $services = $query->paginate($perPage);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'services' => $services->items(),
+                'meta' => [
+                    'total' => $services->total(),
+                    'per_page' => $services->perPage(),
+                    'current_page' => $services->currentPage(),
+                    'last_page' => $services->lastPage(),
+                ]
+            ]
+        ]);
+    }
 }

@@ -22,6 +22,7 @@
                     "Authentication"
                 ],
                 "summary": "Register a new user",
+                "description": "Register a new user account. User type can be 'regular' (default) or 'shop_owner'. Shop owners can create and manage shops.",
                 "operationId": "fb835c97347e657e2a627790c4c5817a",
                 "requestBody": {
                     "required": true,
@@ -32,21 +33,27 @@
                                     "name",
                                     "email",
                                     "password",
-                                    "password_confirmation"
+                                    "password_confirmation",
+                                    "phone",
+                                    "user_type",
+                                    "city_id"
                                 ],
                                 "properties": {
                                     "name": {
                                         "type": "string",
+                                        "maxLength": 255,
                                         "example": "John Doe"
                                     },
                                     "email": {
                                         "type": "string",
                                         "format": "email",
+                                        "maxLength": 255,
                                         "example": "john@example.com"
                                     },
                                     "password": {
                                         "type": "string",
                                         "format": "password",
+                                        "minLength": 8,
                                         "example": "password123"
                                     },
                                     "password_confirmation": {
@@ -56,11 +63,34 @@
                                     },
                                     "phone": {
                                         "type": "string",
-                                        "example": "01234567890"
+                                        "maxLength": 20,
+                                        "example": "+1234567890"
                                     },
-                                    "user_role_id": {
+                                    "user_type": {
+                                        "description": "Type of user account",
+                                        "type": "string",
+                                        "enum": [
+                                            "regular",
+                                            "shop_owner"
+                                        ],
+                                        "example": "regular"
+                                    },
+                                    "city_id": {
+                                        "description": "User's city ID",
                                         "type": "integer",
                                         "example": 1
+                                    },
+                                    "address": {
+                                        "description": "Optional address",
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "123 Main Street"
+                                    },
+                                    "date_of_birth": {
+                                        "description": "Optional date of birth",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1990-01-01"
                                     }
                                 },
                                 "type": "object"
@@ -86,10 +116,34 @@
                                         "data": {
                                             "properties": {
                                                 "user": {
-                                                    "$ref": "#/components/schemas/User"
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "email": {
+                                                            "type": "string"
+                                                        },
+                                                        "phone": {
+                                                            "type": "string"
+                                                        },
+                                                        "user_type": {
+                                                            "type": "string"
+                                                        },
+                                                        "city_id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "is_verified": {
+                                                            "type": "boolean"
+                                                        }
+                                                    },
+                                                    "type": "object"
                                                 },
                                                 "token": {
-                                                    "type": "string"
+                                                    "type": "string",
+                                                    "example": "1|abcdef123456..."
                                                 },
                                                 "token_type": {
                                                     "type": "string",
@@ -119,6 +173,22 @@
                                             "example": "Validation failed"
                                         },
                                         "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The email has already been taken."
+                                                    }
+                                                },
+                                                "password": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The password must be at least 8 characters."
+                                                    }
+                                                }
+                                            },
                                             "type": "object"
                                         }
                                     },
@@ -953,6 +1023,716 @@
                         "description": "City not found"
                     }
                 }
+            }
+        },
+        "/api/v1/cities/{city}/services": {
+            "get": {
+                "tags": [
+                    "Cities"
+                ],
+                "summary": "Get services in a city with sorting options",
+                "description": "Returns all user services in a specific city with various sorting and filtering options",
+                "operationId": "0df5a432ff111288bc1326df1e2de47f",
+                "parameters": [
+                    {
+                        "name": "city",
+                        "in": "path",
+                        "description": "City ID or slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort order",
+                        "schema": {
+                            "type": "string",
+                            "default": "latest",
+                            "enum": [
+                                "latest",
+                                "oldest",
+                                "rating_high",
+                                "rating_low",
+                                "price_low",
+                                "price_high",
+                                "featured",
+                                "name_asc",
+                                "name_desc"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Filter by service category ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "pricing_type",
+                        "in": "query",
+                        "description": "Filter by pricing type",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "fixed",
+                                "hourly",
+                                "per_km",
+                                "negotiable"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search in service title and description",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Number of items per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "City services list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "services": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "description": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "pricing_type": {
+                                                                "type": "string"
+                                                            },
+                                                            "base_price": {
+                                                                "type": "number"
+                                                            },
+                                                            "rating": {
+                                                                "type": "number",
+                                                                "format": "float"
+                                                            },
+                                                            "is_verified": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "is_featured": {
+                                                                "type": "boolean"
+                                                            },
+                                                            "user": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "serviceCategory": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "icon": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "meta": {
+                                                    "properties": {
+                                                        "total": {
+                                                            "type": "integer"
+                                                        },
+                                                        "per_page": {
+                                                            "type": "integer"
+                                                        },
+                                                        "current_page": {
+                                                            "type": "integer"
+                                                        },
+                                                        "last_page": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "City not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/my-shops": {
+            "get": {
+                "tags": [
+                    "My Shops"
+                ],
+                "summary": "Get user's shops",
+                "description": "Get all shops owned by the authenticated user",
+                "operationId": "44959d0e307c2ee7718c42be17e86c0e",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Shop"
+                                                    }
+                                                },
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "My Shops"
+                ],
+                "summary": "Create a new shop",
+                "description": "Create a new shop. Only users with shop_owner type can create shops.",
+                "operationId": "68b96ca31b8c823c3374ac127ab76d23",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "city_id",
+                                    "category_id",
+                                    "address",
+                                    "latitude",
+                                    "longitude"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "My Amazing Shop"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "A detailed description of the shop"
+                                    },
+                                    "city_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "123 Main Street"
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 40.7128
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": -74.006
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "+1234567890"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "shop@example.com"
+                                    },
+                                    "website": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://example.com"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "opening_hours": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Shop created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Shop created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Shop"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - User is not a shop owner",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Only shop owners can create shops"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/my-shops/{shop}": {
+            "get": {
+                "tags": [
+                    "My Shops"
+                ],
+                "summary": "Get single shop",
+                "description": "Get details of a specific shop owned by the authenticated user",
+                "operationId": "e1e3ff4abcdf6fa23d95481056baa6da",
+                "parameters": [
+                    {
+                        "name": "shop",
+                        "in": "path",
+                        "description": "Shop ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Shop"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized - Shop does not belong to user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Shop not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "My Shops"
+                ],
+                "summary": "Update shop",
+                "description": "Update details of a shop owned by the authenticated user",
+                "operationId": "39a7bacf1e3347e6db5a18b67065853a",
+                "parameters": [
+                    {
+                        "name": "shop",
+                        "in": "path",
+                        "description": "Shop ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "category_id",
+                                    "address",
+                                    "latitude",
+                                    "longitude"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "category_id": {
+                                        "type": "integer"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "maxLength": 500
+                                    },
+                                    "latitude": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "longitude": {
+                                        "type": "number",
+                                        "format": "float"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "maxLength": 20
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email"
+                                    },
+                                    "website": {
+                                        "type": "string",
+                                        "format": "url"
+                                    },
+                                    "images": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "opening_hours": {
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Shop updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Shop updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Shop"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized - Shop does not belong to user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "My Shops"
+                ],
+                "summary": "Delete shop",
+                "description": "Delete a shop owned by the authenticated user",
+                "operationId": "93afc4e54507b7a731b39667abaa68be",
+                "parameters": [
+                    {
+                        "name": "shop",
+                        "in": "path",
+                        "description": "Shop ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Shop deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Shop deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized - Shop does not belong to user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Shop not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/search": {
@@ -2698,6 +3478,10 @@
         {
             "name": "Cities",
             "description": "City management endpoints"
+        },
+        {
+            "name": "My Shops",
+            "description": "Endpoints for managing authenticated user's shops (shop owner only)"
         },
         {
             "name": "Search",
