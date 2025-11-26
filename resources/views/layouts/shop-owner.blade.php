@@ -321,7 +321,7 @@
                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-bell fa-fw"></i>
                         <!-- Counter - Alerts -->
-                        <span class="badge badge-danger badge-counter">{{ auth()->user()->shops()->where('status', 'pending')->count() }}</span>
+                        <span class="badge bg-danger badge-counter">{{ auth()->user()->shops()->where('status', 'pending')->count() }}</span>
                     </a>
                     <!-- Dropdown - Alerts -->
                     <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in"

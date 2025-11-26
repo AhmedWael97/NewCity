@@ -71,7 +71,7 @@ class AdminShopController extends Controller
     public function pending(Request $request)
     {
         $query = Shop::with(['city', 'category', 'owner'])
-                    ->where('status', 'pending');
+                    ->where('status', Shop::STATUS_PENDING);
 
         // Search functionality
         if ($request->filled('search')) {
@@ -277,10 +277,17 @@ class AdminShopController extends Controller
     /**
      * Reject a pending shop.
      */
-    public function reject(Shop $shop)
+    public function reject(Request $request, Shop $shop)
     {
+        $request->validate([
+            'rejection_reason' => 'nullable|string|max:500'
+        ]);
+
         $shop->update([
-            'status' => 'inactive'
+            'status' => Shop::STATUS_REJECTED,
+            'is_active' => false,
+            'is_verified' => false,
+            'verification_notes' => $request->rejection_reason
         ]);
 
         return redirect()
@@ -348,17 +355,23 @@ class AdminShopController extends Controller
     public function bulkAction(Request $request)
     {
         $request->validate([
-            'shops' => 'required|array',
-            'shops.*' => 'exists:shops,id',
+            'shop_ids' => 'required|array',
+            'shop_ids.*' => 'exists:shops,id',
             'action' => 'required|in:approve,reject,delete,verify,unverify,feature,unfeature,activate,deactivate'
         ]);
 
-        $shops = Shop::whereIn('id', $request->shops);
+        $shopIds = $request->shop_ids ?? $request->shops ?? [];
+        $shops = Shop::whereIn('id', $shopIds);
         $count = $shops->count();
 
         switch ($request->action) {
             case 'approve':
-                $shops->update(['status' => 'active', 'is_verified' => true]);
+                $shops->update([
+                    'status' => Shop::STATUS_APPROVED,
+                    'is_verified' => true,
+                    'is_active' => true,
+                    'verified_at' => now()
+                ]);
                 $message = "تم الموافقة على {$count} متجر";
                 break;
                 
@@ -455,7 +468,9 @@ class AdminShopController extends Controller
     {
         $shop->update([
             'is_verified' => true,
-            'status' => $shop->status === 'pending' ? 'active' : $shop->status
+            'is_active' => true,
+            'status' => Shop::STATUS_APPROVED,
+            'verified_at' => now()
         ]);
 
         return redirect()

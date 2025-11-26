@@ -263,7 +263,7 @@
                                 </td>
                                 <td>{{ $ticket->city->name_ar ?? 'غير محدد' }}</td>
                                 <td>
-                                    <span class="badge badge-{{ $ticket->category == 'technical' ? 'info' : ($ticket->category == 'billing' ? 'warning' : 'secondary') }}">
+                                    <span class="badge bg-{{ $ticket->category == 'technical' ? 'info' : ($ticket->category == 'billing' ? 'warning' : 'secondary') }}">
                                         {{ 
                                             $ticket->category == 'technical' ? 'تقني' : 
                                             ($ticket->category == 'billing' ? 'فوترة' : 
@@ -273,7 +273,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge badge-{{ $ticket->priority == 'urgent' ? 'danger' : ($ticket->priority == 'high' ? 'warning' : ($ticket->priority == 'normal' ? 'info' : 'secondary')) }}">
+                                    <span class="badge bg-{{ $ticket->priority == 'urgent' ? 'danger' : ($ticket->priority == 'high' ? 'warning' : ($ticket->priority == 'normal' ? 'info' : 'secondary')) }}">
                                         {{ 
                                             $ticket->priority == 'urgent' ? 'عاجلة' : 
                                             ($ticket->priority == 'high' ? 'عالية' : 
@@ -282,7 +282,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge badge-{{ $ticket->status == 'resolved' ? 'success' : ($ticket->status == 'in_progress' ? 'info' : ($ticket->status == 'closed' ? 'secondary' : 'warning')) }}">
+                                    <span class="badge bg-{{ $ticket->status == 'resolved' ? 'success' : ($ticket->status == 'in_progress' ? 'info' : ($ticket->status == 'closed' ? 'secondary' : 'warning')) }}">
                                         {{ 
                                             $ticket->status == 'open' ? 'مفتوحة' : 
                                             ($ticket->status == 'in_progress' ? 'قيد المعالجة' : 

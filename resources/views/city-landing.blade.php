@@ -327,94 +327,12 @@
         </section>
         @endif
 
-        {{-- Featured and Popular Shops --}}
-        <section class="featured-shops py-5 bg-light">
-            <div class="container">
+        {{-- All Shops Section --}}
+        <section class="all-shops py-5 bg-light">
+            <div class="container-fluid">
                 <div class="row">
-                    {{-- Main Content --}}
-                    <div class="col-lg-8">
-                        @if($categoriesWithShops && $categoriesWithShops->count() > 0)
-                            @foreach($categoriesWithShops->take(3) as $index => $category)
-                                <div class="category-section-modern mb-5">
-                                    {{-- Enhanced Category Header --}}
-                                    <div class="category-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
-                                        <div class="d-flex align-items-center justify-content-between">
-                                            <div class="d-flex align-items-center">
-                                                <div class="category-icon-large bg-primary bg-opacity-10 rounded-circle p-3 me-3">
-                                                    <i class="{{ $category->icon ?? 'fas fa-store' }} text-primary"
-                                                        style="font-size: 1.5rem;"></i>
-                                                </div>
-                                                <div>
-                                                    <h3 class="h4 mb-1 fw-bold">{{ $category->name }}</h3>
-                                                    <p class="text-muted mb-0">
-                                                        <i class="fas fa-store me-1"></i>
-                                                        {{ $category->shops_count }} متجر متاح
-                                                        @if($category->description)
-                                                            • {{ Str::limit($category->description, 50) }}
-                                                        @endif
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <a href="{{ route('city.category.shops', ['city' => $selectedCity->slug ?? 'all', 'category' => $category->slug]) }}"
-                                                class="btn btn-primary rounded-pill px-4">
-                                                <i class="fas fa-arrow-left me-2"></i>
-                                                عرض الكل
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                    {{-- Enhanced Shops Grid --}}
-                                    <div class="row g-4">
-                                        @forelse($category->shops->take(4) as $shop)
-                                            <div class="col-lg-6 col-md-6">
-                                                <x-shop-card :shop="$shop" :city-name="$cityContext['selected_city_name']" />
-                                            </div>
-
-                                        @empty
-                                            <div class="col-12">
-                                                <div class="text-center py-5">
-                                                    <i class="fas fa-store-slash text-muted mb-3" style="font-size: 3rem;"></i>
-                                                    <h5 class="text-muted mb-2">لا توجد متاجر في هذه الفئة</h5>
-                                                    <p class="text-muted">سيتم إضافة المزيد من المتاجر قريباً</p>
-                                                </div>
-                                            </div>
-                                        @endforelse
-                                    </div>
-                                </div>
-
-                                {{-- Enhanced Ad Placement --}}
-                                @if(($index + 1) % 2 === 0 && !$loop->last)
-                                    <div class="my-5">
-                                        <x-ad-display type="banner" placement="city_landing" :city-id="$selectedCity->id ?? null"
-                                            class="rounded-3 overflow-hidden shadow-sm" />
-                                    </div>
-                                @endif
-                            @endforeach
-                        @else
-                            {{-- Enhanced Empty State --}}
-                            <div class="empty-state-modern bg-white rounded-3 p-5 text-center shadow-sm">
-                                <div class="empty-icon-modern mb-4">
-                                    <i class="fas fa-city text-muted" style="font-size: 4rem;"></i>
-                                </div>
-                                <h3 class="h4 mb-3 fw-bold">قريباً في {{ $cityContext['selected_city_name'] }}</h3>
-                                <p class="text-muted mb-4">نعمل حالياً على إضافة أفضل المتاجر والخدمات في مدينتك</p>
-                                <div class="d-flex justify-content-center gap-3">
-                                    <button onclick="showCityModal()" class="btn btn-primary btn-lg rounded-pill px-4">
-                                        <i class="fas fa-exchange-alt me-2"></i>
-                                        جرب مدينة أخرى
-                                    </button>
-                                    <a href="{{ route('categories.index') }}"
-                                        class="btn btn-outline-primary btn-lg rounded-pill px-4">
-                                        <i class="fas fa-th-large me-2"></i>
-                                        تصفح الفئات
-                                    </a>
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-
-                    {{-- Enhanced Sidebar --}}
-                    <div class="col-lg-4">
+                    {{-- Enhanced Sidebar - Now on the Right --}}
+                    <div class="col-lg-4 order-lg-1">
                         <div class="sidebar-modern">
                             {{-- City Quick Info Widget --}}
                             <div class="sidebar-widget-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
@@ -525,6 +443,47 @@
                                     class="rounded-3 overflow-hidden shadow-sm" />
                             </div>
                         </div>
+                    </div>
+
+                    {{-- Main Content - Shops on the Left --}}
+                    <div class="col-lg-8 order-lg-2">
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h2 class="h4 mb-0 fw-bold">جميع المتاجر في {{ $cityContext['selected_city_name'] }}</h2>
+                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                {{ $shops->count() }} متجر
+                            </span>
+                        </div>
+
+                        @if($shops && $shops->count() > 0)
+                            {{-- Shops Grid - 3 cards per row on large screens --}}
+                            <div class="row g-4">
+                                @foreach($shops as $shop)
+                                    <div class="col-lg-4 col-md-6">
+                                        <x-shop-card :shop="$shop" :city-name="$cityContext['selected_city_name']" />
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            {{-- Enhanced Empty State --}}
+                            <div class="empty-state-modern bg-white rounded-3 p-5 text-center shadow-sm">
+                                <div class="empty-icon-modern mb-4">
+                                    <i class="fas fa-city text-muted" style="font-size: 4rem;"></i>
+                                </div>
+                                <h3 class="h4 mb-3 fw-bold">قريباً في {{ $cityContext['selected_city_name'] }}</h3>
+                                <p class="text-muted mb-4">نعمل حالياً على إضافة أفضل المتاجر والخدمات في مدينتك</p>
+                                <div class="d-flex justify-content-center gap-3">
+                                    <button onclick="showCityModal()" class="btn btn-primary btn-lg rounded-pill px-4">
+                                        <i class="fas fa-exchange-alt me-2"></i>
+                                        جرب مدينة أخرى
+                                    </button>
+                                    <a href="{{ route('categories.index') }}"
+                                        class="btn btn-outline-primary btn-lg rounded-pill px-4">
+                                        <i class="fas fa-th-large me-2"></i>
+                                        تصفح الفئات
+                                    </a>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

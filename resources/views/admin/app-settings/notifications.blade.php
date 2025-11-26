@@ -184,7 +184,7 @@
                                         ];
                                         $typeInfo = $typeLabels[$notification->type] ?? ['غير محدد', 'secondary'];
                                     @endphp
-                                    <span class="badge badge-{{ $typeInfo[1] }}">{{ $typeInfo[0] }}</span>
+                                    <span class="badge bg-{{ $typeInfo[1] }}">{{ $typeInfo[0] }}</span>
                                 </td>
                                 <td>
                                     @php
@@ -206,7 +206,7 @@
                                         ];
                                         $statusInfo = $statusLabels[$notification->status] ?? ['غير محدد', 'secondary'];
                                     @endphp
-                                    <span class="badge badge-{{ $statusInfo[1] }}">{{ $statusInfo[0] }}</span>
+                                    <span class="badge bg-{{ $statusInfo[1] }}">{{ $statusInfo[0] }}</span>
                                 </td>
                                 <td>
                                     @if($notification->status === 'sent')

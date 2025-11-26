@@ -234,14 +234,19 @@
 </style>
 @endpush
 
-@section('scripts')
+@push('scripts')
 <script>
 // Select All functionality
-document.getElementById('selectAll').addEventListener('change', function() {
-    const checkboxes = document.querySelectorAll('.shop-checkbox');
-    checkboxes.forEach(checkbox => {
-        checkbox.checked = this.checked;
-    });
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.shop-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+    }
 });
 
 // Reject Shop functionality
@@ -297,4 +302,4 @@ function bulkAction(action) {
     }
 }
 </script>
-@endsection
+@endpush

@@ -45,7 +45,7 @@
                                 <tr>
                                     <td><strong>نوع المستخدم:</strong></td>
                                     <td>
-                                        <span class="badge badge-{{ $user->user_type == 'admin' ? 'danger' : ($user->user_type == 'shop_owner' ? 'warning' : 'info') }}">
+                                        <span class="badge bg-{{ $user->user_type == 'admin' ? 'danger' : ($user->user_type == 'shop_owner' ? 'warning' : 'info') }}">
                                             @if($user->user_type == 'admin') مدير
                                             @elseif($user->user_type == 'shop_owner') صاحب متجر
                                             @else عميل
@@ -64,7 +64,7 @@
                                 <tr>
                                     <td><strong>الحالة:</strong></td>
                                     <td>
-                                        <span class="badge badge-{{ $user->is_active ? 'success' : 'danger' }}">
+                                        <span class="badge bg-{{ $user->is_active ? 'success' : 'danger' }}">
                                             {{ $user->is_active ? 'نشط' : 'غير نشط' }}
                                         </span>
                                     </td>
@@ -187,7 +187,7 @@
                                     <td>{{ $shop->category->name ?? 'غير محدد' }}</td>
                                     <td>{{ $shop->city->name ?? 'غير محدد' }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $shop->is_active ? 'success' : 'danger' }}">
+                                        <span class="badge bg-{{ $shop->is_active ? 'success' : 'danger' }}">
                                             {{ $shop->is_active ? 'نشط' : 'غير نشط' }}
                                         </span>
                                     </td>
@@ -247,7 +247,7 @@
                                     </td>
                                     <td>{{ Str::limit($rating->comment, 50) }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $rating->status == 'approved' ? 'success' : ($rating->status == 'pending' ? 'warning' : 'danger') }}">
+                                        <span class="badge bg-{{ $rating->status == 'approved' ? 'success' : ($rating->status == 'pending' ? 'warning' : 'danger') }}">
                                             @if($rating->status == 'approved') موافق عليه
                                             @elseif($rating->status == 'pending') في الانتظار
                                             @else مرفوض

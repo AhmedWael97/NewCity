@@ -382,7 +382,20 @@ class LandingController extends Controller
             'total_categories' => 0,
         ];
 
-        // Get categories with their shops for this city
+        // Get all shops for this city (not grouped by categories)
+        $shops = Cache::remember("city_all_shops_{$city->slug}", 3600, function () use ($city) {
+            return Shop::where('city_id', $city->id)
+                ->where('is_active', true)
+                ->where('is_verified', true)
+                ->with(['category:id,name,icon,slug', 'city:id,name,slug'])
+                ->withAvg('ratings', 'rating')
+                ->withCount('ratings')
+                ->orderByDesc('is_featured')
+                ->orderByDesc('ratings_avg_rating')
+                ->get();
+        });
+        
+        // Get categories with their shops for this city (for sidebar)
         $categoriesWithShops = Cache::remember("city_categories_shops_{$city->slug}", 3600, function () use ($city) {
             return Category::whereHas('shops', function ($query) use ($city) {
                 $query->where('city_id', $city->id)
@@ -393,16 +406,6 @@ class LandingController extends Controller
                 $query->where('city_id', $city->id)
                       ->where('is_active', true)
                       ->where('is_verified', true);
-            }])
-            ->with(['shops' => function ($query) use ($city) {
-                $query->where('city_id', $city->id)
-                      ->where('is_active', true)
-                      ->where('is_verified', true)
-                      ->withAvg('ratings', 'rating')
-                      ->withCount('ratings')
-                      ->orderByDesc('is_featured')
-                      ->orderByDesc('ratings_avg_rating')
-                      ->take(4);
             }])
             ->orderByDesc('shops_count')
             ->get();
@@ -445,6 +448,7 @@ class LandingController extends Controller
             'city',
             'cityContext',
             'stats',
+            'shops',
             'categoriesWithShops',
             'serviceCategoriesWithServices',
             'cities',

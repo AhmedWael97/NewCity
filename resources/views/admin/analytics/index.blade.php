@@ -140,7 +140,7 @@
                     @forelse($popularCategories as $category)
                         <div class="d-flex justify-content-between align-items-center py-1 {{ !$loop->last ? 'border-bottom' : '' }}">
                             <div class="font-weight-bold">{{ $category->name_ar }}</div>
-                            <span class="badge badge-purple">{{ number_format($category->total_views) }} مشاهدة</span>
+                            <span class="badge bg-purple">{{ number_format($category->total_views) }} مشاهدة</span>
                         </div>
                     @empty
                         <div class="text-center text-muted py-4">

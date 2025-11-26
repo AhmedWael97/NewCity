@@ -160,7 +160,7 @@
                                             <i class="fas fa-star {{ $i <= $rating->rating ? 'text-warning' : 'text-muted' }}"></i>
                                         @endfor
                                         <br>
-                                        <span class="badge badge-{{ $rating->rating >= 4 ? 'success' : ($rating->rating >= 3 ? 'warning' : 'danger') }}">
+                                        <span class="badge bg-{{ $rating->rating >= 4 ? 'success' : ($rating->rating >= 3 ? 'warning' : 'danger') }}">
                                             {{ $rating->rating }}/5
                                         </span>
                                     </div>

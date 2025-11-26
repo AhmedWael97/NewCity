@@ -39,6 +39,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     Route::post('shops/bulk-action', [AdminShopController::class, 'bulkAction'])->name('shops.bulk-action');
     Route::post('shops/{shop}/toggle-status', [AdminShopController::class, 'toggleStatus'])->name('shops.toggle-status');
     Route::post('shops/{shop}/verify', [AdminShopController::class, 'verify'])->name('shops.verify');
+    Route::post('shops/{shop}/reject', [AdminShopController::class, 'reject'])->name('shops.reject');
     Route::post('shops/{shop}/feature', [AdminShopController::class, 'toggleFeatured'])->name('shops.feature');
     Route::get('shops/pending/review', [AdminShopController::class, 'pendingReview'])->name('shops.pending');
     

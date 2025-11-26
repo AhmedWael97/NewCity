@@ -698,7 +698,7 @@
                                 <div class="text-muted small">{{ $user->email }}</div>
                             </div>
                             <div class="text-right">
-                                <span class="badge badge-{{ $user->user_type == 'admin' ? 'danger' : ($user->user_type == 'shop_owner' ? 'success' : 'secondary') }}">
+                                <span class="badge bg-{{ $user->user_type == 'admin' ? 'danger' : ($user->user_type == 'shop_owner' ? 'success' : 'secondary') }}">
                                     {{ $user->user_type == 'regular' ? 'عادي' : ($user->user_type == 'shop_owner' ? 'صاحب متجر' : 'مدير') }}
                                 </span>
                                 <div class="text-muted small">{{ $user->created_at->diffForHumans() }}</div>
@@ -729,7 +729,7 @@
                                 <div class="text-muted small">{{ $shop->city->name ?? 'غير محدد' }}</div>
                             </div>
                             <div class="text-right">
-                                <span class="badge badge-{{ $shop->status == 'active' ? 'success' : ($shop->status == 'pending' ? 'warning' : 'danger') }}">
+                                <span class="badge bg-{{ $shop->status == 'active' ? 'success' : ($shop->status == 'pending' ? 'warning' : 'danger') }}">
                                     {{ $shop->status == 'active' ? 'نشط' : ($shop->status == 'pending' ? 'معلق' : 'غير نشط') }}
                                 </span>
                                 <div class="text-muted small">{{ $shop->created_at->diffForHumans() }}</div>
@@ -792,7 +792,7 @@
                                         </td>
                                         <td>{{ number_format($shop->total_reviews) }}</td>
                                         <td>
-                                            <span class="badge badge-{{ $shop->status == 'active' ? 'success' : ($shop->status == 'pending' ? 'warning' : 'danger') }}">
+                                            <span class="badge bg-{{ $shop->status == 'active' ? 'success' : ($shop->status == 'pending' ? 'warning' : 'danger') }}">
                                                 {{ $shop->status == 'active' ? 'نشط' : ($shop->status == 'pending' ? 'معلق' : 'غير نشط') }}
                                             </span>
                                         </td>
@@ -987,7 +987,7 @@ function updateSystemHealthUI(healthData) {
     });
     
     // Update overall indicator
-    indicator.className = `badge badge-${overallStatus === 'healthy' ? 'success' : (overallStatus === 'warning' ? 'warning' : 'danger')}`;
+    indicator.className = `badge bg-${overallStatus === 'healthy' ? 'success' : (overallStatus === 'warning' ? 'warning' : 'danger')}`;
     indicator.textContent = overallStatus === 'healthy' ? 'صحي' : (overallStatus === 'warning' ? 'تحذير' : 'خطأ');
     
     // Update details (you can expand this based on the actual health data structure)

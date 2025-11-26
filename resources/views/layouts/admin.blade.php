@@ -769,7 +769,7 @@
                         <i class="fas fa-clock"></i>
                         <span>المتاجر المعلقة</span>
                         @if(isset($stats) && $stats['pending_shops'] > 0)
-                            <span class="badge badge-warning me-2">{{ $stats['pending_shops'] }}</span>
+                            <span class="badge bg-warning me-2">{{ $stats['pending_shops'] }}</span>
                         @endif
                     </a>
                 </li>
@@ -918,24 +918,32 @@
                     </a>
                 </li>
 
-                {{-- Settings (Temporarily disabled - controller not implemented)
                 <!-- Settings -->
                 <div class="sidebar-heading">الإعدادات</div>
+                
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" 
-                       href="{{ route('admin.settings.index') }}">
+                    <a class="nav-link {{ request()->routeIs('admin.app-settings.index') ? 'active' : '' }}" 
+                       href="{{ route('admin.app-settings.index') }}">
                         <i class="fas fa-cog"></i>
-                        <span>إعدادات النظام</span>
+                        <span>إعدادات التطبيق</span>
                     </a>
                 </li>
+                
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}" 
-                       href="{{ route('admin.logs.index') }}">
-                        <i class="fas fa-list"></i>
-                        <span>سجل النشاطات</span>
+                    <a class="nav-link {{ request()->routeIs('admin.app-settings.notifications*') ? 'active' : '' }}" 
+                       href="{{ route('admin.app-settings.notifications') }}">
+                        <i class="fas fa-bell"></i>
+                        <span>إدارة الإشعارات</span>
                     </a>
                 </li>
-                --}}
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.app-settings.notifications.create') ? 'active' : '' }}" 
+                       href="{{ route('admin.app-settings.notifications.create') }}">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>إرسال إشعار</span>
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -967,7 +975,7 @@
                         <i class="fas fa-bell fa-fw"></i>
                         <!-- Counter - Alerts -->
                         @if(isset($stats) && $stats['pending_tickets'] > 0)
-                            <span class="badge badge-danger badge-counter">{{ $stats['pending_tickets'] }}</span>
+                            <span class="badge bg-danger badge-counter">{{ $stats['pending_tickets'] }}</span>
                         @endif
                     </a>
                     <!-- Dropdown - Alerts -->
@@ -1016,7 +1024,7 @@
                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="fas fa-envelope fa-fw"></i>
                         <!-- Counter - Messages -->
-                        <span class="badge badge-primary badge-counter">5</span>
+                        <span class="badge bg-primary badge-counter">5</span>
                     </a>
                     <!-- Dropdown - Messages -->
                     <div class="dropdown-list dropdown-menu dropdown-menu-end shadow animated--grow-in"
@@ -1176,5 +1184,8 @@
     </script>
 
     @stack('scripts')
+
+    <!-- Firebase Initialization -->
+    <x-firebase-init />
 </body>
 </html>

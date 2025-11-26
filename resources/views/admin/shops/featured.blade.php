@@ -157,12 +157,12 @@
                         <span class="badge bg-secondary text-white">{{ $shop->category->name_ar ?? 'N/A' }}</span>
                     </p>
                     <p><strong>الحالة:</strong><br>
-                        <span class="badge badge-{{ $shop->status === 'active' ? 'success' : 'danger' }}">
+                        <span class="badge bg-{{ $shop->status === 'active' ? 'success' : 'danger' }}">
                             {{ $shop->status === 'active' ? 'نشط' : 'غير نشط' }}
                         </span>
                     </p>
                     <p><strong>التحقق:</strong><br>
-                        <span class="badge badge-{{ $shop->is_verified ? 'success' : 'warning' }}">
+                        <span class="badge bg-{{ $shop->is_verified ? 'success' : 'warning' }}">
                             {{ $shop->is_verified ? 'محقق' : 'غير محقق' }}
                         </span>
                     </p>

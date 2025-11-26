@@ -133,7 +133,7 @@
 
                     <div class="mb-3">
                         <strong>الحالة:</strong><br>
-                        <span class="badge badge-{{ $subscription->is_active ? 'success' : 'secondary' }}">
+                        <span class="badge bg-{{ $subscription->is_active ? 'success' : 'secondary' }}">
                             {{ $subscription->is_active ? 'نشط' : 'معطل' }}
                         </span>
                     </div>
@@ -294,7 +294,7 @@
                                     </td>
                                     <td>{{ $sub->shop->user->name }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $sub->billing_cycle == 'monthly' ? 'info' : 'primary' }}">
+                                        <span class="badge bg-{{ $sub->billing_cycle == 'monthly' ? 'info' : 'primary' }}">
                                             {{ $sub->billing_cycle == 'monthly' ? 'شهري' : 'سنوي' }}
                                         </span>
                                     </td>
@@ -302,7 +302,7 @@
                                     <td>{{ $sub->started_at->format('Y-m-d') }}</td>
                                     <td>{{ $sub->expires_at->format('Y-m-d') }}</td>
                                     <td>
-                                        <span class="badge badge-{{ $sub->status == 'active' ? 'success' : 'secondary' }}">
+                                        <span class="badge bg-{{ $sub->status == 'active' ? 'success' : 'secondary' }}">
                                             {{ $sub->status == 'active' ? 'نشط' : $sub->status }}
                                         </span>
                                     </td>

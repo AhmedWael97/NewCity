@@ -74,7 +74,7 @@
                                 <p style="color: {{ $city->getThemeConfig('colors.secondary', '#64748b') }};">
                                     هذا مثال على كيفية ظهور المحتوى بالتصميم المخصص. الألوان والخطوط ستطبق على جميع عناصر التطبيق.
                                 </p>
-                                <span class="badge badge-lg" 
+                                <span class="badge bg-lg" 
                                       style="background-color: {{ $city->getThemeConfig('colors.accent', '#f59e0b') }}; color: white;">
                                     علامة مميزة
                                 </span>
@@ -104,7 +104,7 @@
                 <div class="card-body">
                     <p class="mb-2">
                         <strong>التصميم المخصص:</strong>
-                        <span class="badge badge-{{ $city->enable_custom_styling ? 'success' : 'secondary' }}">
+                        <span class="badge bg-{{ $city->enable_custom_styling ? 'success' : 'secondary' }}">
                             {{ $city->enable_custom_styling ? 'مفعل' : 'معطل' }}
                         </span>
                     </p>

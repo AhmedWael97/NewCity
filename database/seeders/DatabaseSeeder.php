@@ -19,36 +19,36 @@ class DatabaseSeeder extends Seeder
     {
         // Run seeders in order
         $this->call([
-            UserRoleSeeder::class,
-            ArabicCategorySeeder::class,
+           // UserRoleSeeder::class,
+            //ArabicCategorySeeder::class,
           //  EgyptianNewCitiesSeeder::class,
            
         ]);
 
         // Create a super admin user
-        User::factory()->create([
-            'name' => 'Super Admin',
-            'email' => 'admin@city.com',
-            'password' => Hash::make('superadminpassword'),
-            'user_role_id' => 4, // Super Admin role
-            'user_type' => 'admin', // Set user type for admin guard
-            'is_active' => true,
-            'is_verified' => true,
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Super Admin',
+        //     'email' => 'admin@city.com',
+        //     'password' => Hash::make('superadminpassword'),
+        //     'user_role_id' => 4, // Super Admin role
+        //     'user_type' => 'admin', // Set user type for admin guard
+        //     'is_active' => true,
+        //     'is_verified' => true,
+        // ]);
 
-        // Create a test customer
-        User::factory()->create([
-            'name' => 'Test Customer',
-            'email' => 'customer@example.com',
-            'user_role_id' => 1, // Customer role
-        ]);
+        // // Create a test customer
+        // User::factory()->create([
+        //     'name' => 'Test Customer',
+        //     'email' => 'customer@example.com',
+        //     'user_role_id' => 1, // Customer role
+        // ]);
 
-        // Create a test shop owner
-        User::factory()->create([
-            'name' => 'Shop Owner',
-            'email' => 'shop@example.com',
-            'user_role_id' => 2, // Shop Owner role
-        ]);
+        // // Create a test shop owner
+        // User::factory()->create([
+        //     'name' => 'Shop Owner',
+        //     'email' => 'shop@example.com',
+        //     'user_role_id' => 2, // Shop Owner role
+        // ]);
 
 
       //  $this->call(EgyptianShopsSeeder::class);
@@ -56,6 +56,7 @@ class DatabaseSeeder extends Seeder
       //  $this->call(ServicesSeeder::class);
       //  $this->call([RatingSeeder::class]);
 
+        
         
     }
 }

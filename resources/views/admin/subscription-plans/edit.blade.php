@@ -426,7 +426,7 @@
                                     <div class="row">
                                         @foreach($subscriptionPlan->shopSubscriptions->take(12) as $subscription)
                                         <div class="col-md-3 mb-2">
-                                            <span class="badge badge-{{ $subscription->is_active ? 'success' : 'secondary' }}">
+                                            <span class="badge bg-{{ $subscription->is_active ? 'success' : 'secondary' }}">
                                                 {{ $subscription->shop->name ?? 'غير محدد' }}
                                             </span>
                                         </div>
