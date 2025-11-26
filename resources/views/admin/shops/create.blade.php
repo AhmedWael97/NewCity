@@ -109,13 +109,28 @@
                             placeholder="وصف تفصيلي عن المتجر"
                         />
 
-                        <x-form.input 
-                            name="address" 
-                            label="العنوان" 
-                            :value="old('address')"
-                            icon="fas fa-map-marker-alt"
-                            placeholder="عنوان المتجر الكامل"
+                        <x-google-maps-picker 
+                            addressId="address"
+                            latitudeId="latitude"
+                            longitudeId="longitude"
+                            :addressValue="old('address', '')"
+                            :latitudeValue="old('latitude', '')"
+                            :longitudeValue="old('longitude', '')"
+                            height="450px"
                         />
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <x-form.input 
+                                    name="address" 
+                                    label="العنوان" 
+                                    :value="old('address')"
+                                    icon="fas fa-map-marker-alt"
+                                    placeholder="عنوان المتجر الكامل"
+                                    helpText="سيتم ملؤه تلقائياً عند تحديد الموقع على الخريطة"
+                                />
+                            </div>
+                        </div>
 
                         <div class="row">
                             <div class="col-md-6">
@@ -126,8 +141,9 @@
                                     :value="old('latitude')"
                                     icon="fas fa-map-pin"
                                     placeholder="24.774265"
-                                    helpText="إحداثي خط العرض على الخريطة"
+                                    helpText="يتم ملؤه تلقائياً من الخريطة"
                                     step="any"
+                                    readonly
                                 />
                             </div>
                             <div class="col-md-6">
@@ -138,8 +154,9 @@
                                     :value="old('longitude')"
                                     icon="fas fa-map-pin"
                                     placeholder="46.738586"
-                                    helpText="إحداثي خط الطول على الخريطة"
+                                    helpText="يتم ملؤه تلقائياً من الخريطة"
                                     step="any"
+                                    readonly
                                 />
                             </div>
                         </div>

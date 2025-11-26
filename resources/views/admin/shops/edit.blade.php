@@ -116,10 +116,23 @@
                             @enderror
                         </div>
 
+                        <x-google-maps-picker 
+                            addressId="address"
+                            latitudeId="latitude"
+                            longitudeId="longitude"
+                            :addressValue="old('address', $shop->address ?? '')"
+                            :latitudeValue="old('latitude', $shop->latitude ?? '')"
+                            :longitudeValue="old('longitude', $shop->longitude ?? '')"
+                            height="450px"
+                            :defaultLat="$shop->latitude ?? 24.774265"
+                            :defaultLng="$shop->longitude ?? 46.738586"
+                        />
+
                         <div class="form-group">
                             <label for="address">العنوان</label>
                             <input type="text" class="form-control @error('address') is-invalid @enderror" 
                                    id="address" name="address" value="{{ old('address', $shop->address) }}">
+                            <small class="form-text text-muted">سيتم ملؤه تلقائياً عند تحديد الموقع على الخريطة</small>
                             @error('address')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -130,7 +143,8 @@
                                 <div class="form-group">
                                     <label for="latitude">خط العرض</label>
                                     <input type="number" step="any" class="form-control @error('latitude') is-invalid @enderror" 
-                                           id="latitude" name="latitude" value="{{ old('latitude', $shop->latitude) }}">
+                                           id="latitude" name="latitude" value="{{ old('latitude', $shop->latitude) }}" readonly>
+                                    <small class="form-text text-muted">يتم ملؤه تلقائياً من الخريطة</small>
                                     @error('latitude')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -140,7 +154,8 @@
                                 <div class="form-group">
                                     <label for="longitude">خط الطول</label>
                                     <input type="number" step="any" class="form-control @error('longitude') is-invalid @enderror" 
-                                           id="longitude" name="longitude" value="{{ old('longitude', $shop->longitude) }}">
+                                           id="longitude" name="longitude" value="{{ old('longitude', $shop->longitude) }}" readonly>
+                                    <small class="form-text text-muted">يتم ملؤه تلقائياً من الخريطة</small>
                                     @error('longitude')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

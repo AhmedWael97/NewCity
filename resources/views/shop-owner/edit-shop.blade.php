@@ -173,6 +173,18 @@
                         <p class="section-subtitle">حدد موقع متجرك لسهولة الوصول إليه</p>
                     </div>
 
+                    <x-google-maps-picker 
+                        addressId="address"
+                        latitudeId="latitude"
+                        longitudeId="longitude"
+                        :addressValue="old('address', $shop->address ?? '')"
+                        :latitudeValue="old('latitude', $shop->latitude ?? '')"
+                        :longitudeValue="old('longitude', $shop->longitude ?? '')"
+                        height="400px"
+                        :defaultLat="$shop->latitude ?? 24.774265"
+                        :defaultLng="$shop->longitude ?? 46.738586"
+                    />
+
                     <div class="form-grid">
                         <!-- Address -->
                         <div class="form-group full-width">
@@ -187,6 +199,7 @@
                                    class="form-input @error('address') error @enderror"
                                    placeholder="مثال: طريق الملك فهد، حي الورود، مقابل مجمع العثيم"
                                    required>
+                            <small class="form-text text-muted">سيتم ملؤه تلقائياً عند تحديد الموقع على الخريطة</small>
                             @error('address')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
@@ -203,7 +216,9 @@
                                    value="{{ old('latitude', $shop->latitude) }}"
                                    step="any"
                                    class="form-input @error('latitude') error @enderror"
-                                   placeholder="مثال: 24.7136">
+                                   placeholder="مثال: 24.7136"
+                                   readonly>
+                            <small class="form-text text-muted">يتم ملؤه تلقائياً من الخريطة</small>
                             @error('latitude')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
@@ -219,7 +234,9 @@
                                    value="{{ old('longitude', $shop->longitude) }}"
                                    step="any"
                                    class="form-input @error('longitude') error @enderror"
-                                   placeholder="مثال: 46.6753">
+                                   placeholder="مثال: 46.6753"
+                                   readonly>
+                            <small class="form-text text-muted">يتم ملؤه تلقائياً من الخريطة</small>
                             @error('longitude')
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
