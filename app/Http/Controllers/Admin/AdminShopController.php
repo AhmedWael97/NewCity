@@ -119,6 +119,7 @@ class AdminShopController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'user_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'address' => 'required|string|max:500',
@@ -141,18 +142,27 @@ class AdminShopController extends Controller
             'is_active' => 'nullable|boolean',
         ]);
 
-        $shop = new Shop();
-        $shop->fill($request->except(['images']));
-        
         // Handle images upload
+        $imagePaths = [];
         if ($request->hasFile('images')) {
-            $imagePaths = [];
             foreach ($request->file('images') as $file) {
                 $imagePaths[] = $file->store('shops', 'public');
             }
-            $shop->images = $imagePaths;
+        } else {
+            // Generate default images if none uploaded
+            $category = Category::find($request->category_id);
+            $imageGenerator = new \App\Services\ShopImageGenerator();
+            $imagePaths = $imageGenerator->generateMultipleImages(
+                $request->name,
+                $category->name ?? 'Shop',
+                $category->icon ?? null,
+                3
+            );
         }
 
+        $shop = new Shop();
+        $shop->fill($request->except(['images']));
+        $shop->images = $imagePaths;
         $shop->save();
 
         return redirect()
@@ -204,30 +214,35 @@ class AdminShopController extends Controller
             'opening_hours' => 'nullable|json',
             'images' => 'nullable|array',
             'images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'delete_images' => 'nullable|array',
+            'delete_images.*' => 'integer',
             'status' => 'nullable|in:pending,approved,rejected,suspended',
             'is_verified' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
         ]);
 
-        $shop->fill($request->except(['images']));
-        
-        // Handle images upload
-        if ($request->hasFile('images')) {
-            // Delete old images
-            if ($shop->images && is_array($shop->images)) {
-                foreach ($shop->images as $oldImage) {
-                    Storage::disk('public')->delete($oldImage);
+        // Handle image deletion
+        $imagePaths = $shop->images ?? [];
+        if ($request->has('delete_images')) {
+            foreach ($request->delete_images as $index) {
+                if (isset($imagePaths[$index])) {
+                    Storage::disk('public')->delete($imagePaths[$index]);
+                    unset($imagePaths[$index]);
                 }
             }
-            
-            $imagePaths = [];
+            $imagePaths = array_values($imagePaths); // Reindex array
+        }
+
+        // Handle new images upload (append to existing)
+        if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 $imagePaths[] = $file->store('shops', 'public');
             }
-            $shop->images = $imagePaths;
         }
 
+        $shop->fill($request->except(['images', 'delete_images']));
+        $shop->images = $imagePaths;
         $shop->save();
 
         return redirect()
