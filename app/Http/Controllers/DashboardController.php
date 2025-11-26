@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\City;
 use App\Services\PaymentService;
 use Illuminate\Support\Facades\Storage;
+use App\Services\ShopImageGenerator;
 
 class DashboardController extends Controller
 {
@@ -186,6 +187,16 @@ class DashboardController extends Controller
                 $images[] = $path;
             }
             $shopData['images'] = $images;
+        } else {
+            // Generate default images if none uploaded
+            $category = Category::find($shopData['category_id']);
+            $imageGenerator = new ShopImageGenerator();
+            $shopData['images'] = $imageGenerator->generateMultipleImages(
+                $shopData['name'],
+                $category->name ?? 'Shop',
+                $category->icon ?? null,
+                3
+            );
         }
 
         $shop = Shop::create($shopData);

@@ -13,14 +13,14 @@ Route::prefix('v1')->group(function () {
 
     // Public city and shop data
     Route::get('/cities', [App\Http\Controllers\Api\CityController::class, 'index']);
-    Route::get('/cities/{city}', [App\Http\Controllers\Api\CityController::class, 'show']);
+    Route::get('/cities/{city:id}', [App\Http\Controllers\Api\CityController::class, 'show']);
     
-    // City landing page endpoints
-    Route::get('/cities/{city}/featured-shops', [App\Http\Controllers\Api\CityController::class, 'featuredShops']);
-    Route::get('/cities/{city}/latest-shops', [App\Http\Controllers\Api\CityController::class, 'latestShops']);
-    Route::get('/cities/{city}/statistics', [App\Http\Controllers\Api\CityController::class, 'statistics']);
-    Route::get('/cities/{city}/banners', [App\Http\Controllers\Api\CityController::class, 'banners']);
-    Route::get('/cities/{city}/services', [App\Http\Controllers\Api\CityController::class, 'services']);
+    // City landing page endpoints (bind by numeric id)
+    Route::get('/cities/{city:id}/featured-shops', [App\Http\Controllers\Api\CityController::class, 'featuredShops']);
+    Route::get('/cities/{city:id}/latest-shops', [App\Http\Controllers\Api\CityController::class, 'latestShops']);
+    Route::get('/cities/{city:id}/statistics', [App\Http\Controllers\Api\CityController::class, 'statistics']);
+    Route::get('/cities/{city:id}/banners', [App\Http\Controllers\Api\CityController::class, 'banners']);
+    Route::get('/cities/{city:id}/services', [App\Http\Controllers\Api\CityController::class, 'services']);
     
     Route::get('/categories', [App\Http\Controllers\Api\CategoryController::class, 'index']);
     Route::get('/shops', [App\Http\Controllers\Api\ShopController::class, 'index']);

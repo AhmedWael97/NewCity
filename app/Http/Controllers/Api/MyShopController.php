@@ -7,6 +7,7 @@ use App\Models\Shop;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Services\ShopImageGenerator;
 
 /**
  * @OA\Tag(
@@ -153,6 +154,18 @@ class MyShopController extends Controller
         $data = $validator->validated();
         $data['user_id'] = $request->user()->id;
         $data['slug'] = Str::slug($data['name']) . '-' . time();
+
+        // Generate default images if none provided
+        if (empty($data['images'])) {
+            $category = \App\Models\Category::find($data['category_id']);
+            $imageGenerator = new ShopImageGenerator();
+            $data['images'] = $imageGenerator->generateMultipleImages(
+                $data['name'],
+                $category->name ?? 'Shop',
+                $category->icon ?? null,
+                3
+            );
+        }
 
         $shop = Shop::create($data);
         $shop->load(['city', 'category']);

@@ -383,7 +383,16 @@ class LandingController extends Controller
         ];
 
         // Get all shops for this city (not grouped by categories)
-        $shops = Cache::remember("city_all_shops_{$city->slug}", 3600, function () use ($city) {
+        // Check if cache needs refresh
+        $cacheKey = "city_all_shops_{$city->slug}";
+        $lastCheck = Cache::get($cacheKey . '_last_check');
+        $latestShopUpdate = Shop::where('city_id', $city->id)->max('updated_at');
+        
+        if ($lastCheck && $latestShopUpdate && $latestShopUpdate > $lastCheck) {
+            Cache::forget($cacheKey);
+        }
+        
+        $shops = Cache::remember($cacheKey, 3600, function () use ($city) {
             return Shop::where('city_id', $city->id)
                 ->where('is_active', true)
                 ->where('is_verified', true)
@@ -395,8 +404,17 @@ class LandingController extends Controller
                 ->get();
         });
         
+        Cache::put($cacheKey . '_last_check', now(), 3600);
+        
         // Get categories with their shops for this city (for sidebar)
-        $categoriesWithShops = Cache::remember("city_categories_shops_{$city->slug}", 3600, function () use ($city) {
+        $categoryCacheKey = "city_categories_shops_{$city->slug}";
+        $lastCategoryCheck = Cache::get($categoryCacheKey . '_last_check');
+        
+        if ($lastCategoryCheck && $latestShopUpdate && $latestShopUpdate > $lastCategoryCheck) {
+            Cache::forget($categoryCacheKey);
+        }
+        
+        $categoriesWithShops = Cache::remember($categoryCacheKey, 3600, function () use ($city) {
             return Category::whereHas('shops', function ($query) use ($city) {
                 $query->where('city_id', $city->id)
                       ->where('is_active', true)
@@ -410,9 +428,19 @@ class LandingController extends Controller
             ->orderByDesc('shops_count')
             ->get();
         });
+        
+        Cache::put($categoryCacheKey . '_last_check', now(), 3600);
 
         // Get service categories with services for this city
-        $serviceCategoriesWithServices = Cache::remember("city_service_categories_{$city->slug}", 3600, function () use ($city) {
+        $serviceCacheKey = "city_service_categories_{$city->slug}";
+        $lastServiceCheck = Cache::get($serviceCacheKey . '_last_check');
+        $latestServiceUpdate = \App\Models\UserService::where('city_id', $city->id)->max('updated_at');
+        
+        if ($lastServiceCheck && $latestServiceUpdate && $latestServiceUpdate > $lastServiceCheck) {
+            Cache::forget($serviceCacheKey);
+        }
+        
+        $serviceCategoriesWithServices = Cache::remember($serviceCacheKey, 3600, function () use ($city) {
             return \App\Models\ServiceCategory::whereHas('userServices', function ($query) use ($city) {
                 $query->where('city_id', $city->id)
                       ->where('is_active', true);
@@ -432,6 +460,8 @@ class LandingController extends Controller
             ->limit(3)
             ->get();
         });
+        
+        Cache::put($serviceCacheKey . '_last_check', now(), 3600);
 
         // Get all cities for modal
         $cities = $this->cityDataService->getCitiesForSelection();

@@ -17,11 +17,59 @@ class CityDataService
     private const STATS_CACHE_TTL = 1800; // 30 minutes
 
     /**
+     * Check if cache needs refresh by comparing last updated timestamp
+     */
+    private function shouldRefreshCache(string $cacheKey, string $model, ?int $cityId = null): bool
+    {
+        $lastChecked = Cache::get($cacheKey . '_checked_at');
+        
+        if (!$lastChecked) {
+            return true;
+        }
+
+        // Get the latest update time from the model
+        $query = $model::query();
+        
+        if ($cityId && method_exists($model, 'getTable')) {
+            $table = (new $model)->getTable();
+            if (in_array('city_id', (new $model)->getFillable())) {
+                $query->where('city_id', $cityId);
+            }
+        }
+        
+        $latestUpdate = $query->max('updated_at');
+        
+        if (!$latestUpdate) {
+            return false;
+        }
+        
+        return $latestUpdate > $lastChecked;
+    }
+
+    /**
+     * Smart cache remember with auto-refresh on updates
+     */
+    private function smartCache(string $cacheKey, int $ttl, callable $callback, string $model = null, ?int $cityId = null)
+    {
+        // If model is provided, check if we need to refresh
+        if ($model && $this->shouldRefreshCache($cacheKey, $model, $cityId)) {
+            Cache::forget($cacheKey);
+        }
+
+        $data = Cache::remember($cacheKey, $ttl, $callback);
+        
+        // Store the check timestamp
+        Cache::put($cacheKey . '_checked_at', now(), $ttl);
+        
+        return $data;
+    }
+
+    /**
      * Get optimized city data for selection modal - ULTRA FAST VERSION
      */
     public function getCitiesForSelection(int $limit = 50): \Illuminate\Support\Collection
     {
-        return Cache::remember('cities_for_selection', 1800, function () use ($limit) {
+        return $this->smartCache('cities_for_selection', 1800, function () use ($limit) {
             return City::select([
                 'id',
                 'name', 
@@ -36,7 +84,7 @@ class CityDataService
             ->orderBy('name', 'ASC')
             ->limit($limit)
             ->get();
-        });
+        }, City::class);
     }
 
     /**
@@ -105,7 +153,7 @@ class CityDataService
     {
         $cacheKey = 'city_stats_' . ($cityId ?? 'all');
         
-        return Cache::remember($cacheKey, self::STATS_CACHE_TTL, function () use ($cityId) {
+        return $this->smartCache($cacheKey, self::STATS_CACHE_TTL, function () use ($cityId) {
             $baseQuery = function ($model, $activeColumn = 'is_active') use ($cityId) {
                 $query = $model::where($activeColumn, true);
                 
@@ -160,7 +208,7 @@ class CityDataService
             $stats['average_rating'] = round($stats['average_rating'], 2);
 
             return $stats;
-        });
+        }, Shop::class, $cityId);
     }
 
     /**
@@ -170,7 +218,7 @@ class CityDataService
     {
         $cacheKey = 'popular_categories_' . ($cityId ?? 'all') . '_' . $limit;
         
-        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($cityId, $limit) {
+        return $this->smartCache($cacheKey, self::CACHE_TTL, function () use ($cityId, $limit) {
             $query = Category::select(['id', 'name', 'slug', 'icon', 'color'])
                 ->where('is_active', true)
                 ->withCount(['shops as shops_count' => function ($q) use ($cityId) {
@@ -184,7 +232,7 @@ class CityDataService
                 ->limit($limit);
 
             return $query->get();
-        });
+        }, Category::class, $cityId);
     }
 
     /**
@@ -194,7 +242,7 @@ class CityDataService
     {
         $cacheKey = 'featured_shops_' . ($cityId ?? 'all') . '_' . $limit;
         
-        return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($cityId, $limit) {
+        return $this->smartCache($cacheKey, self::CACHE_TTL, function () use ($cityId, $limit) {
             $query = Shop::with(['category:id,name,slug', 'city:id,name,slug'])
                 ->select([
                     'id', 'city_id', 'category_id', 'name', 'slug', 'description',
@@ -212,7 +260,7 @@ class CityDataService
                          ->orderByDesc('review_count')
                          ->limit($limit)
                          ->get();
-        });
+        }, Shop::class, $cityId);
     }
 
     /**

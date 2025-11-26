@@ -10,6 +10,9 @@ use App\Models\Category;
 use App\Models\City;
 use App\Models\Shop;
 use App\Models\SupportTicket;
+use App\Models\UserService;
+use App\Observers\ShopObserver;
+use App\Observers\UserServiceObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Register model observers for cache invalidation
+        Shop::observe(ShopObserver::class);
+        UserService::observe(UserServiceObserver::class);
+        
         // Register event listeners
         Event::listen(
             \App\Events\UserActivityTracked::class,

@@ -96,7 +96,7 @@
                                         <option value="">اختر التصنيف</option>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}" {{ old('category_id', $shop->category_id) == $category->id ? 'selected' : '' }}>
-                                                {{ $category->name_ar }}
+                                                {{ $category->name }}
                                             </option>
                                         @endforeach
                                     </select>
