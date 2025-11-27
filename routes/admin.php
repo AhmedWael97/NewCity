@@ -63,6 +63,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     Route::delete('categories/bulk-delete', [AdminCategoryController::class, 'bulkDelete'])->name('categories.bulk-delete');
     Route::resource('categories', AdminCategoryController::class);
     
+    // Shop Suggestions Management
+    Route::prefix('shop-suggestions')->name('shop-suggestions.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AdminShopSuggestionController::class, 'index'])->name('index');
+        Route::get('/{suggestion}', [App\Http\Controllers\Admin\AdminShopSuggestionController::class, 'show'])->name('show');
+        Route::patch('/{suggestion}/status', [App\Http\Controllers\Admin\AdminShopSuggestionController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{suggestion}', [App\Http\Controllers\Admin\AdminShopSuggestionController::class, 'destroy'])->name('destroy');
+    });
+    
     // Rating Management
     Route::resource('ratings', AdminRatingController::class)->except(['create', 'store']);
     Route::post('ratings/{rating}/verify', [AdminRatingController::class, 'verify'])->name('ratings.verify');

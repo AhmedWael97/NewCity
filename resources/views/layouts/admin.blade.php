@@ -798,6 +798,19 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.shop-suggestions.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.shop-suggestions.index') }}">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>اقتراحات المتاجر</span>
+                        @php
+                            $pendingCount = \App\Models\ShopSuggestion::where('status', 'pending')->count();
+                        @endphp
+                        @if($pendingCount > 0)
+                            <span class="badge badge-danger badge-counter ms-2">{{ $pendingCount }}</span>
+                        @endif
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.ratings.*') ? 'active' : '' }}" 
                        href="{{ route('admin.ratings.index') }}">
                         <i class="fas fa-star"></i>

@@ -435,7 +435,13 @@
     
     <div class="shop-card-content">
         <div class="shop-header">
-            <h3 class="shop-name">{{ $shop->name }}</h3>
+            <h3 class="shop-name">
+                {{ $shop->name }}
+                @php
+                    $isOpen = true;
+                @endphp
+                <span class="open-status {{ $isOpen ? 'open' : 'closed' }}"></span>
+            </h3>
             <div class="shop-rating">
                 <x-rating 
                     :rating="$shop->rating ?? 4.5" 
@@ -449,30 +455,18 @@
         <div class="shop-details">
             <div class="detail-item">
                 <i class="detail-icon">📍</i>
-                <span>{{ Str::limit($shop->address ?? ($city?->name ?? $shop->city?->name ?? 'غير محدد'), 25) }}</span>
+                <span>{{ Str::limit($shop->address ?? ($city?->name ?? $shop->city?->name ?? 'غير محدد'), 30) }}</span>
             </div>
             
             @if($shop->phone)
             <div class="detail-item">
                 <i class="detail-icon">📞</i>
-                <span>{{ $shop->phone }}</span>
-            </div>
-            @endif
-            
-            @if($shop->description && !is_array($shop->description) && !is_object($shop->description))
-            <div class="detail-item">
-                <i class="detail-icon">📝</i>
-                <span>{{ Str::limit($shop->description, 40) }}</span>
+                <span dir="ltr">{{ $shop->phone }}</span>
             </div>
             @endif
         </div>
         
         <div class="shop-footer">
-            <div class="shop-status open">
-                <i class="status-icon">🟢</i>
-                <span>مفتوح الآن</span>
-            </div>
-            
             <div class="shop-actions-mini">
                 @if($shop->phone)
                 <a href="tel:{{ $shop->phone }}" class="action-mini call" title="اتصال">

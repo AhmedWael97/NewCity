@@ -269,6 +269,11 @@
                                     إجراءات سريعة
                                 </h5>
                                 <div class="quick-actions-grid d-grid gap-2">
+                                    <button type="button" class="btn btn-success btn-sm rounded-pill mb-2" 
+                                            data-bs-toggle="modal" data-bs-target="#suggestShopModal">
+                                        <i class="fas fa-plus-circle me-2"></i>
+                                        اقترح متجر
+                                    </button>
                                     <a href="{{ route('city.shops.featured', ['city' => $selectedCity->slug ?? 'all']) }}"
                                         class="btn btn-warning btn-sm rounded-pill mb-2">
                                         <i class="fas fa-star me-2"></i>
@@ -296,6 +301,59 @@
 
                     {{-- Main Content - Shops on the Left --}}
                     <div class="col-lg-8 order-lg-2">
+                        {{-- Mobile Info Carousel (Hidden on Desktop) --}}
+                        <div class="mobile-info-carousel shadow-sm d-lg-none" style="display: none;">
+                            <div class="mobile-info-slide active">
+                                <i class="fas fa-store text-primary me-2"></i>
+                                <strong>{{ number_format($stats['total_shops'] ?? 0) }}</strong>
+                                <span class="text-muted ms-1">متجر نشط</span>
+                            </div>
+                            <div class="mobile-info-slide">
+                                <i class="fas fa-th-large text-success me-2"></i>
+                                <strong>{{ $stats['total_categories'] ?? 0 }}</strong>
+                                <span class="text-muted ms-1">فئة متاحة</span>
+                            </div>
+                            <div class="mobile-info-slide">
+                                <i class="fas fa-star text-warning me-2"></i>
+                                <strong>{{ number_format($stats['avg_rating'] ?? 4.5, 1) }} ⭐</strong>
+                                <span class="text-muted ms-1">متوسط التقييم</span>
+                            </div>
+                            @if($categoriesWithShops && $categoriesWithShops->count() > 0)
+                                @foreach($categoriesWithShops->take(3) as $category)
+                                    <div class="mobile-info-slide">
+                                        <i class="{{ $category->icon ?? 'fas fa-store' }} text-primary me-2"></i>
+                                        <strong>{{ $category->name }}</strong>
+                                        <span class="text-muted ms-1">({{ $category->shops_count }} متجر)</span>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+
+                        {{-- Mobile Quick Actions (4 columns on mobile) --}}
+                        <div class="d-lg-none mb-4">
+                            <div class="quick-actions-grid mobile-quick-actions">
+                                <button type="button" class="btn btn-success btn-sm rounded-pill" 
+                                        data-bs-toggle="modal" data-bs-target="#suggestShopModal">
+                                    <i class="fas fa-plus-circle me-1"></i>
+                                    اقترح متجر
+                                </button>
+                                <a href="{{ route('city.shops.featured', ['city' => $selectedCity->slug ?? 'all']) }}"
+                                    class="btn btn-warning btn-sm rounded-pill">
+                                    <i class="fas fa-star me-1"></i>
+                                    المميزة
+                                </a>
+                                <a href="{{ route('city.search', ['city' => $selectedCity->slug ?? 'all']) }}"
+                                    class="btn btn-info btn-sm rounded-pill">
+                                    <i class="fas fa-search me-1"></i>
+                                    بحث
+                                </a>
+                                <button onclick="showCityModal()" class="btn btn-outline-secondary btn-sm rounded-pill">
+                                    <i class="fas fa-exchange-alt me-1"></i>
+                                    المدينة
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="d-flex align-items-center justify-content-between mb-4">
                             <h2 class="h4 mb-0 fw-bold">جميع المتاجر في {{ $cityContext['selected_city_name'] }}</h2>
                             <span class="badge bg-primary rounded-pill px-3 py-2">
@@ -553,6 +611,178 @@
     {{-- City Selection Modal (Simple & Working) --}}
     <x-city-modal-simple :show-modal="!session('selected_city')" />
 
+    {{-- Shop Suggestion Modal --}}
+    <div class="modal fade" id="suggestShopModal" tabindex="-1" aria-labelledby="suggestShopModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="suggestShopModalLabel">
+                        <i class="fas fa-plus-circle me-2"></i>
+                        اقترح متجر جديد
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>ساعدنا في تحسين الخدمة!</strong> اقترح متجر تعرفه وسنقوم بمراجعته وإضافته قريباً.
+                    </div>
+
+                    <form id="suggestShopForm">
+                        @csrf
+                        <input type="hidden" name="city_id" value="{{ $selectedCity->id ?? '' }}">
+
+                        {{-- Suggested By Info --}}
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-user me-2"></i>معلوماتك</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label required">اسمك</label>
+                                        <input type="text" class="form-control" name="suggested_by_name" required 
+                                               value="{{ auth()->user()->name ?? '' }}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label required">رقم الهاتف</label>
+                                        <input type="text" class="form-control" name="suggested_by_phone" required 
+                                               value="{{ auth()->user()->phone ?? '' }}">
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">البريد الإلكتروني</label>
+                                        <input type="email" class="form-control" name="suggested_by_email" 
+                                               value="{{ auth()->user()->email ?? '' }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Shop Basic Info --}}
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-store me-2"></i>معلومات المتجر الأساسية</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label required">اسم المتجر</label>
+                                        <input type="text" class="form-control" name="shop_name" required 
+                                               placeholder="مثال: متجر الإلكترونيات الحديثة">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">المدينة</label>
+                                        <select class="form-select" name="city_id" id="citySelect" required>
+                                            <option value="">اختر المدينة</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">الفئة</label>
+                                        <select class="form-select" name="category_id" id="categorySelect">
+                                            <option value="">اختر الفئة</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">وصف المتجر</label>
+                                        <textarea class="form-control" name="description" rows="3" 
+                                                  placeholder="اكتب وصفاً مختصراً عن المتجر ونشاطه"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Contact Info --}}
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-phone me-2"></i>معلومات الاتصال</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">رقم الهاتف</label>
+                                        <input type="text" class="form-control" name="phone" 
+                                               placeholder="01xxxxxxxxx">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">واتساب</label>
+                                        <input type="text" class="form-control" name="whatsapp" 
+                                               placeholder="01xxxxxxxxx">
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">البريد الإلكتروني</label>
+                                        <input type="email" class="form-control" name="email" 
+                                               placeholder="shop@example.com">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Location Info --}}
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>معلومات الموقع</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">العنوان</label>
+                                        <textarea class="form-control" name="address" rows="2" 
+                                                  placeholder="مثال: شارع الجلاء، أمام مسجد النور"></textarea>
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">رابط خرائط جوجل</label>
+                                        <input type="url" class="form-control" name="google_maps_url" 
+                                               placeholder="https://goo.gl/maps/...">
+                                        <small class="text-muted">يمكنك الحصول عليه من خرائط جوجل</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Additional Info --}}
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>معلومات إضافية</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">الموقع الإلكتروني</label>
+                                        <input type="url" class="form-control" name="website" 
+                                               placeholder="https://www.example.com">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">صفحة الفيسبوك</label>
+                                        <input type="url" class="form-control" name="facebook" 
+                                               placeholder="https://facebook.com/...">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">صفحة الإنستجرام</label>
+                                        <input type="url" class="form-control" name="instagram" 
+                                               placeholder="https://instagram.com/...">
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label class="form-label">أوقات العمل</label>
+                                        <textarea class="form-control" name="opening_hours" rows="2" 
+                                                  placeholder="مثال: من السبت إلى الخميس من 9 صباحاً إلى 10 مساءً"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>إلغاء
+                    </button>
+                    <button type="button" class="btn btn-primary" id="submitSuggestion">
+                        <i class="fas fa-paper-plane me-2"></i>إرسال الاقتراح
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     @push('styles')
         <style>
             /* Modern City Landing Page Styles */
@@ -744,6 +974,34 @@
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             }
 
+            /* Mobile Auto-Rotating Info */
+            .mobile-info-carousel {
+                overflow: hidden;
+                position: relative;
+                height: 60px;
+                background: white;
+                border-radius: 8px;
+                padding: 10px;
+                margin-bottom: 15px;
+            }
+
+            .mobile-info-slide {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                font-size: 0.85rem;
+                opacity: 0;
+                position: absolute;
+                width: 100%;
+                transition: opacity 0.5s ease;
+            }
+
+            .mobile-info-slide.active {
+                opacity: 1;
+                position: relative;
+            }
+
             /* Responsive Design */
             @media (max-width: 768px) {
                 .stat-number-modern {
@@ -770,6 +1028,39 @@
 
                 .shop-card-modern {
                     margin-bottom: 1.5rem;
+                }
+
+                /* Hide desktop sidebar on mobile */
+                .sidebar-modern .sidebar-widget-modern {
+                    display: none !important;
+                }
+
+                /* Show mobile carousel instead */
+                .mobile-info-carousel {
+                    display: block !important;
+                }
+
+                /* Quick Actions: 4 columns */
+                .quick-actions-grid.mobile-quick-actions {
+                    display: grid !important;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 8px;
+                }
+
+                .quick-actions-grid.mobile-quick-actions .btn {
+                    font-size: 0.75rem;
+                    padding: 8px 10px;
+                    white-space: nowrap;
+                }
+
+                .quick-actions-grid.mobile-quick-actions .btn i {
+                    font-size: 0.85rem;
+                }
+
+                /* Shop Cards: 2 columns */
+                .all-shops .row .col-lg-4 {
+                    flex: 0 0 50%;
+                    max-width: 50%;
                 }
             }
 
@@ -800,6 +1091,33 @@
                     padding-left: 20px;
                     padding-right: 50px;
                     margin-bottom: 10px;
+                }
+
+                /* Mobile carousel smaller text */
+                .mobile-info-slide {
+                    font-size: 0.75rem;
+                }
+
+                .mobile-info-slide i {
+                    font-size: 0.85rem;
+                }
+
+                /* Quick Actions: smaller on very small screens */
+                .quick-actions-grid.mobile-quick-actions .btn {
+                    font-size: 0.7rem;
+                    padding: 6px 8px;
+                }
+
+                .quick-actions-grid.mobile-quick-actions .btn i {
+                    font-size: 0.75rem;
+                    margin-left: 3px;
+                }
+            }
+
+            /* Hide mobile carousel on desktop */
+            @media (min-width: 769px) {
+                .mobile-info-carousel {
+                    display: none !important;
                 }
             }
 
@@ -838,6 +1156,29 @@
             .badge {
                 font-weight: 500;
                 padding: 0.5em 0.75em;
+            }
+
+            /* Shop Suggestion Modal */
+            #suggestShopModal .card-header {
+                border-bottom: 2px solid #e9ecef;
+            }
+            
+            #suggestShopModal .form-label.required::after {
+                content: " *";
+                color: #dc3545;
+            }
+            
+            #suggestShopModal .modal-body {
+                max-height: 70vh;
+            }
+            
+            #suggestShopModal .card {
+                border: 1px solid #e9ecef;
+                transition: box-shadow 0.3s ease;
+            }
+            
+            #suggestShopModal .card:hover {
+                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             }
 
             /* Loading and Performance */
@@ -1300,6 +1641,117 @@
                     expires.setTime(expires.getTime() + (30 * 24 * 60 * 60 * 1000));
                     document.cookie = 'selected_city_slug=' + citySlug + ';expires=' + expires.toUTCString() + ';path=/';
                 }
+
+                // Shop Suggestion Modal Handler
+                loadCitiesAndCategories();
+
+                // Mobile Info Carousel Auto-Rotation
+                initMobileCarousel();
+            });
+
+            // Mobile Carousel Auto-Rotation
+            function initMobileCarousel() {
+                const carousel = document.querySelector('.mobile-info-carousel');
+                if (!carousel) return;
+
+                const slides = carousel.querySelectorAll('.mobile-info-slide');
+                if (slides.length <= 1) return;
+
+                let currentIndex = 0;
+
+                function showNextSlide() {
+                    slides[currentIndex].classList.remove('active');
+                    currentIndex = (currentIndex + 1) % slides.length;
+                    slides[currentIndex].classList.add('active');
+                }
+
+                // Auto-rotate every 3 seconds
+                setInterval(showNextSlide, 3000);
+
+                // Pause on hover
+                carousel.addEventListener('mouseenter', function() {
+                    clearInterval(window.carouselInterval);
+                });
+
+                carousel.addEventListener('mouseleave', function() {
+                    window.carouselInterval = setInterval(showNextSlide, 3000);
+                });
+
+                window.carouselInterval = setInterval(showNextSlide, 3000);
+            }
+
+            // Load Cities and Categories for Suggestion Modal
+            function loadCitiesAndCategories() {
+                fetch('{{ route("suggest-shop.data") }}')
+                    .then(response => response.json())
+                    .then(data => {
+                        const citySelect = document.getElementById('citySelect');
+                        const categorySelect = document.getElementById('categorySelect');
+                        
+                        // Populate cities
+                        data.cities.forEach(city => {
+                            const option = document.createElement('option');
+                            option.value = city.id;
+                            option.textContent = city.name;
+                            if (city.id == {{ $selectedCity->id ?? 'null' }}) {
+                                option.selected = true;
+                            }
+                            citySelect.appendChild(option);
+                        });
+
+                        // Populate categories
+                        data.categories.forEach(category => {
+                            const option = document.createElement('option');
+                            option.value = category.id;
+                            option.textContent = category.name;
+                            categorySelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error loading data:', error);
+                    });
+            }
+
+            // Submit Shop Suggestion
+            document.getElementById('submitSuggestion').addEventListener('click', function() {
+                const form = document.getElementById('suggestShopForm');
+                const formData = new FormData(form);
+                const button = this;
+                
+                // Disable button and show loading
+                button.disabled = true;
+                button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الإرسال...';
+
+                fetch('{{ route("suggest-shop.store") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        
+                        // Close modal and reset form
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('suggestShopModal'));
+                        modal.hide();
+                        form.reset();
+                    } else {
+                        showNotification(data.message || 'حدث خطأ أثناء الإرسال', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى', 'danger');
+                })
+                .finally(() => {
+                    // Re-enable button
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fas fa-paper-plane me-2"></i>إرسال الاقتراح';
+                });
             });
         </script>
     @endpush

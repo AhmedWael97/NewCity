@@ -3839,9 +3839,10 @@ a {
 
 .shop-image-container {
     position: relative;
-    aspect-ratio: 16/9;
+    aspect-ratio: 4/3;
     overflow: hidden;
     background: #f8fafc;
+    height: 200px;
 }
 
 .shop-image {
@@ -4196,6 +4197,37 @@ a {
     margin: 0;
     line-height: 1.3;
     flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.open-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+}
+
+.open-status.open {
+    background-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+    animation: pulse-status 2s ease-in-out infinite;
+}
+
+.open-status.closed {
+    background-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes pulse-status {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.6;
+    }
 }
 
 .shop-rating {
@@ -4203,6 +4235,7 @@ a {
     align-items: center;
     gap: 5px;
     font-size: 0.9rem;
+    margin-bottom: 0 !important;
 }
 
 .rating-stars {
@@ -4225,14 +4258,15 @@ a {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.85rem;
-    color: #64748b;
+    font-size: 0.9rem;
+    color: #1e293b;
     line-height: 1.4;
+    font-weight: 500;
 }
 
 .detail-icon {
-    font-size: 1rem;
-    width: 16px;
+    font-size: 1.1rem;
+    width: 20px;
 }
 
 .shop-footer {
@@ -4439,6 +4473,29 @@ a {
         flex-direction: column;
         gap: 8px;
         align-items: flex-start;
+    }
+
+    .shop-name {
+        font-size: 1.1rem;
+    }
+
+    .shop-image-container {
+        height: 180px;
+    }
+
+    .detail-item {
+        font-size: 0.9rem;
+    }
+
+    .detail-item span {
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .action-mini {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
     }
 
     .filter-actions {
@@ -6872,5 +6929,244 @@ a {
     
     .product-card-small .current-price {
         font-size: 15px;
+    }
+}
+
+/* ===============================================
+   IMPROVED SHOP CARD STYLES (Mobile Optimized)
+   =============================================== */
+
+/* Larger Image Container */
+.shop-image-container-large {
+    position: relative;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: #f8fafc;
+    height: 220px;
+}
+
+.shop-image-container-large .shop-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.enhanced-shop-card:hover .shop-image-container-large .shop-image {
+    transform: scale(1.05);
+}
+
+/* Status Indicator (Green/Red Circle) */
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.status-indicator.status-open {
+    background-color: #10b981;
+    animation: pulse-green 2s ease-in-out infinite;
+}
+
+.status-indicator.status-closed {
+    background-color: #ef4444;
+}
+
+@keyframes pulse-green {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    }
+    50% {
+        opacity: 0.8;
+        box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    }
+}
+
+/* Clean Shop Details */
+.shop-details-clean {
+    padding: 0;
+}
+
+.detail-item-clean {
+    display: flex;
+    align-items: center;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.detail-item-clean:last-child {
+    border-bottom: none;
+}
+
+.detail-item-clean i {
+    font-size: 1rem;
+    min-width: 24px;
+}
+
+.detail-item-clean strong {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.address-item strong {
+    color: #1e293b !important;
+}
+
+.phone-item strong {
+    color: #059669 !important;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 0.5px;
+}
+
+/* Centered Action Buttons */
+.shop-actions-centered {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-action {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    color: #64748b;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    font-size: 0.75rem;
+    gap: 4px;
+}
+
+.btn-action i {
+    font-size: 1.1rem;
+    margin-bottom: 2px;
+}
+
+.btn-action span {
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.btn-action.btn-call {
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.btn-action.btn-call:hover {
+    background: #10b981;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn-action.btn-directions {
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.btn-action.btn-directions:hover {
+    background: #3b82f6;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-action.btn-view {
+    border-color: #8b5cf6;
+    color: #8b5cf6;
+}
+
+.btn-action.btn-view:hover {
+    background: #8b5cf6;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* Shop Card Content Spacing */
+.shop-card-content {
+    padding: 16px;
+}
+
+.shop-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin: 0;
+    line-height: 1.3;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .shop-image-container-large {
+        height: 180px;
+    }
+    
+    .shop-name {
+        font-size: 1rem;
+    }
+    
+    .detail-item-clean {
+        font-size: 0.85rem;
+        padding: 6px 0;
+    }
+    
+    .btn-action {
+        padding: 8px 6px;
+        font-size: 0.7rem;
+    }
+    
+    .btn-action i {
+        font-size: 1rem;
+    }
+    
+    .btn-action span {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .shop-image-container-large {
+        height: 160px;
+        aspect-ratio: 1/1;
+    }
+    
+    .shop-card-content {
+        padding: 12px;
+    }
+    
+    .shop-name {
+        font-size: 0.95rem;
+    }
+    
+    .detail-item-clean {
+        font-size: 0.8rem;
+    }
+    
+    .detail-item-clean i {
+        font-size: 0.9rem;
+        min-width: 20px;
+    }
+    
+    .btn-action {
+        padding: 6px 4px;
+    }
+    
+    .btn-action span {
+        font-size: 0.65rem;
     }
 }

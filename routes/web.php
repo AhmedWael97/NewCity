@@ -30,6 +30,7 @@ Route::get('/new-migrate', function() {
 });
 
 
+
 Route::get('/clear-cache', function() {
     \Artisan::call('cache:clear');
     \Artisan::call('config:clear');
@@ -122,6 +123,10 @@ Route::middleware('guest')->group(function () {
 
 // Public Service View (no auth required)
 Route::get('/user/services/{service}', [App\Http\Controllers\User\UserServiceController::class, 'show'])->name('user.services.show');
+
+// Shop Suggestion Routes (public)
+Route::post('/suggest-shop', [App\Http\Controllers\ShopSuggestionController::class, 'store'])->name('suggest-shop.store');
+Route::get('/suggest-shop/data', [App\Http\Controllers\ShopSuggestionController::class, 'getCitiesAndCategories'])->name('suggest-shop.data');
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

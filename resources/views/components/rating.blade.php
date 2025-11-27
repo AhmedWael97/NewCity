@@ -56,19 +56,15 @@
     </div>
     
     <!-- Rating Information -->
-    @if ($showNumber || ($showCount && $reviewCount > 0))
-        <div class="rating-info flex items-center gap-1">
-            @if ($showNumber)
-                <span class="{{ $numberClass }} text-white">
-                    {{ number_format($ratingValue, 1) }}
-                </span>
-            @endif
-            
-            @if ($showCount && $reviewCount > 0)
-                <span class="{{ $countClass }} text-white">
-                    ({{ number_format($reviewCount) }})
-                </span>
-            @endif
-        </div>
+    @if ($showNumber)
+        <span class="{{ $numberClass }}">
+            {{ number_format($ratingValue, 1) }}
+        </span>
+    @endif
+    
+    @if ($showCount && $reviewCount > 0)
+        <span class="{{ $countClass }}">
+            ({{ number_format($reviewCount) }})
+        </span>
     @endif
 </div>
