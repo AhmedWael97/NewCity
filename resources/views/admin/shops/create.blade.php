@@ -21,6 +21,17 @@
                     <h6 class="m-0 font-weight-bold text-primary">معلومات المتجر</h6>
                 </div>
                 <div class="card-body">
+                    @if(isset($suggestion))
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            <h5 class="alert-heading"><i class="fas fa-info-circle"></i> إنشاء متجر من اقتراح</h5>
+                            <p class="mb-0">جاري إنشاء متجر من الاقتراح: <strong>{{ $suggestion->shop_name }}</strong></p>
+                            <p class="mb-0 small">تم تعبئة البيانات المتاحة تلقائياً. يرجى مراجعة وإكمال البيانات الناقصة.</p>
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                    @endif
+                    
                     @if ($errors->any())
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
                             <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> يوجد أخطاء في النموذج:</h5>
@@ -38,12 +49,16 @@
                     <form method="POST" action="{{ route('admin.shops.store') }}" enctype="multipart/form-data">
                         @csrf
                         
+                        @if(isset($suggestion))
+                            <input type="hidden" name="suggestion_id" value="{{ $suggestion->id }}">
+                        @endif
+                        
                         <div class="row">
                             <div class="col-md-6">
                                 <x-form.input 
                                     name="name" 
                                     label="اسم المتجر" 
-                                    :value="old('name')"
+                                    :value="old('name', $suggestion->shop_name ?? '')"
                                     icon="fas fa-store"
                                     :required="true"
                                     placeholder="أدخل اسم المتجر"
@@ -80,7 +95,7 @@
                                     name="city_id" 
                                     label="المدينة" 
                                     :options="$cities->pluck('name', 'id')->toArray()"
-                                    :value="old('city_id')"
+                                    :value="old('city_id', $suggestion->city_id ?? '')"
                                     icon="fas fa-city"
                                     :required="true"
                                     placeholder="اختر المدينة"
@@ -92,7 +107,7 @@
                                     name="category_id" 
                                     label="التصنيف" 
                                     :options="$categories->pluck('name', 'id')->toArray()"
-                                    :value="old('category_id')"
+                                    :value="old('category_id', $suggestion->category_id ?? '')"
                                     icon="fas fa-tags"
                                     :required="true"
                                     placeholder="اختر التصنيف"
@@ -103,7 +118,7 @@
                         <x-form.textarea 
                             name="description" 
                             label="الوصف" 
-                            :value="old('description')"
+                            :value="old('description', $suggestion->description ?? '')"
                             icon="fas fa-align-right"
                             rows="4"
                             placeholder="وصف تفصيلي عن المتجر"
@@ -113,9 +128,9 @@
                             addressId="address"
                             latitudeId="latitude"
                             longitudeId="longitude"
-                            :addressValue="old('address', '')"
-                            :latitudeValue="old('latitude', '')"
-                            :longitudeValue="old('longitude', '')"
+                            :addressValue="old('address', $suggestion->address ?? '')"
+                            :latitudeValue="old('latitude', $suggestion->latitude ?? '')"
+                            :longitudeValue="old('longitude', $suggestion->longitude ?? '')"
                             height="450px"
                         />
 
@@ -167,7 +182,7 @@
                                     name="phone" 
                                     type="tel"
                                     label="رقم الهاتف" 
-                                    :value="old('phone')"
+                                    :value="old('phone', $suggestion->phone ?? '')"
                                     icon="fas fa-phone"
                                     placeholder="+966 50 123 4567"
                                 />
@@ -177,7 +192,7 @@
                                     name="email" 
                                     type="email"
                                     label="البريد الإلكتروني" 
-                                    :value="old('email')"
+                                    :value="old('email', $suggestion->email ?? '')"
                                     icon="fas fa-envelope"
                                     placeholder="shop@example.com"
                                 />
@@ -187,7 +202,7 @@
                                     name="website" 
                                     type="url"
                                     label="الموقع الإلكتروني" 
-                                    :value="old('website')"
+                                    :value="old('website', $suggestion->website ?? '')"
                                     icon="fas fa-globe"
                                     placeholder="https://example.com"
                                 />

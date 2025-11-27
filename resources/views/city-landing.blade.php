@@ -630,7 +630,15 @@
 
                     <form id="suggestShopForm">
                         @csrf
-                        <input type="hidden" name="city_id" value="{{ $selectedCity->id ?? '' }}">
+                        <!-- Show only the selected city in the form -->
+                        <div class="mb-3">
+                            <label class="form-label required">المدينة</label>
+                            <select name="city_id" class="form-select" required>
+                                @if(isset($selectedCity) && $selectedCity)
+                                    <option value="{{ $selectedCity->id }}" selected>{{ $selectedCity->name }}</option>
+                                @endif
+                            </select>
+                        </div>
 
                         {{-- Suggested By Info --}}
                         <div class="card mb-4">
@@ -671,15 +679,14 @@
                                                placeholder="مثال: متجر الإلكترونيات الحديثة">
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label">المدينة</label>
-                                        <select class="form-select" name="city_id" id="citySelect" required>
-                                            <option value="">اختر المدينة</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
                                         <label class="form-label">الفئة</label>
                                         <select class="form-select" name="category_id" id="categorySelect">
                                             <option value="">اختر الفئة</option>
+                                            @if(isset($categoriesWithShops) && $categoriesWithShops->count() > 0)
+                                                @foreach($categoriesWithShops as $category)
+                                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                                @endforeach
+                                            @endif
                                         </select>
                                     </div>
                                     <div class="col-md-12 mb-3">

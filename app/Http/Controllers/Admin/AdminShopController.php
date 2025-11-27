@@ -105,13 +105,19 @@ class AdminShopController extends Controller
     /**
      * Show the form for creating a new shop.
      */
-    public function create()
+    public function create(Request $request)
     {
         $cities = City::orderBy('name')->get();
         $categories = Category::orderBy('name')->get();
         $users = \App\Models\User::orderBy('name')->get();
         
-        return view('admin.shops.create', compact('cities', 'categories', 'users'));
+        // Pre-fill data from shop suggestion if provided
+        $suggestion = null;
+        if ($request->filled('suggestion_id')) {
+            $suggestion = \App\Models\ShopSuggestion::find($request->suggestion_id);
+        }
+        
+        return view('admin.shops.create', compact('cities', 'categories', 'users', 'suggestion'));
     }
 
     /**
@@ -141,6 +147,7 @@ class AdminShopController extends Controller
             'is_verified' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
             'is_active' => 'nullable|boolean',
+            'suggestion_id' => 'nullable|exists:shop_suggestions,id',
         ]);
 
         // Handle images upload
@@ -162,9 +169,23 @@ class AdminShopController extends Controller
         }
 
         $shop = new Shop();
-        $shop->fill($request->except(['images']));
+        $shop->fill($request->except(['images', 'suggestion_id']));
         $shop->images = $imagePaths;
         $shop->save();
+
+        // If created from a suggestion, mark it as completed
+        if ($request->filled('suggestion_id')) {
+            $suggestion = \App\Models\ShopSuggestion::find($request->suggestion_id);
+            if ($suggestion) {
+                $suggestion->update([
+                    'status' => 'completed',
+                    'reviewed_by' => auth()->guard('admin')->id(),
+                    'reviewed_at' => now(),
+                    'admin_notes' => ($suggestion->admin_notes ? $suggestion->admin_notes . "\n\n" : '') . 
+                                   "تم إنشاء المتجر بنجاح (ID: {$shop->id})"
+                ]);
+            }
+        }
 
         return redirect()
             ->route('admin.shops.index')
