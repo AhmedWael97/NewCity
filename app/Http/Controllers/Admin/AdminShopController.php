@@ -8,6 +8,7 @@ use App\Models\City;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AdminShopController extends Controller
 {
@@ -491,5 +492,86 @@ class AdminShopController extends Controller
         return redirect()
             ->back()
             ->with('success', 'تم التحقق من المتجر وتفعيله بنجاح!');
+    }
+
+    /**
+     * Display shops on Google Maps
+     */
+    public function mapView(Request $request)
+    {
+        // Get cities and categories for dropdowns
+        $cities = City::active()->orderBy('name')->get();
+        $categories = Category::active()->orderBy('name')->get();
+
+        return view('admin.shops.map', compact('cities', 'categories'));
+    }
+
+    /**
+     * Import shop from Google Places
+     */
+    public function importFromGoogle(Request $request)
+    {
+        $validated = $request->validate([
+            'place_id' => 'required|string',
+            'name' => 'required|string|max:255',
+            'address' => 'nullable|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'phone' => 'nullable|string',
+            'website' => 'nullable|url',
+            'rating' => 'nullable|numeric|min:0|max:5',
+            'review_count' => 'nullable|integer|min:0',
+            'city_id' => 'required|exists:cities,id',
+            'category_id' => 'required|exists:categories,id',
+            'user_id' => 'required|exists:users,id',
+            'google_types' => 'nullable|array',
+        ]);
+
+        // Check if shop already exists with this place_id
+        $existingShop = Shop::where('google_place_id', $validated['place_id'])->first();
+        
+        if ($existingShop) {
+            return response()->json([
+                'success' => false,
+                'message' => 'هذا المتجر موجود بالفعل في النظام',
+                'shop_id' => $existingShop->id
+            ], 409);
+        }
+
+        // Generate unique slug
+        $slug = Str::slug($validated['name']);
+        $counter = 1;
+        while (Shop::where('slug', $slug)->exists()) {
+            $slug = Str::slug($validated['name']) . '-' . $counter;
+            $counter++;
+        }
+
+        // Create shop
+        $shop = Shop::create([
+            'user_id' => $validated['user_id'],
+            'city_id' => $validated['city_id'],
+            'category_id' => $validated['category_id'],
+            'name' => $validated['name'],
+            'slug' => $slug,
+            'description' => 'تم استيراد هذا المتجر من Google Maps',
+            'address' => $validated['address'],
+            'latitude' => $validated['latitude'],
+            'longitude' => $validated['longitude'],
+            'phone' => $validated['phone'],
+            'website' => $validated['website'],
+            'rating' => $validated['rating'] ?? 0,
+            'review_count' => $validated['review_count'] ?? 0,
+            'google_place_id' => $validated['place_id'],
+            'google_types' => $validated['google_types'] ?? [],
+            'is_verified' => false,
+            'is_active' => false,
+            'status' => 'pending',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم إضافة المتجر بنجاح',
+            'shop' => $shop
+        ]);
     }
 }

@@ -197,10 +197,11 @@
                         </div>
 
                         <!-- Image Upload Component -->
-                        <x-image-uploader 
+                        <x-dropzone-uploader 
                             name="images"
                             :currentImages="$shop->images ?? []"
                             :showCurrentImages="true"
+                            dropzoneId="shop-images-dropzone"
                         />
 
                         <div class="row">

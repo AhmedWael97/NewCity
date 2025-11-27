@@ -773,6 +773,13 @@
                         @endif
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.shops.map') ? 'active' : '' }}" 
+                       href="{{ route('admin.shops.map') }}">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>خريطة المتاجر</span>
+                    </a>
+                </li>
 
                 <!-- Content Management -->
                 <div class="sidebar-heading">إدارة المحتوى</div>

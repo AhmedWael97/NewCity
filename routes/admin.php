@@ -43,6 +43,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     Route::post('shops/{shop}/feature', [AdminShopController::class, 'toggleFeatured'])->name('shops.feature');
     Route::get('shops/pending/review', [AdminShopController::class, 'pendingReview'])->name('shops.pending');
     
+    // Shops Map View
+    Route::get('shops-map', [AdminShopController::class, 'mapView'])->name('shops.map');
+    
+    // Import shops from Google Places
+    Route::post('shops/import-from-google', [AdminShopController::class, 'importFromGoogle'])->name('shops.import-google');
+    
     // Featured Shops Management
     Route::get('shops/{shop}/featured/edit', [AdminShopController::class, 'editFeatured'])->name('shops.featured.edit');
     Route::put('shops/{shop}/featured', [AdminShopController::class, 'updateFeatured'])->name('shops.featured.update');

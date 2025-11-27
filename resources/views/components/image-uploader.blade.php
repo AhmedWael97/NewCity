@@ -13,6 +13,11 @@
     'currentImagesGridId' => 'current-images-grid'
 ])
 
+@php
+    // Generate safe JavaScript function name
+    $safeFunctionId = str_replace(['-', '_'], '', $uploadContainerId);
+@endphp
+
 <div class="image-uploader-component">
     <!-- Current Images -->
     @if($showCurrentImages && count($currentImages) > 0)
@@ -27,13 +32,13 @@
                             <img src="{{ is_string($image) ? (str_starts_with($image, 'http') ? $image : asset('storage/' . $image)) : $image }}" 
                                  alt="Image" 
                                  onerror="this.src='/images/placeholder.jpg'">
-                            <button type="button" class="remove-image" onclick="toggleDeleteImage{{ $uploadContainerId }}({{ $index }}, this)">
+                            <button type="button" class="remove-image" onclick="toggleDeleteImage{{ $safeFunctionId }}({{ $index }}, this)">
                                 <i class="fas fa-times"></i>
                             </button>
                             <input type="checkbox" 
                                    name="{{ $deleteInputName }}[]" 
                                    value="{{ $index }}" 
-                                   id="delete_{{ $uploadContainerId }}_{{ $index }}" 
+                                   id="delete_{{ $safeFunctionId }}_{{ $index }}" 
                                    style="display: none;">
                             <div class="delete-overlay" style="display: none;">
                                 <span class="badge badge-danger">سيتم الحذف</span>
@@ -146,9 +151,9 @@
 @push('scripts')
 <script>
 // Toggle delete for existing images - {{ $uploadContainerId }}
-function toggleDeleteImage{{ $uploadContainerId }}(index, button) {
+function toggleDeleteImage{{ $safeFunctionId }}(index, button) {
     const container = button.closest('[data-image-index]');
-    const checkbox = document.getElementById('delete_{{ $uploadContainerId }}_' + index);
+    const checkbox = document.getElementById('delete_{{ $safeFunctionId }}_' + index);
     const overlay = container.querySelector('.delete-overlay');
     const item = container.querySelector('.image-preview-item');
     

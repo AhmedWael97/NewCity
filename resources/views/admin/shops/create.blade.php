@@ -195,9 +195,10 @@
                         </div>
 
                         <!-- Image Upload Component -->
-                        <x-image-uploader 
+                        <x-dropzone-uploader 
                             name="images"
                             :showCurrentImages="false"
+                            dropzoneId="shop-images-dropzone"
                         />
 
                         <div class="row">
