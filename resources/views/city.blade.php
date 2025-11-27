@@ -368,16 +368,20 @@
         }, 3000);
     }
 
-    // Get Directions
-    function getDirections(address) {
+    // Get Directions using coordinates or address
+    function getDirections(latitude, longitude, address) {
         event.preventDefault();
         event.stopPropagation();
         
-        if (address) {
+        if (latitude && longitude) {
+            // Use coordinates for precise location
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`, '_blank');
+        } else if (address) {
+            // Fallback to address search
             const encodedAddress = encodeURIComponent(address);
             window.open(`https://www.google.com/maps/search/${encodedAddress}`, '_blank');
         } else {
-            alert('عذراً، العنوان غير متوفر');
+            alert('عذراً، الموقع غير متوفر');
         }
     }
 

@@ -139,4 +139,31 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     }
 </style>
+
+<script>
+// Get Directions using coordinates or address
+function getDirections(latitude, longitude, address) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    if (latitude && longitude) {
+        // Use coordinates for precise location
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`, '_blank');
+    } else if (address) {
+        // Fallback to address search
+        const encodedAddress = encodeURIComponent(address);
+        window.open(`https://www.google.com/maps/search/${encodedAddress}`, '_blank');
+    } else {
+        alert('عذراً، الموقع غير متوفر');
+    }
+}
+
+// Toggle Favorite Shop
+function toggleFavoriteShop(shopId) {
+    event.preventDefault();
+    event.stopPropagation();
+    console.log('Toggle favorite for shop:', shopId);
+    // Add your favorite toggle logic here
+}
+</script>
 @endsection

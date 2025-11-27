@@ -165,4 +165,27 @@
             </div>
         </div>
     </section>
+
+    <script>
+    // Get Directions using coordinates or address
+    function getDirections(latitude, longitude, address) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        if (latitude && longitude) {
+            window.open(`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`, '_blank');
+        } else if (address) {
+            const encodedAddress = encodeURIComponent(address);
+            window.open(`https://www.google.com/maps/search/${encodedAddress}`, '_blank');
+        } else {
+            alert('عذراً، الموقع غير متوفر');
+        }
+    }
+
+    function toggleFavoriteShop(shopId) {
+        event.preventDefault();
+        event.stopPropagation();
+        console.log('Toggle favorite for shop:', shopId);
+    }
+    </script>
 @endsection

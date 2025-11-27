@@ -1246,6 +1246,41 @@
                 console.log(`Analytics: ${category} - ${action}`);
             }
 
+            // Get Directions using coordinates or address
+            function getDirections(latitude, longitude, address) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                if (latitude && longitude) {
+                    // Use coordinates for precise location
+                    window.open(`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`, '_blank');
+                } else if (address) {
+                    // Fallback to address search
+                    const encodedAddress = encodeURIComponent(address);
+                    window.open(`https://www.google.com/maps/search/${encodedAddress}`, '_blank');
+                } else {
+                    alert('عذراً، الموقع غير متوفر');
+                }
+            }
+
+            // Toggle Favorite Shop
+            function toggleFavoriteShop(shopId) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Check if user is logged in
+                @auth
+                    // Add your favorite toggle logic here
+                    showNotification('تم إضافة المتجر للمفضلة', 'success');
+                    console.log('Toggle favorite for shop:', shopId);
+                @else
+                    showNotification('يرجى تسجيل الدخول أولاً', 'warning');
+                    setTimeout(() => {
+                        window.location.href = '{{ route("login") }}';
+                    }, 1500);
+                @endauth
+            }
+
             // Save current city to localStorage and cookie for persistence
             document.addEventListener('DOMContentLoaded', function () {
                 const citySlug = '{{ $selectedCity->slug ?? "" }}';

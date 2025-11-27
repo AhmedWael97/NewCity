@@ -479,7 +479,7 @@
                     <i class="icon">📞</i>
                 </a>
                 @endif
-                <button class="action-mini directions" onclick="getDirections('{{ addslashes($shop->address ?? '') }}')" title="الاتجاهات">
+                <button class="action-mini directions" onclick="getDirections({{ $shop->latitude ?? 'null' }}, {{ $shop->longitude ?? 'null' }}, '{{ addslashes($shop->address ?? '') }}')" title="الاتجاهات">
                     <i class="icon">🧭</i>
                 </button>
                 <a href="{{ route('shop.show', $shop->slug) }}" class="action-mini view" title="عرض التفاصيل">
