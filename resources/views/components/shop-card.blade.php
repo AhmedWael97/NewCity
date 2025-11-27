@@ -452,7 +452,7 @@
             </div>
         </div>
         
-        <div class="shop-details">
+        <div class="shop-details shop-details-desktop">
             <div class="detail-item">
                 <i class="detail-icon">📍</i>
                 <span>{{ Str::limit($shop->address ?? ($city?->name ?? $shop->city?->name ?? 'غير محدد'), 30) }}</span>
