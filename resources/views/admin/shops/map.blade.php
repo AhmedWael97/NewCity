@@ -141,43 +141,60 @@ let placesService;
 let currentPlaces = [];
 
 function initMap() {
-    map = new google.maps.Map(document.getElementById('map'), {
-        center: { lat: 30.0444, lng: 31.2357 },
-        zoom: 13
-    });
-
-    placesService = new google.maps.places.PlacesService(map);
-
-    drawingManager = new google.maps.drawing.DrawingManager({
-        drawingMode: null,
-        drawingControl: false,
-        circleOptions: {
-            fillColor: '#4285F4',
-            fillOpacity: 0.2,
-            strokeColor: '#4285F4',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            editable: true,
-            draggable: true
-        }
-    });
-    drawingManager.setMap(map);
-
-    google.maps.event.addListener(drawingManager, 'circlecomplete', function(newCircle) {
-        if (circle) circle.setMap(null);
-        circle = newCircle;
-        drawingManager.setDrawingMode(null);
-        searchPlaces();
-
-        google.maps.event.addListener(circle, 'radius_changed', () => {
-            clearTimeout(window.searchTimeout);
-            window.searchTimeout = setTimeout(searchPlaces, 500);
+    try {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 24.7136, lng: 46.6753 }, // Riyadh, Saudi Arabia
+            zoom: 12,
+            mapTypeControl: true,
+            streetViewControl: false,
+            fullscreenControl: true
         });
-        google.maps.event.addListener(circle, 'center_changed', () => {
-            clearTimeout(window.searchTimeout);
-            window.searchTimeout = setTimeout(searchPlaces, 500);
+
+        placesService = new google.maps.places.PlacesService(map);
+
+        drawingManager = new google.maps.drawing.DrawingManager({
+            drawingMode: null,
+            drawingControl: false,
+            circleOptions: {
+                fillColor: '#4285F4',
+                fillOpacity: 0.2,
+                strokeColor: '#4285F4',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                editable: true,
+                draggable: true
+            }
         });
-    });
+        drawingManager.setMap(map);
+
+        google.maps.event.addListener(drawingManager, 'circlecomplete', function(newCircle) {
+            if (circle) circle.setMap(null);
+            circle = newCircle;
+            drawingManager.setDrawingMode(null);
+            
+            // Validate circle size
+            const radius = circle.getRadius();
+            if (radius > 5000) {
+                showNotification('warning', 'الدائرة كبيرة جداً. سيتم البحث ضمن نطاق 5 كم فقط.');
+            }
+            
+            searchPlaces();
+
+            google.maps.event.addListener(circle, 'radius_changed', () => {
+                clearTimeout(window.searchTimeout);
+                window.searchTimeout = setTimeout(searchPlaces, 1000);
+            });
+            google.maps.event.addListener(circle, 'center_changed', () => {
+                clearTimeout(window.searchTimeout);
+                window.searchTimeout = setTimeout(searchPlaces, 1000);
+            });
+        });
+
+        console.log('Map initialized successfully');
+    } catch (error) {
+        console.error('Error initializing map:', error);
+        document.getElementById('map').innerHTML = '<div class="alert alert-danger m-3">خطأ في تحميل الخريطة. يرجى التأكد من صلاحية API Key</div>';
+    }
 }
 
 function getCurrentLocation() {
@@ -246,40 +263,54 @@ function searchPlaces() {
 
     console.log('Searching with center:', center.lat(), center.lng(), 'radius:', radius);
 
-    const request = {
-        location: center,
-        radius: Math.min(radius, 50000), // Max 50km
-        type: ['store', 'restaurant', 'cafe', 'shop', 'pharmacy', 'supermarket', 'bakery', 'clothing_store']
-    };
+    // Split into multiple requests for different types to avoid issues
+    const types = ['store', 'restaurant', 'cafe', 'shop', 'pharmacy', 'supermarket'];
+    let allResults = [];
+    let completedRequests = 0;
 
-    placesService.nearbySearch(request, function(results, status, pagination) {
-        document.getElementById('loadingResults').style.display = 'none';
+    types.forEach(type => {
+        const request = {
+            location: center,
+            radius: Math.min(radius, 5000), // Reduced to 5km for better results
+            type: [type]
+        };
 
-        console.log('Places API Status:', status);
-        console.log('Results:', results);
+        placesService.nearbySearch(request, function(results, status) {
+            completedRequests++;
+            
+            console.log(`Type: ${type}, Status: ${status}, Results:`, results ? results.length : 0);
 
-        if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
-            currentPlaces = results;
-            displayResults(results);
-            addMarkers(results);
-        } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-            document.getElementById('noResults').innerHTML = '<i class="fas fa-store-slash fa-3x text-muted mb-3"></i><p class="text-muted">لم يتم العثور على متاجر في هذه المنطقة</p>';
-            document.getElementById('noResults').style.display = 'block';
-        } else if (status === google.maps.places.PlacesServiceStatus.REQUEST_DENIED) {
-            document.getElementById('noResults').innerHTML = '<i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i><p class="text-danger"><strong>خطأ في الوصول للـ API</strong></p><p>يرجى التأكد من:<br>1. تفعيل Places API في Google Cloud Console<br>2. إضافة بيانات الدفع (Billing)<br>3. صلاحية API Key</p>';
-            document.getElementById('noResults').style.display = 'block';
-            console.error('Places API Request Denied. Check:', 
-                '\n1. Places API is enabled', 
-                '\n2. Billing is set up', 
-                '\n3. API Key is valid');
-        } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-            document.getElementById('noResults').innerHTML = '<i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i><p class="text-warning">تم تجاوز حد الاستعلامات. يرجى المحاولة لاحقاً</p>';
-            document.getElementById('noResults').style.display = 'block';
-        } else {
-            document.getElementById('noResults').innerHTML = `<i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i><p class="text-danger">خطأ: ${status}</p><p class="small">تحقق من Console للمزيد من التفاصيل</p>`;
-            document.getElementById('noResults').style.display = 'block';
-            console.error('Places API Error:', status);
-        }
+            if (status === google.maps.places.PlacesServiceStatus.OK && results) {
+                // Filter duplicates by place_id
+                results.forEach(place => {
+                    if (!allResults.find(p => p.place_id === place.place_id)) {
+                        allResults.push(place);
+                    }
+                });
+            } else if (status === google.maps.places.PlacesServiceStatus.REQUEST_DENIED) {
+                document.getElementById('loadingResults').style.display = 'none';
+                document.getElementById('noResults').innerHTML = '<i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i><p class="text-danger"><strong>خطأ في الوصول للـ API</strong></p><p>يرجى التأكد من:<br>1. تفعيل Places API في Google Cloud Console<br>2. إضافة بيانات الدفع (Billing)<br>3. صلاحية API Key<br>4. تفعيل Places API (New) أيضاً</p>';
+                document.getElementById('noResults').style.display = 'block';
+                console.error('Places API Request Denied for type:', type);
+                return;
+            } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+                console.warn('Query limit reached for type:', type);
+            }
+
+            // When all requests are complete
+            if (completedRequests === types.length) {
+                document.getElementById('loadingResults').style.display = 'none';
+                
+                if (allResults.length > 0) {
+                    currentPlaces = allResults;
+                    displayResults(allResults);
+                    addMarkers(allResults);
+                } else {
+                    document.getElementById('noResults').innerHTML = '<i class="fas fa-store-slash fa-3x text-muted mb-3"></i><p class="text-muted">لم يتم العثور على متاجر في هذه المنطقة<br><small>حاول توسيع الدائرة أو اختيار منطقة أخرى</small></p>';
+                    document.getElementById('noResults').style.display = 'block';
+                }
+            }
+        });
     });
 }
 
@@ -443,7 +474,32 @@ document.getElementById('citySelect').addEventListener('change', function() {
     }
 });
 
-document.addEventListener('DOMContentLoaded', initMap);
+// Handle Google Maps errors
+window.gm_authFailure = function() {
+    console.error('Google Maps authentication failed');
+    document.getElementById('map').innerHTML = `
+        <div class="alert alert-danger m-3">
+            <h5><i class="fas fa-exclamation-triangle"></i> خطأ في Google Maps API</h5>
+            <p>فشل التحقق من API Key. يرجى التأكد من:</p>
+            <ul>
+                <li>تفعيل Maps JavaScript API</li>
+                <li>تفعيل Places API</li>
+                <li>إضافة بيانات الدفع (Billing)</li>
+                <li>صلاحية API Key</li>
+            </ul>
+        </div>
+    `;
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if Google Maps is loaded
+    if (typeof google !== 'undefined' && google.maps) {
+        initMap();
+    } else {
+        console.error('Google Maps not loaded');
+        document.getElementById('map').innerHTML = '<div class="alert alert-danger m-3">فشل تحميل Google Maps. يرجى التحقق من الاتصال بالإنترنت.</div>';
+    }
+});
 </script>
 
 <style>

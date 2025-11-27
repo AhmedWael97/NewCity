@@ -56,32 +56,33 @@ class AdminCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
+            'slug' => 'required|string|max:255|unique:categories,slug',
             'description' => 'nullable|string',
             'icon' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:7|regex:/^#[a-fA-F0-9]{6}$/',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'status' => 'required|in:active,inactive',
-            'is_featured' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
+            'parent_id' => 'nullable|exists:categories,id',
         ]);
 
-        $category = new Category();
-        $category->fill($request->except(['image']));
+        // Convert checkbox to boolean
+        $validated['is_active'] = $request->has('is_active');
         
         // Set default sort order if not provided
-        if (!$request->filled('sort_order')) {
-            $category->sort_order = Category::max('sort_order') + 1;
+        if (!isset($validated['sort_order'])) {
+            $validated['sort_order'] = Category::max('sort_order') + 1;
         }
         
         // Handle image upload
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('categories', 'public');
-            $category->image = $imagePath;
+            $validated['image'] = $imagePath;
         }
 
-        $category->save();
+        $category = Category::create($validated);
 
         return redirect()
             ->route('admin.categories.index')
@@ -121,18 +122,20 @@ class AdminCategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
+            'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
             'description' => 'nullable|string',
             'icon' => 'nullable|string|max:255',
             'color' => 'nullable|string|max:7|regex:/^#[a-fA-F0-9]{6}$/',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'status' => 'required|in:active,inactive',
-            'is_featured' => 'boolean',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
+            'parent_id' => 'nullable|exists:categories,id',
         ]);
 
-        $category->fill($request->except(['image']));
+        // Convert checkbox to boolean
+        $validated['is_active'] = $request->has('is_active');
         
         // Handle image upload
         if ($request->hasFile('image')) {
@@ -142,10 +145,10 @@ class AdminCategoryController extends Controller
             }
             
             $imagePath = $request->file('image')->store('categories', 'public');
-            $category->image = $imagePath;
+            $validated['image'] = $imagePath;
         }
 
-        $category->save();
+        $category->update($validated);
 
         return redirect()
             ->route('admin.categories.index')

@@ -61,10 +61,11 @@
                     console.log('No registration token available.');
                 }
             } else {
-                console.log('Unable to get permission to notify.');
+                // Permission denied - silent fail (normal behavior)
             }
         } catch (error) {
-            console.error('An error occurred while retrieving token:', error);
+            // Silent fail for notification errors
+            console.debug('FCM initialization skipped:', error.message);
         }
     }
 
