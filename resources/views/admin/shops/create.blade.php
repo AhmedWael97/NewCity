@@ -194,32 +194,11 @@
                             </div>
                         </div>
 
-                        <!-- Image Upload with Drag & Drop and Paste -->
-                        <div class="form-group">
-                            <label class="font-weight-bold">
-                                <i class="fas fa-images"></i> صور المتجر
-                            </label>
-                            <div id="image-upload-container" class="border rounded p-4 bg-light text-center" 
-                                 style="min-height: 200px; cursor: pointer; position: relative;">
-                                <input type="file" 
-                                       id="images-input" 
-                                       name="images[]" 
-                                       accept="image/*" 
-                                       multiple 
-                                       style="display: none;">
-                                
-                                <div id="upload-prompt" class="text-muted">
-                                    <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
-                                    <p class="mb-2"><strong>اسحب وأفلت الصور هنا</strong></p>
-                                    <p class="mb-2">أو <span class="text-primary" style="cursor: pointer; text-decoration: underline;">انقر للاختيار</span></p>
-                                    <p class="small">أو استخدم Ctrl+V للصق الصور من الحافظة</p>
-                                    <small class="text-muted">PNG, JPG, JPEG - حجم أقصى 2MB لكل صورة</small>
-                                </div>
-                                
-                                <div id="image-preview-grid" class="row g-3 mt-2" style="display: none;"></div>
-                            </div>
-                            <small class="form-text text-muted">يمكنك رفع عدة صور. اترك الحقل فارغاً لإنشاء صور افتراضية تلقائياً.</small>
-                        </div>
+                        <!-- Image Upload Component -->
+                        <x-image-uploader 
+                            name="images"
+                            :showCurrentImages="false"
+                        />
 
                         <div class="row">
                             <div class="col-md-4">
@@ -298,33 +277,6 @@
 .image-preview-item {
     position: relative;
     border: 2px solid #dee2e6;
-    border-radius: 8px;
-    overflow: hidden;
-    background: white;
-}
-.image-preview-item img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-}
-.image-preview-item .remove-image {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    background: rgba(220, 53, 69, 0.9);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-}
-.image-preview-item .remove-image:hover {
-    background: rgba(220, 53, 69, 1);
 }
 </style>
 
@@ -338,140 +290,5 @@ document.getElementById('name').addEventListener('input', function() {
                    .replace(/^-+|-+$/g, ''); // Remove leading/trailing dashes
     document.getElementById('slug').value = slug;
 });
-
-// Image Upload with Drag & Drop and Paste
-(function() {
-    const container = document.getElementById('image-upload-container');
-    const input = document.getElementById('images-input');
-    const prompt = document.getElementById('upload-prompt');
-    const previewGrid = document.getElementById('image-preview-grid');
-    let selectedFiles = [];
-
-    // Click to open file picker
-    container.addEventListener('click', function(e) {
-        if (!e.target.closest('.remove-image')) {
-            input.click();
-        }
-    });
-
-    // File input change
-    input.addEventListener('change', function(e) {
-        handleFiles(Array.from(e.target.files));
-    });
-
-    // Drag and drop
-    container.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        container.classList.add('drag-over');
-    });
-
-    container.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        container.classList.remove('drag-over');
-    });
-
-    container.addEventListener('drop', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        container.classList.remove('drag-over');
-        
-        const files = Array.from(e.dataTransfer.files).filter(file => 
-            file.type.startsWith('image/')
-        );
-        
-        if (files.length > 0) {
-            handleFiles(files);
-        }
-    });
-
-    // Paste from clipboard
-    document.addEventListener('paste', function(e) {
-        const items = Array.from(e.clipboardData.items);
-        const imageItems = items.filter(item => item.type.startsWith('image/'));
-        
-        if (imageItems.length > 0) {
-            e.preventDefault();
-            const files = imageItems.map(item => item.getAsFile());
-            handleFiles(files);
-        }
-    });
-
-    function handleFiles(files) {
-        // Validate files
-        const validFiles = files.filter(file => {
-            if (!file.type.startsWith('image/')) {
-                alert('الرجاء اختيار ملفات صور فقط');
-                return false;
-            }
-            if (file.size > 2048 * 1024) {
-                alert(`الملف ${file.name} حجمه أكبر من 2MB`);
-                return false;
-            }
-            return true;
-        });
-
-        if (validFiles.length === 0) return;
-
-        // Add to selected files
-        selectedFiles = selectedFiles.concat(validFiles);
-
-        // Update file input
-        const dataTransfer = new DataTransfer();
-        selectedFiles.forEach(file => dataTransfer.items.add(file));
-        input.files = dataTransfer.files;
-
-        // Update UI
-        updatePreview();
-    }
-
-    function updatePreview() {
-        if (selectedFiles.length === 0) {
-            prompt.style.display = 'block';
-            previewGrid.style.display = 'none';
-            return;
-        }
-
-        prompt.style.display = 'none';
-        previewGrid.style.display = 'flex';
-        previewGrid.innerHTML = '';
-
-        selectedFiles.forEach((file, index) => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const col = document.createElement('div');
-                col.className = 'col-md-3 col-sm-4 col-6';
-                col.innerHTML = `
-                    <div class="image-preview-item">
-                        <img src="${e.target.result}" alt="Preview">
-                        <button type="button" class="remove-image" data-index="${index}">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                `;
-                previewGrid.appendChild(col);
-
-                // Add remove handler
-                col.querySelector('.remove-image').addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    removeFile(index);
-                });
-            };
-            reader.readAsDataURL(file);
-        });
-    }
-
-    function removeFile(index) {
-        selectedFiles.splice(index, 1);
-        
-        // Update file input
-        const dataTransfer = new DataTransfer();
-        selectedFiles.forEach(file => dataTransfer.items.add(file));
-        input.files = dataTransfer.files;
-        
-        updatePreview();
-    }
-})();
 </script>
 @endsection
