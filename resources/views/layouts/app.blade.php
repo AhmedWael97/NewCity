@@ -267,6 +267,45 @@
     <!-- Bootstrap 5 JavaScript Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+    <!-- Global Functions -->
+    <script>
+        // Get Directions using coordinates or address - Opens Google Maps
+        function getDirections(latitude, longitude, address) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            if (latitude && longitude && latitude !== null && longitude !== null) {
+                // Use coordinates for precise location with turn-by-turn directions
+                window.open(`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`, '_blank');
+            } else if (address) {
+                // Fallback to address search
+                const encodedAddress = encodeURIComponent(address);
+                window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodedAddress}`, '_blank');
+            } else {
+                alert('عذراً، الموقع غير متوفر');
+            }
+        }
+
+        // Toggle Favorite Shop
+        function toggleFavoriteShop(shopId) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            console.log('Toggle favorite for shop:', shopId);
+            // Add your favorite toggle logic here
+            @auth
+                // Implement favorite toggle API call
+            @else
+                if (confirm('يجب تسجيل الدخول لإضافة المتاجر للمفضلة. هل تريد تسجيل الدخول الآن؟')) {
+                    window.location.href = '{{ route("login") }}';
+                }
+            @endauth
+        }
+    </script>
+
     @stack('scripts')
 
     <!-- Firebase Initialization -->
