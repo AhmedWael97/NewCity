@@ -146,6 +146,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
         Route::get('/shops', [AnalyticsController::class, 'shopPerformance'])->name('shops');
         Route::get('/cities', [AnalyticsController::class, 'cityAnalytics'])->name('cities');
         Route::get('/users', [AnalyticsController::class, 'userBehavior'])->name('users');
+        Route::get('/heatmap', [AnalyticsController::class, 'heatmap'])->name('heatmap');
         Route::post('/reports', [AnalyticsController::class, 'generateReport'])->name('reports.generate');
     });
 

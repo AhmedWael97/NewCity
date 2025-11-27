@@ -44,6 +44,18 @@
                    title="عرض">
                     <i class="fas fa-eye"></i>
                 </a>
+                <form action="{{ route('admin.categories.destroy', $category) }}" 
+                      method="POST" 
+                      class="d-inline"
+                      onsubmit="return confirm('هل أنت متأكد من حذف هذا التصنيف؟\n\nتنبيه: سيتم حذف جميع التصنيفات الفرعية أيضاً!');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" 
+                            class="btn btn-sm btn-danger" 
+                            title="حذف">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
             </div>
         </div>
     </div>

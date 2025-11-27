@@ -3,7 +3,7 @@
     'use strict';
 
     const Tracker = {
-        endpoint: '/api/track',
+        endpoint: '/api/v1/track',
         sessionData: {
             startTime: Date.now(),
             lastActivity: Date.now(),

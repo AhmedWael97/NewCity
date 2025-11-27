@@ -924,6 +924,13 @@
                         <span>تحليلات المدن</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.analytics.heatmap') ? 'active' : '' }}" 
+                       href="{{ route('admin.analytics.heatmap') }}">
+                        <i class="fas fa-fire"></i>
+                        <span>خريطة النشاط الحرارية</span>
+                    </a>
+                </li>
 
                 <!-- Settings -->
                 <div class="sidebar-heading">الإعدادات</div>

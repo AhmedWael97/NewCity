@@ -7,6 +7,7 @@ use App\Models\Shop;
 use App\Models\User;
 use App\Models\City;
 use App\Models\ShopAnalytics;
+use App\Models\UserEvent;
 use App\Models\Product;
 use App\Models\Service;
 use App\Models\Category;
@@ -109,6 +110,23 @@ class AnalyticsController extends Controller
             ->groupBy('metadata->device_type')
             ->get();
 
+        // Conversion metrics (last 30 days)
+        $conversions = [
+            'phone_calls' => UserEvent::where('event_action', 'phone_call')
+                ->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->count(),
+            'directions' => UserEvent::where('event_action', 'map_directions')
+                ->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->count(),
+            'shares' => UserEvent::where('event_type', 'share')
+                ->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->count(),
+            'favorites' => UserEvent::where('event_type', 'favorite')
+                ->where('created_at', '>=', Carbon::now()->subDays(30))
+                ->count(),
+        ];
+        $conversions['total'] = array_sum($conversions);
+
         return view('admin.analytics.index', compact(
             'topShopsByViews',
             'topCitiesByVisitors',
@@ -116,7 +134,8 @@ class AnalyticsController extends Controller
             'popularCategories',
             'dailyAnalytics',
             'trafficSources',
-            'deviceTypes'
+            'deviceTypes',
+            'conversions'
         ));
     }
 
@@ -176,25 +195,37 @@ class AnalyticsController extends Controller
                 ->distinct('user_ip')
                 ->count('user_ip');
             
-            // Count phone calls
+            // Count phone calls from both tables
             $phoneCalls = ShopAnalytics::where('shop_id', $shop->id)
                 ->where('event_type', 'phone_call')
                 ->count();
             
-            // Count map/directions clicks
+            $phoneCallsFromEvents = UserEvent::where('shop_id', $shop->id)
+                ->where('event_action', 'phone_call')
+                ->count();
+            
+            $totalPhoneCalls = $phoneCalls + $phoneCallsFromEvents;
+            
+            // Count map/directions clicks from both tables
             $mapClicks = ShopAnalytics::where('shop_id', $shop->id)
                 ->where('event_type', 'map_directions')
                 ->count();
             
+            $mapClicksFromEvents = UserEvent::where('shop_id', $shop->id)
+                ->where('event_action', 'map_directions')
+                ->count();
+            
+            $totalMapClicks = $mapClicks + $mapClicksFromEvents;
+            
             // Total contact clicks (calls + maps)
-            $contactClicks = $phoneCalls + $mapClicks;
+            $contactClicks = $totalPhoneCalls + $totalMapClicks;
             
             $shop->analytics = [
                 'total_views' => $totalViews,
                 'monthly_views' => $monthlyViews,
                 'unique_visitors' => $uniqueVisitors,
-                'phone_calls' => $phoneCalls,
-                'map_clicks' => $mapClicks,
+                'phone_calls' => $totalPhoneCalls,
+                'map_clicks' => $totalMapClicks,
                 'contact_clicks' => $contactClicks,
                 'conversion_rate' => $totalViews > 0 ? ($contactClicks / $totalViews) * 100 : 0
             ];
@@ -495,6 +526,216 @@ class AnalyticsController extends Controller
             )
             ->orderBy('total_activity', 'desc')
             ->get();
+    }
+
+    /**
+     * User Activity Heatmap
+     */
+    public function heatmap()
+    {
+        $days = request('days', 30);
+        $dateFrom = Carbon::now()->subDays($days);
+
+        // Total clicks
+        $totalClicks = UserEvent::where('event_category', 'interaction')
+            ->where('created_at', '>=', $dateFrom)
+            ->count();
+
+        // Top page by clicks
+        $topPage = UserEvent::select('page_url', DB::raw('COUNT(*) as count'))
+            ->where('created_at', '>=', $dateFrom)
+            ->groupBy('page_url')
+            ->orderBy('count', 'desc')
+            ->first();
+
+        // Average scroll depth
+        $avgScrollDepth = UserEvent::where('created_at', '>=', $dateFrom)
+            ->whereNotNull('scroll_depth')
+            ->avg('scroll_depth') ?? 0;
+
+        // Average time on page
+        $avgTimeOnPage = UserEvent::where('created_at', '>=', $dateFrom)
+            ->whereNotNull('time_on_page')
+            ->avg('time_on_page') ?? 0;
+
+        // Top clicked elements
+        $topClickedElements = UserEvent::select(
+                'event_label',
+                'event_action',
+                DB::raw('COUNT(*) as clicks')
+            )
+            ->where('event_category', 'interaction')
+            ->where('created_at', '>=', $dateFrom)
+            ->whereNotNull('event_label')
+            ->groupBy('event_label', 'event_action')
+            ->orderBy('clicks', 'desc')
+            ->limit(10)
+            ->get();
+
+        // Click heatmap data
+        $clickHeatmapData = UserEvent::select(
+                'event_action as label',
+                DB::raw('COUNT(*) as clicks')
+            )
+            ->whereIn('event_category', ['interaction', 'conversion'])
+            ->where('created_at', '>=', $dateFrom)
+            ->groupBy('event_action')
+            ->orderBy('clicks', 'desc')
+            ->limit(15)
+            ->get();
+
+        // Scroll depth distribution
+        $scrollDepthDistribution = [
+            UserEvent::where('created_at', '>=', $dateFrom)->whereBetween('scroll_depth', [0, 25])->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->whereBetween('scroll_depth', [26, 50])->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->whereBetween('scroll_depth', [51, 75])->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->whereBetween('scroll_depth', [76, 100])->count(),
+        ];
+
+        // Time distribution
+        $timeDistribution = [
+            UserEvent::where('created_at', '>=', $dateFrom)->where('time_on_page', '<', 10)->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->whereBetween('time_on_page', [10, 30])->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->whereBetween('time_on_page', [31, 60])->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->whereBetween('time_on_page', [61, 180])->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->where('time_on_page', '>', 180)->count(),
+        ];
+
+        // User journeys
+        $userJourneys = UserEvent::select(
+                'page_url as path',
+                DB::raw('COUNT(DISTINCT session_id) as visits'),
+                DB::raw('SUM(CASE WHEN event_action IN ("phone_call", "map_directions") THEN 1 ELSE 0 END) as conversions')
+            )
+            ->where('created_at', '>=', $dateFrom)
+            ->whereNotNull('page_url')
+            ->groupBy('page_url')
+            ->orderBy('visits', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function($journey) {
+                $journey->conversion_rate = $journey->visits > 0 ? ($journey->conversions / $journey->visits) * 100 : 0;
+                return $journey;
+            });
+
+        // Page performance
+        $pagePerformance = UserEvent::select(
+                'page_url',
+                'page_title',
+                DB::raw('COUNT(*) as visits'),
+                DB::raw('AVG(time_on_page) as avg_time'),
+                DB::raw('AVG(scroll_depth) as avg_scroll'),
+                DB::raw('COUNT(DISTINCT session_id) as sessions'),
+                DB::raw('SUM(CASE WHEN time_on_page < 5 THEN 1 ELSE 0 END) as bounces'),
+                DB::raw('SUM(CASE WHEN event_action IN ("phone_call", "map_directions") THEN 1 ELSE 0 END) as conversions')
+            )
+            ->where('created_at', '>=', $dateFrom)
+            ->where('event_type', 'page_view')
+            ->whereNotNull('page_url')
+            ->groupBy('page_url', 'page_title')
+            ->orderBy('visits', 'desc')
+            ->limit(20)
+            ->get()
+            ->map(function($page) {
+                $page->bounce_rate = $page->sessions > 0 ? ($page->bounces / $page->sessions) * 100 : 0;
+                $page->avg_time = $page->avg_time ?? 0;
+                $page->avg_scroll = $page->avg_scroll ?? 0;
+                return $page;
+            });
+
+        // Conversion funnel
+        $conversionFunnel = [
+            UserEvent::where('created_at', '>=', $dateFrom)->where('event_type', 'page_view')->distinct('session_id')->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->whereNotNull('shop_id')->distinct('session_id')->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->where('event_type', 'interaction')->distinct('session_id')->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->whereIn('event_action', ['phone_call', 'map_directions'])->distinct('session_id')->count(),
+            UserEvent::where('created_at', '>=', $dateFrom)->where('event_category', 'conversion')->distinct('session_id')->count(),
+        ];
+
+        // Generate recommendations
+        $recommendations = $this->generateRecommendations($pagePerformance, $avgScrollDepth, $totalClicks);
+
+        return view('admin.analytics.heatmap', compact(
+            'totalClicks',
+            'topPage',
+            'avgScrollDepth',
+            'avgTimeOnPage',
+            'topClickedElements',
+            'clickHeatmapData',
+            'scrollDepthDistribution',
+            'timeDistribution',
+            'userJourneys',
+            'pagePerformance',
+            'conversionFunnel',
+            'recommendations'
+        ));
+    }
+
+    /**
+     * Generate AI-powered recommendations
+     */
+    private function generateRecommendations($pagePerformance, $avgScrollDepth, $totalClicks)
+    {
+        $recommendations = [];
+
+        // Low scroll depth
+        if ($avgScrollDepth < 50) {
+            $recommendations[] = [
+                'type' => 'danger',
+                'icon' => 'exclamation-triangle',
+                'title' => 'عمق تمرير منخفض',
+                'description' => 'المستخدمون لا يتصفحون المحتوى بالكامل',
+                'solution' => 'أضف محتوى جذاب في بداية الصفحة وقلل من طول الصفحات'
+            ];
+        }
+
+        // High bounce rate pages
+        $highBouncePage = $pagePerformance->firstWhere(fn($p) => $p->bounce_rate > 70);
+        if ($highBouncePage) {
+            $recommendations[] = [
+                'type' => 'warning',
+                'icon' => 'sign-out-alt',
+                'title' => 'معدل ارتداد عالي',
+                'description' => "صفحة {$highBouncePage->page_title} لديها معدل ارتداد {$highBouncePage->bounce_rate}%",
+                'solution' => 'حسّن سرعة التحميل وأضف محتوى ذو قيمة في بداية الصفحة'
+            ];
+        }
+
+        // Low conversion pages
+        $lowConversionPage = $pagePerformance->firstWhere(fn($p) => $p->visits > 50 && $p->conversions == 0);
+        if ($lowConversionPage) {
+            $recommendations[] = [
+                'type' => 'info',
+                'icon' => 'bullseye',
+                'title' => 'فرصة للتحسين',
+                'description' => "صفحة {$lowConversionPage->page_title} لديها {$lowConversionPage->visits} زيارة بدون تحويلات",
+                'solution' => 'أضف أزرار CTA واضحة (اتصال، الاتجاهات، مشاركة)'
+            ];
+        }
+
+        // Low engagement
+        if ($totalClicks < 100) {
+            $recommendations[] = [
+                'type' => 'warning',
+                'icon' => 'mouse-pointer',
+                'title' => 'تفاعل منخفض',
+                'description' => 'عدد النقرات منخفض جداً',
+                'solution' => 'أضف عناصر تفاعلية أكثر وحسّن تجربة المستخدم'
+            ];
+        }
+
+        // Good performance
+        if (empty($recommendations)) {
+            $recommendations[] = [
+                'type' => 'success',
+                'icon' => 'check-circle',
+                'title' => 'أداء ممتاز!',
+                'description' => 'موقعك يعمل بشكل جيد',
+                'solution' => 'استمر في مراقبة المقاييس وإجراء تحسينات صغيرة'
+            ];
+        }
+
+        return $recommendations;
     }
 
     /**

@@ -74,158 +74,7 @@
             </div>
         </section>
 
-        {{-- City Statistics Dashboard --}}
-        <section class="city-stats-dashboard py-4 bg-light">
-            <div class="container">
-                <div class="stats-grid-modern row g-4">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="stat-card-modern bg-white rounded-3 p-4 shadow-sm h-100 text-center">
-                            <div class="stat-icon-modern mb-3">
-                                <i class="fas fa-users text-primary" style="font-size: 2.5rem;"></i>
-                            </div>
-                            <div class="stat-number-modern h2 mb-1 text-primary fw-bold">
-                                {{ number_format($stats['total_users'] ?? 0) }}</div>
-                            <div class="stat-label-modern text-muted">مستخدم نشط</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="stat-card-modern bg-white rounded-3 p-4 shadow-sm h-100 text-center">
-                            <div class="stat-icon-modern mb-3">
-                                <i class="fas fa-star text-warning" style="font-size: 2.5rem;"></i>
-                            </div>
-                            <div class="stat-number-modern h2 mb-1 text-warning fw-bold">
-                                {{ number_format($stats['avg_rating'] ?? 4.5, 1) }}</div>
-                            <div class="stat-label-modern text-muted">متوسط التقييم</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="stat-card-modern bg-white rounded-3 p-4 shadow-sm h-100 text-center">
-                            <div class="stat-icon-modern mb-3">
-                                <i class="fas fa-th-large text-success" style="font-size: 2.5rem;"></i>
-                            </div>
-                            <div class="stat-number-modern h2 mb-1 text-success fw-bold">
-                                {{ number_format($stats['total_categories'] ?? 0) }}</div>
-                            <div class="stat-label-modern text-muted">فئة متنوعة</div>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="stat-card-modern bg-white rounded-3 p-4 shadow-sm h-100 text-center">
-                            <div class="stat-icon-modern mb-3">
-                                <i class="fas fa-store text-info" style="font-size: 2.5rem;"></i>
-                            </div>
-                            <div class="stat-number-modern h2 mb-1 text-info fw-bold">
-                                {{ number_format($stats['total_shops'] ?? 0) }}</div>
-                            <div class="stat-label-modern text-muted">متجر مفعل</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {{-- Quick Categories Navigation --}}
-        <section class="quick-categories py-4">
-            <div class="container">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h2 class="h4 mb-0 fw-bold">استكشف الفئات</h2>
-                    <a href="{{ route('categories.index') }}" class="btn btn-outline-primary">
-                        عرض جميع الفئات
-                        <i class="fas fa-arrow-left ms-1"></i>
-                    </a>
-                </div>
-
-                @if($categoriesWithShops && $categoriesWithShops->count() > 0)
-                    <div class="categories-slider-modern">
-                        <div class="row g-3">
-                            @foreach($categoriesWithShops->take(6) as $category)
-                                <div class="col-lg-2 col-md-3 col-4">
-                                    <a href="{{ route('city.category.shops', ['city' => $selectedCity->slug ?? 'all', 'category' => $category->slug]) }}"
-                                        class="category-card-modern bg-white rounded-3 p-3 shadow-sm text-center text-decoration-none h-100 d-block">
-                                        <div class="category-icon-modern mb-2">
-                                            <i class="{{ $category->icon ?? 'fas fa-store' }} text-primary"
-                                                style="font-size: 2rem;"></i>
-                                        </div>
-                                        <h6 class="category-name-modern mb-1 text-dark">{{ $category->name }}</h6>
-                                        <small class="text-muted">{{ $category->shops_count }} متجر</small>
-                                    </a>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </section>
-
-        {{-- Services Discovery Banner --}}
-        <section class="services-discovery-banner py-5">
-            <div class="container">
-                <div class="discovery-card bg-gradient position-relative overflow-hidden rounded-4 shadow-lg">
-                    <div class="row align-items-center">
-                        <div class="col-lg-7 p-5">
-                            <div class="discovery-content">
-                                <h2 class="display-6 fw-bold mb-3 text-white">
-                                    <i class="fas fa-tools me-2"></i>
-                                    اكتشف خدمات محلية من أهل {{ $cityContext['selected_city_name'] }}
-                                </h2>
-                                <p class="lead mb-4 text-white" style="opacity: 0.95;">
-                                    سباكة، كهرباء، نجارة، تصليح أجهزة، وأكثر من 30 خدمة مقدمة من متخصصين موثوقين في منطقتك
-                                </p>
-                                <div class="d-flex flex-wrap gap-3 mb-4">
-                                    <div class="feature-badge bg-white bg-opacity-20 rounded-pill px-4 py-2 text-white">
-                                        <i class="fas fa-check-circle me-2"></i>
-                                        خدمات متنوعة
-                                    </div>
-                                    <div class="feature-badge bg-white bg-opacity-20 rounded-pill px-4 py-2 text-white">
-                                        <i class="fas fa-map-marker-alt me-2"></i>
-                                        قريبة منك
-                                    </div>
-                                    <div class="feature-badge bg-white bg-opacity-20 rounded-pill px-4 py-2 text-white">
-                                        <i class="fas fa-star me-2"></i>
-                                        موثوقة
-                                    </div>
-                                </div>
-                                <a href="{{ route('city.services', ['city' => $selectedCity->slug ?? 'all']) }}" 
-                                   class="btn btn-light btn-lg rounded-pill px-5 shadow-lg text-dark fw-bold">
-                                    <i class="fas fa-search me-2"></i>
-                                    استكشف الخدمات الآن
-                                    <i class="fas fa-arrow-left ms-2"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <div class="col-lg-5 d-none d-lg-block">
-                            <div class="discovery-illustration p-4">
-                                <div class="services-icons-grid">
-                                    <div class="service-icon-float">
-                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
-                                            <i class="fas fa-wrench text-primary" style="font-size: 2rem;"></i>
-                                        </div>
-                                    </div>
-                                    <div class="service-icon-float" style="animation-delay: 0.5s;">
-                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
-                                            <i class="fas fa-paint-roller text-success" style="font-size: 2rem;"></i>
-                                        </div>
-                                    </div>
-                                    <div class="service-icon-float" style="animation-delay: 1s;">
-                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
-                                            <i class="fas fa-bolt text-warning" style="font-size: 2rem;"></i>
-                                        </div>
-                                    </div>
-                                    <div class="service-icon-float" style="animation-delay: 1.5s;">
-                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
-                                            <i class="fas fa-hammer text-danger" style="font-size: 2rem;"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {{-- Background Decoration --}}
-                    <div class="position-absolute top-0 end-0 opacity-10">
-                        <i class="fas fa-tools" style="font-size: 15rem;"></i>
-                    </div>
-                </div>
-            </div>
-        </section>
+        
 
         {{-- User Services Section (Hidden - will be on separate page) --}}
         @if(false && isset($serviceCategoriesWithServices) && $serviceCategoriesWithServices->count() > 0)
@@ -484,6 +333,160 @@
                                 </div>
                             </div>
                         @endif
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        {{-- City Statistics Dashboard --}}
+        <section class="city-stats-dashboard py-4 bg-light">
+            <div class="container">
+                <div class="stats-grid-modern row g-4">
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-modern bg-white rounded-3 p-4 shadow-sm h-100 text-center">
+                            <div class="stat-icon-modern mb-3">
+                                <i class="fas fa-users text-primary" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <div class="stat-number-modern h2 mb-1 text-primary fw-bold">
+                                {{ number_format($stats['total_users'] ?? 0) }}</div>
+                            <div class="stat-label-modern text-muted">مستخدم نشط</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-modern bg-white rounded-3 p-4 shadow-sm h-100 text-center">
+                            <div class="stat-icon-modern mb-3">
+                                <i class="fas fa-star text-warning" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <div class="stat-number-modern h2 mb-1 text-warning fw-bold">
+                                {{ number_format($stats['avg_rating'] ?? 4.5, 1) }}</div>
+                            <div class="stat-label-modern text-muted">متوسط التقييم</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-modern bg-white rounded-3 p-4 shadow-sm h-100 text-center">
+                            <div class="stat-icon-modern mb-3">
+                                <i class="fas fa-th-large text-success" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <div class="stat-number-modern h2 mb-1 text-success fw-bold">
+                                {{ number_format($stats['total_categories'] ?? 0) }}</div>
+                            <div class="stat-label-modern text-muted">فئة متنوعة</div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="stat-card-modern bg-white rounded-3 p-4 shadow-sm h-100 text-center">
+                            <div class="stat-icon-modern mb-3">
+                                <i class="fas fa-store text-info" style="font-size: 2.5rem;"></i>
+                            </div>
+                            <div class="stat-number-modern h2 mb-1 text-info fw-bold">
+                                {{ number_format($stats['total_shops'] ?? 0) }}</div>
+                            <div class="stat-label-modern text-muted">متجر مفعل</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        {{-- Quick Categories Navigation --}}
+        <section class="quick-categories py-4">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h2 class="h4 mb-0 fw-bold">استكشف الفئات</h2>
+                    <a href="{{ route('categories.index') }}" class="btn btn-outline-primary">
+                        عرض جميع الفئات
+                        <i class="fas fa-arrow-left ms-1"></i>
+                    </a>
+                </div>
+
+                @if($categoriesWithShops && $categoriesWithShops->count() > 0)
+                    <div class="categories-slider-modern">
+                        <div class="row g-3">
+                            @foreach($categoriesWithShops->take(6) as $category)
+                                <div class="col-lg-2 col-md-3 col-4">
+                                    <a href="{{ route('city.category.shops', ['city' => $selectedCity->slug ?? 'all', 'category' => $category->slug]) }}"
+                                        class="category-card-modern bg-white rounded-3 p-3 shadow-sm text-center text-decoration-none h-100 d-block">
+                                        <div class="category-icon-modern mb-2">
+                                            <i class="{{ $category->icon ?? 'fas fa-store' }} text-primary"
+                                                style="font-size: 2rem;"></i>
+                                        </div>
+                                        <h6 class="category-name-modern mb-1 text-dark">{{ $category->name }}</h6>
+                                        <small class="text-muted">{{ $category->shops_count }} متجر</small>
+                                    </a>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </section>
+
+        {{-- Services Discovery Banner --}}
+        <section class="services-discovery-banner py-5">
+            <div class="container">
+                <div class="discovery-card bg-gradient position-relative overflow-hidden rounded-4 shadow-lg">
+                    <div class="row align-items-center">
+                        <div class="col-lg-7 p-5">
+                            <div class="discovery-content">
+                                <h2 class="display-6 fw-bold mb-3 text-white">
+                                    <i class="fas fa-tools me-2"></i>
+                                    اكتشف خدمات محلية من أهل {{ $cityContext['selected_city_name'] }}
+                                </h2>
+                                <p class="lead mb-4 text-white" style="opacity: 0.95;">
+                                    سباكة، كهرباء، نجارة، تصليح أجهزة، وأكثر من 30 خدمة مقدمة من متخصصين موثوقين في منطقتك
+                                </p>
+                                <div class="d-flex flex-wrap gap-3 mb-4">
+                                    <div class="feature-badge bg-white bg-opacity-20 rounded-pill px-4 py-2 text-white">
+                                        <i class="fas fa-check-circle me-2"></i>
+                                        خدمات متنوعة
+                                    </div>
+                                    <div class="feature-badge bg-white bg-opacity-20 rounded-pill px-4 py-2 text-white">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        قريبة منك
+                                    </div>
+                                    <div class="feature-badge bg-white bg-opacity-20 rounded-pill px-4 py-2 text-white">
+                                        <i class="fas fa-star me-2"></i>
+                                        موثوقة
+                                    </div>
+                                </div>
+                                <a href="{{ route('city.services', ['city' => $selectedCity->slug ?? 'all']) }}" 
+                                   class="btn btn-light btn-lg rounded-pill px-5 shadow-lg text-dark fw-bold">
+                                    <i class="fas fa-search me-2"></i>
+                                    استكشف الخدمات الآن
+                                    <i class="fas fa-arrow-left ms-2"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 d-none d-lg-block">
+                            <div class="discovery-illustration p-4">
+                                <div class="services-icons-grid">
+                                    <div class="service-icon-float">
+                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
+                                            <i class="fas fa-wrench text-primary" style="font-size: 2rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-icon-float" style="animation-delay: 0.5s;">
+                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
+                                            <i class="fas fa-paint-roller text-success" style="font-size: 2rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-icon-float" style="animation-delay: 1s;">
+                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
+                                            <i class="fas fa-bolt text-warning" style="font-size: 2rem;"></i>
+                                        </div>
+                                    </div>
+                                    <div class="service-icon-float" style="animation-delay: 1.5s;">
+                                        <div class="icon-bubble bg-white shadow-lg rounded-circle p-4">
+                                            <i class="fas fa-hammer text-danger" style="font-size: 2rem;"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {{-- Background Decoration --}}
+                    <div class="position-absolute top-0 end-0 opacity-10">
+                        <i class="fas fa-tools" style="font-size: 15rem;"></i>
                     </div>
                 </div>
             </div>

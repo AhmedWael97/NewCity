@@ -4,13 +4,10 @@ namespace App\Listeners;
 
 use App\Events\UserActivityTracked;
 use App\Models\UserEvent;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
-class StoreUserActivity implements ShouldQueue
+class StoreUserActivity
 {
-    use InteractsWithQueue;
 
     /**
      * Create the event listener.
@@ -33,11 +30,4 @@ class StoreUserActivity implements ShouldQueue
         }
     }
 
-    /**
-     * Handle a job failure.
-     */
-    public function failed(UserActivityTracked $event, \Throwable $exception): void
-    {
-        Log::error('User activity tracking failed: ' . $exception->getMessage());
-    }
 }
