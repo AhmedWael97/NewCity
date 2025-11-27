@@ -9,7 +9,7 @@
             </div>
 
             <!-- Search Bar -->
-            <div class="nav-search">
+            {{-- <div class="nav-search">
                 <form action="{{ route('search') }}" method="GET" class="search-form">
                     <div class="search-input-group">
                         <input type="text" 
@@ -32,7 +32,7 @@
                         </button>
                     </div>
                 </form>
-            </div>
+            </div> --}}
 
             <!-- User Actions -->
             <div class="nav-actions">
