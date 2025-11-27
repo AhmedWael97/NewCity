@@ -4,7 +4,7 @@
         <div class="nav-top">
             <div class="nav-brand">
                 <a href="{{ url('/') }}" style="display: flex; align-items: center; text-decoration: none;">
-                    <img src="{{ asset('images/senu-logo.svg') }}" alt="SENÚ سنو" style="height: 60px;">
+                    <img src="{{ asset('images/senu-logo.svg') }}" alt="SENÚ سنو" style="height: 85px;">
                 </a>
             </div>
 

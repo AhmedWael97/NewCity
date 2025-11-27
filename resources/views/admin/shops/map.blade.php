@@ -91,6 +91,18 @@
         </div>
     </div>
 
+    <!-- Debug Console -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h6 class="mb-0">
+                <i class="fas fa-bug"></i> سجل التشخيص (Debug Console)
+            </h6>
+        </div>
+        <div class="card-body bg-dark text-light" style="max-height: 200px; overflow-y: auto;">
+            <pre id="debugConsole" style="color: #00ff00; font-family: monospace; font-size: 12px; margin: 0;"></pre>
+        </div>
+    </div>
+
     <!-- Results Card -->
     <div class="card">
         <div class="card-header">
@@ -130,28 +142,53 @@
     </div>
 </div>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeaKlnTU88qhTp7za2H301HWPPT7zhGyo&libraries=places,drawing,geometry&language=ar"></script>
-
 <script>
-let map;
-let drawingManager;
+let map = null;
+let drawingManager = null;
 let circle = null;
 let markers = [];
-let placesService;
+let placesService = null;
 let currentPlaces = [];
+let sharedInfoWindow = null;
+
+// Debug logging function
+function debugLog(message, type = 'info') {
+    const console_elem = document.getElementById('debugConsole');
+    const timestamp = new Date().toLocaleTimeString();
+    const colors = {
+        'info': '#00ff00',
+        'error': '#ff0000',
+        'warning': '#ffaa00',
+        'success': '#00ffff'
+    };
+    const color = colors[type] || colors.info;
+    console_elem.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span>\n`;
+    console_elem.scrollTop = console_elem.scrollHeight;
+    console.log(`[${type.toUpperCase()}]`, message);
+}
 
 function initMap() {
+    debugLog('🚀 Initializing map...');
     try {
+        debugLog('📍 Creating map instance...');
         map = new google.maps.Map(document.getElementById('map'), {
-            center: { lat: 24.7136, lng: 46.6753 }, // Riyadh, Saudi Arabia
+            center: { lat: 24.7136, lng: 46.6753 }, // Riyadh, Saudi Arabia (default)
             zoom: 12,
             mapTypeControl: true,
             streetViewControl: false,
             fullscreenControl: true
         });
+        debugLog('✅ Map created successfully', 'success');
+        
+        // Auto-detect user location and search nearby places
+        autoDetectAndSearch();
 
+        debugLog('🔧 Initializing Places Service...');
         placesService = new google.maps.places.PlacesService(map);
+        sharedInfoWindow = new google.maps.InfoWindow();
+        debugLog('✅ Places Service initialized', 'success');
 
+        debugLog('✏️ Setting up Drawing Manager...');
         drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: null,
             drawingControl: false,
@@ -166,15 +203,22 @@ function initMap() {
             }
         });
         drawingManager.setMap(map);
+        debugLog('✅ Drawing Manager ready', 'success');
 
         google.maps.event.addListener(drawingManager, 'circlecomplete', function(newCircle) {
-            if (circle) circle.setMap(null);
+            debugLog('🔵 Circle drawn', 'info');
+            if (circle) {
+                debugLog('🗑️ Removing old circle', 'warning');
+                circle.setMap(null);
+            }
             circle = newCircle;
             drawingManager.setDrawingMode(null);
             
             // Validate circle size
             const radius = circle.getRadius();
+            debugLog(`📏 Circle radius: ${Math.round(radius)}m`, 'info');
             if (radius > 5000) {
+                debugLog('⚠️ Circle too large, will search within 5km only', 'warning');
                 showNotification('warning', 'الدائرة كبيرة جداً. سيتم البحث ضمن نطاق 5 كم فقط.');
             }
             
@@ -190,14 +234,88 @@ function initMap() {
             });
         });
 
-        console.log('Map initialized successfully');
+        debugLog('✅ Map initialized successfully', 'success');
     } catch (error) {
+        debugLog('❌ ERROR: ' + error.message, 'error');
         console.error('Error initializing map:', error);
         document.getElementById('map').innerHTML = '<div class="alert alert-danger m-3">خطأ في تحميل الخريطة. يرجى التأكد من صلاحية API Key</div>';
     }
 }
 
+// Expose initMap to global scope for Google Maps callback
+window.initMap = initMap;
+
+function autoDetectAndSearch() {
+    debugLog('🌍 Auto-detecting user location...', 'info');
+    
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            const pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+            
+            debugLog(`✅ Location detected: [${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}]`, 'success');
+            map.setCenter(pos);
+            map.setZoom(15);
+            
+            // Add user location marker
+            new google.maps.Marker({
+                position: pos,
+                map: map,
+                title: 'موقعي الحالي',
+                icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png',
+                zIndex: 9999
+            });
+            
+            // Automatically draw 2km circle and search
+            debugLog('🔵 Creating 2km search radius...', 'info');
+            circle = new google.maps.Circle({
+                map: map,
+                center: pos,
+                radius: 2000, // 2km
+                fillColor: '#4285F4',
+                fillOpacity: 0.2,
+                strokeColor: '#4285F4',
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                editable: true,
+                draggable: true
+            });
+            
+            debugLog('📏 Circle radius: 2000m (2km)', 'info');
+            
+            // Add listeners for circle changes
+            google.maps.event.addListener(circle, 'radius_changed', () => {
+                clearTimeout(window.searchTimeout);
+                window.searchTimeout = setTimeout(searchPlaces, 1000);
+            });
+            google.maps.event.addListener(circle, 'center_changed', () => {
+                clearTimeout(window.searchTimeout);
+                window.searchTimeout = setTimeout(searchPlaces, 1000);
+            });
+            
+            // Start searching automatically
+            searchPlaces();
+            
+        }, function(error) {
+            debugLog(`⚠️ Location detection failed: ${error.message}`, 'warning');
+            showNotification('warning', 'تعذر تحديد موقعك. يمكنك رسم دائرة يدوياً للبحث.');
+            console.error('Geolocation error:', error);
+        }, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        });
+    } else {
+        debugLog('❌ Geolocation not supported', 'error');
+        showNotification('warning', 'المتصفح لا يدعم تحديد الموقع. يمكنك رسم دائرة يدوياً للبحث.');
+    }
+}
+
 function getCurrentLocation() {
+    debugLog('🌍 Manual location detection requested...', 'info');
+    
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             const pos = {
@@ -206,17 +324,26 @@ function getCurrentLocation() {
             };
             map.setCenter(pos);
             map.setZoom(15);
+            
+            // Clear existing circle if any
+            if (circle) {
+                circle.setMap(null);
+            }
+            
             new google.maps.Marker({
                 position: pos,
                 map: map,
                 title: 'موقعي',
-                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                icon: 'https://maps.google.com/mapfiles/ms/icons/blue-dot.png'
             });
+            
+            debugLog(`✅ Centered on location: [${pos.lat.toFixed(4)}, ${pos.lng.toFixed(4)}]`, 'success');
+            showNotification('success', 'تم تحديد موقعك بنجاح');
         }, function() {
-            alert('تعذر تحديد موقعك');
+            showNotification('danger', 'تعذر تحديد موقعك');
         });
     } else {
-        alert('المتصفح لا يدعم تحديد الموقع');
+        showNotification('danger', 'المتصفح لا يدعم تحديد الموقع');
     }
 }
 
@@ -250,8 +377,11 @@ function clearResults() {
     currentPlaces = [];
 }
 
-function searchPlaces() {
-    if (!circle) return;
+async function searchPlaces() {
+    if (!circle) {
+        debugLog('⚠️ No circle drawn yet', 'warning');
+        return;
+    }
 
     clearMarkers();
     clearResults();
@@ -261,84 +391,160 @@ function searchPlaces() {
     const center = circle.getCenter();
     const radius = circle.getRadius();
 
-    console.log('Searching with center:', center.lat(), center.lng(), 'radius:', radius);
+    debugLog(`🔍 Starting search at [${center.lat().toFixed(4)}, ${center.lng().toFixed(4)}] with radius ${Math.round(radius)}m`, 'info');
 
-    // Split into multiple requests for different types to avoid issues
-    const types = ['store', 'restaurant', 'cafe', 'shop', 'pharmacy', 'supermarket'];
+    const types = ['store'];
     let allResults = [];
-    let completedRequests = 0;
 
-    types.forEach(type => {
+    debugLog(`📡 Searching for shops only...`, 'info');
+
+    try {
+        debugLog(`📤 Searching for "store" type`, 'info');
+        
+        const results = await searchByType(center, Math.min(radius, 5000), 'store');
+        
+        if (results && results.length > 0) {
+            allResults = results;
+            debugLog(`  ✓ Found ${results.length} shops`, 'success');
+        }
+    } catch (error) {
+        debugLog(`  ❌ Error searching for shops: ${error.message}`, 'error');
+    }
+
+    debugLog(`✅ All requests completed. Total unique places: ${allResults.length}`, 'success');
+    document.getElementById('loadingResults').style.display = 'none';
+    
+    if (allResults.length > 0) {
+        currentPlaces = allResults;
+        debugLog(`📊 Displaying ${allResults.length} results...`, 'info');
+        displayResults(allResults);
+        addMarkers(allResults);
+        debugLog(`✅ Results displayed successfully`, 'success');
+    } else {
+        debugLog('⚠️ No places found in this area', 'warning');
+        document.getElementById('noResults').innerHTML = '<i class="fas fa-store-slash fa-3x text-muted mb-3"></i><p class="text-muted">لم يتم العثور على متاجر في هذه المنطقة<br><small>حاول توسيع الدائرة أو اختيار منطقة أخرى</small></p>';
+        document.getElementById('noResults').style.display = 'block';
+    }
+}
+
+// Helper function to search by type with Promise
+function searchByType(location, radius, type) {
+    return new Promise((resolve, reject) => {
         const request = {
-            location: center,
-            radius: Math.min(radius, 5000), // Reduced to 5km for better results
+            location: location,
+            radius: radius,
             type: [type]
         };
 
-        placesService.nearbySearch(request, function(results, status) {
-            completedRequests++;
-            
-            console.log(`Type: ${type}, Status: ${status}, Results:`, results ? results.length : 0);
-
-            if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-                // Filter duplicates by place_id
-                results.forEach(place => {
-                    if (!allResults.find(p => p.place_id === place.place_id)) {
-                        allResults.push(place);
-                    }
-                });
-            } else if (status === google.maps.places.PlacesServiceStatus.REQUEST_DENIED) {
-                document.getElementById('loadingResults').style.display = 'none';
-                document.getElementById('noResults').innerHTML = '<i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i><p class="text-danger"><strong>خطأ في الوصول للـ API</strong></p><p>يرجى التأكد من:<br>1. تفعيل Places API في Google Cloud Console<br>2. إضافة بيانات الدفع (Billing)<br>3. صلاحية API Key<br>4. تفعيل Places API (New) أيضاً</p>';
-                document.getElementById('noResults').style.display = 'block';
-                console.error('Places API Request Denied for type:', type);
-                return;
-            } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
-                console.warn('Query limit reached for type:', type);
-            }
-
-            // When all requests are complete
-            if (completedRequests === types.length) {
-                document.getElementById('loadingResults').style.display = 'none';
+        try {
+            placesService.nearbySearch(request, function(results, status, pagination) {
+                debugLog(`  📥 Raw response for "${type}": status=${status}, results=${results ? results.length : 'null'}`, 'info');
                 
-                if (allResults.length > 0) {
-                    currentPlaces = allResults;
-                    displayResults(allResults);
-                    addMarkers(allResults);
-                } else {
-                    document.getElementById('noResults').innerHTML = '<i class="fas fa-store-slash fa-3x text-muted mb-3"></i><p class="text-muted">لم يتم العثور على متاجر في هذه المنطقة<br><small>حاول توسيع الدائرة أو اختيار منطقة أخرى</small></p>';
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    debugLog(`  ✅ "${type}": ${results.length} results`, 'success');
+                    if (results && results.length > 0) {
+                        debugLog(`  📝 First result: ${results[0].name}`, 'info');
+                    }
+                    resolve(results || []);
+                } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+                    debugLog(`  ℹ️ "${type}": No results`, 'warning');
+                    resolve([]);
+                } else if (status === google.maps.places.PlacesServiceStatus.REQUEST_DENIED) {
+                    debugLog(`  ❌ REQUEST DENIED for "${type}"`, 'error');
+                    debugLog('  📋 SOLUTION: Go to Google Cloud Console and:', 'error');
+                    debugLog('  1️⃣ Enable Places API (New)', 'error');
+                    debugLog('  2️⃣ Set up Billing (REQUIRED)', 'error');
+                    debugLog('  3️⃣ Wait 5 minutes after setup', 'error');
+                    document.getElementById('loadingResults').style.display = 'none';
+                    document.getElementById('noResults').innerHTML = `
+                        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                        <h5 class="text-danger">Google Places API غير مفعل</h5>
+                        <div class="alert alert-danger text-start">
+                            <h6>⚠️ يجب عليك:</h6>
+                            <ol>
+                                <li><strong>تفعيل Places API (New)</strong><br>
+                                    <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" class="btn btn-sm btn-danger mt-1">
+                                        <i class="fas fa-external-link-alt"></i> تفعيل الآن
+                                    </a>
+                                </li>
+                                <li><strong>إضافة بيانات الدفع (Billing)</strong> - مطلوب حتى للباقة المجانية<br>
+                                    <a href="https://console.cloud.google.com/billing" target="_blank" class="btn btn-sm btn-danger mt-1">
+                                        <i class="fas fa-credit-card"></i> إضافة الآن
+                                    </a>
+                                </li>
+                                <li><strong>انتظر 5-10 دقائق</strong> ثم أعد تحميل الصفحة</li>
+                            </ol>
+                            <p class="mb-0 small"><strong>ملاحظة:</strong> ستحصل على رصيد $200 مجاناً شهرياً</p>
+                        </div>
+                    `;
                     document.getElementById('noResults').style.display = 'block';
+                    reject(new Error('REQUEST_DENIED - Places API not enabled or Billing not set up'));
+                } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+                    debugLog(`  ⚠️ QUERY LIMIT for "${type}" - retrying...`, 'warning');
+                    setTimeout(() => {
+                        placesService.nearbySearch(request, (r, s) => {
+                            if (s === 'OK') resolve(r || []);
+                            else resolve([]);
+                        });
+                    }, 1000);
+                } else {
+                    debugLog(`  ❓ Unknown status for "${type}": ${status}`, 'error');
+                    resolve([]);
                 }
-            }
-        });
+            });
+        } catch (error) {
+            debugLog(`  ❌ Exception caught for "${type}": ${error.message}`, 'error');
+            reject(error);
+        }
     });
 }
 
 function displayResults(places) {
+    debugLog(`📋 displayResults called with ${places.length} places`, 'info');
     const tbody = document.getElementById('resultsBody');
+    
+    if (!tbody) {
+        debugLog('❌ resultsBody element not found!', 'error');
+        return;
+    }
+    
     tbody.innerHTML = '';
 
     document.getElementById('resultsCount').textContent = places.length;
     document.getElementById('resultsTable').style.display = 'block';
 
+    let displayedCount = 0;
     places.forEach((place, index) => {
+        // Validate required data
+        if (!place.name || !place.geometry) {
+            debugLog(`  ⚠️ Skipping place with missing data at index ${index}`, 'warning');
+            return;
+        }
+        displayedCount++;
+
+        const address = place.formatted_address || place.vicinity || 'لا يوجد عنوان';
+        const rating = place.rating || null;
+        const reviewCount = place.user_ratings_total || 0;
+        const types = place.types || [];
+        const primaryType = types.length > 0 ? types[0].replace(/_/g, ' ') : 'متجر';
+
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>
                 <strong>${place.name}</strong><br>
                 <small class="text-muted">${place.place_id}</small>
             </td>
-            <td>${place.vicinity || 'لا يوجد عنوان'}</td>
+            <td><small>${address}</small></td>
             <td>
-                ${place.rating ? `
+                ${rating ? `
                     <span class="badge bg-warning text-dark">
-                        <i class="fas fa-star"></i> ${place.rating}
+                        <i class="fas fa-star"></i> ${rating}
                     </span>
-                    <small class="text-muted">(${place.user_ratings_total || 0})</small>
+                    <small class="text-muted">(${reviewCount})</small>
                 ` : '<span class="text-muted">لا يوجد تقييم</span>'}
             </td>
             <td>
-                <small>${place.types ? place.types[0].replace(/_/g, ' ') : 'متجر'}</small>
+                <small>${primaryType}</small>
             </td>
             <td>
                 <button class="btn btn-sm btn-success" onclick="importPlace(${index})" id="importBtn${index}">
@@ -351,17 +557,21 @@ function displayResults(places) {
         `;
         tbody.appendChild(row);
     });
+    
+    debugLog(`✅ Displayed ${displayedCount} places in table`, 'success');
 }
 
 function addMarkers(places) {
     clearMarkers();
 
     places.forEach((place, index) => {
+        if (!place.geometry || !place.geometry.location) return;
+
         const marker = new google.maps.Marker({
             position: place.geometry.location,
             map: map,
             title: place.name,
-            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+            icon: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
         });
 
         marker.addListener('click', () => {
@@ -374,19 +584,21 @@ function addMarkers(places) {
 
 function showPlaceDetails(index) {
     const place = currentPlaces[index];
-    const infoWindow = new google.maps.InfoWindow({
-        content: `
-            <div style="max-width: 250px;">
-                <h6><strong>${place.name}</strong></h6>
-                <p>${place.vicinity || 'لا يوجد عنوان'}</p>
-                ${place.rating ? `<p>⭐ ${place.rating} (${place.user_ratings_total} تقييم)</p>` : ''}
-                <button class="btn btn-sm btn-success" onclick="importPlace(${index})">
-                    <i class="fas fa-plus"></i> إضافة للنظام
-                </button>
-            </div>
-        `
-    });
-    infoWindow.open(map, markers[index]);
+    const address = place.formatted_address || place.vicinity || 'لا يوجد عنوان';
+    const rating = place.rating || null;
+    const reviewCount = place.user_ratings_total || 0;
+
+    sharedInfoWindow.setContent(`
+        <div style="max-width: 250px;">
+            <h6><strong>${place.name}</strong></h6>
+            <p>${address}</p>
+            ${rating ? `<p>⭐ ${rating} (${reviewCount} تقييم)</p>` : ''}
+            <button class="btn btn-sm btn-success" onclick="importPlace(${index})">
+                <i class="fas fa-plus"></i> إضافة للنظام
+            </button>
+        </div>
+    `);
+    sharedInfoWindow.open(map, markers[index]);
 }
 
 function importPlace(index) {
@@ -396,11 +608,15 @@ function importPlace(index) {
     const userId = document.getElementById('userSelect').value;
 
     if (!cityId) {
-        alert('يرجى اختيار المدينة أولاً');
+        showNotification('warning', 'يرجى اختيار المدينة أولاً');
         return;
     }
     if (!categoryId) {
-        alert('يرجى اختيار التصنيف أولاً');
+        showNotification('warning', 'يرجى اختيار التصنيف أولاً');
+        return;
+    }
+    if (!userId) {
+        showNotification('warning', 'يرجى تحديد صاحب المتجر');
         return;
     }
 
@@ -417,15 +633,15 @@ function importPlace(index) {
         body: JSON.stringify({
             place_id: place.place_id,
             name: place.name,
-            address: place.vicinity,
+            address: place.formatted_address || place.vicinity || '',
             latitude: place.geometry.location.lat(),
             longitude: place.geometry.location.lng(),
-            rating: place.rating,
-            review_count: place.user_ratings_total,
+            rating: place.rating || null,
+            review_count: place.user_ratings_total || 0,
             city_id: cityId,
             category_id: categoryId,
             user_id: userId,
-            google_types: place.types
+            google_types: place.types || []
         })
     })
     .then(response => response.json())
@@ -434,7 +650,9 @@ function importPlace(index) {
             button.innerHTML = '<i class="fas fa-check"></i> تمت الإضافة';
             button.classList.remove('btn-success');
             button.classList.add('btn-secondary');
-            markers[index].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
+            if (markers[index]) {
+                markers[index].setIcon('https://maps.google.com/mapfiles/ms/icons/green-dot.png');
+            }
             
             showNotification('success', data.message);
         } else {
@@ -476,6 +694,7 @@ document.getElementById('citySelect').addEventListener('change', function() {
 
 // Handle Google Maps errors
 window.gm_authFailure = function() {
+    debugLog('❌ Google Maps authentication failed', 'error');
     console.error('Google Maps authentication failed');
     document.getElementById('map').innerHTML = `
         <div class="alert alert-danger m-3">
@@ -491,16 +710,60 @@ window.gm_authFailure = function() {
     `;
 };
 
-document.addEventListener('DOMContentLoaded', function() {
-    // Check if Google Maps is loaded
-    if (typeof google !== 'undefined' && google.maps) {
-        initMap();
-    } else {
-        console.error('Google Maps not loaded');
-        document.getElementById('map').innerHTML = '<div class="alert alert-danger m-3">فشل تحميل Google Maps. يرجى التحقق من الاتصال بالإنترنت.</div>';
-    }
+// Catch unhandled promise rejections from Google Maps
+window.addEventListener('unhandledrejection', function(event) {
+    debugLog(`❌ Unhandled Promise Rejection: ${event.reason}`, 'error');
+    console.error('Unhandled rejection:', event.reason);
+    
+    // Hide loading spinner
+    document.getElementById('loadingResults').style.display = 'none';
+    
+    // Show detailed error message
+    document.getElementById('noResults').innerHTML = `
+        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+        <h5 class="text-danger">❌ Google Places API Error</h5>
+        <div class="alert alert-danger text-start">
+            <p><strong>Error:</strong> ${event.reason}</p>
+            <hr>
+            <h6>🔧 كيفية الحل:</h6>
+            <ol>
+                <li><strong>افتح Google Cloud Console:</strong><br>
+                    <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com?project=_" target="_blank" class="btn btn-sm btn-primary mt-1">
+                        <i class="fas fa-cloud"></i> فتح Console
+                    </a>
+                </li>
+                <li><strong>فعّل Places API (New):</strong><br>
+                    اضغط على زر "Enable" في الصفحة
+                </li>
+                <li><strong>أضف Billing Account:</strong><br>
+                    <a href="https://console.cloud.google.com/billing/linkedaccount?project=_" target="_blank" class="btn btn-sm btn-success mt-1">
+                        <i class="fas fa-credit-card"></i> إضافة Billing
+                    </a><br>
+                    <small class="text-muted">مطلوب حتى للباقة المجانية - تحصل على $200 شهرياً مجاناً</small>
+                </li>
+                <li><strong>انتظر 5 دقائق</strong> ثم أعد تحميل الصفحة</li>
+            </ol>
+        </div>
+        <button class="btn btn-primary" onclick="location.reload()">
+            <i class="fas fa-sync"></i> إعادة تحميل الصفحة
+        </button>
+    `;
+    document.getElementById('noResults').style.display = 'block';
+    
+    debugLog('🔍 This is a Google Maps Places API configuration error', 'error');
+    debugLog('💡 ACTION REQUIRED:', 'warning');
+    debugLog('   1️⃣ Enable Places API: https://console.cloud.google.com/apis/library/places-backend.googleapis.com', 'warning');
+    debugLog('   2️⃣ Set up Billing: https://console.cloud.google.com/billing', 'warning');
+    debugLog('   3️⃣ Wait 5-10 minutes for propagation', 'warning');
+    debugLog('   4️⃣ Reload this page', 'warning');
+    
+    // Prevent default error handling
+    event.preventDefault();
 });
 </script>
+
+<!-- Load Google Maps API at the end so initMap is already defined -->
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeaKlnTU88qhTp7za2H301HWPPT7zhGyo&libraries=places,drawing,geometry&language=ar&callback=initMap"></script>
 
 <style>
 #map {
