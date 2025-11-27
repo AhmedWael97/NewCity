@@ -322,4 +322,35 @@ class AdminCategoryController extends Controller
 
         return response()->json($categories);
     }
+
+    /**
+     * Display category hierarchy view.
+     */
+    public function hierarchy()
+    {
+        $categories = Category::with(['parent', 'children'])
+                            ->withCount('shops')
+                            ->orderBy('sort_order')
+                            ->orderBy('name')
+                            ->get();
+
+        // Build hierarchical tree
+        $tree = $categories->whereNull('parent_id')->map(function($category) use ($categories) {
+            return $this->buildCategoryTree($category, $categories);
+        });
+
+        return view('admin.categories.hierarchy', compact('tree', 'categories'));
+    }
+
+    /**
+     * Build category tree recursively.
+     */
+    private function buildCategoryTree($category, $allCategories)
+    {
+        $category->children = $allCategories->where('parent_id', $category->id)->map(function($child) use ($allCategories) {
+            return $this->buildCategoryTree($child, $allCategories);
+        });
+
+        return $category;
+    }
 }

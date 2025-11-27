@@ -58,9 +58,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     Route::post('cities/{city}/toggle-active', [AdminCityController::class, 'toggleActive'])->name('cities.toggle-active');
     
     // Category Management
-    Route::resource('categories', AdminCategoryController::class);
-    Route::post('categories/{category}/toggle-active', [AdminCategoryController::class, 'toggleActive'])->name('categories.toggle-active');
     Route::get('categories/hierarchy', [AdminCategoryController::class, 'hierarchy'])->name('categories.hierarchy');
+    Route::post('categories/{category}/toggle-active', [AdminCategoryController::class, 'toggleActive'])->name('categories.toggle-active');
+    Route::resource('categories', AdminCategoryController::class);
     
     // Rating Management
     Route::resource('ratings', AdminRatingController::class)->except(['create', 'store']);

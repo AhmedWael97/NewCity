@@ -182,8 +182,8 @@ function selectCity(slug, name) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // City selected successfully, reload to apply changes
-            window.location.reload();
+            // City selected successfully, navigate to city landing page
+            window.location.href = '/city-landing/' + slug;
         } else {
             alert('حدث خطأ، حاول مرة أخرى');
             cards.forEach(card => card.style.opacity = '1');
@@ -207,23 +207,19 @@ function showCityModal() {
     modal.style.display = 'block';
     modal.classList.add('show');
     
+    // Clear localStorage to allow city change
+    localStorage.removeItem('cityModalSeen');
+    
     // Reset search
     const searchInput = document.getElementById('citySearchInput');
     if (searchInput) {
         searchInput.value = '';
     }
     
-    // Load cities if not loaded
-    if (citiesData.length === 0) {
-        document.getElementById('loadingSpinner').style.display = 'block';
-        document.getElementById('citiesGrid').style.display = 'none';
-        loadCities();
-    } else {
-        // Cities already loaded, just show them
-        document.getElementById('loadingSpinner').style.display = 'none';
-        document.getElementById('citiesGrid').style.display = 'flex';
-        displayCities(citiesData);
-    }
+    // Always reload cities to get fresh data
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('citiesGrid').style.display = 'none';
+    loadCities();
 }
 
 // Close modal when clicking outside
