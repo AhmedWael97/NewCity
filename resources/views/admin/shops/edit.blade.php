@@ -199,19 +199,19 @@
                         <!-- Current Images -->
                         @if($shop->images && count($shop->images) > 0)
                             <div class="form-group">
-                                <label>الصور الحالية</label>
-                                <div class="row">
+                                <label class="font-weight-bold"><i class="fas fa-images"></i> الصور الحالية</label>
+                                <div class="row" id="current-images-grid">
                                     @foreach($shop->images as $index => $image)
-                                        <div class="col-md-3 mb-3">
-                                            <div class="card">
-                                                <img src="{{ $image }}" class="card-img-top" alt="Shop Image" style="height: 150px; object-fit: cover;">
-                                                <div class="card-body p-2">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="remove_images[]" value="{{ $index }}" id="remove_{{ $index }}">
-                                                        <label class="form-check-label" for="remove_{{ $index }}">
-                                                            حذف هذه الصورة
-                                                        </label>
-                                                    </div>
+                                        <div class="col-md-3 col-sm-4 col-6 mb-3" data-image-index="{{ $index }}">
+                                            <div class="image-preview-item">
+                                                <img src="{{ asset('storage/' . $image) }}" alt="Shop Image">
+                                                <button type="button" class="remove-image" onclick="toggleDeleteImage({{ $index }}, this)">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                                <input type="checkbox" name="delete_images[]" value="{{ $index }}" 
+                                                       id="delete_{{ $index }}" style="display: none;">
+                                                <div class="delete-overlay" style="display: none;">
+                                                    <span class="badge badge-danger">سيتم الحذف</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -220,14 +220,31 @@
                             </div>
                         @endif
 
+                        <!-- Add New Images with Drag & Drop -->
                         <div class="form-group">
-                            <label for="images">إضافة صور جديدة</label>
-                            <input type="file" class="form-control @error('images') is-invalid @enderror" 
-                                   id="images" name="images[]" multiple accept="image/*">
-                            <small class="form-text text-muted">يمكنك اختيار عدة صور</small>
-                            @error('images')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                            <label class="font-weight-bold">
+                                <i class="fas fa-plus-circle"></i> إضافة صور جديدة
+                            </label>
+                            <div id="image-upload-container" class="border rounded p-4 bg-light text-center" 
+                                 style="min-height: 200px; cursor: pointer;">
+                                <input type="file" 
+                                       id="images-input" 
+                                       name="images[]" 
+                                       accept="image/*" 
+                                       multiple 
+                                       style="display: none;">
+                                
+                                <div id="upload-prompt" class="text-muted">
+                                    <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                    <p class="mb-2"><strong>اسحب وأفلت الصور هنا</strong></p>
+                                    <p class="mb-2">أو <span class="text-primary" style="cursor: pointer; text-decoration: underline;">انقر للاختيار</span></p>
+                                    <p class="small">أو استخدم Ctrl+V للصق الصور من الحافظة</p>
+                                    <small class="text-muted">PNG, JPG, JPEG - حجم أقصى 2MB لكل صورة</small>
+                                </div>
+                                
+                                <div id="image-preview-grid" class="row g-3 mt-2" style="display: none;"></div>
+                            </div>
+                            <small class="form-text text-muted">الصور الجديدة ستضاف إلى الصور الحالية</small>
                         </div>
 
                         <div class="row">
@@ -293,6 +310,68 @@
     </div>
 </div>
 
+<style>
+#image-upload-container {
+    transition: all 0.3s ease;
+}
+#image-upload-container:hover {
+    border-color: #4e73df !important;
+    background-color: #f8f9fc !important;
+}
+#image-upload-container.drag-over {
+    border: 2px dashed #4e73df !important;
+    background-color: #e3ebff !important;
+}
+.image-preview-item {
+    position: relative;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+}
+.image-preview-item img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+.image-preview-item .remove-image {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    font-size: 14px;
+}
+.image-preview-item .remove-image:hover {
+    background: rgba(220, 53, 69, 1);
+}
+.image-preview-item .delete-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(220, 53, 69, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+.image-preview-item.marked-for-deletion {
+    opacity: 0.5;
+    border-color: #dc3545;
+}
+</style>
+
 <script>
 // Auto-generate slug from name
 document.getElementById('name').addEventListener('input', function() {
@@ -303,5 +382,154 @@ document.getElementById('name').addEventListener('input', function() {
                    .replace(/^-+|-+$/g, ''); // Remove leading/trailing dashes
     document.getElementById('slug').value = slug;
 });
+
+// Toggle delete for existing images
+function toggleDeleteImage(index, button) {
+    const container = button.closest('[data-image-index]');
+    const checkbox = document.getElementById('delete_' + index);
+    const overlay = container.querySelector('.delete-overlay');
+    const item = container.querySelector('.image-preview-item');
+    
+    checkbox.checked = !checkbox.checked;
+    
+    if (checkbox.checked) {
+        overlay.style.display = 'flex';
+        item.classList.add('marked-for-deletion');
+        button.innerHTML = '<i class="fas fa-undo"></i>';
+    } else {
+        overlay.style.display = 'none';
+        item.classList.remove('marked-for-deletion');
+        button.innerHTML = '<i class="fas fa-times"></i>';
+    }
+}
+
+// Image Upload with Drag & Drop and Paste for new images
+(function() {
+    const container = document.getElementById('image-upload-container');
+    const input = document.getElementById('images-input');
+    const prompt = document.getElementById('upload-prompt');
+    const previewGrid = document.getElementById('image-preview-grid');
+    let selectedFiles = [];
+
+    // Click to open file picker
+    container.addEventListener('click', function(e) {
+        if (!e.target.closest('.remove-image')) {
+            input.click();
+        }
+    });
+
+    // File input change
+    input.addEventListener('change', function(e) {
+        handleFiles(Array.from(e.target.files));
+    });
+
+    // Drag and drop
+    container.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        container.classList.add('drag-over');
+    });
+
+    container.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        container.classList.remove('drag-over');
+    });
+
+    container.addEventListener('drop', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        container.classList.remove('drag-over');
+        
+        const files = Array.from(e.dataTransfer.files).filter(file => 
+            file.type.startsWith('image/')
+        );
+        
+        if (files.length > 0) {
+            handleFiles(files);
+        }
+    });
+
+    // Paste from clipboard
+    document.addEventListener('paste', function(e) {
+        const items = Array.from(e.clipboardData.items);
+        const imageItems = items.filter(item => item.type.startsWith('image/'));
+        
+        if (imageItems.length > 0) {
+            e.preventDefault();
+            const files = imageItems.map(item => item.getAsFile());
+            handleFiles(files);
+        }
+    });
+
+    function handleFiles(files) {
+        const validFiles = files.filter(file => {
+            if (!file.type.startsWith('image/')) {
+                alert('الرجاء اختيار ملفات صور فقط');
+                return false;
+            }
+            if (file.size > 2048 * 1024) {
+                alert(`الملف ${file.name} حجمه أكبر من 2MB`);
+                return false;
+            }
+            return true;
+        });
+
+        if (validFiles.length === 0) return;
+
+        selectedFiles = selectedFiles.concat(validFiles);
+
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        input.files = dataTransfer.files;
+
+        updatePreview();
+    }
+
+    function updatePreview() {
+        if (selectedFiles.length === 0) {
+            prompt.style.display = 'block';
+            previewGrid.style.display = 'none';
+            return;
+        }
+
+        prompt.style.display = 'none';
+        previewGrid.style.display = 'flex';
+        previewGrid.innerHTML = '';
+
+        selectedFiles.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const col = document.createElement('div');
+                col.className = 'col-md-3 col-sm-4 col-6';
+                col.innerHTML = `
+                    <div class="image-preview-item">
+                        <img src="${e.target.result}" alt="Preview">
+                        <button type="button" class="remove-image" data-index="${index}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                previewGrid.appendChild(col);
+
+                col.querySelector('.remove-image').addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    removeFile(index);
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function removeFile(index) {
+        selectedFiles.splice(index, 1);
+        
+        const dataTransfer = new DataTransfer();
+        selectedFiles.forEach(file => dataTransfer.items.add(file));
+        input.files = dataTransfer.files;
+        
+        updatePreview();
+    }
+})();
 </script>
 @endsection
