@@ -10,6 +10,9 @@
             <i class="fas fa-sitemap"></i> التسلسل الهرمي للتصنيفات
         </h1>
         <div>
+            <button type="button" id="bulkDeleteBtn" class="btn btn-danger btn-sm" style="display: none;">
+                <i class="fas fa-trash"></i> حذف المحدد (<span id="selectedCount">0</span>)
+            </button>
             <a href="{{ route('admin.categories.index') }}" class="btn btn-secondary btn-sm">
                 <i class="fas fa-list"></i> عرض القائمة
             </a>
@@ -30,11 +33,21 @@
                 </div>
                 <div class="card-body">
                     @if($tree->count() > 0)
-                        <div class="category-tree">
-                            @foreach($tree as $category)
-                                @include('admin.categories.partials.tree-item', ['category' => $category, 'level' => 0])
-                            @endforeach
+                        <div class="mb-3">
+                            <label class="form-check-label">
+                                <input type="checkbox" id="selectAll" class="form-check-input">
+                                <strong>تحديد الكل</strong>
+                            </label>
                         </div>
+                        <form id="bulkDeleteForm" action="{{ route('admin.categories.bulk-delete') }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <div class="category-tree">
+                                @foreach($tree as $category)
+                                    @include('admin.categories.partials.tree-item', ['category' => $category, 'level' => 0])
+                                @endforeach
+                            </div>
+                        </form>
                     @else
                         <div class="text-center py-5">
                             <i class="fas fa-folder-open text-muted" style="font-size: 3rem;"></i>
@@ -120,5 +133,70 @@
     padding: 4px 10px;
     font-size: 0.85rem;
 }
+.category-checkbox {
+    margin-left: 10px;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAllCheckbox = document.getElementById('selectAll');
+    const categoryCheckboxes = document.querySelectorAll('.category-checkbox');
+    const bulkDeleteBtn = document.getElementById('bulkDeleteBtn');
+    const selectedCountSpan = document.getElementById('selectedCount');
+    const bulkDeleteForm = document.getElementById('bulkDeleteForm');
+
+    // Select all functionality
+    if (selectAllCheckbox) {
+        selectAllCheckbox.addEventListener('change', function() {
+            categoryCheckboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            updateBulkDeleteButton();
+        });
+    }
+
+    // Individual checkbox change
+    categoryCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateSelectAllState();
+            updateBulkDeleteButton();
+        });
+    });
+
+    // Update select all checkbox state
+    function updateSelectAllState() {
+        if (!selectAllCheckbox) return;
+        const checkedCount = document.querySelectorAll('.category-checkbox:checked').length;
+        selectAllCheckbox.checked = checkedCount === categoryCheckboxes.length && checkedCount > 0;
+        selectAllCheckbox.indeterminate = checkedCount > 0 && checkedCount < categoryCheckboxes.length;
+    }
+
+    // Update bulk delete button visibility and count
+    function updateBulkDeleteButton() {
+        const checkedCount = document.querySelectorAll('.category-checkbox:checked').length;
+        if (checkedCount > 0) {
+            bulkDeleteBtn.style.display = 'inline-block';
+            selectedCountSpan.textContent = checkedCount;
+        } else {
+            bulkDeleteBtn.style.display = 'none';
+        }
+    }
+
+    // Bulk delete button click
+    if (bulkDeleteBtn) {
+        bulkDeleteBtn.addEventListener('click', function() {
+            const checkedCount = document.querySelectorAll('.category-checkbox:checked').length;
+            if (checkedCount === 0) {
+                alert('الرجاء تحديد تصنيف واحد على الأقل للحذف');
+                return;
+            }
+
+            if (confirm(`هل أنت متأكد من حذف ${checkedCount} تصنيف؟\n\nتنبيه: سيتم حذف جميع التصنيفات الفرعية أيضاً!`)) {
+                bulkDeleteForm.submit();
+            }
+        });
+    }
+});
+</script>
 @endsection

@@ -60,6 +60,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     // Category Management
     Route::get('categories/hierarchy', [AdminCategoryController::class, 'hierarchy'])->name('categories.hierarchy');
     Route::post('categories/{category}/toggle-active', [AdminCategoryController::class, 'toggleActive'])->name('categories.toggle-active');
+    Route::delete('categories/bulk-delete', [AdminCategoryController::class, 'bulkDelete'])->name('categories.bulk-delete');
     Route::resource('categories', AdminCategoryController::class);
     
     // Rating Management

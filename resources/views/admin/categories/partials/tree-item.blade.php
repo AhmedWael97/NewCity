@@ -5,6 +5,11 @@
 <div class="tree-item {{ $levelClass }}" data-category-id="{{ $category->id }}">
     <div class="category-info">
         <div class="d-flex align-items-center">
+            <input type="checkbox" 
+                   name="category_ids[]" 
+                   value="{{ $category->id }}" 
+                   class="form-check-input category-checkbox"
+                   id="category-{{ $category->id }}">
             @if($level > 0)
                 <i class="fas fa-level-up-alt text-muted me-2" style="transform: rotate(90deg);"></i>
             @else

@@ -175,8 +175,59 @@ class AdminCategoryController extends Controller
         $category->delete();
 
         return redirect()
-            ->route('admin.categories.index')
+            ->route('admin.categories.hierarchy')
             ->with('success', 'تم حذف التصنيف بنجاح');
+    }
+
+    /**
+     * Bulk delete categories.
+     */
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'category_ids' => 'required|array',
+            'category_ids.*' => 'exists:categories,id'
+        ]);
+
+        $categoryIds = $request->category_ids;
+        $categories = Category::whereIn('id', $categoryIds)->get();
+        
+        $deletedCount = 0;
+        $errorCategories = [];
+
+        foreach ($categories as $category) {
+            // Check if category has shops
+            if ($category->shops()->count() > 0) {
+                $errorCategories[] = $category->name;
+                continue;
+            }
+
+            // Delete associated image
+            if ($category->image) {
+                Storage::disk('public')->delete($category->image);
+            }
+
+            $category->delete();
+            $deletedCount++;
+        }
+
+        if (count($errorCategories) > 0) {
+            $errorMessage = 'لم يتم حذف التصنيفات التالية لأنها تحتوي على متاجر: ' . implode(', ', $errorCategories);
+            
+            if ($deletedCount > 0) {
+                return redirect()
+                    ->route('admin.categories.hierarchy')
+                    ->with('warning', "تم حذف {$deletedCount} تصنيف. {$errorMessage}");
+            }
+            
+            return redirect()
+                ->route('admin.categories.hierarchy')
+                ->with('error', $errorMessage);
+        }
+
+        return redirect()
+            ->route('admin.categories.hierarchy')
+            ->with('success', "تم حذف {$deletedCount} تصنيف بنجاح");
     }
 
     /**
