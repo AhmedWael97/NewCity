@@ -153,6 +153,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     // Analytics Dashboard
     Route::prefix('analytics')->as('analytics.')->group(function () {
         Route::get('/', [AnalyticsController::class, 'index'])->name('index');
+        Route::get('/website-visits', [AnalyticsController::class, 'websiteVisits'])->name('website-visits');
         Route::get('/shops', [AnalyticsController::class, 'shopPerformance'])->name('shops');
         Route::get('/cities', [AnalyticsController::class, 'cityAnalytics'])->name('cities');
         Route::get('/users', [AnalyticsController::class, 'userBehavior'])->name('users');

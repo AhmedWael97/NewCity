@@ -41,6 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Apply city selection middleware to web routes
         $middleware->web(append: [
             \App\Http\Middleware\CitySelection::class,
+            \App\Http\Middleware\TrackWebsiteVisit::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

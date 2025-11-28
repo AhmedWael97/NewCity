@@ -11,6 +11,7 @@ use App\Models\UserEvent;
 use App\Models\Product;
 use App\Models\Service;
 use App\Models\Category;
+use App\Models\WebsiteVisit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -18,10 +19,75 @@ use Carbon\Carbon;
 class AnalyticsController extends Controller
 {
     /**
+     * Display website visits analytics
+     */
+    public function websiteVisits()
+    {
+        // Get statistics for different time periods
+        $todayStats = WebsiteVisit::getStatistics(Carbon::today(), Carbon::now());
+        $weekStats = WebsiteVisit::getStatistics(Carbon::now()->subDays(7), Carbon::now());
+        $monthStats = WebsiteVisit::getStatistics(Carbon::now()->subDays(30), Carbon::now());
+
+        // Get comparison with previous period
+        $comparison = WebsiteVisit::getComparison(30);
+
+        // Get daily stats for the last 30 days
+        $dailyStats = WebsiteVisit::getDailyStats(30);
+
+        // Get hourly distribution
+        $hourlyDistribution = WebsiteVisit::getHourlyDistribution(7);
+
+        // Get top referrers
+        $topReferrers = WebsiteVisit::getTopReferrers(30, 10);
+
+        // Get top landing pages
+        $topLandingPages = WebsiteVisit::getTopLandingPages(30, 10);
+
+        // Get device breakdown
+        $deviceBreakdown = WebsiteVisit::getDeviceBreakdown(30);
+
+        // Get browser breakdown
+        $browserBreakdown = WebsiteVisit::getBrowserBreakdown(30, 10);
+
+        // Get real-time visitors
+        $realTimeVisitors = WebsiteVisit::getRealTimeVisitors();
+
+        // Get today's visitors
+        $todayVisitors = WebsiteVisit::getTodayVisitors();
+
+        // Recent visits
+        $recentVisits = WebsiteVisit::with('user')
+            ->latest()
+            ->limit(50)
+            ->get();
+
+        return view('admin.analytics.website-visits', compact(
+            'todayStats',
+            'weekStats',
+            'monthStats',
+            'comparison',
+            'dailyStats',
+            'hourlyDistribution',
+            'topReferrers',
+            'topLandingPages',
+            'deviceBreakdown',
+            'browserBreakdown',
+            'realTimeVisitors',
+            'todayVisitors',
+            'recentVisits'
+        ));
+    }
+
+    /**
      * Display main analytics dashboard
      */
     public function index()
     {
+        // Website visits overview
+        $websiteStats = WebsiteVisit::getStatistics(Carbon::now()->subDays(30), Carbon::now());
+        $realTimeVisitors = WebsiteVisit::getRealTimeVisitors();
+        $todayVisitors = WebsiteVisit::getTodayVisitors();
+
         // Top performing shops by views (last 30 days)
         $topShopsByViews = ShopAnalytics::select('shop_id', DB::raw('COUNT(*) as total_views'))
             ->where('event_type', 'shop_view')
@@ -128,6 +194,9 @@ class AnalyticsController extends Controller
         $conversions['total'] = array_sum($conversions);
 
         return view('admin.analytics.index', compact(
+            'websiteStats',
+            'realTimeVisitors',
+            'todayVisitors',
             'topShopsByViews',
             'topCitiesByVisitors',
             'topSearchTerms',

@@ -8,6 +8,9 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">التحليلات المتقدمة</h1>
         <div>
+            <a href="{{ route('admin.analytics.website-visits') }}" class="btn btn-outline-danger">
+                <i class="fas fa-globe"></i> زيارات الموقع
+            </a>
             <a href="{{ route('admin.analytics.shops') }}" class="btn btn-outline-success">
                 <i class="fas fa-store"></i> أداء المتاجر
             </a>
@@ -17,6 +20,77 @@
             <a href="{{ route('admin.analytics.users') }}" class="btn btn-outline-primary">
                 <i class="fas fa-users"></i> سلوك المستخدمين
             </a>
+        </div>
+    </div>
+
+    <!-- Website Visits Overview -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-danger shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">الزوار الآن</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($realTimeVisitors) }}</div>
+                            <div class="text-xs text-muted mt-1">متصلون الآن</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-circle text-danger fa-2x pulse-animation"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">زوار اليوم</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($todayVisitors) }}</div>
+                            <div class="text-xs text-muted mt-1">زائر فريد</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">إجمالي الزيارات</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($websiteStats['total_visits'] ?? 0) }}</div>
+                            <div class="text-xs text-muted mt-1">آخر 30 يوم</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">معدل معاينات الصفحة</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ number_format($websiteStats['avg_pages_per_visit'] ?? 0, 1) }}</div>
+                            <div class="text-xs text-muted mt-1">صفحة/زيارة</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-file-alt fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
