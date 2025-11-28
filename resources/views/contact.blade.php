@@ -171,8 +171,14 @@
                                     <i class="fas fa-store me-1"></i>
                                     المتجر المتعلق (اختياري)
                                 </label>
-                                <input type="number" class="form-control" id="shop_id" name="shop_id" 
-                                       value="{{ old('shop_id') }}" placeholder="رقم المتجر">
+                                <select class="form-select" id="shop_id" name="shop_id">
+                                    <option value="">اختر المتجر</option>
+                                    @foreach(\App\Models\Shop::where('is_active', true)->where('is_verified', true)->orderBy('name')->get() as $shop)
+                                        <option value="{{ $shop->id }}" {{ old('shop_id') == $shop->id ? 'selected' : '' }}>
+                                            {{ $shop->name }} - {{ $shop->city->name ?? '' }}
+                                        </option>
+                                    @endforeach
+                                </select>
                                 <small class="text-muted">إذا كانت المشكلة متعلقة بمتجر معين</small>
                             </div>
 

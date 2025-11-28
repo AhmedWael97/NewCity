@@ -533,22 +533,29 @@
                             <div class="stat-item">
                                 <div class="stat-icon">👥</div>
                                 <div class="stat-info">
-                                    <span class="stat-number">1,234</span>
-                                    <span class="stat-label">زائر شهرياً</span>
+                                    <span class="stat-number">{{ number_format($shop->views ?? 0) }}</span>
+                                    <span class="stat-label" style="color: #016B61 !important">مشاهدة</span>
                                 </div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-icon">⭐</div>
                                 <div class="stat-info">
-                                    <span class="stat-number">4.8</span>
-                                    <span class="stat-label">التقييم</span>
+                                    <span class="stat-number">{{ $shop->averageRating() > 0 ? number_format($shop->averageRating(), 1) : 'جديد' }}</span>
+                                    <span class="stat-label" style="color: #016B61 !important">التقييم</span>
+                                </div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">💬</div>
+                                <div class="stat-info">
+                                    <span class="stat-number">{{ number_format($shop->totalRatings()) }}</span>
+                                    <span class="stat-label" style="color: #016B61 !important">تقييم</span>
                                 </div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-icon">📅</div>
                                 <div class="stat-info">
                                     <span class="stat-number">{{ $shop->created_at ? $shop->created_at->diffForHumans() : 'غير معروف' }}</span>
-                                    <span class="stat-label">منذ التسجيل</span>
+                                    <span class="stat-label" style="color: #016B61 !important">منذ التسجيل</span>
                                 </div>
                             </div>
                         </div>
