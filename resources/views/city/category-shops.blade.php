@@ -175,10 +175,58 @@
         }
     }
 
-    function toggleFavoriteShop(shopId) {
+    async function toggleFavoriteShop(shopId) {
         event.preventDefault();
         event.stopPropagation();
-        console.log('Toggle favorite for shop:', shopId);
+        
+        @guest
+            alert('يجب تسجيل الدخول لإضافة المتاجر للمفضلة');
+            window.location.href = '{{ route("login") }}';
+            return;
+        @endguest
+        
+        const btn = event.target.closest('.favorite-btn, .favorite-btn-small');
+        const icon = btn ? btn.querySelector('.heart-icon, i') : event.target;
+        const isFavorite = icon.textContent.includes('❤️');
+        
+        if (btn) btn.disabled = true;
+        
+        try {
+            const response = await fetch(`/favorites/shops/${shopId}`, {
+                method: isFavorite ? 'DELETE' : 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                icon.textContent = isFavorite ? '🤍' : '❤️';
+                if (window.showToast) {
+                    showToast(data.message, 'success');
+                } else {
+                    alert(data.message);
+                }
+            } else {
+                if (window.showToast) {
+                    showToast(data.message || 'حدث خطأ ما', 'error');
+                } else {
+                    alert(data.message || 'حدث خطأ ما');
+                }
+            }
+        } catch (error) {
+            console.error('Favorite toggle error:', error);
+            if (window.showToast) {
+                showToast('حدث خطأ في الاتصال', 'error');
+            } else {
+                alert('حدث خطأ في الاتصال');
+            }
+        } finally {
+            if (btn) btn.disabled = false;
+        }
     }
     </script>
 @endsection

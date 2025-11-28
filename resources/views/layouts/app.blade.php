@@ -289,19 +289,89 @@
         }
 
         // Toggle Favorite Shop
-        function toggleFavoriteShop(shopId) {
+        async function toggleFavoriteShop(shopId, event) {
             if (event) {
                 event.preventDefault();
                 event.stopPropagation();
             }
-            console.log('Toggle favorite for shop:', shopId);
-            // Add your favorite toggle logic here
-            @auth
-                // Implement favorite toggle API call
-            @else
+            
+            @guest
                 if (confirm('يجب تسجيل الدخول لإضافة المتاجر للمفضلة. هل تريد تسجيل الدخول الآن؟')) {
                     window.location.href = '{{ route("login") }}';
                 }
+                return;
+            @endguest
+            
+            @auth
+            // Find the button and icon
+            const btn = event.target.closest('button');
+            if (!btn) {
+                console.error('Button not found');
+                return;
+            }
+            
+            const icon = btn.querySelector('i, .heart-icon, span.heart-icon');
+            if (!icon) {
+                console.error('Icon not found');
+                return;
+            }
+            
+            // Check current state
+            const currentIcon = icon.textContent.trim();
+            const isFavorite = currentIcon === '❤️';
+            
+            console.log('Current state:', { shopId, isFavorite, currentIcon });
+            
+            // Disable button during request
+            btn.disabled = true;
+            
+            try {
+                // Make AJAX request
+                const url = `/favorites/shops/${shopId}`;
+                const method = isFavorite ? 'DELETE' : 'POST';
+                
+                console.log('Making request:', { url, method });
+                
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                    }
+                });
+                
+                const data = await response.json();
+                console.log('Server response:', data);
+                
+                if (response.ok && data.success) {
+                    // Toggle the icon
+                    if (isFavorite) {
+                        icon.textContent = '🤍';
+                        console.log('Removed from favorites - icon changed to 🤍');
+                    } else {
+                        icon.textContent = '❤️';
+                        console.log('Added to favorites - icon changed to ❤️');
+                    }
+                    
+                    // Show success message
+                    if (window.showToast) {
+                        showToast(data.message, 'success');
+                    }
+                } else {
+                    console.error('Request failed:', data);
+                    if (window.showToast) {
+                        showToast(data.message || 'حدث خطأ', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling favorite:', error);
+                if (window.showToast) {
+                    showToast('حدث خطأ في الاتصال', 'error');
+                }
+            } finally {
+                btn.disabled = false;
+            }
             @endauth
         }
     </script>

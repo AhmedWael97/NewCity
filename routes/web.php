@@ -136,6 +136,14 @@ Route::middleware('auth')->group(function () {
     Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
     Route::put('/profile/password', [AuthController::class, 'updatePassword'])->name('profile.password.update');
     
+    // Shop Favorites routes (web-based)
+    Route::prefix('favorites')->name('favorites.')->group(function () {
+        Route::get('/', [App\Http\Controllers\FavoriteController::class, 'index'])->name('index');
+        Route::post('/shops/{shop}', [App\Http\Controllers\FavoriteController::class, 'addShop'])->name('add-shop');
+        Route::delete('/shops/{shop}', [App\Http\Controllers\FavoriteController::class, 'removeShop'])->name('remove-shop');
+        Route::get('/shops/{shop}/check', [App\Http\Controllers\FavoriteController::class, 'checkShop'])->name('check-shop');
+    });
+    
     // User Services routes (authenticated)
     Route::prefix('user/services')->name('user.services.')->group(function () {
         Route::get('/', [App\Http\Controllers\User\UserServiceController::class, 'index'])->name('index');

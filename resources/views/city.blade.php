@@ -297,13 +297,12 @@
         btn.disabled = true;
         
         try {
-            const response = await fetch(`/api/v1/shops/${shopId}/favorite`, {
+            const response = await fetch(`/favorites/shops/${shopId}`, {
                 method: isFavorite ? 'DELETE' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || '')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             });
             

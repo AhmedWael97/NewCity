@@ -754,6 +754,36 @@
         }, 3000);
     }
 
+    // Check initial favorite status on page load
+    async function checkInitialFavoriteStatus() {
+        const btn = document.querySelector('.favorite-btn');
+        if (!btn) return;
+        
+        const icon = btn.querySelector('.icon');
+        const shopId = {{ $shop->id }};
+        
+        try {
+            const response = await fetch(`/favorites/shops/${shopId}/check`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok && data.success && data.is_favorite) {
+                icon.textContent = '❤️';
+            } else {
+                icon.textContent = '🤍';
+            }
+        } catch (error) {
+            console.error('Error checking favorite status:', error);
+            // Default to not favorite on error
+            icon.textContent = '🤍';
+        }
+    }
+
     async function toggleFavorite() {
         // Check if user is authenticated
         @guest
@@ -773,13 +803,12 @@
         btn.disabled = true;
         
         try {
-            const response = await fetch(`/api/v1/shops/${shopId}/favorite`, {
+            const response = await fetch(`/favorites/shops/${shopId}`, {
                 method: isFavorite ? 'DELETE' : 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Authorization': 'Bearer ' + (localStorage.getItem('auth_token') || '')
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                 }
             });
             
@@ -888,6 +917,11 @@
     });
 
    document.addEventListener('DOMContentLoaded', function() {
+        // Check initial favorite status
+        @auth
+        checkInitialFavoriteStatus();
+        @endauth
+        
         // Initialize Swiper for All Products
         if (document.querySelector('.all-products-swiper')) {
             new Swiper('.all-products-swiper', {

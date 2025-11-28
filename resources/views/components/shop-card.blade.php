@@ -425,12 +425,9 @@
         @endif
         
         <div class="shop-badge">
-            <span class="badge-text">{{ $shop->category?->name ?? 'عام' }}</span>
+            <span class="badge-text">{{ $shop->category?->name ?? 'عam' }}</span>
         </div>
         
-        <button class="favorite-btn-small" onclick="toggleFavoriteShop({{ $shop->id }})">
-            <i class="heart-icon">🤍</i>
-        </button>
     </div>
     
     <div class="shop-card-content">

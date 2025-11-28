@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 /**
  * @OA\Tag(
@@ -20,7 +19,7 @@ class ShopFavoriteController extends Controller
      *     path="/api/v1/user/favorites",
      *     summary="Get user's favorite shops",
      *     tags={"Shop Favorites"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
@@ -34,7 +33,7 @@ class ShopFavoriteController extends Controller
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         
         if (!$user) {
             return response()->json([
@@ -59,7 +58,7 @@ class ShopFavoriteController extends Controller
      *     path="/api/v1/shops/{shopId}/favorite",
      *     summary="Add shop to favorites",
      *     tags={"Shop Favorites"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
      *         name="shopId",
      *         in="path",
@@ -72,9 +71,9 @@ class ShopFavoriteController extends Controller
      *     )
      * )
      */
-    public function store($shopId)
+    public function store(Request $request, $shopId)
     {
-        $user = Auth::user();
+        $user = $request->user();
         
         if (!$user) {
             return response()->json([
@@ -99,7 +98,8 @@ class ShopFavoriteController extends Controller
             'success' => true,
             'message' => 'تم إضافة المتجر للمفضلة بنجاح',
             'data' => [
-                'shop' => $shop->only(['id', 'name', 'slug', 'images'])
+                'shop' => $shop->only(['id', 'name', 'slug', 'images']),
+                'is_favorite' => true
             ]
         ]);
     }
@@ -109,7 +109,7 @@ class ShopFavoriteController extends Controller
      *     path="/api/v1/shops/{shopId}/favorite",
      *     summary="Remove shop from favorites",
      *     tags={"Shop Favorites"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
      *         name="shopId",
      *         in="path",
@@ -122,9 +122,9 @@ class ShopFavoriteController extends Controller
      *     )
      * )
      */
-    public function destroy($shopId)
+    public function destroy(Request $request, $shopId)
     {
-        $user = Auth::user();
+        $user = $request->user();
         
         if (!$user) {
             return response()->json([
@@ -139,7 +139,10 @@ class ShopFavoriteController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'تم إزالة المتجر من المفضلة بنجاح'
+            'message' => 'تم إزالة المتجر من المفضلة بنجاح',
+            'data' => [
+                'is_favorite' => false
+            ]
         ]);
     }
 
@@ -148,7 +151,7 @@ class ShopFavoriteController extends Controller
      *     path="/api/v1/shops/{shopId}/is-favorite",
      *     summary="Check if shop is in user's favorites",
      *     tags={"Shop Favorites"},
-     *     security={{"bearerAuth":{}}},
+     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
      *         name="shopId",
      *         in="path",
@@ -161,18 +164,18 @@ class ShopFavoriteController extends Controller
      *     )
      * )
      */
-    public function check($shopId)
+    public function check(Request $request, $shopId)
     {
-        $user = Auth::user();
+        $user = $request->user();
         
         if (!$user) {
             return response()->json([
-                'success' => false,
-                'message' => 'يجب تسجيل الدخول للتحقق من حالة المفضلة',
+                'success' => true,
+                'message' => 'User not authenticated',
                 'data' => [
                     'is_favorite' => false
                 ]
-            ], 401);
+            ], 200);
         }
         
         $shop = Shop::findOrFail($shopId);
