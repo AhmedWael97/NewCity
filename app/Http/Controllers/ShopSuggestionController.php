@@ -78,7 +78,7 @@ class ShopSuggestionController extends Controller
             ->orderBy('name')
             ->get(['id', 'name']);
 
-        $categories = Category::where('status', 'active')
+        $categories = Category::where('is_active', true)
             ->whereNull('parent_id')
             ->orderBy('name')
             ->get(['id', 'name', 'icon']);
