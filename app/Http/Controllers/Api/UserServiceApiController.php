@@ -141,7 +141,7 @@ class UserServiceApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/my-services",
+     *     path="/api/v1/my-services",
      *     summary="Get current user's services",
      *     tags={"User Services"},
      *     security={{"sanctum":{}}},
@@ -174,7 +174,7 @@ class UserServiceApiController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/my-services",
+     *     path="/api/v1/my-services",
      *     summary="Create a new service",
      *     tags={"User Services"},
      *     security={{"sanctum":{}}},
@@ -256,7 +256,7 @@ class UserServiceApiController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/api/my-services/{id}",
+     *     path="/api/v1/my-services/{id}",
      *     summary="Update a service",
      *     tags={"User Services"},
      *     security={{"sanctum":{}}},
@@ -315,7 +315,7 @@ class UserServiceApiController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/api/my-services/{id}",
+     *     path="/api/v1/my-services/{id}",
      *     summary="Delete a service",
      *     tags={"User Services"},
      *     security={{"sanctum":{}}},
@@ -402,7 +402,7 @@ class UserServiceApiController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/service-categories",
+     *     path="/api/v1/service-categories",
      *     summary="Get service categories",
      *     tags={"User Services"},
      *     @OA\Response(

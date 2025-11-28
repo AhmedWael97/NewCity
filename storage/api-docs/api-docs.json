@@ -2670,13 +2670,13 @@
                 }
             }
         },
-        "/api/my-services": {
+        "/api/v1/my-services": {
             "get": {
                 "tags": [
                     "User Services"
                 ],
                 "summary": "Get current user's services",
-                "operationId": "ee60cf3f265134ff4d29e85d64b99d8d",
+                "operationId": "6c56912e5d86c0ed55011fe7bd5f9408",
                 "responses": {
                     "200": {
                         "description": "User's services",
@@ -2708,7 +2708,7 @@
                     "User Services"
                 ],
                 "summary": "Create a new service",
-                "operationId": "5022dd083188a517fd15ebc586428125",
+                "operationId": "473ed08e76800c2d39fcc6f5f84a1b3f",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -2804,13 +2804,13 @@
                 ]
             }
         },
-        "/api/my-services/{id}": {
+        "/api/v1/my-services/{id}": {
             "put": {
                 "tags": [
                     "User Services"
                 ],
                 "summary": "Update a service",
-                "operationId": "f1b639e75a9c9091c49621a14b29d0c3",
+                "operationId": "c0a707f338646032d328f6a71aafcdab",
                 "parameters": [
                     {
                         "name": "id",
@@ -2838,7 +2838,7 @@
                     "User Services"
                 ],
                 "summary": "Delete a service",
-                "operationId": "33f805f7580960d898d7de78718a4892",
+                "operationId": "bbd496aa9c1771da9f9d742d7059a3fe",
                 "parameters": [
                     {
                         "name": "id",
@@ -2910,13 +2910,13 @@
                 }
             }
         },
-        "/api/service-categories": {
+        "/api/v1/service-categories": {
             "get": {
                 "tags": [
                     "User Services"
                 ],
                 "summary": "Get service categories",
-                "operationId": "43ddb5296b1d4169746f368d4bdaf9e7",
+                "operationId": "5d803e50b81a089cc7decaf3547d59ec",
                 "responses": {
                     "200": {
                         "description": "Service categories list",
