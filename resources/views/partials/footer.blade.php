@@ -6,15 +6,16 @@
                 <p>منصة لاستكشاف المتاجر والخدمات المحلية بكل سهولة.</p>
             </div>
             <div>
-                <h3>روابط</h3>
+                <h3>روابط سريعة</h3>
                 <a href="{{ url('/') }}">الرئيسية</a><br>
-                <a href="#features">الميزات</a><br>
-                <a href="#cities">المدن</a>
+                <a href="{{ route('about') }}">عن التطبيق</a><br>
+                <a href="{{ route('contact') }}">اتصل بنا</a>
             </div>
             <div>
-                <h3>للمتاجر</h3>
-                <a href="#">تسجيل متجر</a><br>
-                <a href="#">لوحة التاجر</a>
+                <h3>الشروط والسياسات</h3>
+                <a href="{{ route('terms-of-use') }}">شروط الاستخدام</a><br>
+                <a href="{{ route('terms-and-conditions') }}">الشروط والأحكام</a><br>
+                <a href="{{ route('privacy-policy') }}">سياسة الخصوصية</a>
             </div>
             <div>
                 <h3>تواصل</h3>

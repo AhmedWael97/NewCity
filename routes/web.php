@@ -260,3 +260,27 @@ Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
 // News Routes
 Route::get('/news', [NewsController::class, 'index'])->name('news.index');
 Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');
+
+// Legal and Info Pages
+Route::get('/terms-of-use', function () {
+    return view('terms-of-use');
+})->name('terms-of-use');
+
+Route::get('/terms-and-conditions', function () {
+    return view('terms-and-conditions');
+})->name('terms-and-conditions');
+
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy-policy');
+
+Route::get('/about', function () {
+    return view('about');
+})->name('about');
+
+// Contact and Support
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
+
+Route::post('/tickets/store', [App\Http\Controllers\SupportTicketController::class, 'store'])->name('tickets.store');

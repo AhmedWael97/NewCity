@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('whatsapp')->nullable();
             $table->string('email')->nullable();
             $table->text('address')->nullable();
-            $table->string('google_maps_url')->nullable();
+            $table->text('google_maps_url')->nullable();
             $table->decimal('latitude', 10, 8)->nullable();
             $table->decimal('longitude', 11, 8)->nullable();
             

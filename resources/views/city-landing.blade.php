@@ -46,10 +46,16 @@
                                 </div>
                             </div>
                         </div>
-                        <button onclick="showCityModal()" class="btn btn-light btn-lg rounded-pill px-4 shadow-sm">
-                            <i class="fas fa-exchange-alt me-2"></i>
-                            تغيير المدينة
-                        </button>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('contact') }}" class="btn btn-info btn-lg rounded-pill px-4 shadow-sm">
+                                <i class="fas fa-envelope me-2"></i>
+                                اتصل بنا
+                            </a>
+                            <button onclick="showCityModal()" class="btn btn-light btn-lg rounded-pill px-4 shadow-sm">
+                                <i class="fas fa-exchange-alt me-2"></i>
+                                تغيير المدينة
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -603,7 +609,7 @@
                     </div>
 
                     {{-- Background Decoration --}}
-                    <div class="position-absolute top-0 end-0 opacity-10">
+                    <div class="position-absolute top-0 end-0 opacity-10" style="opacity: 0.1;">
                         <i class="fas fa-tools" style="font-size: 15rem;"></i>
                     </div>
                 </div>
