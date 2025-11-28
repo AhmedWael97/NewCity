@@ -1040,11 +1040,6 @@
 
             .shop-image-modern img {
                 object-fit: cover;
-                transition: transform 0.3s ease;
-            }
-
-            .shop-card-modern:hover .shop-image-modern img {
-                transform: scale(1.05);
             }
 
             /* Category Section Headers */
