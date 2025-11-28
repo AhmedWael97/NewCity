@@ -12,6 +12,65 @@
         </a>
     </div>
 
+    <!-- Display All Validation Errors -->
+    @if ($errors->any())
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> يرجى تصحيح الأخطاء التالية:</h5>
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
+    <!-- Display Success Message -->
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> {{ session('success') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
+    <!-- Display Error Message -->
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> {{ session('error') }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
+    <!-- Warning: No Active Devices -->
+    @if(isset($activeDevicesCount) && $activeDevicesCount == 0)
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> تحذير: لا توجد أجهزة نشطة</h5>
+            <p class="mb-0">
+                لا يوجد حالياً أي أجهزة مسجلة لاستقبال الإشعارات. سيتم حفظ الإشعار ولكن لن يتم إرساله حتى يقوم المستخدمون بتسجيل أجهزتهم.
+            </p>
+            <hr>
+            <p class="mb-0 small">
+                <strong>للمساعدة:</strong> تأكد من أن المستخدمين قد قاموا بتسجيل الدخول وسمحوا بإرسال الإشعارات في متصفحاتهم.
+            </p>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @elseif(isset($activeDevicesCount))
+        <div class="alert alert-info alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle"></i> <strong>{{ $activeDevicesCount }}</strong> جهاز نشط مسجل لاستقبال الإشعارات
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    @endif
+
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow mb-4">
@@ -76,8 +135,17 @@
 
                         <div class="form-group" id="target_ids_group" style="display: none;">
                             <label for="target_ids">معرّفات الفئة المستهدفة</label>
-                            <input type="text" class="form-control" id="target_ids" name="target_ids[]" 
+                            <input type="text" class="form-control @error('target_ids') is-invalid @enderror" 
+                                   id="target_ids_input" name="target_ids_input" 
+                                   value="{{ old('target_ids_input') }}"
                                    placeholder="أدخل المعرفات مفصولة بفاصلة (مثال: 1,2,3)">
+                            <input type="hidden" id="target_ids_hidden" name="target_ids">
+                            @error('target_ids')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
+                            @error('target_ids.*')
+                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                            @enderror
                             <small class="form-text text-muted">
                                 أدخل معرفات المدن أو المستخدمين المستهدفين
                             </small>
@@ -204,8 +272,26 @@ $(document).ready(function() {
     $('#target').change(function() {
         if($(this).val() === 'all') {
             $('#target_ids_group').hide();
+            $('#target_ids_input').val('');
+            $('#target_ids_hidden').val('');
         } else {
             $('#target_ids_group').show();
+        }
+    }).trigger('change');
+
+    // Convert comma-separated IDs to JSON array before form submission
+    $('form').on('submit', function(e) {
+        const targetIdsInput = $('#target_ids_input').val().trim();
+        if(targetIdsInput) {
+            // Split by comma and convert to integers
+            const idsArray = targetIdsInput.split(',')
+                .map(id => parseInt(id.trim()))
+                .filter(id => !isNaN(id) && id > 0);
+            
+            // Set as JSON array
+            $('#target_ids_hidden').val(JSON.stringify(idsArray));
+        } else {
+            $('#target_ids_hidden').val('');
         }
     });
 

@@ -48,6 +48,9 @@ Route::prefix('v1')->group(function () {
     // User tracking (public endpoint - no auth required)
     Route::post('/track', [App\Http\Controllers\Api\TrackingController::class, 'track']);
 
+    // Guest device token registration (public endpoint - no auth required)
+    Route::post('/guest-device-tokens', [App\Http\Controllers\Api\DeviceTokenController::class, 'storeGuest']);
+
     // Advertisement tracking (public endpoints)
     Route::prefix('ads')->group(function () {
         Route::post('/impression', [App\Http\Controllers\Admin\AdvertisementController::class, 'recordImpression']);
@@ -126,6 +129,16 @@ Route::prefix('v1')->group(function () {
             Route::put('/{shop}', [App\Http\Controllers\Api\MyShopController::class, 'update']);
             Route::delete('/{shop}', [App\Http\Controllers\Api\MyShopController::class, 'destroy']);
         });
+
+        // Device tokens for push notifications
+        Route::prefix('device-tokens')->group(function () {
+            Route::get('/', [App\Http\Controllers\Api\DeviceTokenController::class, 'index']);
+            Route::post('/', [App\Http\Controllers\Api\DeviceTokenController::class, 'store']);
+            Route::delete('/', [App\Http\Controllers\Api\DeviceTokenController::class, 'destroy']);
+        });
+
+        // Notification actions
+        Route::post('/notifications/opened', [App\Http\Controllers\Api\NotificationController::class, 'opened']);
 
         // Admin routes
         Route::middleware('role:admin,super_admin')->prefix('admin')->name('api.admin.')->group(function () {

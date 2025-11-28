@@ -6,18 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Models\AppSetting;
 use App\Models\PushNotification;
 use App\Models\DeviceToken;
-use App\Services\FirebaseNotificationService;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AdminAppSettingsController extends Controller
 {
-    protected $firebaseService;
+    protected $notificationService;
 
-    public function __construct(FirebaseNotificationService $firebaseService)
+    public function __construct(NotificationService $notificationService)
     {
-        $this->firebaseService = $firebaseService;
+        $this->notificationService = $notificationService;
     }
 
     /**
@@ -140,7 +140,9 @@ class AdminAppSettingsController extends Controller
      */
     public function createNotification()
     {
-        return view('admin.app-settings.create-notification');
+        $activeDevicesCount = DeviceToken::where('is_active', true)->count();
+        
+        return view('admin.app-settings.create-notification', compact('activeDevicesCount'));
     }
 
     /**
@@ -185,11 +187,22 @@ class AdminAppSettingsController extends Controller
 
         // Send immediately if requested
         if ($request->boolean('send_now') && !$validated['scheduled_at']) {
-            $this->firebaseService->sendPushNotification($notification);
+            $result = $this->notificationService->sendPushNotification($notification);
+            
+            if ($result['success'] && $result['success_count'] > 0) {
+                return redirect()->route('admin.app-settings.notifications')
+                    ->with('success', "تم إرسال الإشعار بنجاح إلى {$result['success_count']} جهاز");
+            } elseif ($result['sent'] > 0 && $result['failure_count'] > 0) {
+                return redirect()->route('admin.app-settings.notifications')
+                    ->with('warning', "تم إرسال الإشعار إلى {$result['success_count']} جهاز، فشل {$result['failure_count']}");
+            } else {
+                return redirect()->route('admin.app-settings.notifications')
+                    ->with('error', 'فشل إرسال الإشعار: ' . ($result['message'] ?? 'لا توجد أجهزة نشطة مسجلة'));
+            }
         }
 
         return redirect()->route('admin.app-settings.notifications')
-            ->with('success', 'Notification created successfully');
+            ->with('success', 'تم إنشاء الإشعار بنجاح');
     }
 
     /**
@@ -201,7 +214,7 @@ class AdminAppSettingsController extends Controller
             return back()->with('error', 'Only pending notifications can be sent');
         }
 
-        $this->firebaseService->sendPushNotification($notification);
+        $this->notificationService->sendPushNotification($notification);
 
         return back()->with('success', 'Notification sent successfully');
     }
@@ -251,19 +264,11 @@ class AdminAppSettingsController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'body' => 'required|string|max:1000',
-            'device_token' => 'required|string',
         ]);
 
-        $result = $this->firebaseService->sendToTokens(
-            [$validated['device_token']],
-            [
-                'title' => $validated['title'],
-                'body' => $validated['body'],
-            ],
-            ['type' => 'test']
-        );
+        $result = $this->notificationService->sendTestNotification(auth('admin')->id());
 
-        if ($result['success'] > 0) {
+        if ($result['success']) {
             return response()->json(['success' => true, 'message' => 'Test notification sent successfully']);
         }
 
