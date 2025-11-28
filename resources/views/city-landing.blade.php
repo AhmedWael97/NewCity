@@ -550,6 +550,71 @@
             </div>
         </section>
 
+        {{-- Latest News Section --}}
+        @if(isset($latestNews) && $latestNews->count() > 0)
+        <section class="latest-news py-5 bg-light">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div>
+                        <h2 class="h3 fw-bold mb-2">
+                            <i class="fas fa-newspaper text-primary me-2"></i>
+                            آخر الأخبار
+                        </h2>
+                        <p class="text-muted mb-0">تابع أحدث الأخبار والمقالات</p>
+                    </div>
+                    <a href="{{ route('news.index') }}" class="btn btn-outline-primary rounded-pill">
+                        عرض جميع الأخبار
+                        <i class="fas fa-arrow-left ms-1"></i>
+                    </a>
+                </div>
+
+                <div class="row g-4">
+                    @foreach($latestNews as $newsItem)
+                    <div class="col-md-6 col-lg-3">
+                        <article class="news-card-modern bg-white rounded-3 shadow-sm overflow-hidden h-100">
+                            <div class="position-relative">
+                                <img src="{{ $newsItem->thumbnail_url }}" 
+                                     alt="{{ $newsItem->title }}" 
+                                     class="w-100" 
+                                     style="height: 200px; object-fit: cover;">
+                                @if($newsItem->category)
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-white text-primary">
+                                    {{ $newsItem->category->name }}
+                                </span>
+                                @endif
+                            </div>
+                            <div class="p-3">
+                                <div class="d-flex align-items-center text-muted small mb-2">
+                                    <i class="far fa-calendar me-1"></i>
+                                    {{ $newsItem->published_at->format('Y-m-d') }}
+                                    <span class="mx-2">•</span>
+                                    <i class="far fa-eye me-1"></i>
+                                    {{ number_format($newsItem->views_count) }}
+                                </div>
+                                <h3 class="h6 mb-2">
+                                    <a href="{{ route('news.show', $newsItem->slug) }}" 
+                                       class="text-dark text-decoration-none stretched-link">
+                                        {{ Str::limit($newsItem->title, 60) }}
+                                    </a>
+                                </h3>
+                                <p class="text-muted small mb-2">
+                                    {{ Str::limit($newsItem->description, 80) }}
+                                </p>
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <span class="text-primary small">
+                                        <i class="far fa-clock me-1"></i>
+                                        {{ $newsItem->reading_time }} دقائق
+                                    </span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+        @endif
+
         {{-- Call to Action Section --}}
         <section class="cta-section py-5 bg-gradient-primary text-white">
             <div class="container">

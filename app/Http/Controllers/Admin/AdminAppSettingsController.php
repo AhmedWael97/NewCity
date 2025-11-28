@@ -154,7 +154,7 @@ class AdminAppSettingsController extends Controller
             'title' => 'required|string|max:255',
             'body' => 'required|string|max:1000',
             'type' => 'required|in:general,alert,promo,update',
-            'target' => 'required|in:all,specific_users,city',
+            'target' => 'required|in:all,users,cities,shop_owners,regular_users',
             'target_ids' => 'nullable|array',
             'target_ids.*' => 'integer',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',

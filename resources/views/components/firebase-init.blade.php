@@ -116,6 +116,9 @@
 
     // Save token to server
     async function saveTokenToServer(token) {
+        console.log('💾 Attempting to save token to server...');
+        console.log('📝 Token:', token);
+        
         try {
             const headers = {
                 'Content-Type': 'application/json',
@@ -124,13 +127,19 @@
             
             @auth
             // Authenticated user - use bearer token
+            console.log('👤 User authenticated - using auth endpoint');
             headers['Authorization'] = 'Bearer {{ auth()->user()->createToken("web-fcm")->plainTextToken ?? "" }}';
             const endpoint = '/api/v1/device-tokens';
             @else
             // Guest user - use public endpoint
+            console.log('👤 Guest user - using public endpoint');
             headers['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]')?.content || '';
             const endpoint = '/api/v1/guest-device-tokens';
+            console.log('🔑 CSRF Token:', headers['X-CSRF-TOKEN']);
             @endauth
+            
+            console.log('🌐 Endpoint:', endpoint);
+            console.log('📤 Sending request...');
             
             const response = await fetch(endpoint, {
                 method: 'POST',
@@ -143,7 +152,10 @@
                 })
             });
             
+            console.log('📡 Response status:', response.status);
+            
             const data = await response.json();
+            console.log('📥 Response data:', data);
             
             if (data.success) {
                 console.log('✅ Device token registered successfully');
@@ -155,42 +167,88 @@
                 return true;
             } else {
                 console.error('❌ Failed to register token:', data.message);
+                console.error('❌ Errors:', data.errors);
                 return false;
             }
         } catch (error) {
             console.error('❌ Error saving token:', error);
+            console.error('❌ Error details:', error.message);
             return false;
         }
     }
 
     // Request notification permission and get FCM token
     async function requestNotificationPermission() {
+        console.log('🔔 Requesting notification permission...');
+        
         try {
             const permission = await Notification.requestPermission();
+            console.log('🔔 Permission result:', permission);
             
             if (permission === 'granted') {
-                console.log('Notification permission granted.');
+                console.log('✅ Notification permission granted.');
                 
                 // Close modal if open
                 $('#notificationPermissionModal').modal('hide');
                 
+                // Check if service worker is registered
+                if ('serviceWorker' in navigator) {
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    console.log('👷 Service Worker registration:', registration ? 'Found' : 'Not found');
+                    
+                    if (!registration) {
+                        console.log('👷 Registering service worker...');
+                        await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                        console.log('✅ Service worker registered');
+                    }
+                }
+                
                 // Get FCM token
+                const vapidKey = '{{ config('services.firebase.web.vapid_key') ?? '' }}';
+                console.log('🔑 VAPID Key configured:', vapidKey ? 'Yes (' + vapidKey.substring(0, 20) + '...)' : 'No');
+                
+                if (!vapidKey) {
+                    console.error('❌ VAPID key is missing! Check your .env file.');
+                    alert('⚠️ إعدادات الإشعارات غير مكتملة. يرجى التواصل مع الدعم الفني.');
+                    return;
+                }
+                
+                console.log('🎫 Getting FCM token...');
                 const token = await getToken(messaging, {
-                    vapidKey: '{{ config('services.firebase.web.vapid_key') ?? '' }}'
+                    vapidKey: vapidKey,
+                    serviceWorkerRegistration: await navigator.serviceWorker.getRegistration()
                 });
                 
                 if (token) {
-                    console.log('FCM Token:', token);
-                    await saveTokenToServer(token);
+                    console.log('✅ FCM Token received:', token);
+                    const saved = await saveTokenToServer(token);
+                    if (saved) {
+                        console.log('🎉 Token saved successfully!');
+                    } else {
+                        console.error('❌ Failed to save token to server');
+                    }
                 } else {
-                    console.log('No registration token available.');
+                    console.error('❌ No registration token available. Request might be blocked.');
+                    console.log('💡 Troubleshooting:');
+                    console.log('1. Check if notifications are blocked in browser settings');
+                    console.log('2. Check if service worker is properly registered');
+                    console.log('3. Check if VAPID key is correct');
                 }
             } else if (permission === 'denied') {
-                console.log('Notification permission denied.');
+                console.log('❌ Notification permission denied.');
                 localStorage.setItem('notification_permission_denied', 'true');
+                showPermissionDeniedHelp();
+            } else {
+                console.log('⚠️ Notification permission dismissed.');
             }
         } catch (error) {
-            console.debug('FCM initialization error:', error.message);
+            console.error('❌ FCM initialization error:', error);
+            console.error('❌ Error name:', error.name);
+            console.error('❌ Error message:', error.message);
+            console.error('❌ Error stack:', error.stack);
+            
+            // Show user-friendly error
+            alert('⚠️ حدث خطأ أثناء تفعيل الإشعارات: ' + error.message);
         }
     }
 
@@ -246,6 +304,19 @@
 
         console.log('✅ Should show notification prompt! Permission status:', Notification.permission);
         return Notification.permission === 'default';
+    }
+
+    // Register service worker first
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/firebase-messaging-sw.js')
+            .then((registration) => {
+                console.log('✅ Service Worker registered:', registration);
+            })
+            .catch((error) => {
+                console.error('❌ Service Worker registration failed:', error);
+            });
+    } else {
+        console.error('❌ Service Workers not supported in this browser');
     }
 
     // Show modal after a short delay

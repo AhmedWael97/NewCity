@@ -122,9 +122,11 @@
                                     <label for="target">الفئة المستهدفة <span class="text-danger">*</span></label>
                                     <select class="form-control @error('target') is-invalid @enderror" 
                                             id="target" name="target" required>
-                                        <option value="all" {{ old('target') === 'all' ? 'selected' : '' }}>جميع المستخدمين</option>
-                                        <option value="city" {{ old('target') === 'city' ? 'selected' : '' }}>مدينة محددة</option>
-                                        <option value="specific_users" {{ old('target') === 'specific_users' ? 'selected' : '' }}>مستخدمون محددون</option>
+                                        <option value="all" {{ old('target') === 'all' ? 'selected' : '' }}>جميع المستخدمين (بما في ذلك الزوار)</option>
+                                        <option value="users" {{ old('target') === 'users' ? 'selected' : '' }}>مستخدمون محددون</option>
+                                        <option value="cities" {{ old('target') === 'cities' ? 'selected' : '' }}>مدينة محددة</option>
+                                        <option value="shop_owners" {{ old('target') === 'shop_owners' ? 'selected' : '' }}>أصحاب المتاجر فقط</option>
+                                        <option value="regular_users" {{ old('target') === 'regular_users' ? 'selected' : '' }}>المستخدمين العاديين فقط</option>
                                     </select>
                                     @error('target')
                                         <div class="invalid-feedback">{{ $message }}</div>

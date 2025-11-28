@@ -12,6 +12,7 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Auth\ShopOwnerLoginController;
+use App\Http\Controllers\NewsController;
 
 //Include debug routes
 require __DIR__.'/debug.php';
@@ -247,3 +248,7 @@ Route::get('/shop/{shop}/ratings', [RatingController::class, 'index'])->name('sh
 // Enhanced SEO Routes
 Route::get('/sitemap.xml', [SitemapController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SitemapController::class, 'robots'])->name('robots');
+
+// News Routes
+Route::get('/news', [NewsController::class, 'index'])->name('news.index');
+Route::get('/news/{slug}', [NewsController::class, 'show'])->name('news.show');

@@ -831,6 +831,13 @@
                         <span>المفضلات</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.news.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.news.index') }}">
+                        <i class="fas fa-newspaper"></i>
+                        <span>الأخبار</span>
+                    </a>
+                </li>
 
                 {{-- Reports (Temporarily disabled - controller not implemented)
                 <!-- Reports -->

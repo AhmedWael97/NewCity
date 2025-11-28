@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\Admin\AdminLogsController;
 use App\Http\Controllers\Admin\AdvertisementController;
 use App\Http\Controllers\Admin\CityStyleController;
+use App\Http\Controllers\Admin\AdminNewsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -237,5 +238,16 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
         // Test Notification
         Route::post('/test-notification', [App\Http\Controllers\Admin\AdminAppSettingsController::class, 'testNotification'])->name('test-notification');
     });
+    
+    // News Management
+    Route::resource('news', AdminNewsController::class);
+    
+    // News Categories
+    Route::get('news-categories', [AdminNewsController::class, 'categories'])->name('news.categories');
+    Route::get('news-categories/create', [AdminNewsController::class, 'createCategory'])->name('news.categories.create');
+    Route::post('news-categories', [AdminNewsController::class, 'storeCategory'])->name('news.categories.store');
+    Route::get('news-categories/{category}/edit', [AdminNewsController::class, 'editCategory'])->name('news.categories.edit');
+    Route::put('news-categories/{category}', [AdminNewsController::class, 'updateCategory'])->name('news.categories.update');
+    Route::delete('news-categories/{category}', [AdminNewsController::class, 'destroyCategory'])->name('news.categories.destroy');
     
 });

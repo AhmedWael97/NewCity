@@ -50,6 +50,17 @@
                         <span class="city-change-arrow">⌄</span>
                     </div>
                 @endif
+
+                <!-- News Link with Counter -->
+                @php
+                    $newsCount = \App\Models\News::where('is_active', true)->count();
+                @endphp
+                <a href="{{ route('news.index') }}" class="nav-link news-link" title="الأخبار">
+                    📰 الأخبار
+                    @if($newsCount > 0)
+                        <span class="badge bg-primary " style="margin-left: 5px; margin-right: 5px">{{ $newsCount }}</span>
+                    @endif
+                </a>
                 
                 @if (Route::has('login'))
                     @auth
@@ -77,6 +88,10 @@
             <div class="categories-menu">
                 <a href="{{ url('/') }}" class="category-nav-item {{ request()->routeIs('home') ? 'active' : '' }}">
                     🏠 الرئيسية
+                </a>
+                
+                <a href="{{ route('news.index') }}" class="category-nav-item {{ request()->routeIs('news.*') ? 'active' : '' }}">
+                    📰 الأخبار
                 </a>
                 
                 <!-- Debug: Show categories count -->

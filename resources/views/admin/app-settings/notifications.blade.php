@@ -190,8 +190,10 @@
                                     @php
                                         $targetLabels = [
                                             'all' => 'الكل',
-                                            'specific_users' => 'مستخدمون محددون',
-                                            'city' => 'مدينة محددة',
+                                            'users' => 'مستخدمون محددون',
+                                            'cities' => 'مدن محددة',
+                                            'shop_owners' => 'أصحاب المتاجر',
+                                            'regular_users' => 'مستخدمون عاديون',
                                         ];
                                     @endphp
                                     {{ $targetLabels[$notification->target] ?? $notification->target }}

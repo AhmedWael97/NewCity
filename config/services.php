@@ -37,6 +37,7 @@ return [
 
     'firebase' => [
         'server_key' => env('FIREBASE_SERVER_KEY'),
+        'credentials' => env('FIREBASE_CREDENTIALS'),
         'enabled' => env('FIREBASE_ENABLED', false),
         'web' => [
             'api_key' => env('FIREBASE_API_KEY'),

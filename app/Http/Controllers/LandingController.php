@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\City;
 use App\Models\Shop;
 use App\Models\Category;
+use App\Models\News;
 use App\Services\CityDataService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -474,6 +475,19 @@ class LandingController extends Controller
             'canonical' => route('city.landing', ['city' => $city->slug]),
         ];
 
+        // Get latest news (4 items, prioritize city-specific news)
+        $latestNews = Cache::remember("city_latest_news_{$city->slug}", 1800, function () use ($city) {
+            return News::with(['category'])
+                ->active()
+                ->where(function($query) use ($city) {
+                    $query->where('city_id', $city->id)
+                          ->orWhereNull('city_id');
+                })
+                ->latest()
+                ->limit(4)
+                ->get();
+        });
+
         return view('city-landing', compact(
             'city',
             'cityContext',
@@ -482,7 +496,8 @@ class LandingController extends Controller
             'categoriesWithShops',
             'serviceCategoriesWithServices',
             'cities',
-            'seoData'
+            'seoData',
+            'latestNews'
         ));
     }
 
