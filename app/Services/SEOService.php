@@ -39,12 +39,12 @@ class SEOService
     private function homepageSEO($data)
     {
         return [
-            'title' => 'دليل المدن - اكتشف أفضل المتاجر والخدمات في مدينتك',
-            'description' => 'دليل شامل للمتاجر والخدمات في جميع المدن. ابحث عن المتاجر، المطاعم، والخدمات القريبة منك بسهولة.',
-            'keywords' => 'دليل المدن, متاجر, خدمات, مطاعم, تسوق, دليل تجاري',
+            'title' => 'SENÚ سنو - اكتشف أفضل المتاجر والخدمات في مدينتك',
+            'description' => 'سنو - دليل شامل للمتاجر والخدمات في جميع المدن. ابحث عن المتاجر، المطاعم، والخدمات القريبة منك بسهولة.',
+            'keywords' => 'سنو, SENÚ, متاجر, خدمات, مطاعم, تسوق, دليل تجاري',
             'canonical' => url('/'),
-            'og_title' => 'دليل المدن - اكتشف مدينتك',
-            'og_description' => 'دليل شامل للمتاجر والخدمات في جميع المدن',
+            'og_title' => 'SENÚ سنو - اكتشف مدينتك',
+            'og_description' => 'سنو - دليل شامل للمتاجر والخدمات في جميع المدن',
             'og_image' => asset('images/og-homepage.jpg'),
             'og_type' => 'website',
             'schema' => $this->generateWebsiteSchema(),
@@ -131,12 +131,12 @@ class SEOService
     private function defaultSEO($data)
     {
         return [
-            'title' => 'دليل المدن - اكتشف مدينتك',
-            'description' => 'دليل شامل للمتاجر والخدمات في جميع المدن',
-            'keywords' => 'دليل, متاجر, خدمات, مدن',
+            'title' => 'SENÚ سنو - اكتشف مدينتك',
+            'description' => 'سنو - دليل شامل للمتاجر والخدمات في جميع المدن',
+            'keywords' => 'سنو, SENÚ, متاجر, خدمات, مدن',
             'canonical' => url()->current(),
-            'og_title' => 'دليل المدن',
-            'og_description' => 'دليل شامل للمتاجر والخدمات',
+            'og_title' => 'SENÚ سنو',
+            'og_description' => 'سنو - دليل شامل للمتاجر والخدمات',
             'og_image' => asset('images/og-default.jpg'),
             'og_type' => 'website',
             'robots' => 'index,follow',
@@ -269,19 +269,55 @@ class SEOService
             'lastmod' => now()->toISOString()
         ];
         
+        // Static Pages
+        $urls[] = [
+            'url' => url('/about'),
+            'changefreq' => 'monthly',
+            'priority' => '0.8',
+            'lastmod' => now()->toISOString()
+        ];
+        
+        $urls[] = [
+            'url' => url('/contact'),
+            'changefreq' => 'monthly',
+            'priority' => '0.7',
+            'lastmod' => now()->toISOString()
+        ];
+        
+        $urls[] = [
+            'url' => url('/terms-of-use'),
+            'changefreq' => 'monthly',
+            'priority' => '0.5',
+            'lastmod' => now()->toISOString()
+        ];
+        
+        $urls[] = [
+            'url' => url('/terms-and-conditions'),
+            'changefreq' => 'monthly',
+            'priority' => '0.5',
+            'lastmod' => now()->toISOString()
+        ];
+        
+        $urls[] = [
+            'url' => url('/privacy-policy'),
+            'changefreq' => 'monthly',
+            'priority' => '0.5',
+            'lastmod' => now()->toISOString()
+        ];
+        
         // Cities
-        $cities = \App\Models\City::all();
+        $cities = \App\Models\City::where('is_active', true)->get();
         foreach ($cities as $city) {
             $urls[] = [
-                'url' => url("/city/{$city->slug}"),
-                'changefreq' => 'weekly',
+                'url' => url("/city-landing/{$city->slug}"),
+                'changefreq' => 'daily',
                 'priority' => '0.9',
                 'lastmod' => $city->updated_at->toISOString()
             ];
         }
         
         // Categories
-        $categories = \App\Models\Category::all();
+        $categories = \App\Models\Category::where('is_active', true)->whereNull('parent_id')->get();
         foreach ($categories as $category) {
             $urls[] = [
                 'url' => url("/category/{$category->slug}"),
@@ -292,13 +328,28 @@ class SEOService
         }
         
         // Shops
-        $shops = \App\Models\Shop::where('is_active', true)->get();
+        $shops = \App\Models\Shop::where('is_active', true)
+            ->where('is_verified', true)
+            ->get();
         foreach ($shops as $shop) {
             $urls[] = [
                 'url' => url("/shop/{$shop->slug}"),
                 'changefreq' => 'weekly',
                 'priority' => '0.7',
                 'lastmod' => $shop->updated_at->toISOString()
+            ];
+        }
+        
+        // User Services (Public)
+        $services = \App\Models\UserService::where('status', 'active')
+            ->where('is_verified', true)
+            ->get();
+        foreach ($services as $service) {
+            $urls[] = [
+                'url' => url("/user/services/{$service->id}"),
+                'changefreq' => 'weekly',
+                'priority' => '0.6',
+                'lastmod' => $service->updated_at->toISOString()
             ];
         }
         
@@ -311,11 +362,19 @@ class SEOService
     public function generateRobotsTxt()
     {
         $content = "User-agent: *\n";
-        $content .= "Allow: /\n";
         $content .= "Disallow: /admin/\n";
+        $content .= "Disallow: /dashboard/\n";
         $content .= "Disallow: /api/\n";
-        $content .= "Disallow: */search\n";
-        $content .= "Disallow: */ajax\n";
+        $content .= "Disallow: /login\n";
+        $content .= "Disallow: /register\n";
+        $content .= "Disallow: /search\n";
+        $content .= "Disallow: /favorites/\n";
+        $content .= "Disallow: /profile\n";
+        $content .= "\n";
+        $content .= "Allow: /css/\n";
+        $content .= "Allow: /js/\n";
+        $content .= "Allow: /images/\n";
+        $content .= "Allow: /storage/\n";
         $content .= "\n";
         $content .= "Sitemap: " . url('/sitemap.xml') . "\n";
         

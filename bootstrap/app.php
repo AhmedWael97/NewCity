@@ -42,6 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\CitySelection::class,
             \App\Http\Middleware\TrackWebsiteVisit::class,
+            \App\Http\Middleware\OptimizeResponse::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

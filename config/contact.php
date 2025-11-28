@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'company' => env('COMPANY_NAME', 'اكتشف المدن مصر'),
+    'company' => env('COMPANY_NAME', 'SENÚ سنو'),
     'email' => env('CONTACT_EMAIL', 'info@discovercities.eg'),
     'phone' => env('CONTACT_PHONE', '+20 2 1234 5678'),
     'phone_display' => env('CONTACT_PHONE_DISPLAY', '+20 2 1234 5678'),

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="footer-content">
             <div>
-                <h3>اكتشف المدن</h3>
+                <h3>SENÚ سنو</h3>
                 <p>منصة لاستكشاف المتاجر والخدمات المحلية بكل سهولة.</p>
             </div>
             <div>

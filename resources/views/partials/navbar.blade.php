@@ -209,7 +209,12 @@
                 @foreach($navCategories as $category)
                     <div class="mobile-category-group">
                         <a href="{{ route('category.shops', $category->slug) }}" class="mobile-category-main">
-                            {{ $category->icon }} {{ $category->name }}
+                            @if(str_contains($category->icon, 'fas') || str_contains($category->icon, 'far') || str_contains($category->icon, 'fab'))
+                                <i class="{{ $category->icon }}"></i>
+                            @else
+                                {{ $category->icon }}
+                            @endif
+                            {{ $category->name }}
                         </a>
                         @if($category->children->count() > 0)
                             <div class="mobile-subcategories">

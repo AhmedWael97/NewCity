@@ -26,7 +26,13 @@
 
     @stack('head')
 
-    <!-- Fonts -->
+    <!-- DNS Prefetch & Preconnect for faster loading -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="//code.jquery.com">
+    
+    <!-- Fonts with display=swap for better performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;500;600;700;800;900&display=swap"
@@ -35,8 +41,10 @@
     <!-- Bootstrap 5 RTL CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font Awesome with integrity check -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" 
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
@@ -60,8 +68,38 @@
 
     <!-- User Tracking Script -->
     <script src="{{ asset('js/user-tracking.js') }}" defer></script>
+    
+    <!-- Performance Optimization Script -->
+    <script src="{{ asset('js/performance.js') }}" defer></script>
 
     @stack('styles')
+    
+    <style>
+        /* Critical CSS for above-the-fold content */
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Lazy loading placeholder */
+        img[loading="lazy"] {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Optimize font rendering */
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+    </style>
 </head>
 
 <body>
@@ -384,16 +422,28 @@
     <!-- Firebase Initialization -->
     <x-firebase-init />
 
-    <!-- Register Service Worker -->
+    <!-- Register Service Workers -->
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/firebase-messaging-sw.js')
-                .then(function(registration) {
-                    console.log('Service Worker registered successfully:', registration);
-                })
-                .catch(function(error) {
-                    console.error('Service Worker registration failed:', error);
-                });
+            window.addEventListener('load', function() {
+                // Register Firebase messaging service worker
+                navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                    .then(function(registration) {
+                        console.log('Firebase Service Worker registered successfully:', registration);
+                    })
+                    .catch(function(error) {
+                        console.error('Firebase Service Worker registration failed:', error);
+                    });
+                
+                // Register caching service worker
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(function(registration) {
+                        console.log('Caching Service Worker registered successfully:', registration);
+                    })
+                    .catch(function(error) {
+                        console.error('Caching Service Worker registration failed:', error);
+                    });
+            });
         }
     </script>
 
