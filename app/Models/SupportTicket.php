@@ -56,6 +56,12 @@ class SupportTicket extends Model
         return $this->belongsTo(User::class, 'assigned_admin_id');
     }
 
+    // Alias for assignedAdmin (for backward compatibility)
+    public function assignedTo(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'assigned_admin_id');
+    }
+
     public function replies(): HasMany
     {
         return $this->hasMany(TicketReply::class, 'ticket_id');
