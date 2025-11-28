@@ -780,6 +780,13 @@
                         <span>خريطة المتاجر</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.user-services.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.user-services.index') }}">
+                        <i class="fas fa-tools"></i>
+                        <span>خدمات المستخدمين</span>
+                    </a>
+                </li>
 
                 <!-- Content Management -->
                 <div class="sidebar-heading">إدارة المحتوى</div>

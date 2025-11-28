@@ -197,8 +197,9 @@
                                 <th class="d-none-sm">التقييم</th>
                                 <th>الحالة</th>
                                 <th class="d-none-md">التحقق</th>
-                                <th class="d-none-lg">مميز</th>
+                               
                                 <th class="d-none-sm">تاريخ الإنشاء</th>
+                                <th style="width: 50px;">إبراز</th>
                                 <th style="width: 140px;">الإجراءات</th>
                             </tr>
                         </thead>
@@ -308,20 +309,23 @@
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="d-none-lg">
-                                        @if($shop->is_featured)
-                                            <span class="badge bg-primary text-white">
-                                                <i class="fas fa-star"></i> مميز
-                                            </span>
-                                        @else
-                                            <span class="badge bg-light text-dark">عادي</span>
-                                        @endif
-                                    </td>
+                                    
                                     <td class="d-none-sm">
                                         <div class="text-truncate" style="max-width: 100px;">
                                             {{ $shop->created_at->format('Y-m-d') }}
                                             <br><small class="text-muted">{{ $shop->created_at->diffForHumans() }}</small>
                                         </div>
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="{{ route('admin.shops.feature', $shop) }}" style="display: inline;">
+                                            @csrf
+                                            <button type="submit" 
+                                                    class="btn btn-sm {{ $shop->is_featured ? 'btn-warning' : 'btn-outline-warning' }}" 
+                                                    title="{{ $shop->is_featured ? 'إلغاء الإبراز' : 'إبراز' }}"
+                                                    onclick="return confirm('هل أنت متأكد؟')">
+                                                <i class="fas fa-star"></i>
+                                            </button>
+                                        </form>
                                     </td>
                                     <td>
                                         <div class="d-flex gap-1 flex-nowrap">
@@ -349,7 +353,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="12" class="text-center">
+                                    <td colspan="13" class="text-center">
                                         <div class="py-4">
                                             <i class="fas fa-store fa-3x text-muted mb-3"></i>
                                             <h5 class="text-muted">لا توجد متاجر</h5>

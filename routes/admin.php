@@ -54,6 +54,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     Route::get('shops/{shop}/featured/edit', [AdminShopController::class, 'editFeatured'])->name('shops.featured.edit');
     Route::put('shops/{shop}/featured', [AdminShopController::class, 'updateFeatured'])->name('shops.featured.update');
     
+    // User Services Management
+    Route::resource('user-services', App\Http\Controllers\Admin\AdminUserServiceController::class);
+    Route::post('user-services/bulk-action', [App\Http\Controllers\Admin\AdminUserServiceController::class, 'bulkAction'])->name('user-services.bulk-action');
+    Route::post('user-services/{userService}/verify', [App\Http\Controllers\Admin\AdminUserServiceController::class, 'verify'])->name('user-services.verify');
+    Route::post('user-services/{userService}/feature', [App\Http\Controllers\Admin\AdminUserServiceController::class, 'toggleFeatured'])->name('user-services.feature');
+    
     // City Management
     Route::resource('cities', AdminCityController::class);
     Route::post('cities/{city}/toggle-active', [AdminCityController::class, 'toggleActive'])->name('cities.toggle-active');

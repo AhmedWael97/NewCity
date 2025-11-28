@@ -145,6 +145,7 @@ class CityController extends Controller
         // Get basic statistics
         $totalShops = $city->shops()->count();
         $activeShops = $city->activeShops()->count();
+        $featuredShops = $city->shops()->where('is_featured', true)->where('is_active', true)->count();
 
         return response()->json([
             'success' => true,
@@ -156,7 +157,7 @@ class CityController extends Controller
                 'statistics' => [
                     'total_shops' => $totalShops,
                     'active_shops' => $activeShops,
-                    'featured_shops_count' => $city->featured_shops_count ?? 0
+                    'featured_shops_count' => $featuredShops
                 ]
             ]
         ]);
