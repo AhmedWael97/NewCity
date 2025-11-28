@@ -432,24 +432,23 @@
     
     <div class="shop-card-content">
         <div class="shop-header">
-            <h3 class="shop-name">
+            <h3 class="shop-name" style="font-size:14px; font-weight: bold">
                 {{ $shop->name }}
-                @php
-                    $isOpen = true;
-                @endphp
-                <span class="open-status {{ $isOpen ? 'open' : 'closed' }}"></span>
+               
             </h3>
-            <div class="shop-rating">
+           
+        </div>
+        
+        <div class="shop-details shop-details-desktop">
+            <div class="detail-item" style="margin-bottom: 15px">  
+                <div class="shop-rating" >
                 <x-rating 
                     :rating="$shop->rating ?? 4.5" 
                     :review-count="$shop->review_count ?? rand(10, 150)"
                     :show-count="true"
                     size="sm"
                 />
-            </div>
-        </div>
-        
-        <div class="shop-details shop-details-desktop">
+            </div></div>
             <div class="detail-item">
                 <i class="detail-icon">📍</i>
                 <span>{{ Str::limit($shop->address ?? ($city?->name ?? $shop->city?->name ?? 'غير محدد'), 30) }}</span>

@@ -409,7 +409,7 @@ class LandingController extends Controller
                 ->withCount('ratings')
                 ->orderByDesc('is_featured')
                 ->orderByDesc('ratings_avg_rating')
-                ->limit(6)
+                ->limit(12)
                 ->get();
         });
         

@@ -408,8 +408,8 @@
                         @if($shops && $shops->count() > 0)
                             {{-- Shops Grid - 3 cards per row on large screens, showing only 6 --}}
                             <div class="row g-4">
-                                @foreach($shops->take(6) as $shop)
-                                    <div class="col-lg-4 col-md-6">
+                                @foreach($shops->take(12) as $shop)
+                                    <div class="col-lg-3 col-md-6">
                                         <x-shop-card :shop="$shop" :city-name="$cityContext['selected_city_name']" />
                                     </div>
                                 @endforeach
