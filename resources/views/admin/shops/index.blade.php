@@ -85,7 +85,7 @@
                             @foreach($cities as $city)
                                 <option value="{{ $city->id }}" 
                                     {{ request('city_id') == $city->id ? 'selected' : '' }}>
-                                    {{ $city->name_ar }}
+                                    {{ $city->name }}
                                 </option>
                             @endforeach
                         </select>
@@ -97,7 +97,7 @@
                             @foreach($categories as $category)
                                 <option value="{{ $category->id }}" 
                                     {{ request('category_id') == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name_ar }}
+                                    {{ $category->name }}
                                 </option>
                             @endforeach
                         </select>
