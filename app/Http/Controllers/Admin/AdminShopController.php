@@ -277,23 +277,65 @@ class AdminShopController extends Controller
      */
     public function destroy(Shop $shop)
     {
-        // Delete associated images
-        if ($shop->image) {
-            Storage::disk('public')->delete($shop->image);
-        }
-        
-        if ($shop->gallery) {
-            $gallery = json_decode($shop->gallery, true);
-            foreach ($gallery as $image) {
-                Storage::disk('public')->delete($image);
+        try {
+            // Delete associated images from storage
+            if ($shop->images && is_array($shop->images)) {
+                foreach ($shop->images as $image) {
+                    Storage::disk('public')->delete($image);
+                }
             }
+            
+            // Delete related records that might block deletion
+            // Delete products and their images
+            if ($shop->products()->exists()) {
+                foreach ($shop->products as $product) {
+                    if ($product->image) {
+                        Storage::disk('public')->delete($product->image);
+                    }
+                    if ($product->images && is_array($product->images)) {
+                        foreach ($product->images as $image) {
+                            Storage::disk('public')->delete($image);
+                        }
+                    }
+                }
+                $shop->products()->delete();
+            }
+            
+            // Delete services and their images
+            if ($shop->services()->exists()) {
+                foreach ($shop->services as $service) {
+                    if ($service->image) {
+                        Storage::disk('public')->delete($service->image);
+                    }
+                    if ($service->images && is_array($service->images)) {
+                        foreach ($service->images as $image) {
+                            Storage::disk('public')->delete($image);
+                        }
+                    }
+                }
+                $shop->services()->delete();
+            }
+            
+            // Delete ratings/reviews
+            $shop->ratings()->delete();
+            
+            // Delete favorites
+            $shop->favoritedByUsers()->detach();
+            
+            // Delete subscriptions
+            $shop->subscriptions()->delete();
+            
+            // Finally delete the shop
+            $shop->delete();
+
+            return redirect()
+                ->route('admin.shops.index')
+                ->with('success', 'تم حذف المتجر بنجاح');
+        } catch (\Exception $e) {
+            return redirect()
+                ->route('admin.shops.index')
+                ->with('error', 'حدث خطأ أثناء حذف المتجر: ' . $e->getMessage());
         }
-
-        $shop->delete();
-
-        return redirect()
-            ->route('admin.shops.index')
-            ->with('success', 'تم حذف المتجر بنجاح');
     }
 
     /**

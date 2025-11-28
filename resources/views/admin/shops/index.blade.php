@@ -157,30 +157,34 @@
             </div>
         </div>
         <div class="card-body">
-            <form id="bulkActionForm" method="POST" action="{{ route('admin.shops.bulk-action') }}">
-                @csrf
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <select name="action" class="form-control" required>
-                            <option value="">اختر العملية</option>
-                            <option value="verify">تحقق</option>
-                            <option value="unverify">إلغاء التحقق</option>
-                            <option value="activate">تفعيل</option>
-                            <option value="deactivate">إلغاء التفعيل</option>
-                            <option value="feature">إبراز</option>
-                            <option value="unfeature">إلغاء الإبراز</option>
-                            <option value="approve">قبول</option>
-                            <option value="reject">رفض</option>
-                            <option value="suspend">تعليق</option>
-                            <option value="delete">حذف</option>
-                        </select>
-                    </div>
-                    <div class="col-md-6">
-                        <button type="submit" class="btn btn-warning">تطبيق على المحدد</button>
-                    </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <select id="bulkAction" class="form-control">
+                        <option value="">اختر العملية</option>
+                        <option value="verify">تحقق</option>
+                        <option value="unverify">إلغاء التحقق</option>
+                        <option value="activate">تفعيل</option>
+                        <option value="deactivate">إلغاء التفعيل</option>
+                        <option value="feature">إبراز</option>
+                        <option value="unfeature">إلغاء الإبراز</option>
+                        <option value="approve">قبول</option>
+                        <option value="reject">رفض</option>
+                        <option value="suspend">تعليق</option>
+                        <option value="delete">حذف</option>
+                    </select>
                 </div>
+                <div class="col-md-6">
+                    <button type="button" class="btn btn-warning" onclick="submitBulkAction()">تطبيق على المحدد</button>
+                </div>
+            </div>
 
-                <div class="table-responsive">
+            <form id="bulkActionForm" method="POST" action="{{ route('admin.shops.bulk-action') }}" style="display: none;">
+                @csrf
+                <input type="hidden" name="action" id="bulkActionInput">
+                <div id="bulkShopsContainer"></div>
+            </form>
+
+            <div class="table-responsive">
                     <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
                         <thead class="thead-light">
                             <tr>
@@ -202,7 +206,7 @@
                             @forelse($shops as $shop)
                                 <tr>
                                     <td>
-                                        <input type="checkbox" name="shops[]" value="{{ $shop->id }}" class="shop-checkbox">
+                                        <input type="checkbox" value="{{ $shop->id }}" class="shop-checkbox">
                                     </td>
                                     <td class="d-none-sm">
                                         @if($shop->images && count($shop->images) > 0)
@@ -357,7 +361,6 @@
                         </tbody>
                     </table>
                 </div>
-            </form>
 
             <!-- Pagination -->
             @if($shops->hasPages())
@@ -397,6 +400,45 @@ document.getElementById('selectAllCheckbox').addEventListener('change', function
         checkbox.checked = isChecked;
     });
 });
+
+function submitBulkAction() {
+    const action = document.getElementById('bulkAction').value;
+    if (!action) {
+        alert('الرجاء اختيار عملية');
+        return;
+    }
+    
+    const checkedBoxes = document.querySelectorAll('.shop-checkbox:checked');
+    if (checkedBoxes.length === 0) {
+        alert('الرجاء اختيار متجر واحد على الأقل');
+        return;
+    }
+    
+    if (!confirm('هل أنت متأكد من تطبيق هذه العملية على ' + checkedBoxes.length + ' متجر؟')) {
+        return;
+    }
+    
+    const form = document.getElementById('bulkActionForm');
+    const container = document.getElementById('bulkShopsContainer');
+    
+    // Clear previous inputs
+    container.innerHTML = '';
+    
+    // Add checked shop IDs
+    checkedBoxes.forEach(checkbox => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'shops[]';
+        input.value = checkbox.value;
+        container.appendChild(input);
+    });
+    
+    // Set action
+    document.getElementById('bulkActionInput').value = action;
+    
+    // Submit form
+    form.submit();
+}
 
 // Auto-submit search form on filter change
 document.querySelectorAll('select[name="city_id"], select[name="category_id"], select[name="status"], select[name="is_verified"]').forEach(select => {

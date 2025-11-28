@@ -1025,12 +1025,10 @@
             /* Enhanced Shop Cards */
             .shop-card-modern {
                 border: 1px solid rgba(0, 0, 0, 0.05);
-                transition: all 0.3s ease;
                 overflow: hidden;
             }
 
             .shop-card-modern:hover {
-                transform: translateY(-5px);
                 box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
             }
 
