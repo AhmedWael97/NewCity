@@ -21,8 +21,8 @@
                             @if($selectedCity && $selectedCity->image)
                                 <div class="city-icon-modern rounded-circle overflow-hidden me-3 shadow"
                                     style="width: 60px; height: 60px;">
-                                    <img src="{{ $selectedCity->image }}"
-                                        alt="{{ $cityContext['selected_city_name'] }}" class="w-100 h-100 object-fit-cover"
+                                    <img src="{{ $selectedCity->image }}" alt="{{ $cityContext['selected_city_name'] }}"
+                                        class="w-100 h-100 object-fit-cover"
                                         onerror="this.parentElement.innerHTML='<div class=\'bg-white bg-opacity-20 rounded-circle p-2 d-flex align-items-center justify-content-center\' style=\'width: 60px; height: 60px;\'><i class=\'fas fa-map-marked-alt text-white\' style=\'font-size: 1.5rem;\'></i></div>'">
                                 </div>
                             @else
@@ -32,7 +32,8 @@
                             @endif
                             <div>
                                 <h1 class="city-name-modern h3 mb-1 fw-bold">
-                                    {{ $cityContext['selected_city_name'] ?? 'مدينتك' }}</h1>
+                                    {{ $cityContext['selected_city_name'] ?? 'مدينتك' }}
+                                </h1>
                                 <div class="city-meta d-flex align-items-center text-white-75">
                                     <span class="me-3">
                                         <i class="fas fa-store me-1"></i>
@@ -74,106 +75,119 @@
             </div>
         </section>
 
-        
+        {{-- Banner Advertisement Section --}}
+        <section class="banner-ad-section py-3 bg-light">
+            <div class="container">
+                <x-ad-display type="banner" placement="city_landing_banner" :city-id="$selectedCity->id ?? null"
+                    class="rounded-3 overflow-hidden shadow-sm" :limit="1" />
+            </div>
+        </section>
 
         {{-- User Services Section (Hidden - will be on separate page) --}}
         @if(false && isset($serviceCategoriesWithServices) && $serviceCategoriesWithServices->count() > 0)
-        <section class="services-section py-5">
-            <div class="container">
-                <div class="section-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <h2 class="h3 mb-2 fw-bold">
-                                <i class="fas fa-tools text-primary me-2"></i>
-                                خدمات مقدمة من المستخدمين
-                            </h2>
-                            <p class="text-muted mb-0">اكتشف أفضل الخدمات المقدمة من أهل {{ $cityContext['selected_city_name'] }}</p>
-                        </div>
-                        @auth
-                        <a href="{{ route('user.services.create') }}" class="btn btn-primary rounded-pill px-4">
-                            <i class="fas fa-plus me-2"></i>
-                            أضف خدمتك
-                        </a>
-                        @endauth
-                    </div>
-                </div>
-
-                @foreach($serviceCategoriesWithServices as $serviceCategory)
-                    <div class="service-category-section mb-5">
-                        <div class="category-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div class="d-flex align-items-center">
-                                    <div class="category-icon-large bg-success bg-opacity-10 rounded-circle p-3 me-3">
-                                        <i class="{{ $serviceCategory->icon ?? 'fas fa-wrench' }} text-success" style="font-size: 1.5rem;"></i>
-                                    </div>
-                                    <div>
-                                        <h3 class="h5 mb-1 fw-bold">{{ $serviceCategory->name }}</h3>
-                                        <p class="text-muted mb-0">
-                                            <i class="fas fa-concierge-bell me-1"></i>
-                                            {{ $serviceCategory->services_count }} خدمة متاحة
-                                        </p>
-                                    </div>
-                                </div>
+            <section class="services-section py-5">
+                <div class="container">
+                    <div class="section-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h2 class="h3 mb-2 fw-bold">
+                                    <i class="fas fa-tools text-primary me-2"></i>
+                                    خدمات مقدمة من المستخدمين
+                                </h2>
+                                <p class="text-muted mb-0">اكتشف أفضل الخدمات المقدمة من أهل
+                                    {{ $cityContext['selected_city_name'] }}</p>
                             </div>
+                            @auth
+                                <a href="{{ route('user.services.create') }}" class="btn btn-primary rounded-pill px-4">
+                                    <i class="fas fa-plus me-2"></i>
+                                    أضف خدمتك
+                                </a>
+                            @endauth
                         </div>
+                    </div>
 
-                        <div class="row g-4">
-                            @foreach($serviceCategory->userServices as $service)
-                                <div class="col-lg-3 col-md-6">
-                                    <div class="service-card bg-white rounded-3 shadow-sm h-100 overflow-hidden">
-                                        @if($service->images && is_array($service->images) && count($service->images) > 0)
-                                            <div class="service-image" style="height: 180px; overflow: hidden;">
-                                                <img src="{{ $service->images[0] }}" 
-                                                     alt="{{ $service->title }}" 
-                                                     class="w-100 h-100 object-fit-cover"
-                                                     onerror="this.src='/images/placeholder-service.jpg'">
-                                            </div>
-                                        @else
-                                            <div class="service-image bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
-                                                <i class="{{ $serviceCategory->icon ?? 'fas fa-wrench' }} text-muted" style="font-size: 3rem;"></i>
-                                            </div>
-                                        @endif
-                                        
-                                        <div class="p-3">
-                                            <div class="d-flex align-items-center mb-2">
-                                                <div class="service-provider-avatar bg-primary bg-opacity-10 rounded-circle p-2 me-2">
-                                                    <i class="fas fa-user text-primary"></i>
-                                                </div>
-                                                <small class="text-muted">{{ $service->user->name }}</small>
-                                            </div>
-                                            
-                                            <h5 class="service-title h6 mb-2 fw-bold">
-                                                <a href="{{ route('user.services.show', $service->slug) }}" class="text-decoration-none text-dark">
-                                                    {{ Str::limit($service->title, 40) }}
-                                                </a>
-                                            </h5>
-                                            
-                                            <p class="service-description text-muted small mb-3">
-                                                {{ Str::limit($service->description, 60) }}
+                    @foreach($serviceCategoriesWithServices as $serviceCategory)
+                        <div class="service-category-section mb-5">
+                            <div class="category-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div class="d-flex align-items-center">
+                                        <div class="category-icon-large bg-success bg-opacity-10 rounded-circle p-3 me-3">
+                                            <i class="{{ $serviceCategory->icon ?? 'fas fa-wrench' }} text-success"
+                                                style="font-size: 1.5rem;"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="h5 mb-1 fw-bold">{{ $serviceCategory->name }}</h3>
+                                            <p class="text-muted mb-0">
+                                                <i class="fas fa-concierge-bell me-1"></i>
+                                                {{ $serviceCategory->services_count }} خدمة متاحة
                                             </p>
-                                            
-                                            <div class="d-flex align-items-center justify-content-between">
-                                                <div class="service-price">
-                                                    @if($service->price_type === 'fixed')
-                                                        <span class="text-success fw-bold">{{ number_format($service->price) }} جنيه</span>
-                                                    @else
-                                                        <span class="text-muted"><i class="fas fa-handshake me-1"></i>تفاوض</span>
-                                                    @endif
-                                                </div>
-                                                <a href="{{ route('user.services.show', $service->slug) }}" class="btn btn-sm btn-outline-primary rounded-pill">
-                                                    التفاصيل
-                                                    <i class="fas fa-arrow-left ms-1"></i>
-                                                </a>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            @endforeach
+                            </div>
+
+                            <div class="row g-4">
+                                @foreach($serviceCategory->userServices as $service)
+                                    <div class="col-lg-3 col-md-6">
+                                        <div class="service-card bg-white rounded-3 shadow-sm h-100 overflow-hidden">
+                                            @if($service->images && is_array($service->images) && count($service->images) > 0)
+                                                <div class="service-image" style="height: 180px; overflow: hidden;">
+                                                    <img src="{{ $service->images[0] }}" alt="{{ $service->title }}"
+                                                        class="w-100 h-100 object-fit-cover"
+                                                        onerror="this.src='/images/placeholder-service.jpg'">
+                                                </div>
+                                            @else
+                                                <div class="service-image bg-light d-flex align-items-center justify-content-center"
+                                                    style="height: 180px;">
+                                                    <i class="{{ $serviceCategory->icon ?? 'fas fa-wrench' }} text-muted"
+                                                        style="font-size: 3rem;"></i>
+                                                </div>
+                                            @endif
+
+                                            <div class="p-3">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <div
+                                                        class="service-provider-avatar bg-primary bg-opacity-10 rounded-circle p-2 me-2">
+                                                        <i class="fas fa-user text-primary"></i>
+                                                    </div>
+                                                    <small class="text-muted">{{ $service->user->name }}</small>
+                                                </div>
+
+                                                <h5 class="service-title h6 mb-2 fw-bold">
+                                                    <a href="{{ route('user.services.show', $service->slug) }}"
+                                                        class="text-decoration-none text-dark">
+                                                        {{ Str::limit($service->title, 40) }}
+                                                    </a>
+                                                </h5>
+
+                                                <p class="service-description text-muted small mb-3">
+                                                    {{ Str::limit($service->description, 60) }}
+                                                </p>
+
+                                                <div class="d-flex align-items-center justify-content-between">
+                                                    <div class="service-price">
+                                                        @if($service->price_type === 'fixed')
+                                                            <span class="text-success fw-bold">{{ number_format($service->price) }}
+                                                                جنيه</span>
+                                                        @else
+                                                            <span class="text-muted"><i class="fas fa-handshake me-1"></i>تفاوض</span>
+                                                        @endif
+                                                    </div>
+                                                    <a href="{{ route('user.services.show', $service->slug) }}"
+                                                        class="btn btn-sm btn-outline-primary rounded-pill">
+                                                        التفاصيل
+                                                        <i class="fas fa-arrow-left ms-1"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-        </section>
+                    @endforeach
+                </div>
+            </section>
         @endif
 
         {{-- All Shops Section --}}
@@ -192,16 +206,19 @@
                                 <div class="city-info-grid">
                                     <div class="row g-3">
                                         <div class="col-6">
-                                            <div class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                            <div
+                                                class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-store text-primary me-2"></i>
                                                     <span class="text-muted small">المتاجر النشطة</span>
                                                 </div>
-                                                <strong class="text-primary">{{ number_format($stats['total_shops'] ?? 0) }}</strong>
+                                                <strong
+                                                    class="text-primary">{{ number_format($stats['total_shops'] ?? 0) }}</strong>
                                             </div>
                                         </div>
                                         <div class="col-6">
-                                            <div class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                            <div
+                                                class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-th-large text-success me-2"></i>
                                                     <span class="text-muted small">الفئات المتاحة</span>
@@ -210,21 +227,26 @@
                                             </div>
                                         </div>
                                         <div class="col-6">
-                                            <div class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                            <div
+                                                class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-star text-warning me-2"></i>
                                                     <span class="text-muted small"> التقييم</span>
                                                 </div>
-                                                <strong class="text-warning">{{ number_format($stats['avg_rating'] ?? 4.5, 1) }} ⭐</strong>
+                                                <strong
+                                                    class="text-warning">{{ number_format($stats['avg_rating'] ?? 4.5, 1) }}
+                                                    ⭐</strong>
                                             </div>
                                         </div>
                                         <div class="col-6">
-                                            <div class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                            <div
+                                                class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
                                                 <div class="d-flex align-items-center">
                                                     <i class="fas fa-comments text-info me-2"></i>
                                                     <span class="text-muted small">إجمالي التقييمات</span>
                                                 </div>
-                                                <strong class="text-info">{{ number_format($stats['total_reviews'] ?? 0) }}</strong>
+                                                <strong
+                                                    class="text-info">{{ number_format($stats['total_reviews'] ?? 0) }}</strong>
                                             </div>
                                         </div>
                                     </div>
@@ -244,12 +266,14 @@
                                                 <div class="col-6">
                                                     <a href="{{ route('city.category.shops', ['city' => $selectedCity->slug ?? 'all', 'category' => $category->slug]) }}"
                                                         class="category-link-modern d-flex flex-column align-items-center justify-content-center p-2 rounded-2 text-decoration-none border h-100">
-                                                        <div class="category-icon-small bg-primary bg-opacity-10 rounded-circle p-2 mb-2">
+                                                        <div
+                                                            class="category-icon-small bg-primary bg-opacity-10 rounded-circle p-2 mb-2">
                                                             <i class="{{ $category->icon ?? 'fas fa-store' }} text-primary"></i>
                                                         </div>
                                                         <div class="text-center">
                                                             <h6 class="mb-0 text-dark small">{{ $category->name }}</h6>
-                                                            <small class="text-muted" style="font-size: 0.7rem;">{{ $category->shops_count }} متجر</small>
+                                                            <small class="text-muted"
+                                                                style="font-size: 0.7rem;">{{ $category->shops_count }} متجر</small>
                                                         </div>
                                                     </a>
                                                 </div>
@@ -275,8 +299,8 @@
                                 <div class="quick-actions-grid">
                                     <div class="row g-2">
                                         <div class="col-6">
-                                            <button type="button" class="btn btn-success btn-sm rounded-pill w-100" 
-                                                    data-bs-toggle="modal" data-bs-target="#suggestShopModal">
+                                            <button type="button" class="btn btn-success btn-sm rounded-pill w-100"
+                                                data-bs-toggle="modal" data-bs-target="#suggestShopModal">
                                                 <i class="fas fa-plus-circle me-1"></i>
                                                 <span class="small">اقترح متجر</span>
                                             </button>
@@ -296,7 +320,8 @@
                                             </a>
                                         </div>
                                         <div class="col-6">
-                                            <button onclick="showCityModal()" class="btn btn-outline-secondary btn-sm rounded-pill w-100">
+                                            <button onclick="showCityModal()"
+                                                class="btn btn-outline-secondary btn-sm rounded-pill w-100">
                                                 <i class="fas fa-exchange-alt me-1"></i>
                                                 <span class="small">تغيير</span>
                                             </button>
@@ -305,11 +330,13 @@
                                 </div>
                             </div>
 
-                            {{-- Advertisement Widget --}}
-                            <div class="sidebar-widget-modern">
-                                <x-ad-display type="sidebar" placement="city_landing" :city-id="$selectedCity->id ?? null"
-                                    class="rounded-3 overflow-hidden shadow-sm" />
+                            {{-- Advertisement Widgets - Multiple Slots --}}
+                            <div class="sidebar-widget-modern mb-4">
+                                <x-ad-display type="sidebar" placement="city_landing_1" :city-id="$selectedCity->id ?? null"
+                                    class="rounded-3 overflow-hidden shadow-sm" :limit="1" />
+
                             </div>
+
                         </div>
                     </div>
 
@@ -346,8 +373,8 @@
                         {{-- Mobile Quick Actions (4 columns on mobile) --}}
                         <div class="d-lg-none mb-4">
                             <div class="quick-actions-grid mobile-quick-actions">
-                                <button type="button" class="btn btn-success btn-sm rounded-pill" 
-                                        data-bs-toggle="modal" data-bs-target="#suggestShopModal">
+                                <button type="button" class="btn btn-success btn-sm rounded-pill" data-bs-toggle="modal"
+                                    data-bs-target="#suggestShopModal">
                                     <i class="fas fa-plus-circle me-1"></i>
                                     اقترح متجر
                                 </button>
@@ -370,8 +397,8 @@
 
                         <div class="d-flex align-items-center justify-content-between mb-4">
                             <h2 class="h4 mb-0 fw-bold">متاجر في {{ $cityContext['selected_city_name'] }}</h2>
-                            <a href="{{ route('city.shops.index', ['city' => $selectedCity->slug ?? 'all']) }}" 
-                               class="btn btn-primary rounded-pill px-4">
+                            <a href="{{ route('city.shops.index', ['city' => $selectedCity->slug ?? 'all']) }}"
+                                class="btn btn-primary rounded-pill px-4">
                                 <i class="fas fa-store me-2"></i>
                                 عرض جميع المتاجر ({{ $totalShopsCount ?? $shops->count() }})
                                 <i class="fas fa-arrow-left ms-2"></i>
@@ -387,11 +414,11 @@
                                     </div>
                                 @endforeach
                             </div>
-                            
+
                             {{-- View All Button for mobile --}}
                             <div class="text-center mt-4 d-lg-none">
-                                <a href="{{ route('city.shops.index', ['city' => $selectedCity->slug ?? 'all']) }}" 
-                                   class="btn btn-outline-primary btn-lg rounded-pill px-5">
+                                <a href="{{ route('city.shops.index', ['city' => $selectedCity->slug ?? 'all']) }}"
+                                    class="btn btn-outline-primary btn-lg rounded-pill px-5">
                                     <i class="fas fa-th me-2"></i>
                                     عرض جميع المتاجر
                                     <span class="badge bg-primary ms-2">{{ $totalShopsCount ?? $shops->count() }}</span>
@@ -418,6 +445,8 @@
                                 </div>
                             </div>
                         @endif
+
+
                     </div>
                 </div>
             </div>
@@ -434,7 +463,8 @@
                                 <i class="fas fa-users text-primary" style="font-size: 2.5rem;"></i>
                             </div>
                             <div class="stat-number-modern h2 mb-1 text-primary fw-bold">
-                                {{ number_format($stats['total_users'] ?? 0) }}</div>
+                                {{ number_format($stats['total_users'] ?? 0) }}
+                            </div>
                             <div class="stat-label-modern text-muted">مستخدم نشط</div>
                         </div>
                     </div>
@@ -444,7 +474,8 @@
                                 <i class="fas fa-star text-warning" style="font-size: 2.5rem;"></i>
                             </div>
                             <div class="stat-number-modern h2 mb-1 text-warning fw-bold">
-                                {{ number_format($stats['avg_rating'] ?? 4.5, 1) }}</div>
+                                {{ number_format($stats['avg_rating'] ?? 4.5, 1) }}
+                            </div>
                             <div class="stat-label-modern text-muted">متوسط التقييم</div>
                         </div>
                     </div>
@@ -454,7 +485,8 @@
                                 <i class="fas fa-th-large text-success" style="font-size: 2.5rem;"></i>
                             </div>
                             <div class="stat-number-modern h2 mb-1 text-success fw-bold">
-                                {{ number_format($stats['total_categories'] ?? 0) }}</div>
+                                {{ number_format($stats['total_categories'] ?? 0) }}
+                            </div>
                             <div class="stat-label-modern text-muted">فئة متنوعة</div>
                         </div>
                     </div>
@@ -464,7 +496,8 @@
                                 <i class="fas fa-store text-info" style="font-size: 2.5rem;"></i>
                             </div>
                             <div class="stat-number-modern h2 mb-1 text-info fw-bold">
-                                {{ number_format($stats['total_shops'] ?? 0) }}</div>
+                                {{ number_format($stats['total_shops'] ?? 0) }}
+                            </div>
                             <div class="stat-label-modern text-muted">متجر مفعل</div>
                         </div>
                     </div>
@@ -533,8 +566,8 @@
                                         موثوقة
                                     </div>
                                 </div>
-                                <a href="{{ route('city.services', ['city' => $selectedCity->slug ?? 'all']) }}" 
-                                   class="btn btn-light btn-lg rounded-pill px-5 shadow-lg text-dark fw-bold">
+                                <a href="{{ route('city.services', ['city' => $selectedCity->slug ?? 'all']) }}"
+                                    class="btn btn-light btn-lg rounded-pill px-5 shadow-lg text-dark fw-bold">
                                     <i class="fas fa-search me-2"></i>
                                     استكشف الخدمات الآن
                                     <i class="fas fa-arrow-left ms-2"></i>
@@ -568,7 +601,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     {{-- Background Decoration --}}
                     <div class="position-absolute top-0 end-0 opacity-10">
                         <i class="fas fa-tools" style="font-size: 15rem;"></i>
@@ -579,67 +612,66 @@
 
         {{-- Latest News Section --}}
         @if(isset($latestNews) && $latestNews->count() > 0)
-        <section class="latest-news py-5 bg-light">
-            <div class="container">
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <div>
-                        <h2 class="h3 fw-bold mb-2">
-                            <i class="fas fa-newspaper text-primary me-2"></i>
-                            آخر الأخبار
-                        </h2>
-                        <p class="text-muted mb-0">تابع أحدث الأخبار والمقالات</p>
+            <section class="latest-news py-5 bg-light">
+                <div class="container">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <div>
+                            <h2 class="h3 fw-bold mb-2">
+                                <i class="fas fa-newspaper text-primary me-2"></i>
+                                آخر الأخبار
+                            </h2>
+                            <p class="text-muted mb-0">تابع أحدث الأخبار والمقالات</p>
+                        </div>
+                        <a href="{{ route('news.index') }}" class="btn btn-outline-primary rounded-pill">
+                            عرض جميع الأخبار
+                            <i class="fas fa-arrow-left ms-1"></i>
+                        </a>
                     </div>
-                    <a href="{{ route('news.index') }}" class="btn btn-outline-primary rounded-pill">
-                        عرض جميع الأخبار
-                        <i class="fas fa-arrow-left ms-1"></i>
-                    </a>
-                </div>
 
-                <div class="row g-4">
-                    @foreach($latestNews as $newsItem)
-                    <div class="col-md-6 col-lg-3">
-                        <article class="news-card-modern bg-white rounded-3 shadow-sm overflow-hidden h-100">
-                            <div class="position-relative">
-                                <img src="{{ $newsItem->thumbnail_url }}" 
-                                     alt="{{ $newsItem->title }}" 
-                                     class="w-100" 
-                                     style="height: 200px; object-fit: cover;">
-                                @if($newsItem->category)
-                                <span class="position-absolute top-0 end-0 m-3 badge bg-white text-primary">
-                                    {{ $newsItem->category->name }}
-                                </span>
-                                @endif
+                    <div class="row g-4">
+                        @foreach($latestNews as $newsItem)
+                            <div class="col-md-6 col-lg-3">
+                                <article class="news-card-modern bg-white rounded-3 shadow-sm overflow-hidden h-100">
+                                    <div class="position-relative">
+                                        <img src="{{ $newsItem->thumbnail_url }}" alt="{{ $newsItem->title }}" class="w-100"
+                                            style="height: 200px; object-fit: cover;">
+                                        @if($newsItem->category)
+                                            <span class="position-absolute top-0 end-0 m-3 badge bg-white text-primary">
+                                                {{ $newsItem->category->name }}
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <div class="p-3">
+                                        <div class="d-flex align-items-center text-muted small mb-2">
+                                            <i class="far fa-calendar me-1"></i>
+                                            {{ $newsItem->published_at->format('Y-m-d') }}
+                                            <span class="mx-2">•</span>
+                                            <i class="far fa-eye me-1"></i>
+                                            {{ number_format($newsItem->views_count) }}
+                                        </div>
+                                        <h3 class="h6 mb-2">
+                                            <a href="{{ route('news.show', $newsItem->slug) }}"
+                                                class="text-dark text-decoration-none">
+                                                {{ Str::limit($newsItem->title, 60) }}
+                                            </a>
+                                        </h3>
+                                        <p class="text-muted small mb-2">
+                                            {{ Str::limit($newsItem->description, 80) }}
+                                        </p>
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <a href="{{ route('news.show', $newsItem->slug) }}"
+                                                class="text-primary small text-decoration-none">
+                                                <i class="far fa-clock me-1"></i>
+                                                {{ $newsItem->reading_time }} دقائق
+                                            </a>
+                                        </div>
+                                    </div>
+                                </article>
                             </div>
-                            <div class="p-3">
-                                <div class="d-flex align-items-center text-muted small mb-2">
-                                    <i class="far fa-calendar me-1"></i>
-                                    {{ $newsItem->published_at->format('Y-m-d') }}
-                                    <span class="mx-2">•</span>
-                                    <i class="far fa-eye me-1"></i>
-                                    {{ number_format($newsItem->views_count) }}
-                                </div>
-                                <h3 class="h6 mb-2">
-                                    <a href="{{ route('news.show', $newsItem->slug) }}" 
-                                       class="text-dark text-decoration-none">
-                                        {{ Str::limit($newsItem->title, 60) }}
-                                    </a>
-                                </h3>
-                                <p class="text-muted small mb-2">
-                                    {{ Str::limit($newsItem->description, 80) }}
-                                </p>
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <a href="{{ route('news.show', $newsItem->slug) }}" class="text-primary small text-decoration-none">
-                                        <i class="far fa-clock me-1"></i>
-                                        {{ $newsItem->reading_time }} دقائق
-                                    </a>
-                                </div>
-                            </div>
-                        </article>
+                        @endforeach
                     </div>
-                    @endforeach
                 </div>
-            </div>
-        </section>
+            </section>
         @endif
 
         {{-- Call to Action Section --}}
@@ -712,7 +744,8 @@
                         <i class="fas fa-plus-circle me-2"></i>
                         اقترح متجر جديد
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-info">
@@ -741,18 +774,18 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label required">اسمك</label>
-                                        <input type="text" class="form-control" name="suggested_by_name" required 
-                                               value="{{ auth()->user()->name ?? '' }}">
+                                        <input type="text" class="form-control" name="suggested_by_name" required
+                                            value="{{ auth()->user()->name ?? '' }}">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label required">رقم الهاتف</label>
-                                        <input type="text" class="form-control" name="suggested_by_phone" required 
-                                               value="{{ auth()->user()->phone ?? '' }}">
+                                        <input type="text" class="form-control" name="suggested_by_phone" required
+                                            value="{{ auth()->user()->phone ?? '' }}">
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">البريد الإلكتروني</label>
-                                        <input type="email" class="form-control" name="suggested_by_email" 
-                                               value="{{ auth()->user()->email ?? '' }}">
+                                        <input type="email" class="form-control" name="suggested_by_email"
+                                            value="{{ auth()->user()->email ?? '' }}">
                                     </div>
                                 </div>
                             </div>
@@ -767,8 +800,8 @@
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label required">اسم المتجر</label>
-                                        <input type="text" class="form-control" name="shop_name" required 
-                                               placeholder="مثال: متجر الإلكترونيات الحديثة">
+                                        <input type="text" class="form-control" name="shop_name" required
+                                            placeholder="مثال: متجر الإلكترونيات الحديثة">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">الفئة</label>
@@ -783,8 +816,8 @@
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">وصف المتجر</label>
-                                        <textarea class="form-control" name="description" rows="3" 
-                                                  placeholder="اكتب وصفاً مختصراً عن المتجر ونشاطه"></textarea>
+                                        <textarea class="form-control" name="description" rows="3"
+                                            placeholder="اكتب وصفاً مختصراً عن المتجر ونشاطه"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -799,18 +832,16 @@
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">رقم الهاتف</label>
-                                        <input type="text" class="form-control" name="phone" 
-                                               placeholder="01xxxxxxxxx">
+                                        <input type="text" class="form-control" name="phone" placeholder="01xxxxxxxxx">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">واتساب</label>
-                                        <input type="text" class="form-control" name="whatsapp" 
-                                               placeholder="01xxxxxxxxx">
+                                        <input type="text" class="form-control" name="whatsapp" placeholder="01xxxxxxxxx">
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">البريد الإلكتروني</label>
-                                        <input type="email" class="form-control" name="email" 
-                                               placeholder="shop@example.com">
+                                        <input type="email" class="form-control" name="email"
+                                            placeholder="shop@example.com">
                                     </div>
                                 </div>
                             </div>
@@ -825,13 +856,13 @@
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">العنوان</label>
-                                        <textarea class="form-control" name="address" rows="2" 
-                                                  placeholder="مثال: شارع الجلاء، أمام مسجد النور"></textarea>
+                                        <textarea class="form-control" name="address" rows="2"
+                                            placeholder="مثال: شارع الجلاء، أمام مسجد النور"></textarea>
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">رابط خرائط جوجل</label>
-                                        <input type="url" class="form-control" name="google_maps_url" 
-                                               placeholder="https://goo.gl/maps/...">
+                                        <input type="url" class="form-control" name="google_maps_url"
+                                            placeholder="https://goo.gl/maps/...">
                                         <small class="text-muted">يمكنك الحصول عليه من خرائط جوجل</small>
                                     </div>
                                 </div>
@@ -847,23 +878,23 @@
                                 <div class="row">
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">الموقع الإلكتروني</label>
-                                        <input type="url" class="form-control" name="website" 
-                                               placeholder="https://www.example.com">
+                                        <input type="url" class="form-control" name="website"
+                                            placeholder="https://www.example.com">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">صفحة الفيسبوك</label>
-                                        <input type="url" class="form-control" name="facebook" 
-                                               placeholder="https://facebook.com/...">
+                                        <input type="url" class="form-control" name="facebook"
+                                            placeholder="https://facebook.com/...">
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">صفحة الإنستجرام</label>
-                                        <input type="url" class="form-control" name="instagram" 
-                                               placeholder="https://instagram.com/...">
+                                        <input type="url" class="form-control" name="instagram"
+                                            placeholder="https://instagram.com/...">
                                     </div>
                                     <div class="col-md-12 mb-3">
                                         <label class="form-label">أوقات العمل</label>
-                                        <textarea class="form-control" name="opening_hours" rows="2" 
-                                                  placeholder="مثال: من السبت إلى الخميس من 9 صباحاً إلى 10 مساءً"></textarea>
+                                        <textarea class="form-control" name="opening_hours" rows="2"
+                                            placeholder="مثال: من السبت إلى الخميس من 9 صباحاً إلى 10 مساءً"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -1261,23 +1292,23 @@
             #suggestShopModal .card-header {
                 border-bottom: 2px solid #e9ecef;
             }
-            
+
             #suggestShopModal .form-label.required::after {
                 content: " *";
                 color: #dc3545;
             }
-            
+
             #suggestShopModal .modal-body {
                 max-height: 70vh;
             }
-            
+
             #suggestShopModal .card {
                 border: 1px solid #e9ecef;
                 transition: box-shadow 0.3s ease;
             }
-            
+
             #suggestShopModal .card:hover {
-                box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             }
 
             /* Loading and Performance */
@@ -1431,9 +1462,12 @@
             }
 
             @keyframes float {
-                0%, 100% {
+
+                0%,
+                100% {
                     transform: translateY(0px);
                 }
+
                 50% {
                     transform: translateY(-20px);
                 }
@@ -1443,11 +1477,11 @@
                 .discovery-card {
                     min-height: 300px;
                 }
-                
+
                 .discovery-content h2 {
                     font-size: 1.5rem;
                 }
-                
+
                 .discovery-content p {
                     font-size: 1rem;
                 }
@@ -1655,11 +1689,11 @@
                 document.querySelectorAll('.shop-image-modern img').forEach(img => {
                     img.addEventListener('error', function () {
                         this.parentElement.innerHTML = `
-                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" 
-                             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                            <i class="fas fa-store text-white" style="font-size: 3rem;"></i>
-                        </div>
-                    `;
+                                <div class="w-100 h-100 d-flex align-items-center justify-content-center" 
+                                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <i class="fas fa-store text-white" style="font-size: 3rem;"></i>
+                                </div>
+                            `;
                     });
                 });
 
@@ -1672,9 +1706,9 @@
                 notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
                 notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
                 notification.innerHTML = `
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            `;
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
 
                 document.body.appendChild(notification);
 
@@ -1693,7 +1727,7 @@
             function getDirections(latitude, longitude, address) {
                 event.preventDefault();
                 event.stopPropagation();
-                
+
                 if (latitude && longitude) {
                     // Use coordinates for precise location
                     window.open(`https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`, '_blank');
@@ -1710,7 +1744,7 @@
             function toggleFavoriteShop(shopId) {
                 event.preventDefault();
                 event.stopPropagation();
-                
+
                 // Check if user is logged in
                 @auth
                     // Add your favorite toggle logic here
@@ -1722,7 +1756,7 @@
                         window.location.href = '{{ route("login") }}';
                     }, 1500);
                 @endauth
-            }
+                    }
 
             // Save current city to localStorage and cookie for persistence
             document.addEventListener('DOMContentLoaded', function () {
@@ -1768,11 +1802,11 @@
                 setInterval(showNextSlide, 3000);
 
                 // Pause on hover
-                carousel.addEventListener('mouseenter', function() {
+                carousel.addEventListener('mouseenter', function () {
                     clearInterval(window.carouselInterval);
                 });
 
-                carousel.addEventListener('mouseleave', function() {
+                carousel.addEventListener('mouseleave', function () {
                     window.carouselInterval = setInterval(showNextSlide, 3000);
                 });
 
@@ -1786,7 +1820,7 @@
                     .then(data => {
                         const citySelect = document.getElementById('citySelect');
                         const categorySelect = document.getElementById('categorySelect');
-                        
+
                         // Populate cities
                         data.cities.forEach(city => {
                             const option = document.createElement('option');
@@ -1812,11 +1846,11 @@
             }
 
             // Submit Shop Suggestion
-            document.getElementById('submitSuggestion').addEventListener('click', function() {
+            document.getElementById('submitSuggestion').addEventListener('click', function () {
                 const form = document.getElementById('suggestShopForm');
                 const formData = new FormData(form);
                 const button = this;
-                
+
                 // Disable button and show loading
                 button.disabled = true;
                 button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>جاري الإرسال...';
@@ -1829,28 +1863,28 @@
                     },
                     body: formData
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showNotification(data.message, 'success');
-                        
-                        // Close modal and reset form
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('suggestShopModal'));
-                        modal.hide();
-                        form.reset();
-                    } else {
-                        showNotification(data.message || 'حدث خطأ أثناء الإرسال', 'danger');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showNotification('حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى', 'danger');
-                })
-                .finally(() => {
-                    // Re-enable button
-                    button.disabled = false;
-                    button.innerHTML = '<i class="fas fa-paper-plane me-2"></i>إرسال الاقتراح';
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showNotification(data.message, 'success');
+
+                            // Close modal and reset form
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('suggestShopModal'));
+                            modal.hide();
+                            form.reset();
+                        } else {
+                            showNotification(data.message || 'حدث خطأ أثناء الإرسال', 'danger');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى', 'danger');
+                    })
+                    .finally(() => {
+                        // Re-enable button
+                        button.disabled = false;
+                        button.innerHTML = '<i class="fas fa-paper-plane me-2"></i>إرسال الاقتراح';
+                    });
             });
         </script>
     @endpush

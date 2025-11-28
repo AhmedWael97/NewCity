@@ -58,8 +58,24 @@ class AdvertisementController extends Controller
         $cities = City::all();
         $categories = Category::all();
         $pricingTiers = Advertisement::getPricingTiers();
+        $placements = $this->getAvailablePlacements();
         
-        return view('admin.advertisements.create', compact('cities', 'categories', 'pricingTiers'));
+        return view('admin.advertisements.create', compact('cities', 'categories', 'pricingTiers', 'placements'));
+    }
+    
+    protected function getAvailablePlacements()
+    {
+        return [
+            'homepage' => 'الصفحة الرئيسية',
+            'city_landing' => 'صفحة المدينة - عام',
+            'city_landing_banner' => 'صفحة المدينة - بانر أفقي',
+            'city_landing_1' => 'صفحة المدينة - جانبي 1',
+            'city_landing_2' => 'صفحة المدينة - جانبي 2',
+            'city_landing_3' => 'صفحة المدينة - جانبي 3',
+            'shop_page' => 'صفحة المتجر',
+            'category_page' => 'صفحة الفئة',
+            'search_results' => 'نتائج البحث',
+        ];
     }
 
     public function store(Request $request)
@@ -70,14 +86,15 @@ class AdvertisementController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'click_url' => 'required|url',
             'type' => 'required|in:banner,hero,sponsored_listing,sidebar',
+            'placement' => 'required|string|max:100',
             'scope' => 'required|in:global,city_specific',
             'city_id' => 'nullable|exists:cities,id',
             'target_categories' => 'nullable|array',
             'target_categories.*' => 'exists:categories,id',
             'pricing_model' => 'required|in:cpm,cpc,cpa',
             'price_amount' => 'required|numeric|min:0.01',
-            'budget_limit' => 'nullable|numeric|min:0',
-            'daily_budget_limit' => 'nullable|numeric|min:0',
+            'budget_total' => 'nullable|numeric|min:0',
+            'budget_daily' => 'nullable|numeric|min:0',
             'start_date' => 'nullable|date|after_or_equal:today',
             'end_date' => 'nullable|date|after:start_date',
             'status' => 'required|in:active,paused,pending_review,rejected,completed',
@@ -101,14 +118,15 @@ class AdvertisementController extends Controller
         return redirect()->route('admin.advertisements.index')
                         ->with('success', 'Advertisement created successfully.');
     }
-
-    public function show(Advertisement $advertisement)
+    public function edit(Advertisement $advertisement)
     {
-        $advertisement->load(['city']);
+        $cities = City::all();
+        $categories = Category::all();
+        $pricingTiers = Advertisement::getPricingTiers();
+        $placements = $this->getAvailablePlacements();
         
-        // Get performance metrics
-        $metrics = [
-            'ctr' => $advertisement->ctr,
+        return view('admin.advertisements.edit', compact('advertisement', 'cities', 'categories', 'pricingTiers', 'placements'));
+    }       'ctr' => $advertisement->ctr,
             'conversion_rate' => $advertisement->conversion_rate,
             'cost_per_click' => $advertisement->cost_per_click,
             'cost_per_conversion' => $advertisement->cost_per_conversion,
@@ -134,14 +152,15 @@ class AdvertisementController extends Controller
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'click_url' => 'required|url',
             'type' => 'required|in:banner,hero,sponsored_listing,sidebar',
+            'placement' => 'required|string|max:100',
             'scope' => 'required|in:global,city_specific',
             'city_id' => 'nullable|exists:cities,id',
             'target_categories' => 'nullable|array',
             'target_categories.*' => 'exists:categories,id',
             'pricing_model' => 'required|in:cpm,cpc,cpa',
             'price_amount' => 'required|numeric|min:0.01',
-            'budget_limit' => 'nullable|numeric|min:0',
-            'daily_budget_limit' => 'nullable|numeric|min:0',
+            'budget_total' => 'nullable|numeric|min:0',
+            'budget_daily' => 'nullable|numeric|min:0',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after:start_date',
             'status' => 'required|in:active,paused,pending_review,rejected,completed',

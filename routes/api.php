@@ -51,10 +51,17 @@ Route::prefix('v1')->group(function () {
     // Guest device token registration (public endpoint - no auth required)
     Route::post('/guest-device-tokens', [App\Http\Controllers\Api\DeviceTokenController::class, 'storeGuest']);
 
-    // Advertisement tracking (public endpoints)
+    // Advertisement endpoints (public - no auth required)
     Route::prefix('ads')->group(function () {
-        Route::post('/impression', [App\Http\Controllers\Admin\AdvertisementController::class, 'recordImpression']);
-        Route::post('/click', [App\Http\Controllers\Admin\AdvertisementController::class, 'recordClick']);
+        // Get advertisements
+        Route::get('/', [App\Http\Controllers\Api\AdvertisementController::class, 'index']);
+        Route::get('/hero', [App\Http\Controllers\Api\AdvertisementController::class, 'hero']);
+        Route::get('/banner', [App\Http\Controllers\Api\AdvertisementController::class, 'banner']);
+        Route::get('/sidebar', [App\Http\Controllers\Api\AdvertisementController::class, 'sidebar']);
+        
+        // Track ad interactions
+        Route::post('/{adId}/impression', [App\Http\Controllers\Api\AdvertisementController::class, 'recordImpression']);
+        Route::post('/{adId}/click', [App\Http\Controllers\Api\AdvertisementController::class, 'recordClick']);
     });
 
     // Mobile App Control - Secured endpoints with API key

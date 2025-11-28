@@ -220,4 +220,20 @@ $ads = $ads->take($limit);
     });
     </script>
     @endpush
+@else
+    {{-- No Ads Available - Show Placeholder --}}
+    <div class="no-ads-placeholder bg-gradient-primary text-white rounded-3 p-4 text-center {{ $class }}" 
+         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="mb-3">
+            <i class="fas fa-ad fa-3x opacity-75"></i>
+        </div>
+        <h6 class="fw-bold mb-2">يمكنك الآن حجز هذا الإعلان لك</h6>
+        <p class="small mb-3 opacity-90">احجز مساحتك الإعلانية وصل لآلاف العملاء المحتملين</p>
+        <a href="https://wa.me/201060863230?text=مرحباً، أريد الاستفسار عن حجز مساحة إعلانية" 
+           target="_blank"
+           class="btn btn-light btn-sm rounded-pill px-4 fw-bold">
+            <i class="fab fa-whatsapp me-2"></i>
+            تواصل واتساب
+        </a>
+    </div>
 @endif
