@@ -275,7 +275,7 @@ class UserProfileController extends Controller
 
         $stats = [
             'favorites_count' => $user->favoriteShops()->count(),
-            'reviews_count' => \App\Models\ServiceReview::where('user_id', $user->id)->count(),
+            'reviews_count' => $user->ratings()->count(),
             'shops_count' => $user->shops()->count(),
             'services_count' => $user->userServices()->count(),
         ];

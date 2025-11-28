@@ -143,6 +143,14 @@ class User extends Authenticatable
     }
 
     /**
+     * Get user services created by the user
+     */
+    public function userServices(): HasMany
+    {
+        return $this->hasMany(UserService::class);
+    }
+
+    /**
      * Get the support tickets created by the user
      */
     public function supportTickets(): HasMany
