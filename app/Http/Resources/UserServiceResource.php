@@ -58,11 +58,11 @@ class UserServiceResource extends JsonResource
     private function getAnalyticsData(): array
     {
         return [
-            'views_today' => $this->getViewsToday(),
-            'contacts_today' => $this->getContactsToday(),
-            'views_this_month' => $this->getViewsThisMonth(),
-            'contacts_this_month' => $this->getContactsThisMonth(),
-            'conversion_rate' => $this->getConversionRate(),
+            'views_today' => method_exists($this->resource, 'getViewsToday') ? $this->getViewsToday() : 0,
+            'contacts_today' => method_exists($this->resource, 'getContactsToday') ? $this->getContactsToday() : 0,
+            'views_this_month' => method_exists($this->resource, 'getViewsThisMonth') ? $this->getViewsThisMonth() : 0,
+            'contacts_this_month' => method_exists($this->resource, 'getContactsThisMonth') ? $this->getContactsThisMonth() : 0,
+            'conversion_rate' => method_exists($this->resource, 'getConversionRate') ? $this->getConversionRate() : 0,
         ];
     }
 }
