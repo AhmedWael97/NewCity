@@ -117,11 +117,11 @@ class LandingController extends Controller
                 'description' => "تصفح مئات المتاجر المحلية في {$selectedCity->name}. اكتشف أفضل العروض والخدمات، واقرأ تقييمات العملاء، واحصل على أفضل الصفقات في {$selectedCity->name}.",
                 'keywords' => "متاجر {$selectedCity->name}, تسوق {$selectedCity->name}, دليل المتاجر {$selectedCity->name}, خدمات {$selectedCity->name}, عروض {$selectedCity->name}",
                 'og_image' => $selectedCity->image ? asset('storage/' . $selectedCity->image) : asset('images/og-discover-cities.jpg'),
-                'canonical' => route('city.show', ['city' => $selectedCity->slug]),
+                'canonical' => route('city.landing', ['city' => $selectedCity->slug]),
                 'city_name' => $selectedCity->name,
                 'breadcrumbs' => [
                     ['name' => 'الرئيسية', 'url' => route('home')],
-                    ['name' => $selectedCity->name, 'url' => route('city.show', ['city' => $selectedCity->slug])],
+                    ['name' => $selectedCity->name, 'url' => route('city.landing', ['city' => $selectedCity->slug])],
                 ]
             ];
         }
@@ -383,9 +383,16 @@ class LandingController extends Controller
             'total_categories' => 0,
         ];
 
-        // Get all shops for this city (not grouped by categories)
-        // Check if cache needs refresh
-        $cacheKey = "city_all_shops_{$city->slug}";
+        // Get total shops count for this city
+        $totalShopsCount = Cache::remember("city_shops_count_{$city->slug}", 3600, function () use ($city) {
+            return Shop::where('city_id', $city->id)
+                ->where('is_active', true)
+                ->where('is_verified', true)
+                ->count();
+        });
+        
+        // Get only 6 shops for landing page display (featured and top-rated)
+        $cacheKey = "city_landing_shops_{$city->slug}";
         $lastCheck = Cache::get($cacheKey . '_last_check');
         $latestShopUpdate = Shop::where('city_id', $city->id)->max('updated_at');
         
@@ -402,6 +409,7 @@ class LandingController extends Controller
                 ->withCount('ratings')
                 ->orderByDesc('is_featured')
                 ->orderByDesc('ratings_avg_rating')
+                ->limit(6)
                 ->get();
         });
         
@@ -493,6 +501,7 @@ class LandingController extends Controller
             'cityContext',
             'stats',
             'shops',
+            'totalShopsCount',
             'categoriesWithShops',
             'serviceCategoriesWithServices',
             'cities',

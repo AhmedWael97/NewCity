@@ -181,7 +181,7 @@
             <div class="container-fluid">
                 <div class="row">
                     {{-- Enhanced Sidebar - Now on the Right --}}
-                    <div class="col-lg-4 order-lg-1">
+                    <div class="col-lg-3 order-lg-1">
                         <div class="sidebar-modern">
                             {{-- City Quick Info Widget --}}
                             <div class="sidebar-widget-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
@@ -190,39 +190,43 @@
                                     معلومات {{ $cityContext['selected_city_name'] }}
                                 </h5>
                                 <div class="city-info-grid">
-                                    <div
-                                        class="info-item d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-store text-primary me-2"></i>
-                                            <span class="text-muted">المتاجر النشطة</span>
+                                    <div class="row g-3">
+                                        <div class="col-6">
+                                            <div class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-store text-primary me-2"></i>
+                                                    <span class="text-muted small">المتاجر النشطة</span>
+                                                </div>
+                                                <strong class="text-primary">{{ number_format($stats['total_shops'] ?? 0) }}</strong>
+                                            </div>
                                         </div>
-                                        <strong
-                                            class="text-primary">{{ number_format($stats['total_shops'] ?? 0) }}</strong>
-                                    </div>
-                                    <div
-                                        class="info-item d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-th-large text-success me-2"></i>
-                                            <span class="text-muted">الفئات المتاحة</span>
+                                        <div class="col-6">
+                                            <div class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-th-large text-success me-2"></i>
+                                                    <span class="text-muted small">الفئات المتاحة</span>
+                                                </div>
+                                                <strong class="text-success">{{ $stats['total_categories'] ?? 0 }}</strong>
+                                            </div>
                                         </div>
-                                        <strong class="text-success">{{ $stats['total_categories'] ?? 0 }}</strong>
-                                    </div>
-                                    <div
-                                        class="info-item d-flex justify-content-between align-items-center mb-3 p-2 bg-light rounded">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-star text-warning me-2"></i>
-                                            <span class="text-muted">متوسط التقييم</span>
+                                        <div class="col-6">
+                                            <div class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-star text-warning me-2"></i>
+                                                    <span class="text-muted small"> التقييم</span>
+                                                </div>
+                                                <strong class="text-warning">{{ number_format($stats['avg_rating'] ?? 4.5, 1) }} ⭐</strong>
+                                            </div>
                                         </div>
-                                        <strong class="text-warning">{{ number_format($stats['avg_rating'] ?? 4.5, 1) }}
-                                            ⭐</strong>
-                                    </div>
-                                    <div
-                                        class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
-                                        <div class="d-flex align-items-center">
-                                            <i class="fas fa-comments text-info me-2"></i>
-                                            <span class="text-muted">إجمالي التقييمات</span>
+                                        <div class="col-6">
+                                            <div class="info-item d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="fas fa-comments text-info me-2"></i>
+                                                    <span class="text-muted small">إجمالي التقييمات</span>
+                                                </div>
+                                                <strong class="text-info">{{ number_format($stats['total_reviews'] ?? 0) }}</strong>
+                                            </div>
                                         </div>
-                                        <strong class="text-info">{{ number_format($stats['total_reviews'] ?? 0) }}</strong>
                                     </div>
                                 </div>
                             </div>
@@ -235,22 +239,22 @@
                                         الفئات الأكثر شعبية
                                     </h5>
                                     <div class="popular-categories-list">
-                                        @foreach($categoriesWithShops->take(5) as $category)
-                                            <a href="{{ route('city.category.shops', ['city' => $selectedCity->slug ?? 'all', 'category' => $category->slug]) }}"
-                                                class="category-link-modern d-flex align-items-center justify-content-between mb-3 p-3 rounded-2 text-decoration-none border">
-                                                <div class="d-flex align-items-center">
-                                                    <div
-                                                        class="category-icon-small bg-primary bg-opacity-10 rounded-circle p-2 me-3">
-                                                        <i class="{{ $category->icon ?? 'fas fa-store' }} text-primary"></i>
-                                                    </div>
-                                                    <div>
-                                                        <h6 class="mb-0 text-dark">{{ $category->name }}</h6>
-                                                        <small class="text-muted">{{ $category->shops_count }} متجر</small>
-                                                    </div>
+                                        <div class="row g-2">
+                                            @foreach($categoriesWithShops->take(6) as $category)
+                                                <div class="col-6">
+                                                    <a href="{{ route('city.category.shops', ['city' => $selectedCity->slug ?? 'all', 'category' => $category->slug]) }}"
+                                                        class="category-link-modern d-flex flex-column align-items-center justify-content-center p-2 rounded-2 text-decoration-none border h-100">
+                                                        <div class="category-icon-small bg-primary bg-opacity-10 rounded-circle p-2 mb-2">
+                                                            <i class="{{ $category->icon ?? 'fas fa-store' }} text-primary"></i>
+                                                        </div>
+                                                        <div class="text-center">
+                                                            <h6 class="mb-0 text-dark small">{{ $category->name }}</h6>
+                                                            <small class="text-muted" style="font-size: 0.7rem;">{{ $category->shops_count }} متجر</small>
+                                                        </div>
+                                                    </a>
                                                 </div>
-                                                <i class="fas fa-chevron-left text-muted"></i>
-                                            </a>
-                                        @endforeach
+                                            @endforeach
+                                        </div>
                                     </div>
                                     <div class="text-center mt-3">
                                         <a href="{{ route('categories.index') }}"
@@ -268,26 +272,36 @@
                                     <i class="fas fa-bolt text-warning me-2"></i>
                                     إجراءات سريعة
                                 </h5>
-                                <div class="quick-actions-grid d-grid gap-2">
-                                    <button type="button" class="btn btn-success btn-sm rounded-pill mb-2" 
-                                            data-bs-toggle="modal" data-bs-target="#suggestShopModal">
-                                        <i class="fas fa-plus-circle me-2"></i>
-                                        اقترح متجر
-                                    </button>
-                                    <a href="{{ route('city.shops.featured', ['city' => $selectedCity->slug ?? 'all']) }}"
-                                        class="btn btn-warning btn-sm rounded-pill mb-2">
-                                        <i class="fas fa-star me-2"></i>
-                                        المتاجر المميزة
-                                    </a>
-                                    <a href="{{ route('city.search', ['city' => $selectedCity->slug ?? 'all']) }}"
-                                        class="btn btn-info btn-sm rounded-pill mb-2">
-                                        <i class="fas fa-search me-2"></i>
-                                        البحث المتقدم
-                                    </a>
-                                    <button onclick="showCityModal()" class="btn btn-outline-secondary btn-sm rounded-pill">
-                                        <i class="fas fa-exchange-alt me-2"></i>
-                                        تغيير المدينة
-                                    </button>
+                                <div class="quick-actions-grid">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-success btn-sm rounded-pill w-100" 
+                                                    data-bs-toggle="modal" data-bs-target="#suggestShopModal">
+                                                <i class="fas fa-plus-circle me-1"></i>
+                                                <span class="small">اقترح متجر</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('city.shops.featured', ['city' => $selectedCity->slug ?? 'all']) }}"
+                                                class="btn btn-warning btn-sm rounded-pill w-100">
+                                                <i class="fas fa-star me-1"></i>
+                                                <span class="small">المميزة</span>
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <a href="{{ route('city.search', ['city' => $selectedCity->slug ?? 'all']) }}"
+                                                class="btn btn-info btn-sm rounded-pill w-100">
+                                                <i class="fas fa-search me-1"></i>
+                                                <span class="small">بحث متقدم</span>
+                                            </a>
+                                        </div>
+                                        <div class="col-6">
+                                            <button onclick="showCityModal()" class="btn btn-outline-secondary btn-sm rounded-pill w-100">
+                                                <i class="fas fa-exchange-alt me-1"></i>
+                                                <span class="small">تغيير</span>
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -300,7 +314,7 @@
                     </div>
 
                     {{-- Main Content - Shops on the Left --}}
-                    <div class="col-lg-8 order-lg-2">
+                    <div class="col-lg-9 order-lg-2">
                         {{-- Mobile Info Carousel (Hidden on Desktop) --}}
                         <div class="mobile-info-carousel shadow-sm d-lg-none" style="display: none;">
                             <div class="mobile-info-slide active">
@@ -355,20 +369,33 @@
                         </div>
 
                         <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h2 class="h4 mb-0 fw-bold">جميع المتاجر في {{ $cityContext['selected_city_name'] }}</h2>
-                            <span class="badge bg-primary rounded-pill px-3 py-2">
-                                {{ $shops->count() }} متجر
-                            </span>
+                            <h2 class="h4 mb-0 fw-bold">متاجر في {{ $cityContext['selected_city_name'] }}</h2>
+                            <a href="{{ route('city.shops.index', ['city' => $selectedCity->slug ?? 'all']) }}" 
+                               class="btn btn-primary rounded-pill px-4">
+                                <i class="fas fa-store me-2"></i>
+                                عرض جميع المتاجر ({{ $totalShopsCount ?? $shops->count() }})
+                                <i class="fas fa-arrow-left ms-2"></i>
+                            </a>
                         </div>
 
                         @if($shops && $shops->count() > 0)
-                            {{-- Shops Grid - 3 cards per row on large screens --}}
+                            {{-- Shops Grid - 3 cards per row on large screens, showing only 6 --}}
                             <div class="row g-4">
-                                @foreach($shops as $shop)
+                                @foreach($shops->take(6) as $shop)
                                     <div class="col-lg-4 col-md-6">
                                         <x-shop-card :shop="$shop" :city-name="$cityContext['selected_city_name']" />
                                     </div>
                                 @endforeach
+                            </div>
+                            
+                            {{-- View All Button for mobile --}}
+                            <div class="text-center mt-4 d-lg-none">
+                                <a href="{{ route('city.shops.index', ['city' => $selectedCity->slug ?? 'all']) }}" 
+                                   class="btn btn-outline-primary btn-lg rounded-pill px-5">
+                                    <i class="fas fa-th me-2"></i>
+                                    عرض جميع المتاجر
+                                    <span class="badge bg-primary ms-2">{{ $totalShopsCount ?? $shops->count() }}</span>
+                                </a>
                             </div>
                         @else
                             {{-- Enhanced Empty State --}}
@@ -593,7 +620,7 @@
                                 </div>
                                 <h3 class="h6 mb-2">
                                     <a href="{{ route('news.show', $newsItem->slug) }}" 
-                                       class="text-dark text-decoration-none stretched-link">
+                                       class="text-dark text-decoration-none">
                                         {{ Str::limit($newsItem->title, 60) }}
                                     </a>
                                 </h3>
@@ -601,10 +628,10 @@
                                     {{ Str::limit($newsItem->description, 80) }}
                                 </p>
                                 <div class="d-flex align-items-center justify-content-between">
-                                    <span class="text-primary small">
+                                    <a href="{{ route('news.show', $newsItem->slug) }}" class="text-primary small text-decoration-none">
                                         <i class="far fa-clock me-1"></i>
                                         {{ $newsItem->reading_time }} دقائق
-                                    </span>
+                                    </a>
                                 </div>
                             </div>
                         </article>

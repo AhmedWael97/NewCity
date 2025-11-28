@@ -35,7 +35,7 @@
             </div> --}}
 
             <!-- User Actions -->
-            <div class="nav-actions">
+            <div class="nav-actions d-none d-lg-flex">
                 <!-- Selected City Indicator - Clickable -->
                 @if(session('selected_city'))
                     <div class="selected-city-indicator clickable-city" onclick="showCityModal()" title="انقر لتغيير المدينة">
@@ -154,12 +154,54 @@
 
     <!-- Mobile Menu -->
     <div class="mobile-nav" id="mobileNav">
-        <div class="mobile-search">
+        {{-- <div class="mobile-search">
             <form action="{{ route('search') }}" method="GET">
                 <input type="text" name="q" placeholder="ابحث..." value="{{ request('q') }}">
                 <button type="submit">🔍</button>
             </form>
         </div>
+        
+        <!-- Mobile Nav Actions -->
+        <div class="mobile-nav-actions" style="padding: 15px; border-bottom: 1px solid #eee;">
+            <!-- Selected City Indicator - Clickable -->
+            @if(session('selected_city'))
+                <div class="selected-city-indicator clickable-city" onclick="showCityModal()" title="انقر لتغيير المدينة" style="margin-bottom: 10px;">
+                    <span class="city-indicator-icon">📍</span>
+                    <span class="city-indicator-name">{{ session('selected_city_name') }}</span>
+                    <span class="city-change-arrow">⌄</span>
+                </div>
+            @else
+                <div class="no-city-indicator clickable-city" onclick="showCityModal()" title="انقر لاختيار مدينة" style="margin-bottom: 10px;">
+                    <span class="city-indicator-icon">📍</span>
+                    <span class="city-indicator-name">اختر مدينة</span>
+                    <span class="city-change-arrow">⌄</span>
+                </div>
+            @endif
+
+            <!-- News Link with Counter -->
+            @php
+                $mobileNewsCount = \App\Models\News::where('is_active', true)->count();
+            @endphp
+            <a href="{{ route('news.index') }}" class="nav-link news-link" title="الأخبار" style="display: block; margin-bottom: 10px;">
+                📰 الأخبار
+                @if($mobileNewsCount > 0)
+                    <span class="badge bg-primary" style="margin-left: 5px; margin-right: 5px">{{ $mobileNewsCount }}</span>
+                @endif
+            </a>
+            
+            @if (Route::has('login'))
+                @auth
+                    <a href="{{ url('/dashboard') }}" class="nav-link" style="display: block;">
+                        👤 لوحة التحكم
+                    </a>
+                @else
+                    <a href="{{ route('login') }}" class="nav-link" style="display: inline-block; margin-left: 10px;">دخول</a>
+                    @if (Route::has('register'))
+                        <a href="{{ route('register') }}" class="btn btn-primary btn-sm" style="display: inline-block;">تسجيل</a>
+                    @endif
+                @endauth
+            @endif
+        </div> --}}
         
         <div class="mobile-categories">
             <a href="{{ url('/') }}">🏠 الرئيسية</a>

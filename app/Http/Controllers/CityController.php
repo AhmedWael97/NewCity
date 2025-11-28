@@ -63,19 +63,19 @@ class CityController extends Controller
             'description' => "تصفح مئات المتاجر المحلية في {$city->name}. اكتشف أفضل العروض والخدمات، واقرأ تقييمات العملاء في {$city->name}.",
             'keywords' => "متاجر {$city->name}, تسوق {$city->name}, دليل المتاجر {$city->name}, خدمات {$city->name}",
             'og_image' => $city->image ? asset('storage/' . $city->image) : asset('images/og-city-default.jpg'),
-            'canonical' => route('city.show', $city->slug),
+            'canonical' => route('city.landing', $city->slug),
             'breadcrumbs' => [
                 ['name' => 'الرئيسية', 'url' =>url('/')],
                 ['name' => 'المدن', 'url' => route('cities.index')],
-                ['name' => $city->name, 'url' => route('city.show', $city->slug)],
+                ['name' => $city->name, 'url' => route('city.landing', $city->slug)],
             ]
         ];
 
-        return view('city.show', compact('city', 'stats', 'featuredShops', 'popularCategories', 'nearbyCities', 'seoData'));
+        return view('city.landing', compact('city', 'stats', 'featuredShops', 'popularCategories', 'nearbyCities', 'seoData'));
     }
 
     /**
-     * Show all shops in a city
+     * Show all shops in a city with enhanced filtering
      */
     public function shops(Request $request, City $city)
     {
@@ -87,10 +87,67 @@ class CityController extends Controller
             'longitude' => $request->get('lng'),
         ];
 
-        $shops = $this->cityDataService->getCityShops($city->id, $filters)
-            ->paginate(20);
+        // Build query
+        $query = Shop::where('city_id', $city->id)
+            ->where('is_active', true)
+            ->where('is_verified', true)
+            ->with(['category:id,name,icon,slug', 'city:id,name,slug'])
+            ->withAvg('ratings', 'rating')
+            ->withCount('ratings');
 
-        $categories = $this->cityDataService->getPopularCategories($city->id);
+        // Apply search filter
+        if ($filters['search']) {
+            $query->where(function($q) use ($filters) {
+                $q->where('name', 'LIKE', "%{$filters['search']}%")
+                  ->orWhere('description', 'LIKE', "%{$filters['search']}%")
+                  ->orWhere('address', 'LIKE', "%{$filters['search']}%");
+            });
+        }
+
+        // Apply category filter
+        if ($filters['category_id']) {
+            $query->where('category_id', $filters['category_id']);
+        }
+
+        // Apply rating filter
+        if ($filters['min_rating']) {
+            $query->having('ratings_avg_rating', '>=', $filters['min_rating']);
+        }
+
+        // Apply sorting
+        $sort = $request->get('sort', 'featured');
+        switch ($sort) {
+            case 'rating':
+                $query->orderByDesc('ratings_avg_rating');
+                break;
+            case 'newest':
+                $query->latest();
+                break;
+            case 'name':
+                $query->orderBy('name');
+                break;
+            case 'featured':
+            default:
+                $query->orderByDesc('is_featured')
+                      ->orderByDesc('ratings_avg_rating');
+                break;
+        }
+
+        $shops = $query->paginate(20)->withQueryString();
+
+        // Get categories with shop counts for this city
+        $categories = Category::whereHas('shops', function ($query) use ($city) {
+            $query->where('city_id', $city->id)
+                  ->where('is_active', true)
+                  ->where('is_verified', true);
+        })
+        ->withCount(['shops as shops_count' => function ($query) use ($city) {
+            $query->where('city_id', $city->id)
+                  ->where('is_active', true)
+                  ->where('is_verified', true);
+        }])
+        ->orderByDesc('shops_count')
+        ->get();
 
         $seoData = [
             'title' => "جميع المتاجر في {$city->name} - اكتشف المدن",
@@ -99,7 +156,7 @@ class CityController extends Controller
             'canonical' => route('city.shops.index', $city->slug),
             'breadcrumbs' => [
                 ['name' => 'الرئيسية', 'url' =>url('/')],
-                ['name' => $city->name, 'url' => route('city.show', $city->slug)],
+                ['name' => $city->name, 'url' => route('city.landing', $city->slug)],
                 ['name' => 'المتاجر', 'url' => route('city.shops.index', $city->slug)],
             ]
         ];
