@@ -16,7 +16,7 @@ use App\Http\Controllers\Controller;
  * )
  * 
  * @OA\Server(
- *     url="http://127.0.0.1:8000",
+ *     url="/",
  *     description="API Server"
  * )
  * 
@@ -51,7 +51,7 @@ use App\Http\Controllers\Controller;
  *     type="object",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Cairo"),
- *     @OA\Property(property="name_ar", type="string", example="القاهرة"),
+ *     @OA\Property(property="name_ar", type="string", example="Cairo Arabic"),
  *     @OA\Property(property="slug", type="string", example="cairo"),
  *     @OA\Property(property="description", type="string", nullable=true),
  *     @OA\Property(property="description_ar", type="string", nullable=true),
@@ -71,7 +71,7 @@ use App\Http\Controllers\Controller;
  *     type="object",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Restaurants"),
- *     @OA\Property(property="name_ar", type="string", example="مطاعم"),
+ *     @OA\Property(property="name_ar", type="string", example="Restaurants Arabic"),
  *     @OA\Property(property="slug", type="string", example="restaurants"),
  *     @OA\Property(property="description", type="string", nullable=true),
  *     @OA\Property(property="description_ar", type="string", nullable=true),
@@ -131,7 +131,7 @@ use App\Http\Controllers\Controller;
  *     type="object",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="Plumbing"),
- *     @OA\Property(property="name_ar", type="string", example="سباكة"),
+ *     @OA\Property(property="name_ar", type="string", example="Plumbing Arabic"),
  *     @OA\Property(property="slug", type="string", example="plumbing"),
  *     @OA\Property(property="description", type="string", nullable=true),
  *     @OA\Property(property="description_ar", type="string", nullable=true),

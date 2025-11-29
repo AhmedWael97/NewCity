@@ -1,0 +1,23 @@
+# Google Maps Scraper Requirements
+# Install with: pip install -r scraper_requirements.txt
+
+# Web scraping
+selenium>=4.15.0
+webdriver-manager>=4.0.0
+
+# Data processing
+pandas>=2.2.0
+openpyxl>=3.1.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# Database
+pymysql>=1.1.0
+sqlalchemy>=2.0.0
+
+# Utilities
+python-slugify>=8.0.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0

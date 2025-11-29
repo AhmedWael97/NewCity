@@ -118,15 +118,13 @@ class AdvertisementController extends Controller
         return redirect()->route('admin.advertisements.index')
                         ->with('success', 'Advertisement created successfully.');
     }
-    public function edit(Advertisement $advertisement)
+
+    public function show(Advertisement $advertisement)
     {
-        $cities = City::all();
-        $categories = Category::all();
-        $pricingTiers = Advertisement::getPricingTiers();
-        $placements = $this->getAvailablePlacements();
-        
-        return view('admin.advertisements.edit', compact('advertisement', 'cities', 'categories', 'pricingTiers', 'placements'));
-    }       'ctr' => $advertisement->ctr,
+        $metrics = [
+            'impressions' => $advertisement->impressions,
+            'clicks' => $advertisement->clicks,
+            'ctr' => $advertisement->ctr,
             'conversion_rate' => $advertisement->conversion_rate,
             'cost_per_click' => $advertisement->cost_per_click,
             'cost_per_conversion' => $advertisement->cost_per_conversion,

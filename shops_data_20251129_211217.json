@@ -1,0 +1,992 @@
+[
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D8%B1%D9%8A%D8%B3%E2%80%AD/data=!4m7!3m6!1s0x1457fb002cf86a13:0xf93bcedbcf816e52!8m2!3d30.165231!4d31.8065273!16s%2Fg%2F11vp_sjvn1!19sChIJE2r4LAD7VxQRUm6Bz9vOO_k?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457fb002cf86a13:0xf93bcedbcf816e52",
+    "name": "مطعم الريس",
+    "category": "مطعم",
+    "address": "5R84+3HQ، الظهير الصحراوى لمحافظة ال، محافظة القاهرة‬ 4960003",
+    "phone": "010 02233221",
+    "website": null,
+    "rating": 3.5,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/a/ACg8ocKzo88GYhF57ZICtjgVG48Tn9w91hH-UqiYwofJd4nyaete8Q=w1000",
+      "https://lh3.googleusercontent.com/a/ACg8ocIVlrDtPGZqxXWHW1YwxmM6YzYkN0Tn3PX1QIoSpjNfJIXF7w=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjXhPXQ2Da01Bv6UARmDoiCrtO7qe2tYhT-sZ6ZNTspGv736LKxA=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwsQVPdrm43M0SDj7UOLTWs1SjUi7gEoLa69MFsGd6m9vB2PS4O1Me1xvd7cSEH2-YVTuTRqjltkFuHuxFDBCMFT6HhMZ1J0nGNzNtD78vhkYMXNHHTAfY215fduVrfTwZ9jPdn7FY2MEb4=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxrNQw-r9s0t27tY4NIwE_Vs1lZ9XjJwNTbOpaIqvIOFPMECUrvnLB-MLGUdSTBBfhXpueShKK3vKXYx6zg7kziizlsL8y88HLMOKeAAVd6S8LqlBDmLwIAEhV-kf6WBMoUxspkp-k6VsPw=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:05:17.569760",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%AF%D9%88%D9%82%D8%A9+%D9%88+%D8%AD%D9%85%D8%A4%D8%A9%E2%80%AD/data=!4m7!3m6!1s0x1457f1000c2f1793:0x2860cad98d4195d!8m2!3d30.139839!4d31.7710253!16s%2Fg%2F11y0mgdf_5!19sChIJkxcvDADxVxQRXRnUmK0MhgI?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f1000c2f1793:0x2860cad98d4195d",
+    "name": "مطعم دوقة و حمؤة",
+    "category": "مطعم",
+    "address": "4QRC+4C7، بدر، محافظة القاهرة‬ 4958705",
+    "phone": null,
+    "website": null,
+    "rating": null,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:05:28.984024",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%AD%D8%B6%D8%B1%D9%85%D9%88%D8%AA+%D8%A7%D9%84%D9%88%D8%A7%D8%AD%D8%A7%D8%AA%E2%80%AD/data=!4m7!3m6!1s0x1457fb003d290087:0x7d8cf2fa0969207d!8m2!3d30.1334274!4d31.8053793!16s%2Fg%2F11xw96tbnl!19sChIJhwApPQD7VxQRfSBpCfryjH0?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457fb003d290087:0x7d8cf2fa0969207d",
+    "name": "مطعم حضرموت الواحات",
+    "category": "مطعم",
+    "address": "4RM4+95C، الطريق الدائرى الاقليمى، بدر، محافظة القاهرة‬ 4958901",
+    "phone": null,
+    "website": null,
+    "rating": 5.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxnfLXTN6-UtJCvM0ZUJZ0YU4U4fB4VmMN7RkKqxVfxOe9b7A-nF_y9L5fql4KosnQqQwO5ZFsWoD9KDTB8_RBaW8ht4_A2AaytkNQLubXb0ozUXhy3xT28HcNuPeQB5sKhxm12-HjTuYFF=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxLVeKe2-qSFacCPLIIbeYZ4QvdUkmYIRJJ-1lsYzPVg0yz6mMqAPIgsmfLAVEzPVSZzL6xJgxCGTeZizncr7b7eo1Gcg8S-iHly55WKu4nMEAX9K9o2lk0FskLo3T7_TJaxKgx4EQcO-I=w1000",
+      "https://lh3.googleusercontent.com/a/ACg8ocJKOMxWrKcUoOgB5liebAplLDeQrn7qgouoA9C8ildvq8vYbQ=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:05:35.066626",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D8%B4%D8%B1%D9%83%D8%A9+%D8%B3%D8%A8%D9%88%D9%86%D8%AA%D9%83%D8%B3%E2%80%AD/data=!4m7!3m6!1s0x1457fa869b6480b3:0xd1a7f36202a27db8!8m2!3d30.1472213!4d31.770454!16s%2Fg%2F11by_zy12q!19sChIJs4Bkm4b6VxQRuH2iAmLzp9E?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457fa869b6480b3:0xd1a7f36202a27db8",
+    "name": "شركة سبونتكس",
+    "category": "مطعم",
+    "address": "4QWC+V5P، بدر، محافظة القاهرة‬ 4959030",
+    "phone": null,
+    "website": null,
+    "rating": 4.3,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/a-/ALV-UjXsA766AOYFNQ9knx4tVMzPQHHSNrS0rZN4B3fmAyiNSeqsQAzK=w1000",
+      "https://lh3.googleusercontent.com/a/ACg8ocIXhA6fVpq3Tjy1bz-8_apFscsqARQkkuLcfOhk6c0mSSB1RA=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjXDE_WbzGLCXbCzG9AfY3veOYkYA_6QgSQREu2EHkHah-jLHE84=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxVwykJUl8s879XdweXnBTgsV9-6DfyCeCxZOoranXxypuMC4Iw1jzQP5_Z4KyvK8wYLh3TVyUlVGQigo7z2fiHG-sBJ2j-RCp95LigRfWvDO4mDEjKNUQCfBeZpe-Wv2vOSobI=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipP1KOWJFFEQ73vBW9SBQlUTNjRgkLFQKdfaMGm7=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:05:45.675855",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D8%B4%D8%B1%D9%82%D8%A7%D9%88%D9%8A+%D8%AD%D8%AF%D8%A7%D8%A6%D9%82+%D8%A7%D9%84%D8%B9%D8%A7%D8%B5%D9%85%D8%A9%E2%80%AD/data=!4m7!3m6!1s0x1457e54b5480dee1:0x8cec868dd275c1c!8m2!3d30.1481892!4d31.8109159!16s%2Fg%2F11xvv3pdz_!19sChIJ4d6AVEvlVxQRHFwn3WjIzgg?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457e54b5480dee1:0x8cec868dd275c1c",
+    "name": "مطعم الشرقاوي حدائق العاصمة",
+    "category": "مطعم وجبات سريعة",
+    "address": "العاصمة الإدارية الجديدة, حدائق العاصمة بجوار مدرسة الزهور، قبل الجهاز الجديد, محافظة القاهرة‬",
+    "phone": "010 40193350",
+    "website": null,
+    "rating": 4.7,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipOQQN_UBC8Pno3bh4Y5u2hVEvC_6E-0KVKU06oN=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipPnpbyoiuDeGwTH9J6_HuhIeapEgglUzFmInQCS=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipPKZUVxe5rYcq40ahH_RW0g1q_LEifD_M_0DS8f=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipM3DaRNmpi5xvhl5Ah0e9ocWOj1UP2HHBIR-Ck-=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipMI2j-yDYsaz_0YU2krzyEtOHJ61Csvvl5Kh3l2=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم وجبات سريعة"
+    ],
+    "scraped_at": "2025-11-29T21:06:03.469749",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D8%A3%D8%B3%D9%85%D8%A7%D9%83+%D8%A7%D9%84%D8%AD%D8%A8%D9%8A%D8%A8+%D8%A7%D9%84%D9%85%D8%B5%D8%B7%D9%81%D9%8A%E2%80%AD/data=!4m7!3m6!1s0x1457e5001a99bb29:0x2cb43e7b1f74704f!8m2!3d30.1550453!4d31.8115239!16s%2Fg%2F11xg52m1x2!19sChIJKbuZGgDlVxQRT3B0H3s-tCw?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457e5001a99bb29:0x2cb43e7b1f74704f",
+    "name": "أسماك الحبيب المصطفي",
+    "category": "مطعم مأكولات بحرية",
+    "address": "5R46+2J6، الظهير الصحراوى لمحافظة ال، محافظة القاهرة‬ 4962022",
+    "phone": "011 50052838",
+    "website": null,
+    "rating": 5.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw1dnxImSi9VrhlkScQ9xoaqvomD1t9e18RzBaFU9do2l9IrNzZ_BHCEr_Tc8R8pd_a-QHj-cHYmMyhW9h5ZljF-CXrbr1-5ewdXy_gt0zqbh1yagMI5mJtkcld00_5PZ5dKTPPufMbT2cF=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjUKXPoHnjZLVn8T18dt9KEbHxPHv6_ru-TOM3AqdAzGAnHKzwUz=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات بحرية"
+    ],
+    "scraped_at": "2025-11-29T21:06:28.844725",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D8%B9%D9%85%D8%AF%D9%87%E2%80%AD/data=!4m7!3m6!1s0x1457e50070560a65:0x61eec2878f9d00cb!8m2!3d30.161736!4d31.8115686!16s%2Fg%2F11x1488rjw!19sChIJZQpWcADlVxQRywCdj4fC7mE?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457e50070560a65:0x61eec2878f9d00cb",
+    "name": "مطعم العمده",
+    "category": "مطعم",
+    "address": "5R66+MJW، الظهير الصحراوى لمحافظة ال، محافظة القاهرة‬ 4962514",
+    "phone": "010 25627739",
+    "website": null,
+    "rating": null,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxUx64D4VfXgdug99fcuCzbV43IKJh4fPOHR3L6oINDZlwbz7_fVxl0zwzVjRQWOY04srhORlEt5MBmIpYvsNjl9EyczuhGQVYjCnrBoR6i3vpYtlJiGm2lGHofCTy0ecQvUak0JpZMa1A=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxrNQw-r9s0t27tY4NIwE_Vs1lZ9XjJwNTbOpaIqvIOFPMECUrvnLB-MLGUdSTBBfhXpueShKK3vKXYx6zg7kziizlsL8y88HLMOKeAAVd6S8LqlBDmLwIAEhV-kf6WBMoUxspkp-k6VsPw=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyNwDj1nyoJfRISM0P4j4LPiZrZdmzegFafaxpqEzagBAZGzWgeTTrELPOhK-Hl4-UuK6MI483ncx4qls7tRLIP7s7lbwV_5U9O4-boKIC-Cng3FrO_PmZkdvQsYf2JIAURoGez2A=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipMvqb8TNk8oBGDhVDx2LV7Uh5KHF5pUa7dmdbnl=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:06:43.659206",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%AE%D9%84%D8%B7%D8%A8%D9%8A%D8%B7%D8%A9%E2%80%AD/data=!4m7!3m6!1s0x1457e50024937589:0xf515419b5e6bb486!8m2!3d30.1478738!4d31.8109301!16s%2Fg%2F11xv4vwylc!19sChIJiXWTJADlVxQRhrRrXptBFfU?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457e50024937589:0xf515419b5e6bb486",
+    "name": "مطعم خلطبيطة",
+    "category": "مطعم دجاج",
+    "address": "4RX6+48، الظهير الصحراوى لمحافظة ال، محافظة القاهرة‬ 4962010",
+    "phone": "011 40940428",
+    "website": null,
+    "rating": 5.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipPCpI1XHyb8reMOoiO18qFQNMHEsLsY52UJcpVK=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipPgnFmGF7HAeNiX0EFg13t0aTNBjkf_MakM5stY=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipM-XZwwtJmo_KT8E_UpTHK0J3bEu-VvlHxZ87Oz=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipNbKZ3vAbfwSo6kE2iqkW8FkddcpQHfROSsaDdZ=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipMslJ0zT7wHtatoggjYzctXmBOHFA8v-7movvc1=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم دجاج"
+    ],
+    "scraped_at": "2025-11-29T21:06:59.975750",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D9%88%D9%84+%D8%A7%D9%84%D8%B9%D8%A7%D9%85%D9%84%D9%8A%D9%86+%D8%A8%D9%84%D8%B9%D8%A7%D8%B5%D9%85%D9%87%E2%80%AD/data=!4m7!3m6!1s0x1457f1005a547a73:0x359fbe6c5ea90e6c!8m2!3d30.1250844!4d31.7804398!16s%2Fg%2F11lmjr4c40!19sChIJc3pUWgDxVxQRbA6pXmy-nzU?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f1005a547a73:0x359fbe6c5ea90e6c",
+    "name": "مول العاملين بلعاصمه",
+    "category": "مطعم مأكولات بحرية",
+    "address": "4QGJ+35M، بدر، محافظة القاهرة‬ 4958112",
+    "phone": null,
+    "website": null,
+    "rating": 5.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzyS7ylZPSZBFzljcfy53SDXSOGMjBQodtR3Vp4VvEy-Z9SeKONKL9ObrIVtFjsk9yq_sD2xnja-HiFdmtcl-YIAGzQXIdtjXMqulu9ulBWTNrnvNUkE3mYB9wAAxySrGvo8b4=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjWVng6eJmGFcZRJ1v0GjWGx7uSVRPj3cZhCGR1PXIZaCYmefpm2=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipONzeyo9ljUEw1iPnNc-R1jWpboFdASs8a7-ak=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw5BwpPRKk5pE2RKeqFVOljtLdJpzh6hyZOHQoCskgU-H1tzoG8EOttqmDcBaQzQOgP0U66qixqbCLF_eJRhRLK7aCbdlNmk7E_5CVN7Wz3D-tgQ4AFm1a8PV74DrUcsC2z_Mc=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxuXoLNZGQMvZTJHlmPbIdJrvnTSrQ456fFEGacX1YR9s4L14_yIa8qZMlC3Io9lyFlXXHVKGpNICmX4Vn-_U0Enljh0ETeylj27VQOHl7X3KRBuVIZqkhmmYhGPstVJoUQf5g=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات بحرية"
+    ],
+    "scraped_at": "2025-11-29T21:07:08.768446",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D8%A8%D9%86%D8%A7%D8%A1+%D8%A7%D9%84%D9%85%D8%AD%D9%84%D8%A9+%D8%A7%D9%84%D9%83%D8%A8%D8%B1%D9%8A%E2%80%AD/data=!4m7!3m6!1s0x1457f1007e1cb589:0x8e936d2855cd68b8!8m2!3d30.1256149!4d31.7910966!16s%2Fg%2F11wqy5ycqs!19sChIJibUcfgDxVxQRuGjNVShtk44?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f1007e1cb589:0x8e936d2855cd68b8",
+    "name": "مطعم ابناء المحلة الكبري",
+    "category": "مطعم للإفطار",
+    "address": "4QGR+48H، بدر، محافظة القاهرة‬ 4958504",
+    "phone": "010 20684203",
+    "website": null,
+    "rating": 5.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSybBIhLn0AIv4Gm3HuxJVbOg2m_XW-CGnz3MwvtIYuy07_EebeAL_crl3xkfq9lQrpCEdIIKuxw3Z0a6Gf9DfIDf7nrreYR0Y6zdzMwEp0-fgGbWpurJFAWo1jzgRLQpgbNF4vP1w=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzzeQaMBxarDSrHkbaSY0cXo6pSYl6e8n31OM2RbLu7gf1FRFh_fkqiks7h2gb_JhfefsR4_fcCvvXRASXQP_ZKN_TXhhrxyeYzltkNxYoNqpnXxXro4I8HMHERuvkd-j3Ofh2u=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjXIFa35CesLJ8sqlTJfwlarS4j11QtyJKtVPp9FLRdFAne6JpzP=w1000",
+      "https://lh3.googleusercontent.com/a/ACg8ocKy6AFoOzcFYVj60K6HkgaJOJ5CvjAdGR0z91mnIrtAf_vAyQ=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjWFQVbhnSJGJqJaX5qTiVHJKcQrsqvKyT0lrZuGNvq7lKCgOC9C=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم للإفطار"
+    ],
+    "scraped_at": "2025-11-29T21:07:14.434272",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%83%D8%B4%D8%B1%D9%8A+%D8%A7%D8%A8%D9%88+%D9%8A%D8%A7%D8%B3%D9%8A%D9%86%E2%80%AD/data=!4m7!3m6!1s0x1457fb330af81121:0xdba666b57e86deaa!8m2!3d30.1787351!4d31.7683679!16s%2Fg%2F11sqhgb3hc!19sChIJIRH4CjP7VxQRqt6GfrVmpts?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457fb330af81121:0xdba666b57e86deaa",
+    "name": "كشري ابو ياسين",
+    "category": "مطعم كشري",
+    "address": "C40 السوق التجاري بمدينه الجلود، طريق بدر - الروبيكى - العاشر",
+    "phone": "012 85998788",
+    "website": null,
+    "rating": 2.7,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy1QIY3D_0LxXMymHh_cwEkwMy8ei0qyy9emE7ZPmLMdB9kYr2KoUApBt4ZCTwT2E3xvb5dXAzoNwFeh0DXtT9qT6YGvQHRfYDah-Qw-sDW_-pK6Or0yRYYC8XS7nlUtAHlcEGqV_A8krfr=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjW84-XsJFXcropuBbd9w4IXgwgC4BliDyOYcOElY1lHVfo_K4U=w1000",
+      "https://lh3.googleusercontent.com/a/ACg8ocIOmI3C4WQDXsQZ1EIFtVOLWQE2bv19VlY8P_OTAsq3-QnriA=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjX6L-UxAHQuM-NpOlVlVB9o7wSUd9R82ZEHBhLnnqcEOMZcvC0n=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxlVxz85gl2okGB9eAwuaHN_IHQQ0GzWEjpywQowszOgwdQIZNVkBta4StvH3jUtPdtGG57_wzlfePStwLZURs0Y_ZIbXoTq6zKqxvz6o7CB67aOYWByx_ls5y7myrWhV0rk_Lj=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم كشري"
+    ],
+    "scraped_at": "2025-11-29T21:07:20.719050",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D8%A7%D8%B3%D9%85%D8%A7%D9%83+%D8%A7%D8%A8%D9%86+%D8%AD%D9%85%D9%8A%D8%AF%D9%88+%D8%B2%D9%87%D8%B1%D9%87+%D8%A7%D9%84%D8%B9%D8%A7%D8%B5%D9%85%D9%87%E2%80%AD/data=!4m7!3m6!1s0x1457f10046dce1eb:0x17b8a622a7db3203!8m2!3d30.1250844!4d31.7804373!16s%2Fg%2F11y495fcdl!19sChIJ6-HcRgDxVxQRAzLbpyKmuBc?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f10046dce1eb:0x17b8a622a7db3203",
+    "name": "اسماك ابن حميدو زهره العاصمه",
+    "category": "مطعم",
+    "address": "مجمع المدارس زهرة، العاصمة، بدر، محافظة القاهرة‬ 4958112",
+    "phone": "010 92064825",
+    "website": null,
+    "rating": 4.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipMMw6g93S6kI7VJlseQIqfEHBExcpUlYB5AuJtg=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipMCuHo1bdRjQpzPWcRUxY5C5YY6JyFyc92J_PiF=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw7qguag4RKm-xWJcqAYPcPpoQpNSRBp1Nx-LRq0MNC8vBhqKJY14ZJJQf_08QHpc6tGR8w-xl7AagLS74LAiNP3p2REb6xIxrkHvgDOvvyWPXWOHI1YqrZWI_WSqb0=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwpeAnUSNItSm2hnYnhAJAUYMP-KpEfzcf2S2h671cehrrg7-W5DsXwbX68y053XDbl_mVwoiqNRNpoLnfbpFQTwIWCD0Jz7_5BsiLdop5PVltMXZHBfa7hj-wUCkLpeZFt1HQ=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipP_OqxdbD83NLuLXQ6cW9wFMaciX9452bnxJx-C=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:07:28.314151",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Al-Khedewy+Restaurant/data=!4m7!3m6!1s0x1457f300096fab1b:0xf82d7e352fba21d4!8m2!3d30.0057065!4d31.7242985!16s%2Fg%2F11y3szh97j!19sChIJG6tvCQDzVxQR1CG6LzV-Lfg?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f300096fab1b:0xf82d7e352fba21d4",
+    "name": "Al-Khedewy Restaurant",
+    "category": "مطعم مأكولات مصرية",
+    "address": "2P4F+7PM، الظهير الصحراوى لمحافظة ال، محافظة القاهرة‬ 4850601",
+    "phone": null,
+    "website": null,
+    "rating": 5.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwcQrArKl4zP1nHifEenSL22IvcxUoi7uJr5bPvp935vbH2EwSR5iOuNgVgwia85r_xjl3xfY9ThbG8r4batTurG9WVXMgWjc4-14F4ZKVnFACvkMBojZYWJL8itN_vBlmcCKudJ_7HRM0=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx-dusI-y35Bw9b-WmwUJCDGuaYDpg9HhVloN2XCDfLZifq9n-uo70YjFGl2IdIx-e9lJr-MiwSCSi5ql5rzLu-nqufXFWDqa7AAMBF6isx-swQ0KRCsU_6xcPq-JRRNwYWoDW-=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzY9f9QBql07zeJFBAO_WSwYehasfwCtEtjvfo2LWVb58KtJo-4pzrKPXClVzQZOpH7LdifZPlFjk7G_V6lCUilgI5zsLCLHS86BUZzLhYuIMzgcaRwb4LDAIThAPB8T3jF5591=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwrJdwDwM881JyWHdO2pymeNAtDvzM-sRqPItBVhA3ZSYiL7Dv_0_fYYr5thNK9nflsNwsNWgqZgWpUoI6-DW2hwrZtYQlDmJqq_baqutTNzfaJdhsEAQdMfPV27TeRxksimLyFJw=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyGNgR7iGwCNRlsicv-hgQ_8e97lqD8G-Wc13JyCPWjYoY8kX91ZMvUCQfR5cYP7DQ2JwqEQ6hMqcUncbaaSMiadmMhnX4kANCp2AF0ssWuq8vQpt-LcBwEqEzIkncs5yNU9vHz=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات مصرية"
+    ],
+    "scraped_at": "2025-11-29T21:07:37.326967",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D8%AF%D9%88%D9%84%D9%8A%E2%80%AD/data=!4m7!3m6!1s0x1457fb97f541d75b:0xb397e6f5446346fc!8m2!3d30.1769469!4d31.7662445!16s%2Fg%2F11qss31l_5!19sChIJW9dB9Zf7VxQR_EZjRPXml7M?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457fb97f541d75b:0xb397e6f5446346fc",
+    "name": "مطعم الدولي",
+    "category": "مطعم فلافل",
+    "address": "5QG8+QFH، الظهير الصحراوى لمحافظة ال، محافظة القاهرة‬ 4965020",
+    "phone": "011 58097251",
+    "website": null,
+    "rating": 3.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwV1QyI5H7AG-JWCZHINuyUrtL759n5GCbrm5lFYcMbZHmMd_t5p821BHeX_qCv994S9vD6PTJsVAEHcYYpvbkEhco8XOb7IlFJZ8NnNCV7_Uhn0ldV6p3YcoAWdfhBsQ4q1yov1g=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwec6lZ4xUQox3ET2gZG03vN8rNgLlPNbBy3t9SOTN_0Kt-nKrBWdaAl5HI7bcGMoGKvzAGeuo0NFk0wDK2y6fX_e-3I-en2Eed6TS337D58kYjYOCx8fs8iCB1-cV3KkPuZz3A=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjX2WEeVzIwZzwbfSUzncP1K73PBBUZY1M4hjT4h9xaQcth0bzF0dA=w1000",
+      "https://lh3.googleusercontent.com/a-/ALV-UjWbMXP4DeXENgG9wrgj0F1R4-9Njl9mTtO5f5uW_XF3KtX-4kZ8=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwOEiY31HV17iitcwER8dCOPSjPJof3B9fnnzZC8tqSiLi1RcVn0PNNlGMgHFzbY_aT22D_VTczelxw171tdtOV73myodkaWJokz377g2MDLudb3KyzZZhkP5pCTxaLNKuolKV6Lg=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم فلافل"
+    ],
+    "scraped_at": "2025-11-29T21:07:44.959741",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D9%85%D8%B5%D8%B1%E2%80%AD/data=!4m7!3m6!1s0x1457fb2e9d766b55:0x1727a5e3d3ccbf77!8m2!3d30.1575895!4d31.7664452!16s%2Fg%2F11sx4xnxg6!19sChIJVWt2nS77VxQRd7_M0-OlJxc?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457fb2e9d766b55:0x1727a5e3d3ccbf77",
+    "name": "مطعم مصر",
+    "category": "مطعم وجبات سريعة",
+    "address": "حي الاندلس، بدر، محافظة القاهرة‬ 4953953",
+    "phone": null,
+    "website": null,
+    "rating": 4.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/a-/ALV-UjWynMSuIL3pTdB9uss3hUkTwmDl3_ySQebCRqearF_qHO2GGnlt=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxWDg76LjDSJiZE044-eNa1xDMpXIOH2HUqDiC-cE-daOpyDI_dSVzWvvzXGhGPUs9zLU_5CLr9gMRTteP_52FK_2sXT_h3SNJnVIEOyUY5cvhqv4rU_AUKmQyMqOkLyVF_9X2S=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyrgcuHRKaZO_hSSIFnWXTWEOOogDm2fvlNUSNXGBikFwm12GNwO5r2nbB5-h3qQy26yX4v0NC0kY7zvwkMJ7Rm9D1gbZ2vo2-qoLhB4g3BRusEPAiQdv6grGK2p59oqhgi6IBZSA=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم وجبات سريعة"
+    ],
+    "scraped_at": "2025-11-29T21:07:52.584754",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Wild+West/data=!4m7!3m6!1s0x145337eab1d61933:0x79c6735c2f2ec55!8m2!3d27.9374377!4d34.3541907!16s%2Fg%2F11vlt2d7by!19sChIJMxnWseo3UxQRVezywjVnnAc?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x145337eab1d61933:0x79c6735c2f2ec55",
+    "name": "Wild West",
+    "category": "مطعم مأكولات تجمع بين أسلوب الطبخ الأمريكي والمكسيكي",
+    "address": "inside Chillout station, in front of Domina Coral Bay, El Salam Road, أول شرم الشيخ، محافظة جنوب سيناء 46628",
+    "phone": "012 12496888",
+    "website": null,
+    "rating": 4.9,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSztAnPz0g5zAZMjh0rWqyew9AZ04mccjutyyclrjsgY57IbZXGGeztqsjbU7Ci2v5Qb0qUYa-VPF0gGLbZgbv8uWfOqjk7VI3Yy2B4l1QTsXF-yN8J06Rx-rfoYCeX5hYT4pSqV=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipPhFwhqK0bZGNmrXIc3PYCChRRYO5CF-iBlci-b=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwB-BSI8yPWVtnwS9l51tCDo7v8WgsL7HNwQ_9XeNe31UR9tP3gkQzEmkq04eYpuFojdaTZhZpUQNQbYikEJMbsRrG8EyeUcTDL-UVfXvHUPbdOXF9NpSgtBDzM-6BC4f0kvU4=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw46NWmEFcfqbeJVqybLDPRliZO7yis4QacDWblPGqq75LMHAGt1U1-Bi9MAlBaggnMKdmmuKjtzNjmRVfWFEh7sl9AqiroUSM9u8SfO8N0UPuFj9DzQ-fjBq2LuhpICKiuZlqS-g=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwg6ygKVQQjffP8v8Je4-9Ekwtht001mMZsasQJrjkoEIjYjvj6k5aCZU8jYcXuDrk49pgwJmoswlj3Slw0o86Dajf_71kfadLfeqgtqOQTmRXq1D6GETS8BTb8xEU4fVRBcXBqmbggye0=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات تجمع بين أسلوب الطبخ الأمريكي والمكسيكي"
+    ],
+    "scraped_at": "2025-11-29T21:08:32.450256",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D8%B3%D9%81%D9%8A%D9%86%D8%A9+%D9%84%D9%84%D9%85%D8%A3%D9%83%D9%88%D9%84%D8%A7%D8%AA+%D8%A7%D9%84%D8%A8%D8%AD%D8%B1%D9%8A%D8%A9%E2%80%AD/data=!4m7!3m6!1s0x1457f1e5d6c3a86d:0x9fbdf3ab226e8f4b!8m2!3d30.1255326!4d31.7911041!16s%2Fg%2F11ly_b4n24!19sChIJbajD1uXxVxQRS49uIqvzvZ8?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f1e5d6c3a86d:0x9fbdf3ab226e8f4b",
+    "name": "مطعم السفينة للمأكولات البحرية",
+    "category": "مطعم أسماك ومقليات",
+    "address": "سكن العاملين بالعاصمة - بجوار مدرسة مصطفي كامل، بدر، محافظة القاهرة‬ 11829",
+    "phone": "010 60261733",
+    "website": null,
+    "rating": 3.8,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipN6iqFORVQ6A-bGbbFq3VLoc0dxGeHiyQku5v51=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipPc8vsknofHT2-bCHFXntTR7ACFVXX9ISHjg8rD=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipPY6Md_DEqV4Z_BjzEpJ9pWbEsMeGErveWHqFfp=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipOKriU0qI9AyxFOmOL-2MKjuL4IYw697-YQdnRx=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipNdauGnKJl71v6C4E5Z1rgLC777XwvDSFz86z4-=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم أسماك ومقليات"
+    ],
+    "scraped_at": "2025-11-29T21:08:50.201339",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D8%AE%D8%A7%D9%84+%D8%A7%D9%84%D9%85%D8%B5%D8%B1%D9%89%E2%80%AD/data=!4m7!3m6!1s0x145815c93997462b:0xc10c3656b8fcf60!8m2!3d30.0724092!4d31.346495!16s%2Fg%2F11j14yq0j3!19sChIJK0aXOckVWBQRYM-Pa2XDEAw?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x145815c93997462b:0xc10c3656b8fcf60",
+    "name": "مطعم الخال المصرى",
+    "category": "مطعم",
+    "address": "عمر بن الخطاب، مساكن المهندسين، قسم مصر الجديدة، محافظة القاهرة‬ 11737",
+    "phone": "02 24800009",
+    "website": "https://menu.citystarshotels.com/al-khal/",
+    "rating": 4.8,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipOFxugdNKeghZcHa29pLsLZOUUqvo3r7qTP9f-7=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipNeaxb96iw1jNHQEcSd1uvOZU7zq8bbL502gCHx=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzCUYSEE0mxhdlB2WPFQ4QmaQNgkwHvLYSraZSO8QrRpccO3XM2PfDCxHdrc8fHHxi-trlCBYYpoJuust562IMVacmw4QBbs5cCuz90fkJ7_2nogM6b2enSQMit8QM139rqzlQW=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwvqsZBFqUWsI0euqOxaWdTJSHldS98iTEbg-5FbQcDpaMy3Ux0O4HKXb7rAeDOhdBr0jpIwsO8JxCK7lTMG2JGhDr_E0tdFfqCjRc_dR91IAk_MyHzQCRhIV6unZZx76-BhUhv=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyrCpLU1-r4FQHerkNCVXpS8oyYN9fjfBl8m3lHdZHgaIhQRVrNhX__T7kSULxxIwTgI0n3bqDApVeRRUbqAQTgOy6agT1CsXmZ7lrgM2e8xkUgm-OegxRTVaUOehVbudjIei3mrfVeul14=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:09:11.423476",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Esplanade+cafe+restaurant/data=!4m7!3m6!1s0x14583f84f1544db3:0xc73adf3a1e746bac!8m2!3d30.0738409!4d31.3477431!16s%2Fg%2F11sfbhmb7r!19sChIJs01U8YQ_WBQRrGt0HjrfOsc?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x14583f84f1544db3:0xc73adf3a1e746bac",
+    "name": "Esplanade cafe restaurant",
+    "category": "مطعم",
+    "address": "InterContinental Cairo Citystars، عمر بن الخطاب، Street، قسم مصر الجديدة، محافظة القاهرة‬ 11737",
+    "phone": "02 24800009",
+    "website": "https://www.opentable.co.uk/r/esplanade-cafe-restaurant-reservations-cairo?restref=136458&lang=en-GB&ot_source=Restaurant%20website",
+    "rating": 4.8,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipPhs1Gq7jDswO1kEZiiXHUv4BRXorc6Y2Qdjl9L=w1000"
+    ],
+    "description": null,
+    "google_types": [],
+    "scraped_at": "2025-11-29T21:09:32.454195",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Sky+view+restaurant+Le+Metropole+hotel/data=!4m7!3m6!1s0x14f5c30865e9dde7:0x1d557618e9a82d93!8m2!3d31.2007706!4d29.9002891!16s%2Fg%2F11mvrn4_01!19sChIJ593pZQjD9RQRky2o6Rh2VR0?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x14f5c30865e9dde7:0x1d557618e9a82d93",
+    "name": "Sky view restaurant Le Metropole hotel",
+    "category": "مطعم",
+    "address": "Raml station, 52 شارع سعد زغلول، street, العطارين، محافظة الإسكندرية 5372032",
+    "phone": "010 14398958",
+    "website": "http://www.facebook.com/LeMetropoleHotel",
+    "rating": 4.4,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipMylxexHiNLu-fL1qBQVz5L8FjXo6vO2bKiX5Ca=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyW5MVAp6VVztPUWPStntMwlrz2-GZSnb9jwVOm5ku14slWiOWvjtpwswH5m4L5_Q-wBZhOW0eJCwy7YeuhQnwDp4vh7ZW8Uf_A-NE4_gV3Qgei3i0iO5-edlvehnDIWPqiWVwj=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxkpj3mNa-RYhxwrYOuF957akr0Qk0NND7982-kcBUCLDuxw_LnJCBSeduda43xJh9xmqGG8ZNszBFLCLnIKfvsjIHYVv0NRwYdvsiZgq5DiRvTXiokEAaVHppnAkEbW3YefSB29Q=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipNyir1dwgQ4LePLBEFzHgExYbfs-rrXvOCrxcpE=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx54qjoG5NHm4oE1bzH51PpSbiyZzdMuDvfdZHqH-HUxcG1RbejZktomsCrAfBpSA2FOCuvwk86lRRqmkf39gQ1kpIhctnmB3C2RwpAfReK2tk-akbBDGUQZqSnfcqGWv-3CkoE1ZcvGJL2=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:09:56.520318",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%B4%D8%A7%D9%85+%D8%A7%D9%84%D8%B9%D8%B2+-+Sham+El+Ezz+Restaurant%E2%80%AD/data=!4m7!3m6!1s0x1457f58072f59b4b:0x138a2b79920d7ca4!8m2!3d30.0836479!4d31.638628!16s%2Fg%2F11lsyzwk61!19sChIJS5v1coD1VxQRpHwNknkrihM?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f58072f59b4b:0x138a2b79920d7ca4",
+    "name": "مطعم شام العز - Sham El Ezz Restaurant",
+    "category": "مطعم مأكولات سورية",
+    "address": "مول ساوث بارك، محل رقم c5، ثانى القاهرة الجديدة، محافظة القاهرة‬ 11351",
+    "phone": "012 21862222",
+    "website": "https://shamelezz.tryorder.net/",
+    "rating": 3.7,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxhxCQS4bkRcJRRvPGNXBs1OPeToaI976ptfB9B6p4tGaz7jjzKzniq_x78dxe1Zp5CwYMUqQ80El7cJ6Q7gEDrsr5emCywWPm0oqTLg0eRQu8F0TeAxuhNBBV9KuxaPftQ2FaXHw=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx6oB2wl2a-w71aBmwqWfUFHV2Hbcw9WluFeiU2_idtiW343Eh5JqpL08t1RRkUZX3C-KbuqGTCsCvimbtcuaKkwBQhdq-aT9uJdGoFaLjaTJLBlgp33jEaE2uTFebgpWGz9AZoCg=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw0XRVFivm0m55Cdctp-gM7LZV-lUXHm32sno5wMyXGubkLGGlnGtbsDvbj5lI5ocwItUHuZCnrRth5svkvf7fbeOwrt9-SDXzeaFBybmBktugRIzo9EHkdIVTo-5bkGgTTcAjr=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxyVW0DvB4bC6lb-2NbojHvBZQ1V0q83NCWN2W0_XiJTagjFHUOEKXYDuwJKVGSX4skgMUO3B6XHQlkLtLq9NGm4womkkGIGHxAULX9Z9qSapNo2Bv5HUv0rKL-QxwM1HLaVVCflw=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzXcKS3CorJgpZb1cR7m3ZYvUkMXjVEgFYEOoem6sMVyP6XBAbPzjwLdKl1UPPpsUKTSc2V0SkKm9DVzh4JY5BV_iFpJz1j_0drQN5KoHthjF1B50pdjjyDriuMlGAMNObEFIPQILdDSwKR=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات سورية"
+    ],
+    "scraped_at": "2025-11-29T21:10:08.591714",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Crab+house+Seafood+Restaurant/data=!4m7!3m6!1s0x1457f79b722972bf:0xd7304c00a7f58362!8m2!3d30.0958096!4d31.641192!16s%2Fg%2F11t81pyn92!19sChIJv3Ipcpv3VxQRYoP1pwBMMNc?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f79b722972bf:0xd7304c00a7f58362",
+    "name": "Crab house Seafood Restaurant",
+    "category": "مطعم مأكولات بحرية",
+    "address": "3JWR+8F7، ثانى القاهرة الجديدة، محافظة القاهرة‬ 4771510",
+    "phone": "011 24641366",
+    "website": null,
+    "rating": 3.9,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz2SQ96I_V1QlFJD0eTsHVgRjZvGDGF5SHkGbBeeu5Q8_sS2NsYFRkN575feoNagAU6ilsUlBm_ckeeycPGon25oK7oWaLzspdtveAsMLej3pPwSVxuuixbSjbSBIvbHct3ODoe6g=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy8YQmZkDNCrFotor106-UafEFthKnkJbjDbOukLQjd52rzO7ATikmqxW3hqNCtw1s5rPD19E9DBtE9ylCQ-B8lKs_kvESEoGZcfGOJ1hqjdrtbVa7mksZP4bW1eDNaWHrKowQi=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyh3b0uKRWfhe2VGojTQvUA5c9nmY422cFtJTpsxKXRwt_4skupVmIMxa7V4C4dLk75JsEWT2ftV-Y596zVPX92lgPQ8eUl7e4D6M4Kxque0SsDRWS0j8q2Lx77LZKMxK3J6sKU4g=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzY52LILtUA79vcG_2EPEeEQ8yXEdvX4pM243TAUHlZrAosNZHpEBsiqNEA3YX8H-GR1NR-Te4e6945BzFR5oKORuV6Uez97FZvtssJLegFtHdOSWi45O44bU4N9Zqe931AplNY=w1000",
+      "https://lh3.googleusercontent.com/a/ACg8ocL6TYocMW4St2ZDQrB0AraQ3rdy3Ag02GaAGPUwDmqHzXKw3g=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات بحرية"
+    ],
+    "scraped_at": "2025-11-29T21:10:19.518967",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D8%B4%D8%A8%D8%B1%D8%A7%D9%88%D9%8A%E2%80%AD/data=!4m7!3m6!1s0x1457f74ca32ffbd9:0x6db3704b100c9d90!8m2!3d30.1393123!4d31.7182867!16s%2Fg%2F11byxg31s6!19sChIJ2fsvo0z3VxQRkJ0MEEtws20?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f74ca32ffbd9:0x6db3704b100c9d90",
+    "name": "مطعم الشبراوي",
+    "category": "مطعم",
+    "address": "بدر، محافظة القاهرة‬ 4951350",
+    "phone": "011 00196962",
+    "website": "https://restaurantguru.com/Shabrawi-Restaurant-Badr-City",
+    "rating": 3.6,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwaK8SYhpvAi3gpfgUvAIQMok8WVI7BpyiThJkzGWoho4t3P68yb_Ez330p5KlxtN82j2uSYsZdpu1QnUV87IYJVgkEKHIGQSNlc3seSwyK7j2OU7FKkhgc6-TimamHf5J_zngg=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipNsy9T4aiuj2vUwlwiPjZGlKfUmq3LpHe5-5nSd=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzp5gtj4XhoJd1q70jLixd_QCMx6ggDdW3mn24szGyL4zn6IQOBo7SQFF96upOWYmdju8Z2fm5H71dteOz1ttL1i2YA9cwFCpnfYbR_iBa4HqsASU-yx9xHku_RSiG52y--aaIKhQ=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzZKtIi-Hhkx9zUJuKhgGKpaz5bGctr_JQxoA8aF6qLdzpe7o05UDemq5YoIr9Gk5XBidn-Nmkip5y6QRFvcjWVIeq_ZWbQrezuJj7gjdUOmCluYsOP17qE5BUtviciLh92nh4=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSySO36i5MAGPHsOyHfRnt4YXhFAB4lP3eYzmcdYSDBZsJeaNx1fPunZ5e-DT6qY6tVfnc3D7NJt4Y4h9mrE8b4sYVn0QUunPjCTb67pjRboDJxlKdnKkKNKt5J9m3mF7qPxE-e5=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:10:29.971262",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Sizzler+Steak+House/data=!4m7!3m6!1s0x1457f70b00a13acd:0xf53b35e573535768!8m2!3d30.1081188!4d31.6288923!16s%2Fg%2F11pq6p6drv!19sChIJzTqhAAv3VxQRaFdTc-U1O_U?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f70b00a13acd:0xf53b35e573535768",
+    "name": "Sizzler Steak House",
+    "category": "مطعم مأكولات أمريكية",
+    "address": "Open Air Mall, قسم ثالث القاهره الجديده، محافظة القاهرة‬ 4771203",
+    "phone": "011 01945577",
+    "website": null,
+    "rating": 4.5,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzVyYym_JVEsn3sif3qRRfy-lLySJmJmn_ImY-YiuU1f2ZNvxF_Fur4w9mLicqW_Pfn0e7T8vTI00szKRP3H9aMjeEgTlMbhtVSA95EYyoIyM0_M8hTfoZJBEeJDNf_eWlLvrJ4M-H7PYE=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyvxJ9pQoWPSYnyXRjqT8kMnbzd5iF7N-qGdX8ixFf0zSIYOBmssIWziag16rfO-IJFSkmicaWD6rEn225rr6ujHLzieEtId2sVnRfY0Ppuz_aMS459BPr63DP9xdDgKtTsE1rD2A=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyIuSS19627TL-Vp-BIOOpynFZKVr3qjVs37otQpenQ_2f_iMo01KBVEmfdkoi1Nuai3XgEZmbe3YLcR4gX1z8hNBjSbgQw6gzKXMedp1wzT6Un_iAtBmjLUHs9lJ6Dew3jjgc=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy--eZVKSU4oAviovZP_aWa2lLaAITtMWKZUIsAGGOxhXJxwRneHHOniJmCLEjBQcSQOtAsHWNoX2oQnBzF45VIOZRwZBV7tRd0b79Fj1emKakcdo0gn8xXeeJaMWeJQxXWJsH_pQ=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxp6CaxQicONkcpHk3iSU3o77iSWMFLX5kK6yrABWgq89BdITedoq5uCC3kpwtzT3oLjcMGIST2JtCTMfZacGxGYuVjsr0TpykqkSzrdugV2GORo17gLB75ycM8dGUckgBSmvwu6mtgH5k=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات أمريكية"
+    ],
+    "scraped_at": "2025-11-29T21:10:41.663291",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Bosporus+Open+Air+Mall+%28Madinaty%29/data=!4m7!3m6!1s0x14581da78f5e7b53:0xadb32e235d7aa288!8m2!3d30.1073899!4d31.6260524!16s%2Fg%2F11q2j_g6x5!19sChIJU3tej6cdWBQRiKJ6XSMus60?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x14581da78f5e7b53:0xadb32e235d7aa288",
+    "name": "Bosporus Open Air Mall (Madinaty)",
+    "category": "مطعم مأكولات تركية",
+    "address": "Open Air Mall, ثانى القاهرة الجديدة، محافظة القاهرة‬ 19519",
+    "phone": "010 00187639",
+    "website": "https://thebosporus.com/menu/",
+    "rating": 4.8,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyuNYopI417picdzatFYXyh_yWaWLqGufDGGs4TWi0bARk9PouhlvzE_nYe5ZvEIx_OpPfnJmSJ9vouW_ygpj_FRAY0rJxvVG2tZ1N5ev3eYximSyW_fd3qHMwW93CR9pwHyT_MIs2h0qaJ=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzn7QIl7g_69VhpB4ECjo1QaYC6Fswv9iXS6a5PHqG5ThDdgltUAvCgt9nr8lxQcD1EDLsiKejZiYPyfZhH_I1p34HFUzz1h_RTPvkrTFO_Ykl7wjsJQ7w6kDGZw_V_5ue1ye2N-w=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwHkxfadwVQZHcz6CjqUfXi-ZLkz_AAA_t2-ep3fBq0HiAt3k7xnJnD_MQHlrW_eqLSdL-r7r1r8-Kz4nfs30mnAtQCNn3y6ZMScfl_BDXB3dVyRJlTrQxfQPUkc3qYbS2yN3YU=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzLTxWJVkk5hkhLMPP-cciDClwmbhRiz4v0EM2My5faSGoPodg4MvuGMeWFJyhNqFLYa_b0SEDyQpScGyP8HSMj6tP39SJ7tSrOeXn63GWq7JDjvehTqsTLFyqHGw2EYctQNVNr=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyHrsvK0LYTBv7o3vAsyesZ9E43clj4pDVWG4jGHoL0Be_LP3cQT5m-Fh7bj__gay85ThEMHAm3LZD2dxH0khyaANzfgfEA8rrkBJmoLLIWVlgOvvi6EM7TfQ_FRfI8zYvQuFrpK2V3dTAs=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات تركية"
+    ],
+    "scraped_at": "2025-11-29T21:10:50.143157",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Seagull+Restaurant+Madinaty/data=!4m7!3m6!1s0x1457f7854f8e8e0b:0xdc89019456555d2e!8m2!3d30.0784072!4d31.6659447!16s%2Fg%2F11ldxmszbd!19sChIJC46OT4X3VxQRLl1VVpQBidw?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f7854f8e8e0b:0xdc89019456555d2e",
+    "name": "Seagull Restaurant Madinaty",
+    "category": "مطعم مأكولات بحرية",
+    "address": "All Seasons Mall Madinaty, محافظة القاهرة‬",
+    "phone": "012 00157302",
+    "website": null,
+    "rating": 4.9,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipOAW1anijyJuNiBT3TpGz21-ZtVRc8dqEGTZxKY=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxbERxRe0tbEO5A39P7nZEAmDaBQXrKrGmuCIFdA_a-XjODZKmge6ZCT9AOsLJz9rE5rXykCp1OpdBXx0Fd9VyQpBTa5kDXCe338uRhE0jd1J22R1nMX7-LKeeM7FvCa1OBqcHi=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxj829UFQdGkrAy1-lKi7qnphPDyfaAt-KPvCNR59Z7c-JK4GdZrnNKbE3ONzZBAPupzAj7VScMgcqvBSYk8Kw2IOn5PQrvn5-vc3uxzCzvtR10jydytrhZeCHLva7pbH2_hsIFDg=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyBOBovAjfQ0XR8Jwfe_-NMz3XKEydhjidtfyJs_3V0lrxKFMVl_iErRK0b14xeHf48dbZMl89CL8EMJKtlE5RlkScVF1utIJUaa8TtCBSpPW2MWPeA4_SCO0a013buNTPXJzkK=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyCrp4FbtVGBqV-VCti21myZWXqgPvJUPLkskY6cPnUpwERCnWzb1xmeig9R63-H7y5z0IenpCqwa6masxOT21z3f6-ERuqjfVpXtK6m13ulLn2mIHuLWLgpClSPMvzJKA3MDwQGaQvlX8=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات بحرية"
+    ],
+    "scraped_at": "2025-11-29T21:10:58.931186",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Chicken+Fil-A/data=!4m7!3m6!1s0x1457f77b696bbc3b:0x8ad2292a7f294297!8m2!3d30.1082267!4d31.6299334!16s%2Fg%2F11n7d435ry!19sChIJO7xraXv3VxQRl0Ipfyop0oo?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f77b696bbc3b:0x8ad2292a7f294297",
+    "name": "Chicken Fil-A",
+    "category": "مطعم دجاج",
+    "address": "4J5H+7XV، ثانى القاهرة الجديدة، محافظة القاهرة‬ 4771203",
+    "phone": "011 51721116",
+    "website": "https://www.facebook.com/ChickenFilA/",
+    "rating": 3.8,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwdWyfF9yFfttxUo7BnZ-sVK5l6P2V28KtWbegEO1UJwhOhhq-t6Gj11ziYi48CjOCFpCOntb76L1ga3DrknR3lx5rpZMKmweGSCU_VrRbN5xKTejuaka8I2RkC4sT2_ui6I66fCg=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx23Mm257WODVrBKMBmuenQMyqa24R_bmNCZV1BLfUIdnZQ4SljchD1hl7d_STB_KQ4mYiKHM4KIm1yy7-fZ60gNrv2hT2gHh5SENopwr18eNBp4Ux-gL-Py8wAxtUcPsP3TLea=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzazFBaRgUFXhLhH2JehRyneGbeUMOmS--pGJNtpfxkQiKt3CDLfpBDZvspMYihfRIzZOC3Jzn5U_QnDwBonaMc6xe48n04hdhMdHXpL0xZpPsfIpQgkNy7J2Z4CsfOsnTzcZXi=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwmqoiqy6PArSmumenfbCDdM1d1eL9cTjt_w2k-YgLRCqbpDwWbv5SSMuJ1IUljn1K8ldLeKlfQH1A0n-ywH78bYVQ5yfWGdUZDZVIoRfcjeHU0VkcfaJtbXecTzlOC3e2IYYrj=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSz9hA8O8iVZ28Nm783bMXDYEziSD38kjeXkfT9eMLXPTwuOgQazg_2XAYlQc_4xBIvCO7mosz9H9MBFPonsVETrP3oPpa8cJtKe8DU55HpUyzAJYD-ugJTsdectdhH-V5TrOiMRHg=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم دجاج"
+    ],
+    "scraped_at": "2025-11-29T21:11:07.812371",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/piko+restaurant/data=!4m7!3m6!1s0x1457fd0deae30bbb:0x2f72f457badffe53!8m2!3d30.2830594!4d31.7559643!16s%2Fg%2F11kr6bslhk!19sChIJuwvj6g39VxQRU_7fulf0ci8?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457fd0deae30bbb:0x2f72f457badffe53",
+    "name": "piko restaurant",
+    "category": "مطعم وجبات سريعة",
+    "address": "داخل كافيه فلور, أول العاشر من رمضان، محافظة الشرقية 44637",
+    "phone": "010 97607151",
+    "website": null,
+    "rating": 5.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipOhhdmkUYRcStNl7ooppdgZF5gH40t4SlLd5t0x=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipOoWZQMqnTmUCOhWInwSLdZ3kywsm6UnYBUU_H9=w1000",
+      "https://lh3.googleusercontent.com/a/ACg8ocKZb2AH5a21F9IJCNc7uAwsxIQj9z2VsOLDZP8rEC86ki4ChQ=w1000",
+      "https://lh3.googleusercontent.com/a/ACg8ocKX0pFb3qJR8_YsNqb2k8XOLQ2zQt42zjBdRf9qgmULQfoabw=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzlAs8bwoLqkItB4rkqDjaYI2GJ2Ix6OMugLOAsYMpWMzL1NbqS3DqNbxYNnXs7Ts7l7XVkqRxG2L0SSf3Rrqr4WJP1ubeFt-YU3pg3wkdMvsfIgOEQ1IN4NjulYTUi2WVXJNGf=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم وجبات سريعة"
+    ],
+    "scraped_at": "2025-11-29T21:11:14.604891",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Vanity+Restaurant+and+Shakes/data=!4m7!3m6!1s0x1457f5028469875d:0x1c8b31a7412006fc!8m2!3d30.0778868!4d31.6649003!16s%2Fg%2F11y4nb30v9!19sChIJXYdphAL1VxQR_AYgQacxixw?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f5028469875d:0x1c8b31a7412006fc",
+    "name": "Vanity Restaurant and Shakes",
+    "category": "مطعم وجبات سريعة",
+    "address": "Madinaty All Seasons Park Mall, ثانى القاهرة الجديدة، محافظة القاهرة‬ 11529",
+    "phone": "011 23705121",
+    "website": "https://www.vanityrestaurantandshakes.com/",
+    "rating": 3.8,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx6Rn0TgAdosE-J_ZS1JC5OJvd9udWiZMQZbDhitBUR7-uLorReAbHK39P1oEC92y9N8RJCkZ_CWa-zLDI3kE2Ld-Jbx40Grn8WiArzkQrBekGeNZYiK-SkdZKL1slrKMLNK6WB=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyDZPSii2ASYncQVRgqquPEO_dEcvPfAer1C1N2pOSu5VCOu5PWvesILrVbSeEta05AgR8-KrDLpXO_-MFSKJK7f02fuuRYkvm4U5nbOI8HujnotAp-v5yIZ4tKro9PNfHt5q5-vtW-O79W=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyK42iuTrqBKWZwMRdBYkHfZvsVqFQby4y66UoOdtqShN2zG_H1zjLhBIngIDwTp3R2-GJzxXtqKwsUvH5tFE303dBR5A1yAd1m3-X4mN4tLMVXv6Qh4A4q98cxCvH6NeFrIMbG=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxpi6b6B5tex75Hnidmm2VGNOqcWZMUXmFV-Az8xkcnDLp8cyAkVdPom8f2ykgeYscTFy7L2aGgkRgmQ3HYCKXQAzhyoX_tQviJHPb2pyKZcty6MV0SXlG_IKpXfZ3H4khVTKQH=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyQJ9QAnXFLbCgna8K6xOhbO6xtSka0qJboy6UCm4FlgewKqegxULBmiEl7OKNksD38oJsgyKJCnptXji7RJox6xIWSNmrs3alyL1gpb-g3mwBNjBjsZiT4CX5uEjhKCSIfMYQwj8v7I6op=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم وجبات سريعة"
+    ],
+    "scraped_at": "2025-11-29T21:11:23.017339",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Coco+Restaurants+Madinaty/data=!4m7!3m6!1s0x14581dbfe69dffe3:0x58be021338169888!8m2!3d30.1084978!4d31.6258281!16s%2Fg%2F11s5ml73xx!19sChIJ4_-d5r8dWBQRiJgWOBMCvlg?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x14581dbfe69dffe3:0x58be021338169888",
+    "name": "Coco Restaurants Madinaty",
+    "category": "مطعم",
+    "address": "4J5G+98، ثانى القاهرة الجديدة، محافظة القاهرة‬ 4771203",
+    "phone": "012 22204651",
+    "website": null,
+    "rating": 4.7,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyN78usb131KsjmPjrBcDPXdOFt3eV0a2hKIUHNwpIeWDK046OMg14_vtXysyEf3zCgjHgzlcwiG92wYbtGdvXarRQvf-oWBtJIqObIuGUQ9vk7Bn-qvhB_m84uQ7JkjSmuS72ivmkSUM6d=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy2PHmQ5O97sBfdD_DSw-gnV1hpDeJ8K3mppMqkjgRKoPAVtBFibMZYQ2lcgPvaCJsZ5SbhFHivHMRg2UQP-bo05hEbyQQaxKVZ0KAaHSQb_mKC05QOjDucn-9tKHsCQ9wcm74m=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyWXaIuNssF-6MaT9Xe-wlFC5LEdcwhgQhzuRLjhSEaMJ_HSwHP7Pl99FovX-KVqJoiBOMlWNxxRqK8OtMZzdnIfxdyk5L5KtxCxlNrOHUsnW7cBKBBycxlbXHES73JvhRMIoeV=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxlh2KADqzKYEA0n1hCIl1gRChMbRvQPA7y15-0-nlQ_6itIIP6273_8oNCI1T_RVu-hzlsddcykuOM2Fij8ZhhTQozE5v5Dsc5VwJHnpus-LOdfcgYmUidaFZU4d1hU_60A5d0=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxbDz7CexOlAtnuHE9iErU7xwi08TLgbBOk_ij_2vCvKSER93ob1Srwy5h-O0fhAxUQh-ztw5AeMaK-8tmYgStC-uiTmzCYi-bftTazOf6fubMVo0nGv-W-NxwkhmhkRR8ouIuj8kVMStNf=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:11:34.308889",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Blaze+-+Madinaty/data=!4m7!3m6!1s0x1457f7d5b9e567ff:0x6b13b4f7acd90d3e!8m2!3d30.1073937!4d31.6270148!16s%2Fg%2F11h3v0qzmk!19sChIJ_2fludX3VxQRPg3ZrPe0E2s?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f7d5b9e567ff:0x6b13b4f7acd90d3e",
+    "name": "Blaze - Madinaty",
+    "category": "مطعم",
+    "address": "Blaze, Open Air Mall, ثانى القاهرة الجديدة، محافظة القاهرة‬",
+    "phone": "2016267",
+    "website": "https://www.blazeegypt.com/",
+    "rating": 4.7,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipNfQD36rMOkpWDs2o7qN81vVoTFamABErd_H3dc=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy53jGDNSEmqSDvgTxd-Zk8l7r15v46HZ1MgI4MRy1vzScpvJ4_G3iuKsVV-AyOuJqruZhM40PNndL2KL9wq9xfaA0rJd-Au3l5vBPt4PbNtGRrOAQXUeypFJKCNabYQbVwxkqe4A=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzVFW-Z1qcmRJbZe2DJNAa1B3sg9-sA_DfIJEP8ZOBuFc1bGnaqV3wAwo5I2TIB3N_iCVoXvr2vSnBVQE7WDeTrQ-4u3anApWXrq6dqE2Mr9zetTBfy20KNNDexwoja-RMnycJc=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyVrSAdu3SOQ1IEJp9Lb3FV_nofYW9ChvS0ZYJtMLx3_PupokTdGD7kjDOOKLCOph-Db5sdIMQz3GrRsz-PtsnhO-2fmBsUl-xfdTPXHUNurIsORqvJp1mTm2ULDIw-vx-Y7p96=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSw_-qi1p36-Uk4dIxYB9t2rRxKBWr7r5Y8-dxjvgDTQnW_Qq_BPIBUIxZ8bP-3zVNLDc5Y1JGrx0kHgjCZVExG6BW7_OApgTul1UYr_5ZRDrN4NHuEjEboM7EXyshRN0CLnD71JvcRSlk7q=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:11:44.925057",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/%D9%85%D8%B7%D8%B9%D9%85+%D8%A7%D9%84%D9%85%D9%83%D8%A7%D9%86+AL+MAKAN+restaurant%E2%80%AD/data=!4m7!3m6!1s0x1457f79d8506e0d5:0x5eb59a6d8c99f457!8m2!3d30.11773!4d31.7170331!16s%2Fg%2F11st6196d4!19sChIJ1eAGhZ33VxQRV_SZjG2atV4?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457f79d8506e0d5:0x5eb59a6d8c99f457",
+    "name": "مطعم المكان AL MAKAN restaurant",
+    "category": "مطعم بيتزا",
+    "address": "4P98+4R3, Unnamed Road, بدر، محافظة القاهرة‬ 4950212",
+    "phone": "011 46789098",
+    "website": null,
+    "rating": null,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwaZdwKB9jAJY30fnalpzbJgbM4V_smkTpI2kB1-5mnUbNXeclBywB8CDO0cc7fS6lvPVVL4zA-ptNATUQVFnGbd42GNagTFZdu_StaTip0gTzqUtBXrc7IulQ81m2wVTfnSQKuOw=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxn-IemtzmORm18Wioy6xUvmBcObfrtLnA9YHsnrT4KaCJC6zcyV2Mfu3GLlDzp1xQ_8aFQ1o1flok6XTlC4X9dBJt-SRUgylgkNqBpyTy9GsxaezhQXv7HxF2hpKVpmHXTY4XvhQ=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx46Hw1g-VyUAfgRJcdsZfcM_wO9DQCfkNOqZm7NVqyKUYnFqpNLS_W8SJrzCmdIp33jpoyj8G9PiGNXVizidf6NzrgrPnevCTFHYtYOwy7j0l2L3Igrlj8l_W2HUHuB6Sqalg-7A=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSy3CXTXVqHp2_VRLQoeqK6wC-dWQbRKHj-uF7dWgc5UbfRTUKihFwq8Yaz_xahXj_qGxazHsohA1r4GD2ZOsoeOK-nQl0dMWuqnFRaOABYuYT_8Fa7DZdcYus3BGjPTHO-Pwi2v=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم بيتزا"
+    ],
+    "scraped_at": "2025-11-29T21:11:52.868753",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/TWO+restaurant/data=!4m7!3m6!1s0x14581d1b7254f979:0x81aefe693161e349!8m2!3d30.0999741!4d31.624745!16s%2Fg%2F11m9m56sqw!19sChIJeflUchsdWBQRSeNhMWn-roE?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x14581d1b7254f979:0x81aefe693161e349",
+    "name": "TWO restaurant",
+    "category": "مطعم",
+    "address": "3JXF+XVQ golf club, ثانى القاهرة الجديدة، محافظة القاهرة‬ 4771120",
+    "phone": null,
+    "website": null,
+    "rating": 4.6,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx-95fEnrSKdlYMWrviJqJ0LyemvZVoP9nKBGA4FKSBofLC4nL8IwLYhnwcRvji1yvw0tczqP07G2K7j6rAX6hW3MqYh6wg0wFbvn44WXTitOuPZRCHFQ_Ap_UaP7Xx1gPC_TF6ug=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSxai9L3Gk0HK1qVkXb3pzDLs92C-cUPCVAip-mi_0i7T0h1Fyt3Xf4RQ9KUHdxjPLLVoWW-b89sMhiHSYe7wxglMT6DrrNSSkinEVTOBsCfafdEj_5-WXgVsz1zGBMT4aFWJf2_=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwMDl6mbRHY5p7cJh9WphKXcrQsC-jb0QAeHMTXFZOiboOHXYEmJDQjHrpqCeXSt8q96y9p0bwyDrYaM5LWUSIyJ2J7tSHol3yeEQlyk0uCxSs9yG9hDGNqvKA5mTa0QxYAjH0ZhA=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwyfjaMKyDdaA2-xL-r-jDQ6wgKNmKrvPItyEp-UoLaXkBNT9vUb-wxskI69V8ssjrnG3uFeiXGt9aqOWCbH3gH3WsA-tB2P0mbETWPNP12HHqyBb6BONHw6hHcmLn1zDDR2BVT=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSx0ZVdpZtsLSOVIS8nmggfIEmSxp2K_mAS1RlYjfxD4Fpx_pvSHBRhCbHWreusbsW2YXVmQpfBk5G6KIzKOn3lCIzBqXMCNO41Z6iyyZLtXaVNxjWfwSvGtA4ifwhfNtMPfukJn=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم"
+    ],
+    "scraped_at": "2025-11-29T21:12:00.299821",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/Pesto+restaurant/data=!4m7!3m6!1s0x1457fd0003a01685:0x501cd1d57516c4b2!8m2!3d30.2885904!4d31.7485388!16s%2Fg%2F11mrbdf477!19sChIJhRagAwD9VxQRssQWddXRHFA?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x1457fd0003a01685:0x501cd1d57516c4b2",
+    "name": "Pesto restaurant",
+    "category": "مطعم مأكولات إيطالية",
+    "address": "7PQX+CCM مول سينكو ٢خلف مول الدوحه، أول العاشر من رمضان، محافظة الشرقية 7063124",
+    "phone": null,
+    "website": null,
+    "rating": 5.0,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/a/ACg8ocI6bEw_UsPyePzpqPE7RuU0qc75hZbuQqEkXXhkwV05JMPWew=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات إيطالية"
+    ],
+    "scraped_at": "2025-11-29T21:12:06.612512",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  },
+  {
+    "google_maps_url": "https://www.google.com/maps/place/21+Ninety+Healthy+Restaurant/data=!4m7!3m6!1s0x14581da8f1f39b8d:0x4943bd7c8c1e7c8b!8m2!3d30.1667928!4d31.6085207!16s%2Fg%2F11trv96fbr!19sChIJjZvz8agdWBQRi3wejHy9Q0k?authuser=0&hl=ar&rclk=1",
+    "google_place_id": "0x14581da8f1f39b8d:0x4943bd7c8c1e7c8b",
+    "name": "21 Ninety Healthy Restaurant",
+    "category": "مطعم مأكولات صحية",
+    "address": "مدرسة مودرن اسكول, الشروق الحي الاول بجوار مسجد السلوي امام, محافظة القاهرة‬ 11837",
+    "phone": "012 07770671",
+    "website": null,
+    "rating": 4.5,
+    "review_count": 0,
+    "latitude": null,
+    "longitude": null,
+    "opening_hours": null,
+    "images": [
+      "https://lh3.googleusercontent.com/p/AF1QipNdFnzvxK5Qy0D6Rjwqr0VmrnFZeymYh8op7kUy=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipPpokqDeBLMP5SbV4y_f2_4BQIcym-AhRB4AkTo=w1000",
+      "https://lh3.googleusercontent.com/gps-cs-s/AG0ilSyWkZ63gav2gFxS-HpJERI30zYOMqjTaTe2gbwx_vo7oWp6HcEG62QZ2uQCjrQP8dDO43sJsrOHhtg-D6SBfBA4dNDXUR3nSZCVKB2vKxcuCY2Y-VRkYiJPQcWFaSIF0G76K2tr=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipPesYtyux09ZoWGY_-HdKIf8tOW6kyIzqBPrg9E=w1000",
+      "https://lh3.googleusercontent.com/p/AF1QipMEe3an68RwyHtJ3XGFW1MAu2PjcblSFxo1BdfW=w1000"
+    ],
+    "description": null,
+    "google_types": [
+      "مطعم مأكولات صحية"
+    ],
+    "scraped_at": "2025-11-29T21:12:16.476178",
+    "search_center_lat": 30.1573387,
+    "search_center_lng": 31.8369255,
+    "search_radius_km": 2
+  }
+]

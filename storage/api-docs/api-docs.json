@@ -11,11 +11,763 @@
     },
     "servers": [
         {
-            "url": "http://127.0.0.1:8000",
+            "url": "/",
             "description": "API Server"
+        },
+        {
+            "url": "http://127.0.0.1:8000"
         }
     ],
     "paths": {
+        "/api/v1/admin/app-settings": {
+            "get": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Get all app settings",
+                "operationId": "d6e8279ba4c194ba79e910e6496369d1",
+                "responses": {
+                    "200": {
+                        "description": "App settings retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "settings": {
+                                                    "type": "object"
+                                                },
+                                                "stats": {
+                                                    "properties": {
+                                                        "total_devices": {
+                                                            "type": "integer"
+                                                        },
+                                                        "active_devices": {
+                                                            "type": "integer"
+                                                        },
+                                                        "ios_devices": {
+                                                            "type": "integer"
+                                                        },
+                                                        "android_devices": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Update app settings",
+                "operationId": "cc2011613255c0f4c975baa2e4190e03",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "app_name": {
+                                        "type": "string"
+                                    },
+                                    "maintenance_mode": {
+                                        "type": "boolean"
+                                    },
+                                    "maintenance_message": {
+                                        "type": "string"
+                                    },
+                                    "force_update": {
+                                        "type": "boolean"
+                                    },
+                                    "min_app_version": {
+                                        "type": "string"
+                                    },
+                                    "latest_app_version": {
+                                        "type": "string"
+                                    },
+                                    "update_message": {
+                                        "type": "string"
+                                    },
+                                    "android_app_url": {
+                                        "type": "string"
+                                    },
+                                    "ios_app_url": {
+                                        "type": "string"
+                                    },
+                                    "api_status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "active",
+                                            "limited",
+                                            "disabled"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Settings updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Settings updated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/app-settings/upload-icon": {
+            "post": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Upload app icon",
+                "operationId": "3c0449edce2e0f3263d566bc2a8a4e9f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "icon": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Icon uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "icon_url": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/app-settings/upload-logo": {
+            "post": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Upload app logo",
+                "operationId": "d3ac0c16815437c3a40635a9e8dc14ac",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "logo": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Logo uploaded successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/app-settings/notifications": {
+            "get": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Get push notifications list",
+                "operationId": "66000294b637bf4ee95ab15df6520474",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "sent",
+                                "failed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Filter by type",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "general",
+                                "alert",
+                                "promo",
+                                "update"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notifications list retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Create and send push notification",
+                "operationId": "776291e15c8ff856250d813f4a85f24b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "body",
+                                    "type",
+                                    "target"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "body": {
+                                        "type": "string",
+                                        "maxLength": 1000
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "general",
+                                            "alert",
+                                            "promo",
+                                            "update"
+                                        ]
+                                    },
+                                    "target": {
+                                        "type": "string",
+                                        "enum": [
+                                            "all",
+                                            "users",
+                                            "cities",
+                                            "shop_owners",
+                                            "regular_users"
+                                        ]
+                                    },
+                                    "target_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "action_url": {
+                                        "type": "string"
+                                    },
+                                    "scheduled_at": {
+                                        "type": "string",
+                                        "format": "date-time"
+                                    },
+                                    "send_now": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Notification created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/app-settings/notifications/{notification}/send": {
+            "post": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Send a pending notification",
+                "operationId": "70a3e5b686a36f0a3e8d50abb9c29e4f",
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification sent successfully"
+                    },
+                    "400": {
+                        "description": "Notification cannot be sent"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/app-settings/notifications/{notification}": {
+            "delete": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Delete a notification",
+                "operationId": "80673102b40ece439ebe8eaf5a0eceb2",
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Notification deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/app-settings/devices": {
+            "get": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Get registered devices list",
+                "operationId": "cd24f3717d3f229bd53a57e09b218ebf",
+                "parameters": [
+                    {
+                        "name": "device_type",
+                        "in": "query",
+                        "description": "Filter by device type",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ios",
+                                "android"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "active",
+                                "inactive"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Devices list retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/app-settings/test-notification": {
+            "post": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Send a test notification",
+                "operationId": "6b4f682fb41469414e3819c76313970d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "body": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Test notification sent successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/admin/app-settings/statistics": {
+            "get": {
+                "tags": [
+                    "Admin - App Settings"
+                ],
+                "summary": "Get app statistics",
+                "operationId": "6bf09c09291b20dc01f3dbd012cbe2a4",
+                "responses": {
+                    "200": {
+                        "description": "Statistics retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "devices": {
+                                                    "type": "object"
+                                                },
+                                                "notifications": {
+                                                    "type": "object"
+                                                },
+                                                "app_status": {
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ads": {
+            "get": {
+                "tags": [
+                    "Advertisements"
+                ],
+                "summary": "Get advertisements for placement",
+                "operationId": "eb4ffd903d1d6d7bdddf1d34003391d1",
+                "parameters": [
+                    {
+                        "name": "placement",
+                        "in": "query",
+                        "description": "Ad placement (homepage, city_landing, shop_page, etc.)",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "City ID for city-specific ads",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of ads to return (default: 3)",
+                        "schema": {
+                            "type": "integer",
+                            "default": 3
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Advertisements retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/ads/hero": {
+            "get": {
+                "tags": [
+                    "Advertisements"
+                ],
+                "summary": "Get hero ads for city landing",
+                "operationId": "12d4bbecada03fc30c448ec22fcf94a6",
+                "parameters": [
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "City ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Hero ads retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/ads/banner": {
+            "get": {
+                "tags": [
+                    "Advertisements"
+                ],
+                "summary": "Get banner ads",
+                "operationId": "91c7d87100075d1191641a8f84cfbf3b",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page name (homepage, shop_page, etc.)",
+                        "schema": {
+                            "type": "string",
+                            "default": "homepage"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "City ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Banner ads retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/ads/sidebar": {
+            "get": {
+                "tags": [
+                    "Advertisements"
+                ],
+                "summary": "Get sidebar ads",
+                "operationId": "b247f906db89bd24ff0366c76e174fd2",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page name (homepage, shop_page, etc.)",
+                        "schema": {
+                            "type": "string",
+                            "default": "homepage"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "City ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sidebar ads retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/ads/{adId}/impression": {
+            "post": {
+                "tags": [
+                    "Advertisements"
+                ],
+                "summary": "Record ad impression",
+                "operationId": "fd2c49d3841963703dbfa6419bf31738",
+                "parameters": [
+                    {
+                        "name": "adId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Impression recorded successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/ads/{adId}/click": {
+            "post": {
+                "tags": [
+                    "Advertisements"
+                ],
+                "summary": "Record ad click",
+                "operationId": "de82d3cde7a4dbe6039a2964528523b2",
+                "parameters": [
+                    {
+                        "name": "adId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Click recorded successfully"
+                    }
+                }
+            }
+        },
         "/api/v1/auth/register": {
             "post": {
                 "tags": [
@@ -1735,6 +2487,661 @@
                 ]
             }
         },
+        "/api/v1/news": {
+            "get": {
+                "tags": [
+                    "News"
+                ],
+                "summary": "Get news articles list",
+                "operationId": "7102e7d52de3772177212bc84d5a0bb2",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Filter by category ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search in title, description, and content",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort by: latest (default), popular, oldest",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "latest",
+                                "popular",
+                                "oldest"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "News articles list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "news": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "description": {
+                                                                "type": "string"
+                                                            },
+                                                            "thumbnail_url": {
+                                                                "type": "string"
+                                                            },
+                                                            "published_at": {
+                                                                "type": "string",
+                                                                "format": "date-time"
+                                                            },
+                                                            "views_count": {
+                                                                "type": "integer"
+                                                            },
+                                                            "reading_time": {
+                                                                "type": "integer"
+                                                            },
+                                                            "category": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "slug": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            },
+                                                            "city": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                },
+                                                "per_page": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/news/{slug}": {
+            "get": {
+                "tags": [
+                    "News"
+                ],
+                "summary": "Get single news article by slug",
+                "operationId": "4cad37752589e1478ce78c5d824c22fe",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "News article slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "News article details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "slug": {
+                                                    "type": "string"
+                                                },
+                                                "description": {
+                                                    "type": "string"
+                                                },
+                                                "content": {
+                                                    "type": "string"
+                                                },
+                                                "thumbnail_url": {
+                                                    "type": "string"
+                                                },
+                                                "images_url": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "published_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                },
+                                                "views_count": {
+                                                    "type": "integer"
+                                                },
+                                                "reading_time": {
+                                                    "type": "integer"
+                                                },
+                                                "category": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "slug": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "city": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "related_news": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            },
+                                                            "thumbnail_url": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "News article not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/news/categories/list": {
+            "get": {
+                "tags": [
+                    "News"
+                ],
+                "summary": "Get all news categories",
+                "operationId": "fb0e3e3636b62ea996236a62f666df06",
+                "responses": {
+                    "200": {
+                        "description": "News categories list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string"
+                                                    },
+                                                    "news_count": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/news/latest": {
+            "get": {
+                "tags": [
+                    "News"
+                ],
+                "summary": "Get latest news articles",
+                "operationId": "c7d33708448493f14d7fabb3bc5a29af",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of articles to return",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Latest news articles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "type": "string"
+                                                    },
+                                                    "thumbnail_url": {
+                                                        "type": "string"
+                                                    },
+                                                    "published_at": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/news/featured": {
+            "get": {
+                "tags": [
+                    "News"
+                ],
+                "summary": "Get featured news articles (most viewed)",
+                "operationId": "65af6dfcf18fdd9ec9a59b08de122dc3",
+                "parameters": [
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of articles to return",
+                        "schema": {
+                            "type": "integer",
+                            "default": 5
+                        }
+                    },
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city ID",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Featured news articles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string"
+                                                    },
+                                                    "thumbnail_url": {
+                                                        "type": "string"
+                                                    },
+                                                    "views_count": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/news/category/{slug}": {
+            "get": {
+                "tags": [
+                    "News"
+                ],
+                "summary": "Get news articles by category slug",
+                "operationId": "385948990a4cd00acb6d6310e1655f0c",
+                "parameters": [
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "description": "Category slug",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "News articles by category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "category": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "slug": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                },
+                                                "news": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "slug": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                },
+                                                "current_page": {
+                                                    "type": "integer"
+                                                },
+                                                "last_page": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Category not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/cities/{city_id}/news": {
+            "get": {
+                "tags": [
+                    "News"
+                ],
+                "summary": "Get news articles for a specific city",
+                "operationId": "d0a519f1366d703632a86eeaaf7c4f69",
+                "parameters": [
+                    {
+                        "name": "city_id",
+                        "in": "path",
+                        "description": "City ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Items per page",
+                        "schema": {
+                            "type": "integer",
+                            "default": 15
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "News articles for city",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "news": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "total": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/search": {
             "get": {
                 "tags": [
@@ -3019,7 +4426,7 @@
                     },
                     "name_ar": {
                         "type": "string",
-                        "example": "القاهرة"
+                        "example": "Cairo Arabic"
                     },
                     "slug": {
                         "type": "string",
@@ -3087,7 +4494,7 @@
                     },
                     "name_ar": {
                         "type": "string",
-                        "example": "مطاعم"
+                        "example": "Restaurants Arabic"
                     },
                     "slug": {
                         "type": "string",
@@ -3293,7 +4700,7 @@
                     },
                     "name_ar": {
                         "type": "string",
-                        "example": "سباكة"
+                        "example": "Plumbing Arabic"
                     },
                     "slug": {
                         "type": "string",
@@ -3468,6 +4875,14 @@
     },
     "tags": [
         {
+            "name": "Admin - App Settings",
+            "description": "Admin endpoints for managing mobile app settings and configuration"
+        },
+        {
+            "name": "Advertisements",
+            "description": "API endpoints for advertisements (mobile app)"
+        },
+        {
             "name": "Authentication",
             "description": "User authentication endpoints"
         },
@@ -3482,6 +4897,10 @@
         {
             "name": "My Shops",
             "description": "Endpoints for managing authenticated user's shops (shop owner only)"
+        },
+        {
+            "name": "News",
+            "description": "News and articles management endpoints"
         },
         {
             "name": "Search",

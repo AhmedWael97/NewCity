@@ -45,6 +45,19 @@ Route::prefix('v1')->group(function () {
     // City selection for modal (optimized)
     Route::get('/cities-selection', [App\Http\Controllers\Api\CityController::class, 'forSelection']);
 
+    // News endpoints (public - no auth required)
+    Route::prefix('news')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\NewsController::class, 'index']);
+        Route::get('/latest', [App\Http\Controllers\Api\NewsController::class, 'latest']);
+        Route::get('/featured', [App\Http\Controllers\Api\NewsController::class, 'featured']);
+        Route::get('/categories/list', [App\Http\Controllers\Api\NewsController::class, 'categories']);
+        Route::get('/category/{slug}', [App\Http\Controllers\Api\NewsController::class, 'byCategory']);
+        Route::get('/{slug}', [App\Http\Controllers\Api\NewsController::class, 'show']);
+    });
+    
+    // News by city
+    Route::get('/cities/{city_id}/news', [App\Http\Controllers\Api\NewsController::class, 'byCity']);
+
     // User tracking (public endpoint - no auth required)
     Route::post('/track', [App\Http\Controllers\Api\TrackingController::class, 'track']);
 
@@ -168,6 +181,26 @@ Route::prefix('v1')->group(function () {
             Route::get('/users/{user}', [App\Http\Controllers\Api\Admin\UserController::class, 'show']);
             Route::put('/users/{user}/activate', [App\Http\Controllers\Api\Admin\UserController::class, 'activate']);
             Route::delete('/users/{user}', [App\Http\Controllers\Api\Admin\UserController::class, 'destroy']);
+            
+            // App Settings Management
+            Route::prefix('app-settings')->group(function () {
+                // Settings CRUD
+                Route::get('/', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'index']);
+                Route::put('/', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'update']);
+                Route::post('/upload-icon', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'uploadIcon']);
+                Route::post('/upload-logo', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'uploadLogo']);
+                Route::get('/statistics', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'statistics']);
+                
+                // Push Notifications
+                Route::get('/notifications', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'notifications']);
+                Route::post('/notifications', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'createNotification']);
+                Route::post('/notifications/{notification}/send', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'sendNotification']);
+                Route::delete('/notifications/{notification}', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'deleteNotification']);
+                Route::post('/test-notification', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'testNotification']);
+                
+                // Device Tokens
+                Route::get('/devices', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'devices']);
+            });
         });
     });
 });
