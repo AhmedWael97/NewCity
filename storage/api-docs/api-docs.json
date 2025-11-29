@@ -768,6 +768,292 @@
                 }
             }
         },
+        "/api/v1/app-settings": {
+            "get": {
+                "tags": [
+                    "App Settings"
+                ],
+                "summary": "Get app settings for mobile application",
+                "description": "Public endpoint for mobile app to fetch current configuration, maintenance status, and force update settings",
+                "operationId": "95179d9410213638190fd882109a1e07",
+                "responses": {
+                    "200": {
+                        "description": "App settings retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "app_name": {
+                                                    "type": "string",
+                                                    "example": "City Services"
+                                                },
+                                                "app_version": {
+                                                    "type": "string",
+                                                    "example": "1.0.0"
+                                                },
+                                                "maintenance_mode": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "maintenance_message": {
+                                                    "type": "string",
+                                                    "example": "We are currently performing maintenance. Please check back soon."
+                                                },
+                                                "force_update": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "min_app_version": {
+                                                    "type": "string",
+                                                    "example": "1.0.0"
+                                                },
+                                                "update_message": {
+                                                    "type": "string",
+                                                    "example": "A new version is available. Please update to continue."
+                                                },
+                                                "update_url_ios": {
+                                                    "type": "string",
+                                                    "example": "https://apps.apple.com/app/id123456789"
+                                                },
+                                                "update_url_android": {
+                                                    "type": "string",
+                                                    "example": "https://play.google.com/store/apps/details?id=com.example.app"
+                                                },
+                                                "support_email": {
+                                                    "type": "string",
+                                                    "example": "support@example.com"
+                                                },
+                                                "support_phone": {
+                                                    "type": "string",
+                                                    "example": "+1234567890"
+                                                },
+                                                "privacy_policy_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/privacy"
+                                                },
+                                                "terms_of_service_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/terms"
+                                                },
+                                                "app_icon_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/storage/app-settings/icon.png"
+                                                },
+                                                "app_logo_url": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/storage/app-settings/logo.png"
+                                                },
+                                                "features": {
+                                                    "properties": {
+                                                        "enable_notifications": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        },
+                                                        "enable_chat": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        },
+                                                        "enable_location": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        },
+                                                        "enable_analytics": {
+                                                            "type": "boolean",
+                                                            "example": true
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "503": {
+                        "description": "Service unavailable - Maintenance mode",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "We are currently performing maintenance. Please check back soon."
+                                        },
+                                        "maintenance_mode": {
+                                            "type": "boolean",
+                                            "example": true
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/app-settings/check-update": {
+            "get": {
+                "tags": [
+                    "App Settings"
+                ],
+                "summary": "Check if app update is required",
+                "description": "Check if the mobile app version needs to be updated",
+                "operationId": "5867626966cbe8c19c28e2a7427249da",
+                "parameters": [
+                    {
+                        "name": "version",
+                        "in": "query",
+                        "description": "Current app version",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1.0.0"
+                        }
+                    },
+                    {
+                        "name": "platform",
+                        "in": "query",
+                        "description": "Mobile platform",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "ios",
+                                "android"
+                            ],
+                            "example": "android"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Update check completed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "force_update": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "update_required": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "current_version": {
+                                                    "type": "string",
+                                                    "example": "1.0.0"
+                                                },
+                                                "min_version": {
+                                                    "type": "string",
+                                                    "example": "1.0.0"
+                                                },
+                                                "latest_version": {
+                                                    "type": "string",
+                                                    "example": "1.2.0"
+                                                },
+                                                "update_message": {
+                                                    "type": "string",
+                                                    "example": "A new version is available"
+                                                },
+                                                "update_url": {
+                                                    "type": "string",
+                                                    "example": "https://play.google.com/store/apps/details?id=com.example.app"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request - Missing parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Version and platform are required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/app-settings/maintenance-status": {
+            "get": {
+                "tags": [
+                    "App Settings"
+                ],
+                "summary": "Check maintenance status",
+                "description": "Check if the app is in maintenance mode",
+                "operationId": "18893438818a522be10374d8be30d205",
+                "responses": {
+                    "200": {
+                        "description": "Maintenance status retrieved",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "maintenance_mode": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "maintenance_message": {
+                                                    "type": "string",
+                                                    "example": "We are currently performing maintenance"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/auth/register": {
             "post": {
                 "tags": [
@@ -4881,6 +5167,10 @@
         {
             "name": "Advertisements",
             "description": "API endpoints for advertisements (mobile app)"
+        },
+        {
+            "name": "App Settings",
+            "description": "Public endpoints for mobile app to fetch configuration and settings"
         },
         {
             "name": "Authentication",

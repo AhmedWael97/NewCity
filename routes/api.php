@@ -64,6 +64,13 @@ Route::prefix('v1')->group(function () {
     // Guest device token registration (public endpoint - no auth required)
     Route::post('/guest-device-tokens', [App\Http\Controllers\Api\DeviceTokenController::class, 'storeGuest']);
 
+    // App Settings - Public endpoints for mobile app
+    Route::prefix('app-settings')->group(function () {
+        Route::get('/', [App\Http\Controllers\Api\AppSettingsController::class, 'index']);
+        Route::get('/check-update', [App\Http\Controllers\Api\AppSettingsController::class, 'checkUpdate']);
+        Route::get('/maintenance-status', [App\Http\Controllers\Api\AppSettingsController::class, 'maintenanceStatus']);
+    });
+
     // Advertisement endpoints (public - no auth required)
     Route::prefix('ads')->group(function () {
         // Get advertisements
