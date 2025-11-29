@@ -191,7 +191,7 @@
 
                 {{-- Description --}}
                 <div class="lead mb-4 text-muted">
-                    {{ $news->description }}
+                    {!! $news->description !!}
                 </div>
 
                 {{-- Meta Info --}}
@@ -214,7 +214,7 @@
 
                 {{-- Content --}}
                 <div class="news-body">
-                    {!! nl2br(e($news->content)) !!}
+                    {!! $news->content !!}
                 </div>
 
                 {{-- Gallery --}}
