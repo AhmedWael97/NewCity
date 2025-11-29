@@ -236,7 +236,7 @@
                 <!-- Status -->
                 <div class="form-group">
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="is_active" name="is_active" 
+                        <input type="checkbox" value="1" class="custom-control-input" id="is_active" name="is_active" 
                                {{ old('is_active', $news->is_active) ? 'checked' : '' }}>
                         <label class="custom-control-label" for="is_active">نشر الخبر</label>
                     </div>
