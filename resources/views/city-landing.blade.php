@@ -64,9 +64,7 @@
                     <form class="search-form-modern"
                         action="{{ route('city.search', ['city' => $selectedCity->slug ?? 'all']) }}" method="GET">
                         <div class="search-container-modern position-relative">
-                            <div class="search-icon-modern position-absolute">
-                                <i class="fas fa-search text-muted"></i>
-                            </div>
+                            
                             <input type="text" name="q" id="city-search-modern"
                                 placeholder="ابحث في متاجر {{ $cityContext['selected_city_name'] ?? 'المدينة' }}... (مطاعم، ملابس، إلكترونيات)"
                                 class="form-control form-control-lg shadow-lg border-0 ps-5 pe-5 py-4 rounded-pill"

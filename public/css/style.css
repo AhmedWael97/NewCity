@@ -2646,48 +2646,192 @@ a {
     z-index: 1;
 }
 
+/* Enhanced Breadcrumb Navigation */
 .shop-breadcrumb {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-bottom: 20px;
-    font-size: 0.9rem;
-    opacity: 0.9;
+    gap: 10px;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    padding: 12px 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    width: fit-content;
 }
 
-.shop-breadcrumb a {
+.shop-breadcrumb .breadcrumb-link {
     color: white;
     text-decoration: none;
-    transition: opacity 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    padding: 4px 8px;
+    border-radius: 6px;
 }
 
-.shop-breadcrumb a:hover {
-    opacity: 0.8;
+.shop-breadcrumb .breadcrumb-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(-2px);
 }
 
+.shop-breadcrumb .breadcrumb-link i {
+    font-size: 0.9rem;
+}
+
+.shop-breadcrumb .breadcrumb-separator {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+}
+
+.shop-breadcrumb .breadcrumb-current {
+    color: white;
+    font-weight: 600;
+    padding: 4px 8px;
+}
+
+/* Enhanced Shop Title */
 .shop-title {
     font-size: 3rem;
-    font-weight: 700;
-    margin-bottom: 15px;
+    font-weight: 800;
+    margin-bottom: 25px;
     line-height: 1.2;
-}
-
-.shop-meta {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 20px;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
 }
 
-.shop-meta span {
+.shop-title .verified-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #10b981;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+/* Enhanced Meta Grid */
+.shop-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.shop-meta-grid .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 20px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.shop-meta-grid .meta-item:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.shop-meta-grid .meta-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.shop-meta-grid .meta-icon.category-icon {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.shop-meta-grid .meta-icon.location-icon {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+.shop-meta-grid .meta-icon.status-icon {
+    color: white;
+}
+
+.shop-meta-grid .meta-icon.status-open {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.shop-meta-grid .meta-icon.status-closed {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.shop-meta-grid .meta-icon.rating-icon {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+}
+
+.shop-meta-grid .meta-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.shop-meta-grid .meta-label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.shop-meta-grid .meta-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.shop-meta-grid .status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    width: fit-content;
+}
+
+.shop-meta-grid .badge-open {
+    background: rgba(16, 185, 129, 0.2);
+    color: #d1fae5;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.shop-meta-grid .badge-closed {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fecaca;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.shop-meta-grid .meta-rating {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 1rem;
 }
 
-.shop-meta .icon {
-    font-size: 1.2rem;
+.shop-meta-grid .review-count-badge {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    font-weight: 500;
 }
 
 .shop-status.open {
@@ -3290,9 +3434,47 @@ a {
         text-align: center;
         gap: 30px;
     }
+    
+    .shop-breadcrumb {
+        justify-content: center;
+        padding: 10px 15px;
+        font-size: 0.85rem;
+        width: 100%;
+    }
+    
+    .shop-breadcrumb .breadcrumb-link i {
+        display: none;
+    }
 
     .shop-title {
         font-size: 2rem;
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .shop-title .verified-badge {
+        width: 30px;
+        height: 30px;
+        font-size: 1rem;
+    }
+    
+    .shop-meta-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .shop-meta-grid .meta-item {
+        padding: 15px;
+    }
+    
+    .shop-meta-grid .meta-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 1.2rem;
+    }
+    
+    .shop-meta-grid .meta-value {
+        font-size: 1rem;
     }
 
     .shop-layout {
@@ -3328,6 +3510,45 @@ a {
         flex-direction: column;
         gap: 8px;
         text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .shop-breadcrumb {
+        font-size: 0.75rem;
+        padding: 8px 12px;
+        gap: 6px;
+    }
+    
+    .shop-breadcrumb .breadcrumb-separator {
+        font-size: 0.7rem;
+    }
+    
+    .shop-title {
+        font-size: 1.6rem;
+    }
+    
+    .shop-meta-grid {
+        gap: 12px;
+    }
+    
+    .shop-meta-grid .meta-item {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .shop-meta-grid .meta-icon {
+        width: 38px;
+        height: 38px;
+        font-size: 1.1rem;
+    }
+    
+    .shop-meta-grid .meta-label {
+        font-size: 0.75rem;
+    }
+    
+    .shop-meta-grid .meta-value {
+        font-size: 0.95rem;
     }
 }
 

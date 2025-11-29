@@ -6,39 +6,85 @@
         <div class="container">
             <div class="shop-hero-content">
                 <div class="shop-hero-info">
-                    <div class="shop-breadcrumb">
-                        <a href="{{ url('/') }}">الرئيسية</a>
-                        <span>•</span>
-                        <a href="{{ route('city.shops', $shop->city->slug ?? '#') }}">{{ $shop->city->name ?? 'المدن' }}</a>
-                        <span>•</span>
-                        <span>{{ $shop->name }}</span>
-                    </div>
+                    <!-- Breadcrumb Navigation -->
+                    <nav class="shop-breadcrumb" aria-label="breadcrumb">
+                        <a href="{{ url('/') }}" class="breadcrumb-link">
+                            <i class="fas fa-home"></i>
+                            <span>الرئيسية</span>
+                        </a>
+                        <span class="breadcrumb-separator">/</span>
+                        <a href="{{ route('city.shops', $shop->city->slug ?? '#') }}" class="breadcrumb-link">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>{{ $shop->city->name ?? 'المدن' }}</span>
+                        </a>
+                        <span class="breadcrumb-separator">/</span>
+                        <span class="breadcrumb-current">{{ $shop->name }}</span>
+                    </nav>
                     
+                    <!-- Main Shop Information -->
                     <div class="shop-main-info">
-                        <h1 class="shop-title">{{ $shop->name }}</h1>
-                        <div class="shop-meta">
-                            <span class="shop-category">
-                                <i class="icon">🏪</i>
-                                {{ $shop->category->name ?? 'عام' }}
+                        <h1 class="shop-title">
+                            <span style="font-size: 24px; font-weight: bold;">
+                                {{ $shop->name }}
                             </span>
-                            <span class="shop-location">
-                                <i class="icon">📍</i>
-                                {{ $shop->city->name ?? '' }}
-                            </span>
-                            <span class="shop-status {{ $shop->is_open_now ?? true ? 'open' : 'closed' }}">
-                                <i class="icon">🕒</i>
-                                {{ $shop->is_open_now ?? true ? 'مفتوح الآن' : 'مغلق حالياً' }}
-                            </span>
-                        </div>
+                            @if($shop->is_verified ?? false)
+                                <span class="verified-badge" title="متجر موثق">
+                                    <i class="fas fa-check-circle"></i>
+                                </span>
+                            @endif
+                        </h1>
                         
-                        <div class="shop-rating">
-                            <x-rating.display 
-                                :rating="$shop->averageRating()" 
-                                :show-text="true"
-                                size="md"
-                                class="hero-rating"
-                            />
-                            <span class="review-count">({{ $shop->totalRatings() }} تقييم)</span>
+                        <!-- Shop Meta Information -->
+                        <div class="shop-meta-grid">
+                            <div class="meta-item">
+                                <div class="meta-icon category-icon">
+                                    <i class="fas fa-store"></i>
+                                </div>
+                                <div class="meta-content">
+                                    <span class="meta-label">الفئة</span>
+                                    <span class="meta-value">{{ $shop->category->name ?? 'عام' }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="meta-item">
+                                <div class="meta-icon location-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="meta-content">
+                                    <span class="meta-label">المدينة</span>
+                                    <span class="meta-value">{{ $shop->city->name ?? '' }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="meta-item">
+                                <div class="meta-icon status-icon {{ $shop->is_open_now ?? true ? 'status-open' : 'status-closed' }}">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="meta-content">
+                                    <span class="meta-label">الحالة</span>
+                                    <span class="meta-value status-badge {{ $shop->is_open_now ?? true ? 'badge-open' : 'badge-closed' }}">
+                                        {{ $shop->is_open_now ?? true ? 'مفتوح الآن' : 'مغلق حالياً' }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="meta-item">
+                                <div class="meta-icon rating-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="meta-content">
+                                    <span class="meta-label">التقييم</span>
+                                    <div class="meta-rating">
+                                        <x-rating.display 
+                                            :rating="$shop->averageRating()" 
+                                            :show-text="true"
+                                            size="sm"
+                                            class="hero-rating-display"
+                                        />
+                                        <span class="review-count-badge">({{ $shop->totalRatings() }})</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
