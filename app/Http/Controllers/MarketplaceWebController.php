@@ -380,4 +380,35 @@ class MarketplaceWebController extends Controller
         return redirect()->route('marketplace.my-items')
             ->with('success', 'تم تفعيل الرعاية بنجاح! إعلانك الآن مميز ويظهر في أعلى النتائج');
     }
+
+    /**
+     * Generate QR code for an item
+     */
+    public function generateQrCode(MarketplaceItem $item)
+    {
+        $qrCode = $item->generateQrCode(300);
+
+        return response($qrCode)
+            ->header('Content-Type', 'image/svg+xml')
+            ->header('Cache-Control', 'public, max-age=86400'); // Cache for 24 hours
+    }
+
+    /**
+     * Download QR code for an item
+     */
+    public function downloadQrCode(MarketplaceItem $item)
+    {
+        // Check if user owns this item
+        if (!Auth::check() || !$item->isOwnedBy(Auth::user())) {
+            abort(403, 'غير مصرح لك بتحميل رمز QR لهذا الإعلان');
+        }
+
+        $qrCode = $item->generateQrCode(500); // Larger size for download
+
+        $filename = 'qr-code-' . Str::slug($item->title) . '-' . $item->id . '.svg';
+
+        return response($qrCode)
+            ->header('Content-Type', 'image/svg+xml')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+    }
 }

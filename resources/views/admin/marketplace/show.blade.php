@@ -145,6 +145,27 @@
                 </div>
             </div>
 
+            <!-- QR Code -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="fas fa-qrcode"></i> رمز QR</h6>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ route('marketplace.qr', $item->id) }}" 
+                         alt="QR Code" 
+                         class="img-fluid mb-3" 
+                         style="max-width: 200px; border: 1px solid #ddd; padding: 10px; border-radius: 8px;">
+                    <p class="small text-muted mb-2">
+                        <i class="fas fa-info-circle"></i> رمز QR للوصول السريع
+                    </p>
+                    <a href="{{ route('marketplace.show', $item->id) }}" 
+                       target="_blank" 
+                       class="btn btn-outline-info btn-sm w-100">
+                        <i class="fas fa-external-link-alt"></i> عرض الإعلان
+                    </a>
+                </div>
+            </div>
+
             <!-- Statistics -->
             <div class="card shadow mb-4">
                 <div class="card-header bg-secondary text-white">

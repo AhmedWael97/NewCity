@@ -268,4 +268,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     Route::put('news-categories/{category}', [AdminNewsController::class, 'updateCategory'])->name('news.categories.update');
     Route::delete('news-categories/{category}', [AdminNewsController::class, 'destroyCategory'])->name('news.categories.destroy');
     
+    // QR Code Generator
+    Route::prefix('qr-generator')->name('qr-generator.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\QrGeneratorController::class, 'index'])->name('index');
+        Route::post('/generate', [App\Http\Controllers\Admin\QrGeneratorController::class, 'generate'])->name('generate');
+        Route::post('/download', [App\Http\Controllers\Admin\QrGeneratorController::class, 'download'])->name('download');
+    });
+    
 });

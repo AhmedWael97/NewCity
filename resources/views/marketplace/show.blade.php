@@ -205,6 +205,30 @@
                 @endif
             @endauth
 
+            <!-- QR Code Card -->
+            <div class="card shadow mb-4 border-info">
+                <div class="card-header bg-info text-white">
+                    <h6 class="mb-0"><i class="fas fa-qrcode"></i> رمز QR للإعلان</h6>
+                </div>
+                <div class="card-body text-center">
+                    <img src="{{ route('marketplace.qr', $item->id) }}" 
+                         alt="QR Code" 
+                         class="img-fluid mb-3" 
+                         style="max-width: 200px;">
+                    <p class="small text-muted mb-2">
+                        <i class="fas fa-info-circle"></i> امسح الرمز للوصول السريع للإعلان
+                    </p>
+                    @auth
+                        @if($item->isOwnedBy(Auth::user()))
+                        <a href="{{ route('marketplace.qr.download', $item->id) }}" 
+                           class="btn btn-outline-info btn-sm w-100" download>
+                            <i class="fas fa-download"></i> تحميل رمز QR
+                        </a>
+                        @endif
+                    @endauth
+                </div>
+            </div>
+
             <!-- Safety Tips -->
             <div class="card shadow mb-4 border-warning">
                 <div class="card-header bg-warning text-dark">

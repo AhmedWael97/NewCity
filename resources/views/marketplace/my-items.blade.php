@@ -111,6 +111,10 @@
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     @endif
+                                    <button type="button" class="btn btn-secondary" title="رمز QR" 
+                                            onclick="showQrModal({{ $item->id }}, '{{ addslashes($item->title) }}')">
+                                        <i class="fas fa-qrcode"></i>
+                                    </button>
                                 </div>
                                 <div class="btn-group btn-group-sm mt-1">
                                     @if($item->status === 'active' && $item->remainingViews() < 20)
@@ -199,9 +203,43 @@
     </div>
 </div>
 
+<!-- QR Code Modal -->
+<div class="modal fade" id="qrModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-qrcode"></i> رمز QR للإعلان</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <h6 id="qrModalTitle" class="mb-3"></h6>
+                <img id="qrModalImage" src="" alt="QR Code" class="img-fluid mb-3" style="max-width: 300px;">
+                <p class="text-muted small">
+                    <i class="fas fa-info-circle"></i> يمكنك مشاركة هذا الرمز ليتمكن الآخرون من الوصول لإعلانك مباشرة
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a id="qrDownloadLink" href="" download class="btn btn-primary">
+                    <i class="fas fa-download"></i> تحميل رمز QR
+                </a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
 .bg-gradient-primary {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 </style>
+
+<script>
+function showQrModal(itemId, itemTitle) {
+    document.getElementById('qrModalTitle').textContent = itemTitle;
+    document.getElementById('qrModalImage').src = '/marketplace/' + itemId + '/qr';
+    document.getElementById('qrDownloadLink').href = '/marketplace/' + itemId + '/qr/download';
+    new bootstrap.Modal(document.getElementById('qrModal')).show();
+}
+</script>
 @endsection

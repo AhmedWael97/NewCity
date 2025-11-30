@@ -859,6 +859,16 @@
                     </a>
                 </li>
 
+                <!-- Tools -->
+                <div class="sidebar-heading">الأدوات</div>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.qr-generator.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.qr-generator.index') }}">
+                        <i class="fas fa-qrcode"></i>
+                        <span>مولد رمز QR</span>
+                    </a>
+                </li>
+
                 {{-- Reports (Temporarily disabled - controller not implemented)
                 <!-- Reports -->
                 <div class="sidebar-heading">التقارير والإحصائيات</div>

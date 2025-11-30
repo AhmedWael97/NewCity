@@ -262,4 +262,30 @@ class MarketplaceItem extends Model
             'status' => 'sold',
         ]);
     }
+
+    /**
+     * Get the public URL for this item
+     */
+    public function getPublicUrl(): string
+    {
+        return route('marketplace.show', $this->id);
+    }
+
+    /**
+     * Generate QR code for this item (SVG format)
+     */
+    public function generateQrCode(int $size = 200)
+    {
+        return \SimpleSoftwareIO\QrCode\Facades\QrCode::size($size)
+            ->generate($this->getPublicUrl());
+    }
+
+    /**
+     * Get QR code as base64 data URI for inline display
+     */
+    public function getQrCodeDataUri(int $size = 200): string
+    {
+        $qrCode = $this->generateQrCode($size);
+        return 'data:image/svg+xml;base64,' . base64_encode($qrCode);
+    }
 }
