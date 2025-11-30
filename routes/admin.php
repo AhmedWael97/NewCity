@@ -78,6 +78,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
         Route::delete('/{suggestion}', [App\Http\Controllers\Admin\AdminShopSuggestionController::class, 'destroy'])->name('destroy');
     });
     
+    // Marketplace Management
+    Route::prefix('marketplace')->name('marketplace.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AdminMarketplaceController::class, 'index'])->name('index');
+        Route::get('/statistics', [App\Http\Controllers\Admin\AdminMarketplaceController::class, 'statistics'])->name('statistics');
+        Route::get('/{item}', [App\Http\Controllers\Admin\AdminMarketplaceController::class, 'show'])->name('show');
+        Route::post('/{item}/approve', [App\Http\Controllers\Admin\AdminMarketplaceController::class, 'approve'])->name('approve');
+        Route::post('/{item}/reject', [App\Http\Controllers\Admin\AdminMarketplaceController::class, 'reject'])->name('reject');
+        Route::delete('/{item}', [App\Http\Controllers\Admin\AdminMarketplaceController::class, 'destroy'])->name('destroy');
+        Route::post('/bulk-action', [App\Http\Controllers\Admin\AdminMarketplaceController::class, 'bulkAction'])->name('bulk-action');
+    });
+    
     // Rating Management
     Route::resource('ratings', AdminRatingController::class)->except(['create', 'store']);
     Route::post('ratings/{rating}/verify', [AdminRatingController::class, 'verify'])->name('ratings.verify');

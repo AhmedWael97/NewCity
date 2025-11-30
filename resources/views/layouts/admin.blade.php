@@ -845,6 +845,19 @@
                         <span>الأخبار</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.marketplace.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.marketplace.index') }}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>السوق المفتوح</span>
+                        @php
+                            $pendingMarketplace = \App\Models\MarketplaceItem::where('status', 'pending')->count();
+                        @endphp
+                        @if($pendingMarketplace > 0)
+                            <span class="badge bg-warning text-dark me-2">{{ $pendingMarketplace }}</span>
+                        @endif
+                    </a>
+                </li>
 
                 {{-- Reports (Temporarily disabled - controller not implemented)
                 <!-- Reports -->

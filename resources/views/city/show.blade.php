@@ -71,6 +71,13 @@
                     🏪 تصفح جميع المتاجر
                 </a>
                 
+                <a 
+                    href="{{ route('marketplace.index') }}" 
+                    class="bg-green-500 hover:bg-green-600 text-white font-bold px-8 py-4 rounded-xl text-lg transition-colors duration-200"
+                >
+                    🛒 السوق المفتوح
+                </a>
+                
                 @if($featuredShops->count() > 0)
                     <a 
                         href="{{ route('city.shops.featured', $city->slug) }}" 

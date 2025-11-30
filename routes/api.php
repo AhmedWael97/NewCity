@@ -38,6 +38,15 @@ Route::prefix('v1')->group(function () {
     Route::get('/service-categories', [App\Http\Controllers\Api\UserServiceApiController::class, 'categories']);
     Route::post('/user-services/{userService}/contact', [App\Http\Controllers\Api\UserServiceApiController::class, 'recordContact']);
     
+    // Marketplace - Public endpoints
+    Route::get('/marketplace', [App\Http\Controllers\Api\MarketplaceController::class, 'index']);
+    Route::get('/marketplace/sponsored', [App\Http\Controllers\Api\MarketplaceController::class, 'sponsored']);
+    Route::get('/marketplace/{id}', [App\Http\Controllers\Api\MarketplaceController::class, 'show']);
+    Route::post('/marketplace/{id}/contact', [App\Http\Controllers\Api\MarketplaceController::class, 'recordContact']);
+    
+    // Marketplace Sponsorship Packages (public)
+    Route::get('/marketplace/sponsorship-packages', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'packages']);
+    
     // Search endpoints
     Route::get('/search', [App\Http\Controllers\Api\SearchController::class, 'search']);
     Route::get('/search/suggestions', [App\Http\Controllers\Api\SearchController::class, 'suggestions']);
@@ -156,6 +165,22 @@ Route::prefix('v1')->group(function () {
             Route::put('/{shop}', [App\Http\Controllers\Api\MyShopController::class, 'update']);
             Route::delete('/{shop}', [App\Http\Controllers\Api\MyShopController::class, 'destroy']);
         });
+
+        // Marketplace - Authenticated endpoints
+        Route::get('/my-marketplace-items', [App\Http\Controllers\Api\MarketplaceController::class, 'myItems']);
+        Route::post('/marketplace', [App\Http\Controllers\Api\MarketplaceController::class, 'store']);
+        Route::put('/marketplace/{id}', [App\Http\Controllers\Api\MarketplaceController::class, 'update']);
+        Route::delete('/marketplace/{id}', [App\Http\Controllers\Api\MarketplaceController::class, 'destroy']);
+        Route::post('/marketplace/{id}/mark-sold', [App\Http\Controllers\Api\MarketplaceController::class, 'markAsSold']);
+
+        // Marketplace Sponsorships - Authenticated endpoints
+        Route::get('/my-marketplace-sponsorships', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'mySponsorships']);
+        Route::post('/marketplace/{itemId}/sponsor', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'purchase']);
+        Route::get('/marketplace/{itemId}/sponsorships', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'itemSponsorships']);
+        Route::get('/marketplace/sponsorships/{id}', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'show']);
+        Route::post('/marketplace/sponsorships/{id}/renew', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'renew']);
+        Route::post('/marketplace/sponsorships/{id}/cancel', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'cancel']);
+        Route::get('/marketplace/sponsorships/stats', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'stats']);
 
         // Device tokens for push notifications
         Route::prefix('device-tokens')->group(function () {
