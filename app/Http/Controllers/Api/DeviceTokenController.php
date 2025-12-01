@@ -33,6 +33,7 @@ class DeviceTokenController extends Controller
      *             required={"device_token", "device_type"},
      *             @OA\Property(property="device_token", type="string", example="fcm_token_example_here", description="FCM token from Firebase"),
      *             @OA\Property(property="device_type", type="string", enum={"android", "ios", "web"}, example="android", description="Type of device"),
+     *             @OA\Property(property="city_id", type="integer", example=1, description="City ID for targeted notifications (optional)"),
      *             @OA\Property(property="device_name", type="string", example="Samsung Galaxy S21", description="Device display name"),
      *             @OA\Property(property="os_version", type="string", example="Android 13", description="Operating system version"),
      *             @OA\Property(property="device_model", type="string", example="SM-G991B", description="Device model number"),
@@ -111,6 +112,7 @@ class DeviceTokenController extends Controller
         $validator = Validator::make($request->all(), [
             'device_token' => 'required|string',
             'device_type' => 'required|in:web,android,ios',
+            'city_id' => 'nullable|integer|exists:cities,id',
             'device_name' => 'nullable|string|max:255',
             'os_version' => 'nullable|string|max:100',
             'device_model' => 'nullable|string|max:255',
@@ -139,6 +141,7 @@ class DeviceTokenController extends Controller
                 $request->device_token,
                 $userId,
                 [
+                    'city_id' => $request->city_id,
                     'device_type' => $request->device_type,
                     'device_name' => $request->device_name ?? $this->detectDeviceName($request),
                     'os_version' => $request->os_version,
@@ -191,6 +194,7 @@ class DeviceTokenController extends Controller
      *             required={"device_token", "device_type"},
      *             @OA\Property(property="device_token", type="string", example="fcm_token_example_here", description="FCM token from Firebase"),
      *             @OA\Property(property="device_type", type="string", enum={"android", "ios", "web"}, example="android", description="Type of device"),
+     *             @OA\Property(property="city_id", type="integer", example=1, description="City ID for targeted notifications (optional)"),
      *             @OA\Property(property="device_name", type="string", example="Samsung Galaxy S21", description="Device display name"),
      *             @OA\Property(property="os_version", type="string", example="Android 13", description="Operating system version"),
      *             @OA\Property(property="device_model", type="string", example="SM-G991B", description="Device model number"),
@@ -259,6 +263,7 @@ class DeviceTokenController extends Controller
         $validator = Validator::make($request->all(), [
             'device_token' => 'required|string',
             'device_type' => 'required|in:web,android,ios',
+            'city_id' => 'nullable|integer|exists:cities,id',
             'device_name' => 'nullable|string|max:255',
             'os_version' => 'nullable|string|max:100',
             'device_model' => 'nullable|string|max:255',
@@ -286,6 +291,7 @@ class DeviceTokenController extends Controller
                 $request->device_token,
                 null, // Guest user (no user_id)
                 [
+                    'city_id' => $request->city_id,
                     'device_type' => $request->device_type,
                     'device_name' => $request->device_name ?? $this->detectDeviceName($request),
                     'os_version' => $request->os_version,

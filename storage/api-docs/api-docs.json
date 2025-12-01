@@ -2399,6 +2399,11 @@
                                         ],
                                         "example": "android"
                                     },
+                                    "city_id": {
+                                        "description": "City ID for targeted notifications (optional)",
+                                        "type": "integer",
+                                        "example": 1
+                                    },
                                     "device_name": {
                                         "description": "Device display name",
                                         "type": "string",
@@ -2784,6 +2789,11 @@
                                             "web"
                                         ],
                                         "example": "android"
+                                    },
+                                    "city_id": {
+                                        "description": "City ID for targeted notifications (optional)",
+                                        "type": "integer",
+                                        "example": 1
                                     },
                                     "device_name": {
                                         "description": "Device display name",
@@ -6250,6 +6260,12 @@
                     },
                     "user_id": {
                         "description": "User ID (null for guest devices)",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "city_id": {
+                        "description": "City ID for targeted notifications",
                         "type": "integer",
                         "example": 1,
                         "nullable": true

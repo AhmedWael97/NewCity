@@ -11,6 +11,7 @@ class DeviceToken extends Model
 
     protected $fillable = [
         'user_id',
+        'city_id',
         'device_token',
         'device_type',
         'device_name',
@@ -45,6 +46,14 @@ class DeviceToken extends Model
     }
 
     /**
+     * Get the city associated with the device token
+     */
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    /**
      * Get notification logs for this device
      */
     public function notificationLogs()
@@ -61,6 +70,7 @@ class DeviceToken extends Model
             ['device_token' => $token],
             [
                 'user_id' => $userId,
+                'city_id' => $deviceInfo['city_id'] ?? null,
                 'device_type' => $deviceInfo['device_type'] ?? null,
                 'device_name' => $deviceInfo['device_name'] ?? null,
                 'os_version' => $deviceInfo['os_version'] ?? null,

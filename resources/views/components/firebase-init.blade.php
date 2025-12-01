@@ -144,15 +144,39 @@
             console.log('🌐 Endpoint:', endpoint);
             console.log('📤 Sending request...');
             
+            // Get city_id based on user type
+            let cityId = null;
+            @auth
+            // For authenticated users, use their preferred city
+            cityId = {{ auth()->user()->preferred_city_id ?? 'null' }};
+            console.log('🌍 User preferred city_id:', cityId);
+            @else
+            // For guests, use session city (from city selection)
+            cityId = {{ session('selected_city_id') ?? session('city_id') ?? 'null' }};
+            console.log('🌍 Guest selected city_id from session:', cityId);
+            @endauth
+            
+            const payload = {
+                device_token: token,
+                device_type: 'web',
+                device_name: navigator.userAgent.substring(0, 255),
+                app_version: 'web-1.0'
+            };
+            
+            // Add city_id if available
+            if (cityId) {
+                payload.city_id = cityId;
+                console.log('✅ Including city_id in payload:', cityId);
+            } else {
+                console.log('ℹ️ No city_id available - token will receive all notifications');
+            }
+            
+            console.log('📦 Final payload:', payload);
+            
             const response = await fetch(endpoint, {
                 method: 'POST',
                 headers: headers,
-                body: JSON.stringify({
-                    device_token: token,
-                    device_type: 'web',
-                    device_name: navigator.userAgent.substring(0, 255),
-                    app_version: 'web-1.0'
-                })
+                body: JSON.stringify(payload)
             });
             
             console.log('📡 Response status:', response.status);

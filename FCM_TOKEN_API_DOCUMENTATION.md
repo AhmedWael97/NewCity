@@ -55,6 +55,7 @@ Accept: application/json
 - `device_type` (string): One of: `android`, `ios`, `web`
 
 **Optional Fields:**
+- `city_id` (integer): City ID for targeted notifications (null for global notifications)
 - `device_name` (string, max 255): Device display name
 - `os_version` (string, max 100): Operating system version
 - `device_model` (string, max 255): Device model number

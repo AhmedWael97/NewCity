@@ -174,6 +174,7 @@ use App\Http\Controllers\Controller;
  *     description="Device Token model for push notifications",
  *     @OA\Property(property="id", type="integer", example=123),
  *     @OA\Property(property="user_id", type="integer", nullable=true, example=1, description="User ID (null for guest devices)"),
+ *     @OA\Property(property="city_id", type="integer", nullable=true, example=1, description="City ID for targeted notifications"),
  *     @OA\Property(property="device_token", type="string", example="fcm_token_example", description="FCM token from Firebase"),
  *     @OA\Property(property="device_type", type="string", enum={"android", "ios", "web"}, example="android"),
  *     @OA\Property(property="device_name", type="string", example="Samsung Galaxy S21", nullable=true),
