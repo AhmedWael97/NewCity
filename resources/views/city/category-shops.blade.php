@@ -11,14 +11,7 @@
         <div class="container">
             <div class="city-hero-content"> 
                 <div class="city-main-info">
-                    <h1 class="city-title">
-                        @if(str_contains($category->icon, 'fas') || str_contains($category->icon, 'far') || str_contains($category->icon, 'fab'))
-                            <i class="{{ $category->icon }}"></i>
-                        @else
-                            {{ $category->icon }}
-                        @endif
-                        {{ $category->name }} في {{ $city->name }}
-                    </h1>
+                    <h1 class="city-title">{{ $category->icon }} {{ $category->name }} في {{ $city->name }}</h1>
                     <p class="city-description">اكتشف أفضل متاجر {{ $category->name }} في {{ $city->name }}</p>
                     
                     <div class="city-stats">
@@ -27,35 +20,17 @@
                             <span class="stat-label text-white">متجر</span>
                         </div>
                         <div class="stat-item">
-                            <span class="stat-number">
-                                @if(str_contains($category->icon, 'fas') || str_contains($category->icon, 'far') || str_contains($category->icon, 'fab'))
-                                    <i class="{{ $category->icon }}"></i>
-                                @else
-                                    {{ $category->icon }}
-                                @endif
-                            </span>
+                            <span class="stat-number">{{ $category->icon }}</span>
                             <span class="stat-label text-white">{{ $category->name }}</span>
                         </div>
+                        <div class="stat-item">
+                            <span class="stat-number">🏙️</span>
+                            <span class="stat-label text-white">{{ $city->name }}</span>
+                        </div>
+                    </div>
+                </div>
                 
                 <div class="city-hero-visual">
-                    <div class="city-icon">
-                        @if(str_contains($category->icon, 'fas') || str_contains($category->icon, 'far') || str_contains($category->icon, 'fab'))
-                            <i class="{{ $category->icon }}"></i>
-                        @else
-                            {{ $category->icon }}
-                        @endif
-                    </div>
-                    <div class="floating-elements">
-                        <div class="floating-element" style="top: 20%; left: 10%;">🏪</div>
-                        <div class="floating-element" style="top: 60%; right: 15%;">⭐</div>
-                        <div class="floating-element" style="bottom: 30%; left: 20%;">
-                            @if(str_contains($category->icon, 'fas') || str_contains($category->icon, 'far') || str_contains($category->icon, 'fab'))
-                                <i class="{{ $category->icon }}"></i>
-                            @else
-                                {{ $category->icon }}
-                            @endif
-                        </div>
-                    </div>="city-hero-visual">
                     <div class="city-icon">{{ $category->icon }}</div>
                     <div class="floating-elements">
                         <div class="floating-element" style="top: 20%; left: 10%;">🏪</div>
@@ -133,17 +108,12 @@
                                 📂 تصفح الفئات
                             </a>
                         </div>
-                    <div class="results-header">
-                        <div class="results-info">
-                            <h2 class="results-title">
-                                @if(str_contains($category->icon, 'fas') || str_contains($category->icon, 'far') || str_contains($category->icon, 'fab'))
-                                    <i class="{{ $category->icon }}"></i>
-                                @else
-                                    {{ $category->icon }}
-                                @endif
-                                {{ $category->name }}
-                            </h2>
-                            <p class="results-count">
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="city-main">
+                    <!-- Results Header -->
                     <div class="results-header">
                         <div class="results-info">
                             <h2 class="results-title">

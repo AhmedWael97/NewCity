@@ -42,13 +42,7 @@
                         <!-- Main Category Header -->
                         <div class="category-card-header">
                             <a href="{{ route('category.shops', $category->slug) }}" class="category-link">
-                                <div class="category-icon">
-                                    @if(str_contains($category->icon, 'fas') || str_contains($category->icon, 'far') || str_contains($category->icon, 'fab'))
-                                        <i class="{{ $category->icon }}"></i>
-                                    @else
-                                        {{ $category->icon }}
-                                    @endif
-                                </div>
+                                <div class="category-icon">{{ $category->icon }}</div>
                                 <div class="category-details">
                                     <h2 class="category-name">{{ $category->name }}</h2>
                                     <p class="category-description">{{ $category->description }}</p>
@@ -75,13 +69,7 @@
                                 <div class="subcategories-list">
                                     @foreach($category->children->take(6) as $subcategory)
                                         <a href="{{ route('category.shops', $subcategory->slug) }}" class="subcategory-item">
-                                            <span class="subcategory-icon">
-                                                @if(str_contains($subcategory->icon, 'fas') || str_contains($subcategory->icon, 'far') || str_contains($subcategory->icon, 'fab'))
-                                                    <i class="{{ $subcategory->icon }}"></i>
-                                                @else
-                                                    {{ $subcategory->icon }}
-                                                @endif
-                                            </span>
+                                            <span class="subcategory-icon">{{ $subcategory->icon }}</span>
                                             <span class="subcategory-name">{{ $subcategory->name }}</span>
                                             <span class="subcategory-shops">
                                                 ({{ $subcategory->shops()->where('is_active', true)->count() }})
@@ -131,16 +119,10 @@
 
     <!-- Categories Quick Navigation -->
     <div class="quick-nav-section">
-                @foreach($categories->take(8) as $category)
-                    <a href="{{ route('category.shops', $category->slug) }}" class="quick-nav-item">
-                        <span class="quick-nav-icon">
-                            @if(str_contains($category->icon, 'fas') || str_contains($category->icon, 'far') || str_contains($category->icon, 'fab'))
-                                <i class="{{ $category->icon }}"></i>
-                            @else
-                                {{ $category->icon }}
-                            @endif
-                        </span>
-                        <span class="quick-nav-name">{{ $category->name }}</span>
+        <div class="container">
+            <h2 class="section-title">
+                <span class="icon">🔗</span>
+                تصفح سريع للفئات
             </h2>
             <div class="quick-nav-grid">
                 @foreach($categories->take(8) as $category)
