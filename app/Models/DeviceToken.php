@@ -14,13 +14,25 @@ class DeviceToken extends Model
         'device_token',
         'device_type',
         'device_name',
+        'os_version',
+        'device_model',
+        'device_manufacturer',
+        'device_id',
         'app_version',
+        'app_build_number',
+        'language',
+        'timezone',
         'is_active',
+        'notifications_enabled',
+        'ip_address',
+        'device_metadata',
         'last_used_at',
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'notifications_enabled' => 'boolean',
+        'device_metadata' => 'array',
         'last_used_at' => 'datetime',
     ];
 
@@ -51,7 +63,17 @@ class DeviceToken extends Model
                 'user_id' => $userId,
                 'device_type' => $deviceInfo['device_type'] ?? null,
                 'device_name' => $deviceInfo['device_name'] ?? null,
+                'os_version' => $deviceInfo['os_version'] ?? null,
+                'device_model' => $deviceInfo['device_model'] ?? null,
+                'device_manufacturer' => $deviceInfo['device_manufacturer'] ?? null,
+                'device_id' => $deviceInfo['device_id'] ?? null,
                 'app_version' => $deviceInfo['app_version'] ?? null,
+                'app_build_number' => $deviceInfo['app_build_number'] ?? null,
+                'language' => $deviceInfo['language'] ?? 'ar',
+                'timezone' => $deviceInfo['timezone'] ?? null,
+                'notifications_enabled' => $deviceInfo['notifications_enabled'] ?? true,
+                'ip_address' => $deviceInfo['ip_address'] ?? null,
+                'device_metadata' => $deviceInfo['device_metadata'] ?? null,
                 'is_active' => true,
                 'last_used_at' => now(),
             ]

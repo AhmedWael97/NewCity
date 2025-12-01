@@ -169,6 +169,32 @@ use App\Http\Controllers\Controller;
  * )
  * 
  * @OA\Schema(
+ *     schema="DeviceToken",
+ *     type="object",
+ *     description="Device Token model for push notifications",
+ *     @OA\Property(property="id", type="integer", example=123),
+ *     @OA\Property(property="user_id", type="integer", nullable=true, example=1, description="User ID (null for guest devices)"),
+ *     @OA\Property(property="device_token", type="string", example="fcm_token_example", description="FCM token from Firebase"),
+ *     @OA\Property(property="device_type", type="string", enum={"android", "ios", "web"}, example="android"),
+ *     @OA\Property(property="device_name", type="string", example="Samsung Galaxy S21", nullable=true),
+ *     @OA\Property(property="os_version", type="string", example="Android 13", nullable=true),
+ *     @OA\Property(property="device_model", type="string", example="SM-G991B", nullable=true),
+ *     @OA\Property(property="device_manufacturer", type="string", example="Samsung", nullable=true),
+ *     @OA\Property(property="device_id", type="string", example="unique-device-id", nullable=true),
+ *     @OA\Property(property="app_version", type="string", example="1.0.0", nullable=true),
+ *     @OA\Property(property="app_build_number", type="string", example="100", nullable=true),
+ *     @OA\Property(property="language", type="string", example="ar", default="ar"),
+ *     @OA\Property(property="timezone", type="string", example="Asia/Riyadh", nullable=true),
+ *     @OA\Property(property="ip_address", type="string", example="192.168.1.1", nullable=true),
+ *     @OA\Property(property="device_metadata", type="object", nullable=true, description="Additional device metadata"),
+ *     @OA\Property(property="is_active", type="boolean", example=true, default=true),
+ *     @OA\Property(property="notifications_enabled", type="boolean", example=true, default=true),
+ *     @OA\Property(property="last_used_at", type="string", format="date-time", example="2025-12-02T10:30:00.000000Z"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", example="2025-11-01T08:15:00.000000Z"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", example="2025-11-01T08:15:00.000000Z")
+ * )
+ * 
+ * @OA\Schema(
  *     schema="ApiResponse",
  *     type="object",
  *     @OA\Property(property="message", type="string", example="Operation successful"),

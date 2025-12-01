@@ -1,0 +1,158 @@
+###
+# FCM Token Registration API - HTTP Request Examples
+# Use with REST Client extension in VS Code or similar tools
+###
+
+### Variables
+@baseUrl = http://localhost:8000/api/v1
+@accessToken = YOUR_ACCESS_TOKEN_HERE
+
+###
+# 1. Register Guest Device Token (No Authentication Required)
+POST {{baseUrl}}/guest-device-tokens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "device_token": "fcm_token_example_guest_android_001",
+  "device_type": "android",
+  "device_name": "Samsung Galaxy S21",
+  "os_version": "Android 13",
+  "device_model": "SM-G991B",
+  "device_manufacturer": "Samsung",
+  "device_id": "android-device-unique-id-001",
+  "app_version": "1.0.0",
+  "app_build_number": "100",
+  "language": "ar",
+  "timezone": "Asia/Riyadh",
+  "notifications_enabled": true,
+  "device_metadata": {
+    "screen_width": 1080,
+    "screen_height": 2400,
+    "ram": "8GB",
+    "storage": "128GB"
+  }
+}
+
+###
+# 2. Register Guest Device Token - iOS
+POST {{baseUrl}}/guest-device-tokens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "device_token": "fcm_token_example_guest_ios_001",
+  "device_type": "ios",
+  "device_name": "iPhone 14 Pro",
+  "os_version": "iOS 17.2",
+  "device_model": "iPhone15,2",
+  "device_manufacturer": "Apple",
+  "device_id": "ios-device-unique-id-001",
+  "app_version": "1.0.0",
+  "app_build_number": "100",
+  "language": "ar",
+  "timezone": "Asia/Riyadh",
+  "notifications_enabled": true,
+  "device_metadata": {
+    "device": "iPhone15,2",
+    "screen_size": "6.1 inch"
+  }
+}
+
+###
+# 3. Register Authenticated User Device Token
+POST {{baseUrl}}/device-tokens
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "device_token": "fcm_token_example_auth_android_001",
+  "device_type": "android",
+  "device_name": "Google Pixel 7",
+  "os_version": "Android 14",
+  "device_model": "Pixel 7",
+  "device_manufacturer": "Google",
+  "device_id": "android-device-auth-001",
+  "app_version": "1.0.0",
+  "app_build_number": "100",
+  "language": "ar",
+  "timezone": "Asia/Riyadh",
+  "notifications_enabled": true
+}
+
+###
+# 4. Get All Device Tokens for Current User
+GET {{baseUrl}}/device-tokens
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+###
+# 5. Remove Device Token (Logout/Uninstall)
+DELETE {{baseUrl}}/device-tokens
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "device_token": "fcm_token_example_auth_android_001"
+}
+
+###
+# 6. Login to Get Access Token (for testing authenticated endpoints)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password"
+}
+
+###
+# 7. Test Validation - Missing Required Fields
+POST {{baseUrl}}/guest-device-tokens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "device_name": "Test Device"
+}
+
+###
+# 8. Test Validation - Invalid Device Type
+POST {{baseUrl}}/guest-device-tokens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "device_token": "test_token",
+  "device_type": "windows"
+}
+
+###
+# 9. Register Web Device Token
+POST {{baseUrl}}/guest-device-tokens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "device_token": "fcm_token_example_web_001",
+  "device_type": "web",
+  "device_name": "Chrome Browser",
+  "os_version": "Windows 11",
+  "app_version": "1.0.0",
+  "language": "ar",
+  "notifications_enabled": true
+}
+
+###
+# 10. Register Device with Minimal Required Fields
+POST {{baseUrl}}/guest-device-tokens
+Content-Type: application/json
+Accept: application/json
+
+{
+  "device_token": "fcm_token_minimal_example",
+  "device_type": "android"
+}

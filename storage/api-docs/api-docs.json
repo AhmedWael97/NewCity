@@ -2256,6 +2256,1123 @@
                 }
             }
         },
+        "/api/v1/device-tokens": {
+            "get": {
+                "tags": [
+                    "Device Tokens"
+                ],
+                "summary": "Get user's device tokens",
+                "description": "Retrieve all registered devices for the authenticated user",
+                "operationId": "getUserDeviceTokens",
+                "responses": {
+                    "200": {
+                        "description": "List of user's device tokens",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 123
+                                                    },
+                                                    "device_type": {
+                                                        "type": "string",
+                                                        "example": "android"
+                                                    },
+                                                    "device_name": {
+                                                        "type": "string",
+                                                        "example": "Samsung Galaxy S21"
+                                                    },
+                                                    "app_version": {
+                                                        "type": "string",
+                                                        "example": "1.0.0"
+                                                    },
+                                                    "is_active": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "last_used_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2025-12-02T10:30:00.000000Z"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2025-11-01T08:15:00.000000Z"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to fetch device tokens"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error details here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Device Tokens"
+                ],
+                "summary": "Register device token (authenticated)",
+                "description": "Register or update FCM device token for push notifications. Requires authentication.",
+                "operationId": "registerDeviceToken",
+                "requestBody": {
+                    "description": "Device token and device information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "device_token",
+                                    "device_type"
+                                ],
+                                "properties": {
+                                    "device_token": {
+                                        "description": "FCM token from Firebase",
+                                        "type": "string",
+                                        "example": "fcm_token_example_here"
+                                    },
+                                    "device_type": {
+                                        "description": "Type of device",
+                                        "type": "string",
+                                        "enum": [
+                                            "android",
+                                            "ios",
+                                            "web"
+                                        ],
+                                        "example": "android"
+                                    },
+                                    "device_name": {
+                                        "description": "Device display name",
+                                        "type": "string",
+                                        "example": "Samsung Galaxy S21"
+                                    },
+                                    "os_version": {
+                                        "description": "Operating system version",
+                                        "type": "string",
+                                        "example": "Android 13"
+                                    },
+                                    "device_model": {
+                                        "description": "Device model number",
+                                        "type": "string",
+                                        "example": "SM-G991B"
+                                    },
+                                    "device_manufacturer": {
+                                        "description": "Device manufacturer",
+                                        "type": "string",
+                                        "example": "Samsung"
+                                    },
+                                    "device_id": {
+                                        "description": "Unique device identifier",
+                                        "type": "string",
+                                        "example": "unique-device-id-123"
+                                    },
+                                    "app_version": {
+                                        "description": "Application version",
+                                        "type": "string",
+                                        "example": "1.0.0"
+                                    },
+                                    "app_build_number": {
+                                        "description": "Application build number",
+                                        "type": "string",
+                                        "example": "100"
+                                    },
+                                    "language": {
+                                        "description": "Preferred language code",
+                                        "type": "string",
+                                        "example": "ar"
+                                    },
+                                    "timezone": {
+                                        "description": "Device timezone",
+                                        "type": "string",
+                                        "example": "Asia/Riyadh"
+                                    },
+                                    "notifications_enabled": {
+                                        "description": "Whether notifications are enabled",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "device_metadata": {
+                                        "description": "Additional device metadata",
+                                        "properties": {
+                                            "screen_width": {
+                                                "type": "integer",
+                                                "example": 1080
+                                            },
+                                            "screen_height": {
+                                                "type": "integer",
+                                                "example": 2400
+                                            },
+                                            "ram": {
+                                                "type": "string",
+                                                "example": "8GB"
+                                            },
+                                            "storage": {
+                                                "type": "string",
+                                                "example": "128GB"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Device token registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Device token registered successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 123
+                                                },
+                                                "device_type": {
+                                                    "type": "string",
+                                                    "example": "android"
+                                                },
+                                                "device_model": {
+                                                    "type": "string",
+                                                    "example": "SM-G991B"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "notifications_enabled": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "device_token": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The device token field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to register device token"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error details here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Device Tokens"
+                ],
+                "summary": "Remove device token",
+                "description": "Unregister a device token. Used when user logs out or uninstalls the app.",
+                "operationId": "deleteDeviceToken",
+                "requestBody": {
+                    "description": "Device token to remove",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "device_token"
+                                ],
+                                "properties": {
+                                    "device_token": {
+                                        "description": "FCM token to remove",
+                                        "type": "string",
+                                        "example": "fcm_token_example_here"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Device token removed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Device token removed successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Device token not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Device token not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "device_token": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The device token field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to remove device token"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error details here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/guest-device-tokens": {
+            "post": {
+                "tags": [
+                    "Device Tokens"
+                ],
+                "summary": "Register device token (guest)",
+                "description": "Register FCM device token for non-authenticated users. No authentication required.",
+                "operationId": "registerGuestDeviceToken",
+                "requestBody": {
+                    "description": "Device token and device information",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "device_token",
+                                    "device_type"
+                                ],
+                                "properties": {
+                                    "device_token": {
+                                        "description": "FCM token from Firebase",
+                                        "type": "string",
+                                        "example": "fcm_token_example_here"
+                                    },
+                                    "device_type": {
+                                        "description": "Type of device",
+                                        "type": "string",
+                                        "enum": [
+                                            "android",
+                                            "ios",
+                                            "web"
+                                        ],
+                                        "example": "android"
+                                    },
+                                    "device_name": {
+                                        "description": "Device display name",
+                                        "type": "string",
+                                        "example": "Samsung Galaxy S21"
+                                    },
+                                    "os_version": {
+                                        "description": "Operating system version",
+                                        "type": "string",
+                                        "example": "Android 13"
+                                    },
+                                    "device_model": {
+                                        "description": "Device model number",
+                                        "type": "string",
+                                        "example": "SM-G991B"
+                                    },
+                                    "device_manufacturer": {
+                                        "description": "Device manufacturer",
+                                        "type": "string",
+                                        "example": "Samsung"
+                                    },
+                                    "device_id": {
+                                        "description": "Unique device identifier",
+                                        "type": "string",
+                                        "example": "unique-device-id-123"
+                                    },
+                                    "app_version": {
+                                        "description": "Application version",
+                                        "type": "string",
+                                        "example": "1.0.0"
+                                    },
+                                    "app_build_number": {
+                                        "description": "Application build number",
+                                        "type": "string",
+                                        "example": "100"
+                                    },
+                                    "language": {
+                                        "description": "Preferred language code",
+                                        "type": "string",
+                                        "example": "ar"
+                                    },
+                                    "timezone": {
+                                        "description": "Device timezone",
+                                        "type": "string",
+                                        "example": "Asia/Riyadh"
+                                    },
+                                    "notifications_enabled": {
+                                        "description": "Whether notifications are enabled",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "device_metadata": {
+                                        "description": "Additional device metadata",
+                                        "type": "object",
+                                        "example": {
+                                            "screen_width": 1080,
+                                            "screen_height": 2400,
+                                            "ram": "8GB"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Guest device token registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Guest device token registered successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 456
+                                                },
+                                                "device_type": {
+                                                    "type": "string",
+                                                    "example": "android"
+                                                },
+                                                "device_model": {
+                                                    "type": "string",
+                                                    "example": "SM-G991B"
+                                                },
+                                                "is_active": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "notifications_enabled": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "device_type": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The device type must be one of: web, android, ios."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to register device token"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error details here"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/marketplace": {
+            "get": {
+                "tags": [
+                    "Marketplace"
+                ],
+                "summary": "Get marketplace items list",
+                "operationId": "f4fedc8428558ab6904016476780bc17",
+                "parameters": [
+                    {
+                        "name": "city_id",
+                        "in": "query",
+                        "description": "Filter by city",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "query",
+                        "description": "Filter by category",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "description": "Minimum price",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "description": "Maximum price",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "condition",
+                        "in": "query",
+                        "description": "Item condition",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "new",
+                                "like_new",
+                                "good",
+                                "fair"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort by",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "newest",
+                                "price_low",
+                                "price_high",
+                                "most_viewed"
+                            ]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Items retrieved successfully"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Marketplace"
+                ],
+                "summary": "Create a new marketplace item",
+                "operationId": "709d045c8b58c2c08bb8b0de03d3b87f",
+                "responses": {
+                    "201": {
+                        "description": "Item created successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/marketplace/sponsored": {
+            "get": {
+                "tags": [
+                    "Marketplace"
+                ],
+                "summary": "Get sponsored marketplace items",
+                "operationId": "59cecf51dddc316e105491c04d04b6f9",
+                "responses": {
+                    "200": {
+                        "description": "Sponsored items retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/marketplace/{id}": {
+            "get": {
+                "tags": [
+                    "Marketplace"
+                ],
+                "summary": "Get marketplace item details",
+                "operationId": "4e2f9edd214ab0dad13510fe6f0fbc4f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item details retrieved successfully"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Marketplace"
+                ],
+                "summary": "Update marketplace item",
+                "operationId": "452a61ec5598c9d9757a03c07e5699ac",
+                "responses": {
+                    "200": {
+                        "description": "Item updated successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Marketplace"
+                ],
+                "summary": "Delete marketplace item",
+                "operationId": "cb421645df4a91e7144720eba4cd81c0",
+                "responses": {
+                    "200": {
+                        "description": "Item deleted successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/my-marketplace-items": {
+            "get": {
+                "tags": [
+                    "Marketplace"
+                ],
+                "summary": "Get current user's marketplace items",
+                "operationId": "1da79ef8b43eeeef613e667d11695192",
+                "responses": {
+                    "200": {
+                        "description": "Items retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/marketplace/{id}/contact": {
+            "post": {
+                "tags": [
+                    "Marketplace"
+                ],
+                "summary": "Record contact attempt",
+                "operationId": "598065545f9d894aed4214a7d4654e62",
+                "responses": {
+                    "200": {
+                        "description": "Contact recorded successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/marketplace/{id}/mark-sold": {
+            "post": {
+                "tags": [
+                    "Marketplace"
+                ],
+                "summary": "Mark item as sold",
+                "operationId": "11069cce36da471e1248572794062e27",
+                "responses": {
+                    "200": {
+                        "description": "Item marked as sold"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/marketplace/sponsorship-packages": {
+            "get": {
+                "tags": [
+                    "Marketplace Sponsorships"
+                ],
+                "summary": "Get available sponsorship packages",
+                "operationId": "08fe0cd907b1c27517b993aae08910e7",
+                "responses": {
+                    "200": {
+                        "description": "Packages retrieved successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/marketplace/{itemId}/sponsor": {
+            "post": {
+                "tags": [
+                    "Marketplace Sponsorships"
+                ],
+                "summary": "Purchase sponsorship for an item",
+                "operationId": "709d8112aa34a39cb2741fe5c1ca52e5",
+                "parameters": [
+                    {
+                        "name": "itemId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "package_type",
+                                    "payment_method"
+                                ],
+                                "properties": {
+                                    "package_type": {
+                                        "type": "string",
+                                        "enum": [
+                                            "basic",
+                                            "standard",
+                                            "premium"
+                                        ]
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "example": "cash"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Sponsorship purchased successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/my-marketplace-sponsorships": {
+            "get": {
+                "tags": [
+                    "Marketplace Sponsorships"
+                ],
+                "summary": "Get current user's sponsorships",
+                "operationId": "41f7c08101e1f8f252d7cb11f5d83346",
+                "responses": {
+                    "200": {
+                        "description": "Sponsorships retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/marketplace/{itemId}/sponsorships": {
+            "get": {
+                "tags": [
+                    "Marketplace Sponsorships"
+                ],
+                "summary": "Get sponsorship history for an item",
+                "operationId": "e03fb4e737dd0218b8b0ca68f06ff893",
+                "responses": {
+                    "200": {
+                        "description": "Sponsorships retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/marketplace/sponsorships/{id}": {
+            "get": {
+                "tags": [
+                    "Marketplace Sponsorships"
+                ],
+                "summary": "Get sponsorship details",
+                "operationId": "07f34de7c503cc3ffefa508cff60f2e1",
+                "responses": {
+                    "200": {
+                        "description": "Sponsorship details retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/marketplace/sponsorships/{id}/renew": {
+            "post": {
+                "tags": [
+                    "Marketplace Sponsorships"
+                ],
+                "summary": "Renew an expired sponsorship",
+                "operationId": "368994d10152a3cb44adb709e25a1ca9",
+                "responses": {
+                    "201": {
+                        "description": "Sponsorship renewed successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/marketplace/sponsorships/{id}/cancel": {
+            "post": {
+                "tags": [
+                    "Marketplace Sponsorships"
+                ],
+                "summary": "Cancel an active sponsorship",
+                "operationId": "576df0eeac9c31b58cf89405d12c24f4",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "reason": {
+                                        "type": "string",
+                                        "example": "Changed my mind"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Sponsorship cancelled successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/marketplace/sponsorships/stats": {
+            "get": {
+                "tags": [
+                    "Marketplace Sponsorships"
+                ],
+                "summary": "Get sponsorship statistics for current user",
+                "operationId": "43e5900270d217841ff968fbac7808fa",
+                "responses": {
+                    "200": {
+                        "description": "Statistics retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/my-shops": {
             "get": {
                 "tags": [
@@ -5124,6 +6241,116 @@
                 },
                 "type": "object"
             },
+            "DeviceToken": {
+                "description": "Device Token model for push notifications",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 123
+                    },
+                    "user_id": {
+                        "description": "User ID (null for guest devices)",
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "device_token": {
+                        "description": "FCM token from Firebase",
+                        "type": "string",
+                        "example": "fcm_token_example"
+                    },
+                    "device_type": {
+                        "type": "string",
+                        "enum": [
+                            "android",
+                            "ios",
+                            "web"
+                        ],
+                        "example": "android"
+                    },
+                    "device_name": {
+                        "type": "string",
+                        "example": "Samsung Galaxy S21",
+                        "nullable": true
+                    },
+                    "os_version": {
+                        "type": "string",
+                        "example": "Android 13",
+                        "nullable": true
+                    },
+                    "device_model": {
+                        "type": "string",
+                        "example": "SM-G991B",
+                        "nullable": true
+                    },
+                    "device_manufacturer": {
+                        "type": "string",
+                        "example": "Samsung",
+                        "nullable": true
+                    },
+                    "device_id": {
+                        "type": "string",
+                        "example": "unique-device-id",
+                        "nullable": true
+                    },
+                    "app_version": {
+                        "type": "string",
+                        "example": "1.0.0",
+                        "nullable": true
+                    },
+                    "app_build_number": {
+                        "type": "string",
+                        "example": "100",
+                        "nullable": true
+                    },
+                    "language": {
+                        "type": "string",
+                        "default": "ar",
+                        "example": "ar"
+                    },
+                    "timezone": {
+                        "type": "string",
+                        "example": "Asia/Riyadh",
+                        "nullable": true
+                    },
+                    "ip_address": {
+                        "type": "string",
+                        "example": "192.168.1.1",
+                        "nullable": true
+                    },
+                    "device_metadata": {
+                        "description": "Additional device metadata",
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "default": true,
+                        "example": true
+                    },
+                    "notifications_enabled": {
+                        "type": "boolean",
+                        "default": true,
+                        "example": true
+                    },
+                    "last_used_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-12-02T10:30:00.000000Z"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-11-01T08:15:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-11-01T08:15:00.000000Z"
+                    }
+                },
+                "type": "object"
+            },
             "ApiResponse": {
                 "properties": {
                     "message": {
@@ -5183,6 +6410,18 @@
         {
             "name": "Cities",
             "description": "City management endpoints"
+        },
+        {
+            "name": "Device Tokens",
+            "description": "API endpoints for managing FCM device tokens and push notifications"
+        },
+        {
+            "name": "Marketplace",
+            "description": "Marketplace items management endpoints"
+        },
+        {
+            "name": "Marketplace Sponsorships",
+            "description": "Marketplace item sponsorship management endpoints"
         },
         {
             "name": "My Shops",
