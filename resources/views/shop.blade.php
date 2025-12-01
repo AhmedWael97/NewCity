@@ -23,66 +23,32 @@
                     
                     <!-- Main Shop Information -->
                     <div class="shop-main-info">
-                        <h1 class="shop-title">
-                            <span style="font-size: 24px; font-weight: bold;">
-                                {{ $shop->name }}
-                            </span>
+                        <h1 class="shop-title" style="font-size: 32px; font-weight: 700; margin-bottom: 20px; color: white;">
+                            {{ $shop->name }}
                             @if($shop->is_verified ?? false)
-                                <span class="verified-badge" title="متجر موثق">
-                                    <i class="fas fa-check-circle"></i>
+                                <span class="verified-badge" title="متجر موثق" style="color: #10b981; margin-right: 8px;">
+                                    <i class="fas fa-check-circle" style="color: white;"></i>
                                 </span>
                             @endif
                         </h1>
                         
                         <!-- Shop Meta Information -->
-                        <div class="shop-meta-grid">
-                            <div class="meta-item">
-                                <div class="meta-icon category-icon">
-                                    <i class="fas fa-store"></i>
+                        <div class="shop-meta-grid" style="display: flex; gap: 30px; flex-wrap: wrap;">
+                            <div class="meta-item" style="display: flex; align-items: center; gap: 10px;">
+                                <div class="meta-icon" style="width: 40px; height: 40px; background: #f0fdf4; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #16a34a;">
+                                    <i class="fas fa-store" style="font-size: 18px;"></i>
                                 </div>
                                 <div class="meta-content">
-                                    <span class="meta-label">الفئة</span>
-                                    <span class="meta-value">{{ $shop->category->name ?? 'عام' }}</span>
+                                    <span class="meta-value" style="font-size: 16px; font-weight: 600; color: #1a202c;">{{ $shop->category->name ?? 'عام' }}</span>
                                 </div>
                             </div>
                             
-                            <div class="meta-item">
-                                <div class="meta-icon location-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
+                            <div class="meta-item" style="display: flex; align-items: center; gap: 10px;">
+                                <div class="meta-icon" style="width: 40px; height: 40px; background: #eff6ff; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #2563eb;">
+                                    <i class="fas fa-map-marker-alt" style="font-size: 18px;"></i>
                                 </div>
                                 <div class="meta-content">
-                                    <span class="meta-label">المدينة</span>
-                                    <span class="meta-value">{{ $shop->city->name ?? '' }}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="meta-item">
-                                <div class="meta-icon status-icon {{ $shop->is_open_now ?? true ? 'status-open' : 'status-closed' }}">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="meta-content">
-                                    <span class="meta-label">الحالة</span>
-                                    <span class="meta-value status-badge {{ $shop->is_open_now ?? true ? 'badge-open' : 'badge-closed' }}">
-                                        {{ $shop->is_open_now ?? true ? 'مفتوح الآن' : 'مغلق حالياً' }}
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <div class="meta-item">
-                                <div class="meta-icon rating-icon">
-                                    <i class="fas fa-star"></i>
-                                </div>
-                                <div class="meta-content">
-                                    <span class="meta-label">التقييم</span>
-                                    <div class="meta-rating">
-                                        <x-rating.display 
-                                            :rating="$shop->averageRating()" 
-                                            :show-text="true"
-                                            size="sm"
-                                            class="hero-rating-display"
-                                        />
-                                        <span class="review-count-badge">({{ $shop->totalRatings() }})</span>
-                                    </div>
+                                    <span class="meta-value" style="font-size: 16px; font-weight: 600; color: #1a202c;">{{ $shop->city->name ?? '' }}</span>
                                 </div>
                             </div>
                         </div>
