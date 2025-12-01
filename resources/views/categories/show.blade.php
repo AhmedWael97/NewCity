@@ -16,7 +16,11 @@
                 
                 <div class="category-header">
                     <div class="category-icon">
-                        {{ $category->icon }}
+                        @if(str_contains($category->icon, 'fas') || str_contains($category->icon, 'far') || str_contains($category->icon, 'fab'))
+                            <i class="{{ $category->icon }}"></i>
+                        @else
+                            {{ $category->icon }}
+                        @endif
                     </div>
                     <div class="category-info">
                         <h1>{{ $category->name }}</h1>
@@ -50,7 +54,13 @@
             <div class="subcategories-grid">
                 @foreach($category->children as $subcategory)
                     <a href="{{ route('category.shops', $subcategory->slug) }}" class="subcategory-card">
-                        <div class="subcategory-icon">{{ $subcategory->icon }}</div>
+                        <div class="subcategory-icon">
+                            @if(str_contains($subcategory->icon, 'fas') || str_contains($subcategory->icon, 'far') || str_contains($subcategory->icon, 'fab'))
+                                <i class="{{ $subcategory->icon }}"></i>
+                            @else
+                                {{ $subcategory->icon }}
+                            @endif
+                        </div>
                         <h3 class="subcategory-name">{{ $subcategory->name }}</h3>
                         <span class="subcategory-count">
                             {{ $subcategory->shops()->where('is_active', true)->count() }} متجر
