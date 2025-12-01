@@ -309,3 +309,39 @@ Route::get('/contact', function () {
 })->name('contact');
 
 Route::post('/tickets/store', [App\Http\Controllers\SupportTicketController::class, 'store'])->name('tickets.store');
+
+// Forum Routes
+Route::prefix('forum')->name('forum.')->group(function () {
+    // Public routes
+    Route::get('/', [App\Http\Controllers\ForumController::class, 'index'])->name('index');
+    Route::get('/category/{category}', [App\Http\Controllers\ForumController::class, 'category'])->name('category');
+    Route::get('/thread/{thread}', [App\Http\Controllers\ForumThreadController::class, 'show'])->name('thread');
+    
+    // Authenticated routes
+    Route::middleware('auth')->group(function () {
+        // Create thread
+        Route::get('/category/{category}/create', [App\Http\Controllers\ForumController::class, 'createThread'])->name('create-thread');
+        Route::post('/category/{category}/create', [App\Http\Controllers\ForumController::class, 'storeThread'])->name('store-thread');
+        
+        // Thread management
+        Route::get('/thread/{thread}/edit', [App\Http\Controllers\ForumThreadController::class, 'edit'])->name('edit-thread');
+        Route::put('/thread/{thread}', [App\Http\Controllers\ForumThreadController::class, 'update'])->name('update-thread');
+        Route::delete('/thread/{thread}', [App\Http\Controllers\ForumThreadController::class, 'destroy'])->name('delete-thread');
+        
+        // Posts
+        Route::post('/thread/{thread}/reply', [App\Http\Controllers\ForumThreadController::class, 'storePost'])->name('store-post');
+        Route::get('/post/{post}/edit', [App\Http\Controllers\ForumPostController::class, 'edit'])->name('edit-post');
+        Route::put('/post/{post}', [App\Http\Controllers\ForumPostController::class, 'update'])->name('update-post');
+        Route::delete('/post/{post}', [App\Http\Controllers\ForumPostController::class, 'destroy'])->name('delete-post');
+        
+        // Subscriptions
+        Route::post('/thread/{thread}/subscribe', [App\Http\Controllers\ForumThreadController::class, 'subscribe'])->name('subscribe');
+        Route::delete('/thread/{thread}/unsubscribe', [App\Http\Controllers\ForumThreadController::class, 'unsubscribe'])->name('unsubscribe');
+        
+        // Voting
+        Route::post('/post/{post}/vote', [App\Http\Controllers\ForumPostController::class, 'vote'])->name('vote-post');
+        
+        // Reporting
+        Route::post('/post/{post}/report', [App\Http\Controllers\ForumPostController::class, 'report'])->name('report-post');
+    });
+});

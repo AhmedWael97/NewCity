@@ -859,6 +859,25 @@
                     </a>
                 </li>
 
+                <!-- Community -->
+                <div class="sidebar-heading">المجتمع</div>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.forum.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.forum.index') }}">
+                        <i class="fas fa-comments"></i>
+                        <span>المنتدى</span>
+                        @php
+                            $pendingThreads = \App\Models\ForumThread::where('is_approved', false)->count();
+                            $pendingPosts = \App\Models\ForumPost::where('is_approved', false)->count();
+                            $pendingReports = \App\Models\ForumReport::where('status', 'pending')->count();
+                            $totalPending = $pendingThreads + $pendingPosts + $pendingReports;
+                        @endphp
+                        @if($totalPending > 0)
+                            <span class="badge bg-warning text-dark me-2">{{ $totalPending }}</span>
+                        @endif
+                    </a>
+                </li>
+
                 <!-- Tools -->
                 <div class="sidebar-heading">الأدوات</div>
                 <li class="nav-item">

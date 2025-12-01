@@ -275,4 +275,35 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
         Route::post('/download', [App\Http\Controllers\Admin\QrGeneratorController::class, 'download'])->name('download');
     });
     
+    // Forum Management
+    Route::prefix('forum')->name('forum.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AdminForumController::class, 'index'])->name('index');
+        
+        // Categories
+        Route::get('/categories', [App\Http\Controllers\Admin\AdminForumController::class, 'categories'])->name('categories');
+        Route::get('/categories/create', [App\Http\Controllers\Admin\AdminForumController::class, 'createCategory'])->name('categories.create');
+        Route::post('/categories', [App\Http\Controllers\Admin\AdminForumController::class, 'storeCategory'])->name('categories.store');
+        Route::get('/categories/{category}/edit', [App\Http\Controllers\Admin\AdminForumController::class, 'editCategory'])->name('categories.edit');
+        Route::put('/categories/{category}', [App\Http\Controllers\Admin\AdminForumController::class, 'updateCategory'])->name('categories.update');
+        Route::delete('/categories/{category}', [App\Http\Controllers\Admin\AdminForumController::class, 'destroyCategory'])->name('categories.destroy');
+        
+        // Moderation
+        Route::get('/moderation', [App\Http\Controllers\Admin\AdminForumController::class, 'moderation'])->name('moderation');
+        Route::post('/threads/{thread}/approve', [App\Http\Controllers\Admin\AdminForumController::class, 'approveThread'])->name('threads.approve');
+        Route::post('/threads/{thread}/reject', [App\Http\Controllers\Admin\AdminForumController::class, 'rejectThread'])->name('threads.reject');
+        Route::post('/posts/{post}/approve', [App\Http\Controllers\Admin\AdminForumController::class, 'approvePost'])->name('posts.approve');
+        Route::post('/posts/{post}/reject', [App\Http\Controllers\Admin\AdminForumController::class, 'rejectPost'])->name('posts.reject');
+        
+        // Threads Management
+        Route::get('/threads', [App\Http\Controllers\Admin\AdminForumController::class, 'threads'])->name('threads');
+        Route::post('/threads/{thread}/pin', [App\Http\Controllers\Admin\AdminForumController::class, 'togglePinThread'])->name('threads.pin');
+        Route::post('/threads/{thread}/lock', [App\Http\Controllers\Admin\AdminForumController::class, 'toggleLockThread'])->name('threads.lock');
+        Route::delete('/threads/{thread}', [App\Http\Controllers\Admin\AdminForumController::class, 'deleteThread'])->name('threads.delete');
+        
+        // Reports
+        Route::get('/reports', [App\Http\Controllers\Admin\AdminForumController::class, 'reports'])->name('reports');
+        Route::get('/reports/{report}', [App\Http\Controllers\Admin\AdminForumController::class, 'showReport'])->name('reports.show');
+        Route::post('/reports/{report}/resolve', [App\Http\Controllers\Admin\AdminForumController::class, 'resolveReport'])->name('reports.resolve');
+    });
+    
 });

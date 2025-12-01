@@ -98,6 +98,10 @@
                     📰 الأخبار
                 </a>
                 
+                <a href="{{ route('forum.index') }}" class="category-nav-item {{ request()->routeIs('forum.*') ? 'active' : '' }}">
+                    💬 المنتدى
+                </a>
+                
                 <!-- Debug: Show categories count -->
                 {{-- Debug: {{ isset($navCategories) ? $navCategories->count() : 'No categories' }} --}}
                 
