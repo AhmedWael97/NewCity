@@ -46,19 +46,6 @@
           integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" 
           crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Vite CSS in production, dev server in local -->
-    @if(app()->environment('production'))
-        @php
-            $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
-            $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
-        @endphp
-        @if($cssFile)
-            <link rel="stylesheet" href="{{ asset('build/' . $cssFile) }}">
-        @endif
-    @else
-        @vite(['resources/css/app.css'])
-    @endif
-
     <!-- Main CSS -->
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     
@@ -128,23 +115,6 @@
 
     <!-- Floating City Selector -->
     @include('partials.floating-city-selector')
-
-    <!-- Load compiled assets in production, Vite dev server in local -->
-    @if(app()->environment('production'))
-        @php
-            $manifest = json_decode(file_get_contents(public_path('build/manifest.json')), true);
-            $jsFile = $manifest['resources/js/app.js']['file'] ?? null;
-            $cssFile = $manifest['resources/css/app.css']['file'] ?? null;
-        @endphp
-        @if($cssFile)
-            <link rel="stylesheet" href="{{ asset('build/' . $cssFile) }}">
-        @endif
-        @if($jsFile)
-            <script src="{{ asset('build/' . $jsFile) }}" defer></script>
-        @endif
-    @else
-        @vite(['resources/js/app.js'])
-    @endif
 
     <!-- jQuery (required for Select2) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
