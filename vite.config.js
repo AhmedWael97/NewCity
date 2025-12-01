@@ -11,22 +11,14 @@ export default defineConfig({
         tailwindcss(),
     ],
     build: {
-        // Minify assets
-        minify: 'terser',
-        terserOptions: {
-            compress: {
-                drop_console: true,
-                drop_debugger: true,
-            },
-        },
+        // Minify assets (using esbuild instead of terser)
+        minify: 'esbuild',
         // Optimize CSS
         cssMinify: true,
         // Code splitting
         rollupOptions: {
             output: {
-                manualChunks: {
-                    'vendor': ['vue', 'axios'],
-                },
+                manualChunks: undefined,
             },
         },
         // Reduce chunk size

@@ -116,8 +116,8 @@
     <!-- Floating City Selector -->
     @include('partials.floating-city-selector')
 
-    <!-- App JS (if you bundle scripts) -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <!-- Vite JS -->
+    @vite(['resources/js/app.js'])
 
     <!-- jQuery (required for Select2) -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
