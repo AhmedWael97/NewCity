@@ -116,7 +116,7 @@
     <!-- Floating City Selector -->
     @include('partials.floating-city-selector')
 
-    <!-- Vite JS -->
+    <!-- Vite JS - Will use compiled assets in production, dev server in local -->
     @vite(['resources/js/app.js'])
 
     <!-- jQuery (required for Select2) -->
