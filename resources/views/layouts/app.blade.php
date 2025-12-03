@@ -510,6 +510,9 @@
             z-index: 9999;
         }
     </style>
+
+    {{-- Smart Popup System --}}
+    @include('components.popup-system')
 </body>
 
 </html>

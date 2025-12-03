@@ -96,6 +96,7 @@ class WebsiteVisit extends Model
             'country' => $data['country'] ?? null,
             'city' => $data['city'] ?? null,
             'is_unique_visit' => $isUniqueVisit,
+            'is_bounce' => true, // Assume bounce until proven otherwise
             'pages_viewed' => 1,
             'first_seen_at' => now(),
             'last_seen_at' => now(),
@@ -117,7 +118,7 @@ class WebsiteVisit extends Model
             'total_page_views' => $visits->sum('pages_viewed'),
             'avg_pages_per_visit' => $visits->count() > 0 ? round($visits->avg('pages_viewed'), 2) : 0,
             'avg_duration' => $visits->count() > 0 ? round($visits->avg('duration_seconds'), 2) : 0,
-            'bounce_rate' => $visits->count() > 0 ? round(($visits->where('is_bounce', true)->count() / $visits->count()) * 100, 2) : 0,
+            'bounce_rate' => $visits->count() > 0 ? round(($visits->where('is_bounce', true)->count() / $visits->count()) * 100, 1) : 0,
             'mobile_visits' => $visits->where('device_type', 'mobile')->count(),
             'tablet_visits' => $visits->where('device_type', 'tablet')->count(),
             'desktop_visits' => $visits->where('device_type', 'desktop')->count(),

@@ -251,7 +251,7 @@
                                             {{ $page['landing_page'] }}
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge badge-primary">{{ number_format($page['visits']) }}</span>
+                                            <span class="badge bg-primary">{{ number_format($page['visits']) }}</span>
                                         </td>
                                     </tr>
                                 @empty
@@ -289,7 +289,7 @@
                                             {{ $referrer['referrer'] }}
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge badge-warning">{{ number_format($referrer['count']) }}</span>
+                                            <span class="badge bg-warning text-dark">{{ number_format($referrer['count']) }}</span>
                                         </td>
                                     </tr>
                                 @empty
@@ -340,51 +340,125 @@
     <div class="row">
         <div class="col-12">
             <div class="card shadow">
-                <div class="card-header py-3">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <h6 class="m-0 font-weight-bold text-primary">الزيارات الأخيرة (آخر 50 زيارة)</h6>
+                    <small class="text-muted">زيارات حقيقية فقط - تم استبعاد الروبوتات والصفحات الإدارية</small>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>الوقت</th>
-                                    <th>المستخدم</th>
-                                    <th>IP</th>
-                                    <th>الجهاز</th>
-                                    <th>المتصفح</th>
-                                    <th>الصفحة</th>
-                                    <th>الصفحات</th>
-                                    <th>المدة</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($recentVisits as $visit)
+                    @if($recentVisits->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover table-sm">
+                                <thead class="table-light">
                                     <tr>
-                                        <td class="text-nowrap">{{ $visit->created_at->diffForHumans() }}</td>
-                                        <td>
-                                            @if($visit->user)
-                                                <span class="badge badge-success">{{ $visit->user->name }}</span>
-                                            @else
-                                                <span class="badge badge-secondary">ضيف</span>
-                                            @endif
-                                        </td>
-                                        <td class="text-nowrap">{{ $visit->ip_address }}</td>
-                                        <td>
-                                            <i class="fas fa-{{ $visit->device_type == 'mobile' ? 'mobile-alt' : ($visit->device_type == 'tablet' ? 'tablet-alt' : 'desktop') }}"></i>
-                                            {{ ucfirst($visit->device_type) }}
-                                        </td>
-                                        <td>{{ $visit->browser }}</td>
-                                        <td class="text-truncate" style="max-width: 200px;" title="{{ $visit->current_page }}">
-                                            {{ $visit->current_page }}
-                                        </td>
-                                        <td class="text-center">{{ $visit->pages_viewed }}</td>
-                                        <td class="text-nowrap">{{ gmdate('i:s', $visit->duration_seconds) }}</td>
+                                        <th>الوقت</th>
+                                        <th>نوع الزائر</th>
+                                        <th>الموقع</th>
+                                        <th>الجهاز</th>
+                                        <th>المتصفح</th>
+                                        <th>الصفحة المقصودة</th>
+                                        <th class="text-center">التفاعل</th>
+                                        <th class="text-center">النشاط</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody>
+                                    @foreach($recentVisits as $visit)
+                                        <tr class="{{ $visit->is_bounce ? 'table-warning' : '' }}">
+                                            <td class="text-nowrap">
+                                                <small>
+                                                    <strong>{{ $visit->created_at->format('H:i') }}</strong><br>
+                                                    <span class="text-muted">{{ $visit->created_at->diffForHumans() }}</span>
+                                                </small>
+                                            </td>
+                                            <td>
+                                                @if($visit->user)
+                                                    <span class="badge bg-success"><i class="fas fa-user"></i> {{ $visit->user->name }}</span>
+                                                @else
+                                                    <span class="badge bg-secondary"><i class="fas fa-user-secret"></i> ضيف</span>
+                                                @endif
+                                                @if($visit->is_unique_visit)
+                                                    <span class="badge bg-info" title="زائر جديد اليوم"><i class="fas fa-star"></i> جديد</span>
+                                                @endif
+                                            </td>
+                                            <td class="text-nowrap">
+                                                <small>
+                                                    <i class="fas fa-map-marker-alt text-muted"></i> {{ $visit->ip_address }}<br>
+                                                    @if($visit->country || $visit->city)
+                                                        <span class="text-muted">{{ $visit->city ?? '' }}{{ $visit->country ? ', ' . $visit->country : '' }}</span>
+                                                    @endif
+                                                </small>
+                                            </td>
+                                            <td>
+                                                <i class="fas fa-{{ $visit->device_type == 'mobile' ? 'mobile-alt text-primary' : ($visit->device_type == 'tablet' ? 'tablet-alt text-info' : 'desktop text-success') }}"></i>
+                                                <small>{{ ucfirst($visit->device_type) }}</small>
+                                            </td>
+                                            <td><small>{{ $visit->browser }}</small></td>
+                                            <td class="text-truncate" style="max-width: 250px;">
+                                                <small title="{{ $visit->landing_page }}">
+                                                    <i class="fas fa-external-link-alt text-muted"></i> 
+                                                    {{ str_replace(url('/'), '', $visit->landing_page) ?: '/' }}
+                                                </small>
+                                                @if($visit->referrer && !str_contains($visit->referrer, url('/')))
+                                                    <br><small class="text-info" title="{{ $visit->referrer }}"><i class="fas fa-arrow-left"></i> من مصدر خارجي</small>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                @if($visit->is_bounce)
+                                                    <span class="badge bg-warning text-dark" title="ارتداد - صفحة واحدة فقط">
+                                                        <i class="fas fa-sign-out-alt"></i> ارتداد
+                                                    </span>
+                                                @else
+                                                    <span class="badge bg-success" title="تصفح عدة صفحات">
+                                                        <i class="fas fa-check"></i> تفاعل
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="text-center">
+                                                <small>
+                                                    <strong>{{ $visit->pages_viewed }}</strong> صفحة<br>
+                                                    <span class="text-muted">{{ gmdate('i:s', $visit->duration_seconds) }} دقيقة</span>
+                                                </small>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-3">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h5 class="text-success">{{ $recentVisits->where('is_bounce', false)->count() }}</h5>
+                                        <small class="text-muted">زيارات متفاعلة</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h5 class="text-warning">{{ $recentVisits->where('is_bounce', true)->count() }}</h5>
+                                        <small class="text-muted">زيارات منطوية (ارتداد)</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h5 class="text-info">{{ $recentVisits->where('is_unique_visit', true)->count() }}</h5>
+                                        <small class="text-muted">زوار جدد</small>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="text-center">
+                                        <h5 class="text-primary">{{ number_format($recentVisits->avg('pages_viewed'), 1) }}</h5>
+                                        <small class="text-muted">متوسط الصفحات/زيارة</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-info-circle fa-3x mb-3"></i>
+                            <h5>لا توجد بيانات للزيارات حتى الآن</h5>
+                            <p class="mb-0">ستظهر زيارات الموقع هنا تلقائياً عندما يبدأ المستخدمون بزيارة موقعك.</p>
+                            <small class="text-muted">تأكد من أن التتبع مفعّل ولا يتم حظره بواسطة أدوات حظر الإعلانات.</small>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -414,9 +488,21 @@
 @section('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
 <script>
-// Daily Visits Chart
-const dailyVisitsCtx = document.getElementById('dailyVisitsChart').getContext('2d');
-new Chart(dailyVisitsCtx, {
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if data exists
+    const dailyStats = {!! json_encode($dailyStats) !!};
+    const hourlyDistribution = {!! json_encode($hourlyDistribution) !!};
+    const deviceBreakdown = {!! json_encode($deviceBreakdown) !!};
+
+    console.log('Daily Stats:', dailyStats);
+    console.log('Hourly Distribution:', hourlyDistribution);
+    console.log('Device Breakdown:', deviceBreakdown);
+
+    // Daily Visits Chart
+    if (dailyStats && dailyStats.length > 0) {
+        const dailyVisitsCtx = document.getElementById('dailyVisitsChart');
+        if (dailyVisitsCtx) {
+            new Chart(dailyVisitsCtx.getContext('2d'), {
     type: 'line',
     data: {
         labels: {!! json_encode(array_column($dailyStats, 'date')) !!},
@@ -459,17 +545,25 @@ new Chart(dailyVisitsCtx, {
             }
         }
     }
-});
+    });
+        } else {
+            console.error('dailyVisitsChart canvas not found');
+        }
+    } else {
+        console.warn('No daily stats data available');
+    }
 
-// Hourly Distribution Chart
-const hourlyCtx = document.getElementById('hourlyChart').getContext('2d');
-new Chart(hourlyCtx, {
-    type: 'bar',
-    data: {
-        labels: {!! json_encode(array_column($hourlyDistribution, 'hour')) !!},
-        datasets: [{
-            label: 'الزيارات',
-            data: {!! json_encode(array_column($hourlyDistribution, 'visits')) !!},
+    // Hourly Distribution Chart
+    if (hourlyDistribution && hourlyDistribution.length > 0) {
+        const hourlyCtx = document.getElementById('hourlyChart');
+        if (hourlyCtx) {
+            new Chart(hourlyCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: hourlyDistribution.map(h => h.hour + ':00'),
+                    datasets: [{
+                        label: 'الزيارات',
+                        data: hourlyDistribution.map(h => h.visits),
             backgroundColor: 'rgba(78, 115, 223, 0.8)',
             borderColor: 'rgb(78, 115, 223)',
             borderWidth: 1
@@ -488,17 +582,25 @@ new Chart(hourlyCtx, {
                 beginAtZero: true
             }
         }
+            }
+            });
+        } else {
+            console.error('hourlyChart canvas not found');
+        }
+    } else {
+        console.warn('No hourly distribution data available');
     }
-});
 
-// Device Chart
-const deviceCtx = document.getElementById('deviceChart').getContext('2d');
-new Chart(deviceCtx, {
-    type: 'doughnut',
-    data: {
-        labels: {!! json_encode(array_column($deviceBreakdown, 'device_type')) !!},
-        datasets: [{
-            data: {!! json_encode(array_column($deviceBreakdown, 'count')) !!},
+    // Device Chart
+    if (deviceBreakdown && deviceBreakdown.length > 0) {
+        const deviceCtx = document.getElementById('deviceChart');
+        if (deviceCtx) {
+            new Chart(deviceCtx.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: deviceBreakdown.map(d => d.device_type),
+                    datasets: [{
+                        data: deviceBreakdown.map(d => d.count),
             backgroundColor: [
                 'rgba(78, 115, 223, 0.8)',
                 'rgba(28, 200, 138, 0.8)',
@@ -523,6 +625,13 @@ new Chart(deviceCtx, {
                 position: 'bottom'
             }
         }
+            }
+            });
+        } else {
+            console.error('deviceChart canvas not found');
+        }
+    } else {
+        console.warn('No device breakdown data available');
     }
 });
 

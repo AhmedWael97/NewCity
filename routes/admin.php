@@ -171,11 +171,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     Route::prefix('analytics')->as('analytics.')->group(function () {
         Route::get('/', [AnalyticsController::class, 'index'])->name('index');
         Route::get('/website-visits', [AnalyticsController::class, 'websiteVisits'])->name('website-visits');
+        Route::get('/user-journeys', [AnalyticsController::class, 'userJourneys'])->name('user-journeys');
         Route::get('/shops', [AnalyticsController::class, 'shopPerformance'])->name('shops');
         Route::get('/cities', [AnalyticsController::class, 'cityAnalytics'])->name('cities');
         Route::get('/users', [AnalyticsController::class, 'userBehavior'])->name('users');
         Route::get('/heatmap', [AnalyticsController::class, 'heatmap'])->name('heatmap');
         Route::post('/reports', [AnalyticsController::class, 'generateReport'])->name('reports.generate');
+    });
+
+    // Newsletter & Feedback Management
+    Route::prefix('newsletter')->as('newsletter.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('index');
+        Route::get('/export', [App\Http\Controllers\Admin\NewsletterController::class, 'export'])->name('export');
+        Route::delete('/{subscriber}', [App\Http\Controllers\Admin\NewsletterController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('feedback')->as('feedback.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\FeedbackController::class, 'index'])->name('index');
+        Route::get('/{feedback}', [App\Http\Controllers\Admin\FeedbackController::class, 'show'])->name('show');
+        Route::delete('/{feedback}', [App\Http\Controllers\Admin\FeedbackController::class, 'destroy'])->name('destroy');
     });
 
     // Reports Management

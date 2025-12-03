@@ -11,6 +11,9 @@
             <a href="{{ route('admin.analytics.website-visits') }}" class="btn btn-outline-danger">
                 <i class="fas fa-globe"></i> زيارات الموقع
             </a>
+            <a href="{{ route('admin.analytics.user-journeys') }}" class="btn btn-outline-warning">
+                <i class="fas fa-route"></i> رحلات المستخدمين
+            </a>
             <a href="{{ route('admin.analytics.shops') }}" class="btn btn-outline-success">
                 <i class="fas fa-store"></i> أداء المتاجر
             </a>

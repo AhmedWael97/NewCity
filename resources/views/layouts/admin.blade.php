@@ -1001,6 +1001,23 @@
                     </a>
                 </li>
 
+                <!-- User Engagement -->
+                <div class="sidebar-heading">تفاعل المستخدمين</div>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.newsletter.index') }}">
+                        <i class="fas fa-envelope-open-text"></i>
+                        <span>النشرة البريدية</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.feedback.index') }}">
+                        <i class="fas fa-comment-dots"></i>
+                        <span>التقييمات والملاحظات</span>
+                    </a>
+                </li>
+
                 <!-- Settings -->
                 <div class="sidebar-heading">الإعدادات</div>
                 

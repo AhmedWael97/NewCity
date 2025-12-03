@@ -310,6 +310,11 @@ Route::get('/contact', function () {
 
 Route::post('/tickets/store', [App\Http\Controllers\SupportTicketController::class, 'store'])->name('tickets.store');
 
+// Popup System Routes
+Route::post('/popup/newsletter', [App\Http\Controllers\PopupController::class, 'subscribeNewsletter'])->name('popup.newsletter');
+Route::post('/popup/feedback', [App\Http\Controllers\PopupController::class, 'submitFeedback'])->name('popup.feedback');
+Route::post('/popup/track', [App\Http\Controllers\PopupController::class, 'trackPopupInteraction'])->name('popup.track');
+
 // Forum Routes
 Route::prefix('forum')->name('forum.')->group(function () {
     // Public routes

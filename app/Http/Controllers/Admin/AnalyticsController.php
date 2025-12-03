@@ -14,6 +14,7 @@ use App\Models\Category;
 use App\Models\WebsiteVisit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class AnalyticsController extends Controller
@@ -748,12 +749,12 @@ class AnalyticsController extends Controller
         $recommendations = [];
 
         // Low scroll depth
-        if ($avgScrollDepth < 50) {
+        if ($avgScrollDepth < 50 && $avgScrollDepth > 0) {
             $recommendations[] = [
                 'type' => 'danger',
                 'icon' => 'exclamation-triangle',
                 'title' => 'عمق تمرير منخفض',
-                'description' => 'المستخدمون لا يتصفحون المحتوى بالكامل',
+                'description' => 'المستخدمون لا يتصفحون المحتوى بالكامل (متوسط: ' . number_format($avgScrollDepth, 1) . '%)',
                 'solution' => 'أضف محتوى جذاب في بداية الصفحة وقلل من طول الصفحات'
             ];
         }
@@ -765,7 +766,7 @@ class AnalyticsController extends Controller
                 'type' => 'warning',
                 'icon' => 'sign-out-alt',
                 'title' => 'معدل ارتداد عالي',
-                'description' => "صفحة {$highBouncePage->page_title} لديها معدل ارتداد {$highBouncePage->bounce_rate}%",
+                'description' => "صفحة " . Str::limit($highBouncePage->page_title ?? 'غير معنونة', 30) . " لديها معدل ارتداد " . number_format($highBouncePage->bounce_rate) . "%",
                 'solution' => 'حسّن سرعة التحميل وأضف محتوى ذو قيمة في بداية الصفحة'
             ];
         }
@@ -777,24 +778,62 @@ class AnalyticsController extends Controller
                 'type' => 'info',
                 'icon' => 'bullseye',
                 'title' => 'فرصة للتحسين',
-                'description' => "صفحة {$lowConversionPage->page_title} لديها {$lowConversionPage->visits} زيارة بدون تحويلات",
+                'description' => "صفحة " . Str::limit($lowConversionPage->page_title ?? 'غير معنونة', 30) . " لديها " . number_format($lowConversionPage->visits) . " زيارة بدون تحويلات",
                 'solution' => 'أضف أزرار CTA واضحة (اتصال، الاتجاهات، مشاركة)'
             ];
         }
 
         // Low engagement
-        if ($totalClicks < 100) {
+        if ($totalClicks < 100 && $totalClicks > 0) {
             $recommendations[] = [
                 'type' => 'warning',
                 'icon' => 'mouse-pointer',
                 'title' => 'تفاعل منخفض',
-                'description' => 'عدد النقرات منخفض جداً',
+                'description' => 'عدد النقرات منخفض جداً (' . number_format($totalClicks) . ' نقرة فقط)',
                 'solution' => 'أضف عناصر تفاعلية أكثر وحسّن تجربة المستخدم'
             ];
         }
 
-        // Good performance
+        // High scroll depth (positive feedback)
+        if ($avgScrollDepth >= 70) {
+            $recommendations[] = [
+                'type' => 'success',
+                'icon' => 'thumbs-up',
+                'title' => 'محتوى جذاب',
+                'description' => 'المستخدمون يقرؤون معظم محتوى صفحاتك (متوسط: ' . number_format($avgScrollDepth, 1) . '%)',
+                'solution' => 'استمر بنفس الجودة! حاول تطبيق نفس الأسلوب على الصفحات الأخرى'
+            ];
+        }
+
+        // Good engagement (positive feedback)
+        if ($totalClicks >= 500) {
+            $recommendations[] = [
+                'type' => 'success',
+                'icon' => 'chart-line',
+                'title' => 'تفاعل ممتاز',
+                'description' => 'المستخدمون يتفاعلون بشكل جيد مع عناصر موقعك (' . number_format($totalClicks) . ' نقرة)',
+                'solution' => 'راقب أكثر العناصر نقراً واستخدمها كمرجع لتطوير صفحات جديدة'
+            ];
+        }
+
+        // No data yet
         if (empty($recommendations)) {
+            $recommendations[] = [
+                'type' => 'info',
+                'icon' => 'info-circle',
+                'title' => 'بدء التتبع',
+                'description' => 'لا توجد بيانات كافية لتحليل الأداء بعد',
+                'solution' => 'انتظر المزيد من زيارات المستخدمين للحصول على توصيات مخصصة'
+            ];
+            
+            $recommendations[] = [
+                'type' => 'primary',
+                'icon' => 'rocket',
+                'title' => 'نصائح عامة',
+                'description' => 'اهتم بسرعة تحميل الصفحات وجودة المحتوى',
+                'solution' => 'استخدم صور محسّنة، وأضف عناوين واضحة، وأزرار CTA بارزة'
+            ];
+            
             $recommendations[] = [
                 'type' => 'success',
                 'icon' => 'check-circle',
@@ -835,5 +874,137 @@ class AnalyticsController extends Controller
         )
         ->orderBy('activity_count', 'desc')
         ->get();
+    }
+
+    /**
+     * User Journeys - Track user paths through the site
+     */
+    public function userJourneys(Request $request)
+    {
+        // Get filter parameters
+        $period = $request->input('period', 'today');
+        $minPages = $request->input('min_pages', 1);
+        $device = $request->input('device', '');
+        $perPage = $request->input('per_page', 10);
+
+        // Determine date range
+        $dateFrom = match($period) {
+            'today' => Carbon::today(),
+            'yesterday' => Carbon::yesterday(),
+            '7days' => Carbon::now()->subDays(7),
+            '30days' => Carbon::now()->subDays(30),
+            default => Carbon::today(),
+        };
+
+        // Get sessions with their page views - use referrer as the actual page
+        $sessionsQuery = DB::table('user_events')
+            ->select(
+                'session_id',
+                'user_id',
+                'ip_address',
+                'device_type',
+                'browser',
+                'platform',
+                DB::raw('MIN(created_at) as started_at'),
+                DB::raw('MAX(created_at) as ended_at'),
+                DB::raw('COUNT(DISTINCT referrer) as pages_count'),
+                DB::raw('SUM(COALESCE(time_on_page, 0)) as total_time'),
+                DB::raw('MAX(CASE WHEN event_action IN ("phone_call", "map_directions") THEN 1 ELSE 0 END) as has_conversion'),
+                DB::raw('MIN(referrer) as first_referrer')
+            )
+            ->where('created_at', '>=', $dateFrom)
+            ->whereNotNull('referrer')
+            ->where('referrer', 'not like', '%/admin/%')
+            ->where('referrer', '!=', '');
+
+        if ($device) {
+            $sessionsQuery->where('device_type', $device);
+        }
+
+        $sessionsQuery->groupBy('session_id', 'user_id', 'ip_address', 'device_type', 'browser', 'platform')
+            ->having('pages_count', '>=', $minPages)
+            ->orderBy('started_at', 'desc');
+
+        $journeys = $sessionsQuery->paginate($perPage);
+
+        // Get page details for each journey
+        foreach ($journeys as $journey) {
+            // Get all events for this session, using referrer as the page
+            $events = UserEvent::where('session_id', $journey->session_id)
+                ->where('created_at', '>=', $dateFrom)
+                ->whereNotNull('referrer')
+                ->where('referrer', '!=', '')
+                ->select('referrer as page_url', 'time_on_page', 'scroll_depth', 'event_action', 'event_type', 'shop_id', 'created_at')
+                ->orderBy('created_at', 'asc')
+                ->get();
+
+            // Group by page and aggregate
+            $journey->pages = $events->groupBy('page_url')->map(function($pageEvents) {
+                $first = $pageEvents->first();
+                return (object)[
+                    'page_url' => $first->page_url,
+                    'page_title' => $this->extractPageTitle($first->page_url),
+                    'time_on_page' => $pageEvents->sum('time_on_page') ?? 0,
+                    'scroll_depth' => $pageEvents->where('scroll_depth', '!=', null)->avg('scroll_depth'),
+                    'event_action' => $pageEvents->whereIn('event_action', ['phone_call', 'map_directions'])->first()->event_action ?? null,
+                    'shop_id' => $first->shop_id,
+                    'created_at' => $first->created_at,
+                ];
+            })->sortBy('created_at')->values();
+
+            $journey->started_at = Carbon::parse($journey->started_at);
+            $journey->user = $journey->user_id ? User::find($journey->user_id) : null;
+            $journey->referrer = $journey->first_referrer;
+        }
+
+        // Calculate statistics
+        $allSessions = DB::table('user_events')
+            ->select(
+                'session_id',
+                DB::raw('COUNT(DISTINCT referrer) as pages_count'),
+                DB::raw('SUM(COALESCE(time_on_page, 0)) as total_time'),
+                DB::raw('MAX(CASE WHEN event_action IN ("phone_call", "map_directions") THEN 1 ELSE 0 END) as has_conversion')
+            )
+            ->where('created_at', '>=', $dateFrom)
+            ->whereNotNull('referrer')
+            ->where('referrer', 'not like', '%/admin/%')
+            ->where('referrer', '!=', '');
+
+        if ($device) {
+            $allSessions->where('device_type', $device);
+        }
+
+        $allSessions = $allSessions->groupBy('session_id')->get();
+
+        $stats = [
+            'total_sessions' => $allSessions->count(),
+            'avg_pages' => $allSessions->avg('pages_count') ?? 0,
+            'avg_time' => $allSessions->avg('total_time') ?? 0,
+            'conversion_rate' => $allSessions->count() > 0 
+                ? ($allSessions->sum('has_conversion') / $allSessions->count()) * 100 
+                : 0,
+        ];
+
+        return view('admin.analytics.user-journeys', compact('journeys', 'stats'));
+    }
+
+    /**
+     * Extract page title from URL
+     */
+    private function extractPageTitle($url)
+    {
+        // Remove domain
+        $path = parse_url($url, PHP_URL_PATH);
+        
+        // Extract meaningful part
+        if (preg_match('/\/shop\/(.+)/', $path, $matches)) {
+            return 'متجر: ' . str_replace('-', ' ', $matches[1]);
+        } elseif (preg_match('/\/city\/(.+)/', $path, $matches)) {
+            return 'مدينة: ' . str_replace('-', ' ', $matches[1]);
+        } elseif ($path == '/' || empty($path)) {
+            return 'الصفحة الرئيسية';
+        }
+        
+        return str_replace('/', ' > ', trim($path, '/'));
     }
 }

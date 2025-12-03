@@ -82,41 +82,78 @@
                     <h5 class="mb-0">
                         <i class="fas fa-hand-pointer"></i> أكثر العناصر نقراً
                     </h5>
+                    <small class="text-muted">الأزرار والروابط التي ينقر عليها المستخدمون</small>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th>العنصر</th>
-                                    <th>النوع</th>
-                                    <th>النقرات</th>
-                                    <th>النسبة</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($topClickedElements as $element)
-                                <tr>
-                                    <td>
-                                        <strong>{{ Str::limit($element->event_label ?? 'Unknown', 40) }}</strong>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-primary">{{ $element->event_action }}</span>
-                                    </td>
-                                    <td>{{ number_format($element->clicks) }}</td>
-                                    <td>
-                                        <div class="progress" style="height: 20px;">
-                                            <div class="progress-bar bg-success" 
-                                                 style="width: {{ ($element->clicks / $totalClicks) * 100 }}%">
-                                                {{ number_format(($element->clicks / $totalClicks) * 100, 1) }}%
+                    @if($topClickedElements->count() > 0)
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>العنصر</th>
+                                        <th>الإجراء</th>
+                                        <th>النقرات</th>
+                                        <th>النسبة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($topClickedElements as $element)
+                                    <tr>
+                                        <td>
+                                            @php
+                                                $label = $element->event_label ?? 'غير محدد';
+                                                // Translate common labels
+                                                $translations = [
+                                                    'phone_call' => 'زر الاتصال',
+                                                    'map_directions' => 'زر الاتجاهات',
+                                                    'share' => 'زر المشاركة',
+                                                    'favorite' => 'زر المفضلة',
+                                                    'view_shop' => 'عرض المتجر',
+                                                    'view_product' => 'عرض المنتج',
+                                                    'click' => 'نقرة',
+                                                    'button' => 'زر',
+                                                ];
+                                                foreach($translations as $en => $ar) {
+                                                    $label = str_replace($en, $ar, $label);
+                                                }
+                                            @endphp
+                                            <strong>{{ Str::limit($label, 40) }}</strong>
+                                        </td>
+                                        <td>
+                                            @php
+                                                $action = $element->event_action;
+                                                $actionAr = [
+                                                    'phone_call' => '☎️ اتصال',
+                                                    'map_directions' => '🗺️ اتجاهات',
+                                                    'share' => '📤 مشاركة',
+                                                    'favorite' => '⭐ مفضلة',
+                                                    'click' => '👆 نقرة',
+                                                    'view' => '👁️ عرض',
+                                                ][$action] ?? $action;
+                                            @endphp
+                                            <span class="badge bg-primary">{{ $actionAr }}</span>
+                                        </td>
+                                        <td><strong>{{ number_format($element->clicks) }}</strong></td>
+                                        <td>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-success" 
+                                                     style="width: {{ min(100, ($element->clicks / max($totalClicks, 1)) * 100) }}%">
+                                                    {{ number_format(($element->clicks / max($totalClicks, 1)) * 100, 1) }}%
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-info-circle fa-2x mb-2"></i>
+                            <p class="mb-0"><strong>لا توجد بيانات للنقرات حالياً</strong></p>
+                            <small>ستظهر نقرات المستخدمين على الأزرار والعناصر التفاعلية هنا</small>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -168,9 +205,34 @@
                     <h5 class="mb-0">
                         <i class="fas fa-arrows-alt-v"></i> تحليل عمق التمرير
                     </h5>
+                    <small class="text-muted">كم من الصفحة يقرأ المستخدمون؟</small>
                 </div>
                 <div class="card-body">
-                    <canvas id="scrollDepthChart" height="250"></canvas>
+                    @php
+                        $totalScrollData = array_sum($scrollDepthDistribution);
+                    @endphp
+                    @if($totalScrollData > 0)
+                        <canvas id="scrollDepthChart" height="250"></canvas>
+                        <div class="mt-3">
+                            <p class="text-muted text-center mb-0">
+                                <strong>متوسط عمق التمرير:</strong> {{ number_format($avgScrollDepth, 1) }}%
+                            </p>
+                            <small class="text-muted d-block text-center">
+                                @if($avgScrollDepth < 40)
+                                    ⚠️ المستخدمون يغادرون بسرعة - حاول جعل المحتوى أكثر جاذبية
+                                @elseif($avgScrollDepth < 70)
+                                    📊 عمق تمرير متوسط - يمكن تحسينه بمحتوى أفضل
+                                @else
+                                    ✅ ممتاز! المستخدمون يقرؤون معظم المحتوى
+                                @endif
+                            </small>
+                        </div>
+                    @else
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-arrows-alt-v fa-2x mb-2"></i>
+                            <p class="mb-0">لا توجد بيانات لعمق التمرير</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -181,9 +243,34 @@
                     <h5 class="mb-0">
                         <i class="fas fa-clock"></i> توزيع الوقت على الصفحات
                     </h5>
+                    <small class="text-muted">كم من الوقت يقضي المستخدمون على صفحاتك؟</small>
                 </div>
                 <div class="card-body">
-                    <canvas id="timeDistributionChart" height="250"></canvas>
+                    @php
+                        $totalTimeData = array_sum($timeDistribution);
+                    @endphp
+                    @if($totalTimeData > 0)
+                        <canvas id="timeDistributionChart" height="250"></canvas>
+                        <div class="mt-3">
+                            <p class="text-muted text-center mb-0">
+                                <strong>متوسط الوقت على الصفحة:</strong> {{ gmdate('i:s', $avgTimeOnPage) }} دقيقة
+                            </p>
+                            <small class="text-muted d-block text-center">
+                                @if($avgTimeOnPage < 20)
+                                    ⚠️ زيارات سريعة جداً - المحتوى قد لا يكون جذاباً
+                                @elseif($avgTimeOnPage < 60)
+                                    📊 وقت معقول - المستخدمون يتصفحون بسرعة متوسطة
+                                @else
+                                    ✅ رائع! المستخدمون يقضون وقتاً جيداً على موقعك
+                                @endif
+                            </small>
+                        </div>
+                    @else
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-clock fa-2x mb-2"></i>
+                            <p class="mb-0">لا توجد بيانات للوقت المستغرق</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -197,9 +284,11 @@
                     <h5 class="mb-0">
                         <i class="fas fa-chart-line"></i> أداء الصفحات
                     </h5>
+                    <small class="text-muted">تحليل أداء كل صفحة: الوقت المستغرق، عمق التمرير، ومعدل الارتداد</small>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
+                    @if($pagePerformance->count() > 0)
+                        <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
                                 <tr>
@@ -250,7 +339,15 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                        </div>
+                    @else
+                        <div class="alert alert-info text-center">
+                            <i class="fas fa-file-alt fa-3x mb-2"></i>
+                            <h5>لا توجد بيانات لأداء الصفحات</h5>
+                            <p class="mb-0">ستظهر هنا معلومات عن أداء كل صفحة: الزيارات، الوقت المستغرق، عمق التمرير، ومعدل الارتداد.</p>
+                            <small class="text-muted">تأكد من أن التتبع مفعّل على الصفحات العامة للموقع.</small>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -264,9 +361,50 @@
                     <h5 class="mb-0">
                         <i class="fas fa-filter"></i> مسار التحويل (Conversion Funnel)
                     </h5>
+                    <small class="text-muted">رحلة المستخدم من الزيارة إلى الإجراء (التحويل = اتصال أو طلب اتجاهات)</small>
                 </div>
                 <div class="card-body">
-                    <canvas id="conversionFunnelChart" height="100"></canvas>
+                    @php
+                        $totalFunnel = array_sum($conversionFunnel);
+                    @endphp
+                    @if($totalFunnel > 0)
+                        <canvas id="conversionFunnelChart" height="100"></canvas>
+                        <div class="row mt-4 text-center">
+                            <div class="col">
+                                <h3 class="text-primary">{{ number_format($conversionFunnel[0]) }}</h3>
+                                <small>زوار</small>
+                            </div>
+                            <div class="col">
+                                <h3 class="text-info">{{ number_format($conversionFunnel[1]) }}</h3>
+                                <small>شاهدوا متاجر</small>
+                                <br><span class="badge bg-secondary">{{ $conversionFunnel[0] > 0 ? number_format(($conversionFunnel[1]/$conversionFunnel[0])*100, 1) : 0 }}%</span>
+                            </div>
+                            <div class="col">
+                                <h3 class="text-warning">{{ number_format($conversionFunnel[2]) }}</h3>
+                                <small>تفاعلوا</small>
+                                <br><span class="badge bg-secondary">{{ $conversionFunnel[0] > 0 ? number_format(($conversionFunnel[2]/$conversionFunnel[0])*100, 1) : 0 }}%</span>
+                            </div>
+                            <div class="col">
+                                <h3 class="text-success">{{ number_format($conversionFunnel[3]) }}</h3>
+                                <small>نقروا على اتصال/اتجاهات</small>
+                                <br><span class="badge bg-secondary">{{ $conversionFunnel[0] > 0 ? number_format(($conversionFunnel[3]/$conversionFunnel[0])*100, 1) : 0 }}%</span>
+                            </div>
+                            <div class="col">
+                                <h3 class="text-danger">{{ number_format($conversionFunnel[4]) }}</h3>
+                                <small><strong>تحويلات مكتملة</strong></small>
+                                <br><span class="badge bg-success">{{ $conversionFunnel[0] > 0 ? number_format(($conversionFunnel[4]/$conversionFunnel[0])*100, 1) : 0 }}%</span>
+                            </div>
+                        </div>
+                        <div class="alert alert-info mt-3">
+                            <strong>ℹ️ ما هو التحويل؟</strong> التحويل يعني أن الزائر قام بإجراء مفيد مثل: الاتصال بالمتجر، طلب الاتجاهات، أو التواصل عبر واتساب.
+                        </div>
+                    @else
+                        <div class="alert alert-warning text-center">
+                            <i class="fas fa-chart-line fa-3x mb-2"></i>
+                            <p class="mb-0"><strong>لا توجد بيانات كافية لمسار التحويل</strong></p>
+                            <small>يحتاج هذا التقرير إلى المزيد من زيارات المستخدمين</small>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
