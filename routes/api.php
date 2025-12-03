@@ -73,6 +73,19 @@ Route::prefix('v1')->group(function () {
     // Guest device token registration (public endpoint - no auth required)
     Route::post('/guest-device-tokens', [App\Http\Controllers\Api\DeviceTokenController::class, 'storeGuest']);
 
+    // Newsletter API - Public endpoints
+    Route::prefix('newsletter')->group(function () {
+        Route::post('/subscribe', [App\Http\Controllers\Api\V1\NewsletterApiController::class, 'subscribe']);
+        Route::post('/unsubscribe', [App\Http\Controllers\Api\V1\NewsletterApiController::class, 'unsubscribe']);
+        Route::get('/status', [App\Http\Controllers\Api\V1\NewsletterApiController::class, 'checkStatus']);
+    });
+
+    // Feedback API - Public endpoints
+    Route::prefix('feedback')->group(function () {
+        Route::post('/submit', [App\Http\Controllers\Api\V1\FeedbackApiController::class, 'submit']);
+        Route::get('/statistics', [App\Http\Controllers\Api\V1\FeedbackApiController::class, 'statistics']);
+    });
+
     // App Settings - Public endpoints for mobile app
     Route::prefix('app-settings')->group(function () {
         Route::get('/', [App\Http\Controllers\Api\AppSettingsController::class, 'index']);
@@ -187,6 +200,13 @@ Route::prefix('v1')->group(function () {
             Route::get('/', [App\Http\Controllers\Api\DeviceTokenController::class, 'index']);
             Route::post('/', [App\Http\Controllers\Api\DeviceTokenController::class, 'store']);
             Route::delete('/', [App\Http\Controllers\Api\DeviceTokenController::class, 'destroy']);
+        });
+
+        // Feedback - Authenticated endpoints
+        Route::prefix('feedback')->group(function () {
+            Route::get('/history', [App\Http\Controllers\Api\V1\FeedbackApiController::class, 'userHistory']);
+            Route::put('/{id}', [App\Http\Controllers\Api\V1\FeedbackApiController::class, 'update']);
+            Route::delete('/{id}', [App\Http\Controllers\Api\V1\FeedbackApiController::class, 'destroy']);
         });
 
         // Notification actions

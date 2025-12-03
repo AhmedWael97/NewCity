@@ -1,0 +1,267 @@
+{
+  "info": {
+    "name": "Newsletter & Feedback API",
+    "description": "API endpoints for newsletter subscription and user feedback",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Newsletter",
+      "item": [
+        {
+          "name": "Subscribe to Newsletter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"name\": \"أحمد محمد\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/newsletter/subscribe",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "newsletter", "subscribe"]
+            },
+            "description": "Subscribe a user to the newsletter with optional name"
+          }
+        },
+        {
+          "name": "Unsubscribe from Newsletter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/newsletter/unsubscribe",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "newsletter", "unsubscribe"]
+            },
+            "description": "Unsubscribe from the newsletter"
+          }
+        },
+        {
+          "name": "Check Subscription Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/newsletter/status?email=user@example.com",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "newsletter", "status"],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "user@example.com"
+                }
+              ]
+            },
+            "description": "Check if an email is subscribed"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Feedback",
+      "item": [
+        {
+          "name": "Submit Feedback (Anonymous)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"message\": \"موقع رائع وسهل الاستخدام!\",\n  \"email\": \"user@example.com\",\n  \"page_url\": \"mobile-app\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/feedback/submit",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "feedback", "submit"]
+            },
+            "description": "Submit feedback without authentication"
+          }
+        },
+        {
+          "name": "Submit Feedback (Authenticated)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"message\": \"تطبيق ممتاز!\",\n  \"page_url\": \"mobile-app\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/feedback/submit",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "feedback", "submit"]
+            },
+            "description": "Submit feedback as authenticated user"
+          }
+        },
+        {
+          "name": "Get Feedback Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/feedback/statistics",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "feedback", "statistics"]
+            },
+            "description": "Get overall feedback statistics"
+          }
+        },
+        {
+          "name": "Get User Feedback History",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/feedback/history",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "feedback", "history"]
+            },
+            "description": "Get all feedback submitted by authenticated user"
+          }
+        },
+        {
+          "name": "Update Feedback",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 4,\n  \"message\": \"موقع جيد بعد التحديثات\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/feedback/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "feedback", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Update user's own feedback"
+          }
+        },
+        {
+          "name": "Delete Feedback",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/feedback/:id",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "feedback", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete user's own feedback"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "YOUR_ACCESS_TOKEN_HERE",
+      "type": "string"
+    }
+  ]
+}
