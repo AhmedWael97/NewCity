@@ -315,6 +315,9 @@ Route::post('/popup/newsletter', [App\Http\Controllers\PopupController::class, '
 Route::post('/popup/feedback', [App\Http\Controllers\PopupController::class, 'submitFeedback'])->name('popup.feedback');
 Route::post('/popup/track', [App\Http\Controllers\PopupController::class, 'trackPopupInteraction'])->name('popup.track');
 
+// User Verification Route
+Route::post('/verify-user', [App\Http\Controllers\UserVerificationController::class, 'verify'])->name('user.verify');
+
 // Forum Routes
 Route::prefix('forum')->name('forum.')->group(function () {
     // Public routes

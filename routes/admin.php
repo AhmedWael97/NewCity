@@ -46,6 +46,12 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
     
     // Shops Map View
     Route::get('shops-map', [AdminShopController::class, 'mapView'])->name('shops.map');
+    Route::get('shops-map-test', function() {
+        return view('admin.shops.test-maps', [
+            'cities' => \App\Models\City::all(),
+            'categories' => \App\Models\Category::all()
+        ]);
+    })->name('shops.map.test');
     
     // Import shops from Google Places
     Route::post('shops/import-from-google', [AdminShopController::class, 'importFromGoogle'])->name('shops.import-google');
@@ -288,6 +294,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
         Route::post('/generate', [App\Http\Controllers\Admin\QrGeneratorController::class, 'generate'])->name('generate');
         Route::post('/download', [App\Http\Controllers\Admin\QrGeneratorController::class, 'download'])->name('download');
     });
+    
+    // User Verifications
+    Route::resource('verifications', App\Http\Controllers\Admin\UserVerificationController::class)->only(['index', 'show', 'destroy']);
+    Route::post('verifications/{verification}/mark-bot', [App\Http\Controllers\Admin\UserVerificationController::class, 'markAsBot'])->name('verifications.mark-bot');
+    Route::post('verifications/{verification}/mark-real', [App\Http\Controllers\Admin\UserVerificationController::class, 'markAsReal'])->name('verifications.mark-real');
     
     // Forum Management
     Route::prefix('forum')->name('forum.')->group(function () {

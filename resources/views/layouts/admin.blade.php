@@ -1004,6 +1004,19 @@
                 <!-- User Engagement -->
                 <div class="sidebar-heading">تفاعل المستخدمين</div>
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.verifications.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.verifications.index') }}">
+                        <i class="fas fa-user-check"></i>
+                        <span>تحقق المستخدمين</span>
+                        @php
+                            $verificationCount = \App\Models\UserVerification::where('created_at', '>=', now()->subDay())->count();
+                        @endphp
+                        @if($verificationCount > 0)
+                            <span class="badge bg-primary rounded-pill ms-auto">{{ $verificationCount }}</span>
+                        @endif
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}" 
                        href="{{ route('admin.newsletter.index') }}">
                         <i class="fas fa-envelope-open-text"></i>

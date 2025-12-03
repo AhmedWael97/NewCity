@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Google Maps Places API Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+        #map {
+            height: 400px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 3px solid #667eea;
+        }
+        .log-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        .log-success { background: rgba(72, 187, 120, 0.2); color: #48bb78; }
+        .log-error { background: rgba(245, 101, 101, 0.2); color: #f56565; }
+        .log-warning { background: rgba(237, 137, 54, 0.2); color: #ed8936; }
+        .log-info { background: rgba(66, 153, 225, 0.2); color: #4299e1; }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .stat-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+        .stat-card p {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+        .results {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .result-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s;
+        }
+        .result-card:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+        .result-card h4 {
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        .result-card p {
+            color: #718096;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .badge-rating {
+            background: #ffd700;
+            color: #744210;
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .alert-danger {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 2px solid #fc8181;
+        }
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 2px solid #48bb78;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🗺️ Google Maps Places API Test</h1>
+            <p>Simple standalone test to diagnose your Google Maps API</p>
+        </div>
+
+        <div class="content">
+            <!-- API Key Input -->
+            <div class="input-group">
+                <label>📝 Enter Your Google Maps API Key:</label>
+                <input type="text" id="apiKeyInput" placeholder="AIzaSyDBzVcjTSeIpdUHh8fyIiMcsw1nmFRExrc" value="AIzaSyDBzVcjTSeIpdUHh8fyIiMcsw1nmFRExrc">
+                <small style="color: #718096; margin-top: 5px; display: block;">
+                    Get your API key from: <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a>
+                </small>
+            </div>
+
+            <!-- Test Buttons -->
+            <div class="btn-group">
+                <button class="btn-primary" onclick="loadMap()">🗺️ Load Map</button>
+                <button class="btn-success" onclick="testNearbySearch()">🏪 Test Nearby Search</button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="statStatus">⏳</h3>
+                    <p>API Status</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statResults">0</h3>
+                    <p>Places Found</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="statLatency">0ms</h3>
+                    <p>Response Time</p>
+                </div>
+            </div>
+
+            <!-- Map -->
+            <div id="map"></div>
+
+            <!-- Results -->
+            <div id="results" class="results"></div>
+
+            <!-- Log Console -->
+            <h3 style="margin-bottom: 15px;">📋 Live Console Log:</h3>
+            <div class="log-container" id="logContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let map = null;
+        let placesService = null;
+        let markers = [];
+
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            entry.textContent = `[${timestamp}] ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[${type.toUpperCase()}]`, message);
+        }
+
+        function updateStat(id, value) {
+            document.getElementById(id).textContent = value;
+        }
+
+        function loadMap() {
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            
+            if (!apiKey) {
+                alert('⚠️ Please enter your Google Maps API Key!');
+                return;
+            }
+
+            log('🚀 Loading Google Maps API...', 'info');
+            updateStat('statStatus', '⏳');
+
+            // Remove old script if exists
+            const oldScript = document.querySelector('script[src*="maps.googleapis.com"]');
+            if (oldScript) {
+                oldScript.remove();
+                log('🔄 Removing old Google Maps script...', 'warning');
+            }
+
+            // Load new script
+            const script = document.createElement('script');
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&callback=initMap`;
+            script.async = true;
+            script.defer = true;
+            
+            script.onerror = function() {
+                log('❌ Failed to load Google Maps script', 'error');
+                updateStat('statStatus', '❌');
+                document.getElementById('map').innerHTML = '<div class="alert alert-danger">❌ Failed to load Google Maps. Check your API key and internet connection.</div>';
+            };
+
+            document.head.appendChild(script);
+        }
+
+        window.initMap = function() {
+            log('✅ Google Maps SDK loaded successfully', 'success');
+            
+            try {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    center: { lat: 24.7136, lng: 46.6753 }, // Riyadh
+                    zoom: 13
+                });
+
+                log('✅ Map initialized', 'success');
+                updateStat('statStatus', '✅');
+
+                placesService = new google.maps.places.PlacesService(map);
+                log('✅ Places Service ready', 'success');
+
+                // Add center marker
+                new google.maps.Marker({
+                    position: { lat: 24.7136, lng: 46.6753 },
+                    map: map,
+                    title: 'Search Center (Riyadh)',
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+                });
+
+                // Draw circle
+                new google.maps.Circle({
+                    map: map,
+                    center: { lat: 24.7136, lng: 46.6753 },
+                    radius: 2000,
+                    fillColor: '#667eea',
+                    fillOpacity: 0.2,
+                    strokeColor: '#667eea',
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2
+                });
+
+                log('📍 Click "Test Nearby Search" to find shops within 2km', 'info');
+                
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                updateStat('statStatus', '❌');
+            }
+        };
+
+        window.gm_authFailure = function() {
+            log('❌ Google Maps Authentication Failed!', 'error');
+            log('🔧 Fix: Check your API key and ensure these APIs are enabled:', 'warning');
+            log('   1. Maps JavaScript API', 'warning');
+            log('   2. Places API (New)', 'warning');
+            log('   3. Add billing account (required)', 'warning');
+            updateStat('statStatus', '❌');
+            document.getElementById('map').innerHTML = '<div class="alert alert-danger"><strong>❌ Authentication Failed</strong><br>Your API key is invalid or the required APIs are not enabled.</div>';
+        };
+
+        function testNearbySearch() {
+            if (!placesService) {
+                alert('⚠️ Please load the map first!');
+                return;
+            }
+
+            log('🔍 Starting Nearby Search test...', 'info');
+            log('📡 Request: location=[24.7136, 46.6753], radius=2000m, type=store', 'info');
+            
+            const startTime = Date.now();
+            updateStat('statResults', '⏳');
+
+            const request = {
+                location: { lat: 24.7136, lng: 46.6753 },
+                radius: 2000,
+                type: ['store'],
+                rankBy: google.maps.places.RankBy.PROMINENCE // Get best results first
+            };
+            
+            // Set timeout to prevent hanging
+            const timeoutId = setTimeout(() => {
+                log('⚠️ Request timeout after 10 seconds', 'warning');
+                updateStat('statResults', '⏱️');
+                updateStat('statStatus', '⚠️');
+            }, 10000);
+
+            placesService.nearbySearch(request, function(results, status) {
+                clearTimeout(timeoutId); // Clear timeout on response
+                const latency = Date.now() - startTime;
+                updateStat('statLatency', `${latency}ms`);
+
+                log(`📥 Response received in ${latency}ms`, 'info');
+                log(`📊 Status: ${status}`, status === 'OK' ? 'success' : 'error');
+
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    log(`✅ SUCCESS! Found ${results.length} shops`, 'success');
+                    updateStat('statResults', results.length);
+                    updateStat('statStatus', '✅');
+                    
+                    displayResults(results);
+                    addMarkers(results);
+
+                    // Log first few results
+                    results.slice(0, 5).forEach((place, i) => {
+                        log(`  ${i+1}. ${place.name} - Rating: ${place.rating || 'N/A'}`, 'info');
+                    });
+
+                } else if (status === google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+                    log('⚠️ ZERO_RESULTS: No shops found in this area', 'warning');
+                    log('💡 This is normal - API is working, just no results', 'info');
+                    updateStat('statResults', '0');
+                    updateStat('statStatus', '⚠️');
+                    document.getElementById('results').innerHTML = '<div class="alert alert-danger">No shops found in this area. Try a different location.</div>';
+
+                } else if (status === google.maps.places.PlacesServiceStatus.REQUEST_DENIED) {
+                    log('❌ REQUEST_DENIED: Places API not enabled or billing not set up', 'error');
+                    log('🔧 SOLUTION:', 'error');
+                    log('   1. Go to: https://console.cloud.google.com/apis/library/places-backend.googleapis.com', 'error');
+                    log('   2. Click "Enable" button', 'error');
+                    log('   3. Go to: https://console.cloud.google.com/billing', 'error');
+                    log('   4. Add payment method (gets $200 free credit/month)', 'error');
+                    log('   5. Wait 5-10 minutes', 'error');
+                    log('   6. Try again', 'error');
+                    updateStat('statResults', '❌');
+                    updateStat('statStatus', '❌');
+                    document.getElementById('results').innerHTML = `
+                        <div class="alert alert-danger">
+                            <strong>❌ REQUEST_DENIED</strong><br>
+                            Places API is not enabled or billing is not set up.<br><br>
+                            <strong>Quick Fix:</strong><br>
+                            1. <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank">Enable Places API</a><br>
+                            2. <a href="https://console.cloud.google.com/billing" target="_blank">Add Billing Account</a><br>
+                            3. Wait 5-10 minutes and try again
+                        </div>
+                    `;
+
+                } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+                    log('⚠️ OVER_QUERY_LIMIT: Exceeded API quota', 'error');
+                    log('💡 Enable billing or wait for quota reset', 'warning');
+                    updateStat('statResults', '⚠️');
+                    updateStat('statStatus', '⚠️');
+
+                } else {
+                    log(`❌ Unknown status: ${status}`, 'error');
+                    updateStat('statResults', '❌');
+                    updateStat('statStatus', '❌');
+                }
+            });
+        }
+
+        function displayResults(places) {
+            const resultsDiv = document.getElementById('results');
+            const displayStart = Date.now();
+            resultsDiv.innerHTML = '<h3 style="margin-bottom: 15px;">📍 Found Places:</h3>';
+
+            const displayLimit = 20;
+            places.slice(0, displayLimit).forEach((place, index) => {
+                const card = document.createElement('div');
+                card.className = 'result-card';
+                card.innerHTML = `
+                    <h4>${index + 1}. ${place.name}</h4>
+                    <p>📍 ${place.vicinity || 'No address'}</p>
+                    ${place.rating ? `<p><span class="badge badge-rating">⭐ ${place.rating}</span> (${place.user_ratings_total || 0} reviews)</p>` : ''}
+                    <p style="font-size: 0.8em; color: #a0aec0;">ID: ${place.place_id}</p>
+                `;
+                resultsDiv.appendChild(card);
+            });
+            
+            // Show info if there are more results
+            if (places.length > displayLimit) {
+                const moreInfo = document.createElement('div');
+                moreInfo.className = 'alert alert-success';
+                moreInfo.innerHTML = `
+                    <strong>ℹ️ Showing first ${displayLimit} of ${places.length} results</strong><br>
+                    <small>All places are shown on the map. Limited display for performance.</small>
+                `;
+                resultsDiv.appendChild(moreInfo);
+            }
+            
+            const displayTime = Date.now() - displayStart;
+            log(`✅ Displayed ${Math.min(displayLimit, places.length)} results in ${displayTime}ms`, 'success');
+        }
+
+        function addMarkers(places) {
+            // Clear old markers
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+
+            const markerStart = Date.now();
+            const bounds = new google.maps.LatLngBounds();
+
+            places.forEach(place => {
+                const marker = new google.maps.Marker({
+                    position: place.geometry.location,
+                    map: map,
+                    title: place.name,
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png',
+                    optimized: true // Enable marker optimization for better performance
+                });
+
+                const infoWindow = new google.maps.InfoWindow({
+                    content: `<strong>${place.name}</strong><br>${place.vicinity || ''}<br>⭐ ${place.rating || 'N/A'}`
+                });
+
+                marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
+                });
+
+                markers.push(marker);
+                bounds.extend(place.geometry.location);
+            });
+            
+            // Fit map to show all markers
+            if (markers.length > 0) {
+                map.fitBounds(bounds);
+            }
+
+            const markerTime = Date.now() - markerStart;
+            log(`✅ Added ${markers.length} markers in ${markerTime}ms`, 'success');
+        }
+
+        // Auto-load on page load
+        window.onload = function() {
+            log('🎬 Page loaded. Ready to test!', 'info');
+            log('💡 Click "Load Map" to begin', 'info');
+        };
+    </script>
+</body>
+</html>

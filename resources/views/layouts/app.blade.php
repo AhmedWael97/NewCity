@@ -513,6 +513,9 @@
 
     {{-- Smart Popup System --}}
     @include('components.popup-system')
+    
+    {{-- User Verification Popup --}}
+    @include('components.verification-popup')
 </body>
 
 </html>

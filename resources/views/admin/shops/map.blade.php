@@ -8,9 +8,14 @@
         <h1 class="h3 mb-0">
             <i class="fas fa-map-marked-alt"></i> استيراد المتاجر من Google Maps
         </h1>
-        <a href="{{ route('admin.shops.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-right"></i> العودة للقائمة
-        </a>
+        <div>
+            <a href="{{ route('admin.shops.map.test') }}" class="btn btn-warning" target="_blank">
+                <i class="fas fa-flask"></i> اختبار تشخيصي
+            </a>
+            <a href="{{ route('admin.shops.index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-right"></i> العودة للقائمة
+            </a>
+        </div>
     </div>
 
     <!-- Instructions Card -->
@@ -18,8 +23,8 @@
         <h5><i class="fas fa-info-circle"></i> كيفية الاستخدام:</h5>
         <ol class="mb-0">
             <li>انقر على زر "موقعي الحالي" للانتقال إلى موقعك</li>
-            <li>ارسم دائرة على الخريطة لتحديد منطقة البحث</li>
-            <li>سيتم عرض جميع المتاجر من Google Maps داخل الدائرة</li>
+            <li>انقر على "رسم منطقة" ثم ارسم شكلاً على الخريطة لتحديد منطقة البحث</li>
+            <li>سيتم عرض جميع المتاجر من Google Maps داخل المنطقة المحددة</li>
             <li>انقر على "إضافة" بجانب كل متجر لإضافته لقاعدة البيانات</li>
         </ol>
     </div>
@@ -78,10 +83,10 @@
                         <i class="fas fa-crosshairs"></i> موقعي الحالي
                     </button>
                     <button class="btn btn-sm btn-success" onclick="startDrawing()">
-                        <i class="fas fa-circle-notch"></i> رسم دائرة
+                        <i class="fas fa-draw-polygon"></i> رسم منطقة
                     </button>
-                    <button class="btn btn-sm btn-warning" onclick="clearCircle()">
-                        <i class="fas fa-times"></i> مسح الدائرة
+                    <button class="btn btn-sm btn-warning" onclick="clearPolygon()">
+                        <i class="fas fa-times"></i> مسح المنطقة
                     </button>
                 </div>
             </div>
@@ -119,7 +124,7 @@
             </div>
             <div id="noResults" class="text-center py-4">
                 <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                <p class="text-muted">ارسم دائرة على الخريطة للبحث عن المتاجر</p>
+                <p class="text-muted">ارسم منطقة على الخريطة للبحث عن المتاجر</p>
             </div>
             <div id="resultsTable" style="display: none;">
                 <div class="table-responsive">
@@ -145,7 +150,7 @@
 <script>
 let map = null;
 let drawingManager = null;
-let circle = null;
+let polygon = null;
 let markers = [];
 let placesService = null;
 let currentPlaces = [];
@@ -192,7 +197,7 @@ function initMap() {
         drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: null,
             drawingControl: false,
-            circleOptions: {
+            polygonOptions: {
                 fillColor: '#4285F4',
                 fillOpacity: 0.2,
                 strokeColor: '#4285F4',
@@ -205,30 +210,28 @@ function initMap() {
         drawingManager.setMap(map);
         debugLog('✅ Drawing Manager ready', 'success');
 
-        google.maps.event.addListener(drawingManager, 'circlecomplete', function(newCircle) {
-            debugLog('🔵 Circle drawn', 'info');
-            if (circle) {
-                debugLog('🗑️ Removing old circle', 'warning');
-                circle.setMap(null);
+        google.maps.event.addListener(drawingManager, 'polygoncomplete', function(newPolygon) {
+            debugLog('🔷 Polygon drawn', 'info');
+            if (polygon) {
+                debugLog('🗑️ Removing old polygon', 'warning');
+                polygon.setMap(null);
             }
-            circle = newCircle;
+            polygon = newPolygon;
             drawingManager.setDrawingMode(null);
             
-            // Validate circle size
-            const radius = circle.getRadius();
-            debugLog(`📏 Circle radius: ${Math.round(radius)}m`, 'info');
-            if (radius > 5000) {
-                debugLog('⚠️ Circle too large, will search within 5km only', 'warning');
-                showNotification('warning', 'الدائرة كبيرة جداً. سيتم البحث ضمن نطاق 5 كم فقط.');
-            }
+            // Calculate polygon area
+            const area = google.maps.geometry.spherical.computeArea(polygon.getPath());
+            const areaKm2 = (area / 1000000).toFixed(2);
+            debugLog(`📏 Polygon area: ${areaKm2} km²`, 'info');
             
             searchPlaces();
 
-            google.maps.event.addListener(circle, 'radius_changed', () => {
+            // Add listeners for polygon changes
+            google.maps.event.addListener(polygon.getPath(), 'set_at', () => {
                 clearTimeout(window.searchTimeout);
                 window.searchTimeout = setTimeout(searchPlaces, 1000);
             });
-            google.maps.event.addListener(circle, 'center_changed', () => {
+            google.maps.event.addListener(polygon.getPath(), 'insert_at', () => {
                 clearTimeout(window.searchTimeout);
                 window.searchTimeout = setTimeout(searchPlaces, 1000);
             });
@@ -268,12 +271,19 @@ function autoDetectAndSearch() {
                 zIndex: 9999
             });
             
-            // Automatically draw 2km circle and search
-            debugLog('🔵 Creating 2km search radius...', 'info');
-            circle = new google.maps.Circle({
+            // Automatically draw 2km square polygon and search
+            debugLog('🔷 Creating 2km search area...', 'info');
+            const distance = 0.018; // Approximately 2km in degrees
+            const polygonCoords = [
+                {lat: pos.lat + distance, lng: pos.lng - distance},
+                {lat: pos.lat + distance, lng: pos.lng + distance},
+                {lat: pos.lat - distance, lng: pos.lng + distance},
+                {lat: pos.lat - distance, lng: pos.lng - distance}
+            ];
+            
+            polygon = new google.maps.Polygon({
                 map: map,
-                center: pos,
-                radius: 2000, // 2km
+                paths: polygonCoords,
                 fillColor: '#4285F4',
                 fillOpacity: 0.2,
                 strokeColor: '#4285F4',
@@ -283,14 +293,16 @@ function autoDetectAndSearch() {
                 draggable: true
             });
             
-            debugLog('📏 Circle radius: 2000m (2km)', 'info');
+            const area = google.maps.geometry.spherical.computeArea(polygon.getPath());
+            const areaKm2 = (area / 1000000).toFixed(2);
+            debugLog(`📏 Polygon area: ${areaKm2} km²`, 'info');
             
-            // Add listeners for circle changes
-            google.maps.event.addListener(circle, 'radius_changed', () => {
+            // Add listeners for polygon changes
+            google.maps.event.addListener(polygon.getPath(), 'set_at', () => {
                 clearTimeout(window.searchTimeout);
                 window.searchTimeout = setTimeout(searchPlaces, 1000);
             });
-            google.maps.event.addListener(circle, 'center_changed', () => {
+            google.maps.event.addListener(polygon.getPath(), 'insert_at', () => {
                 clearTimeout(window.searchTimeout);
                 window.searchTimeout = setTimeout(searchPlaces, 1000);
             });
@@ -325,9 +337,9 @@ function getCurrentLocation() {
             map.setCenter(pos);
             map.setZoom(15);
             
-            // Clear existing circle if any
-            if (circle) {
-                circle.setMap(null);
+            // Clear existing polygon if any
+            if (polygon) {
+                polygon.setMap(null);
             }
             
             new google.maps.Marker({
@@ -348,19 +360,22 @@ function getCurrentLocation() {
 }
 
 function startDrawing() {
-    if (!circle) {
-        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.CIRCLE);
+    if (!polygon) {
+        drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+        debugLog('✏️ Draw a polygon on the map. Click points to create shape, double-click to finish.', 'info');
+        showNotification('info', 'انقر على الخريطة لرسم المنطقة. انقر مرتين للإنهاء.');
     } else {
-        alert('يوجد دائرة بالفعل. يرجى مسحها أولاً.');
+        alert('يوجد منطقة مرسومة بالفعل. يرجى مسحها أولاً.');
     }
 }
 
-function clearCircle() {
-    if (circle) {
-        circle.setMap(null);
-        circle = null;
+function clearPolygon() {
+    if (polygon) {
+        polygon.setMap(null);
+        polygon = null;
         clearMarkers();
         clearResults();
+        debugLog('🗑️ Polygon cleared', 'info');
     }
 }
 
@@ -378,8 +393,8 @@ function clearResults() {
 }
 
 async function searchPlaces() {
-    if (!circle) {
-        debugLog('⚠️ No circle drawn yet', 'warning');
+    if (!polygon) {
+        debugLog('⚠️ No polygon drawn yet', 'warning');
         return;
     }
 
@@ -388,30 +403,72 @@ async function searchPlaces() {
     document.getElementById('loadingResults').style.display = 'block';
     document.getElementById('noResults').style.display = 'none';
 
-    const center = circle.getCenter();
-    const radius = circle.getRadius();
+    const startTime = Date.now();
 
-    debugLog(`🔍 Starting search at [${center.lat().toFixed(4)}, ${center.lng().toFixed(4)}] with radius ${Math.round(radius)}m`, 'info');
+    // Get polygon bounds
+    const bounds = new google.maps.LatLngBounds();
+    polygon.getPath().forEach(function(latLng) {
+        bounds.extend(latLng);
+    });
+    
+    const center = bounds.getCenter();
+    
+    // Calculate search radius based on polygon bounds
+    const ne = bounds.getNorthEast();
+    const sw = bounds.getSouthWest();
+    const radius = google.maps.geometry.spherical.computeDistanceBetween(center, ne);
+    
+    debugLog(`🔍 Starting search in polygon area (center: [${center.lat().toFixed(4)}, ${center.lng().toFixed(4)}], radius: ${Math.round(radius)}m)`, 'info');
 
-    const types = ['store'];
     let allResults = [];
 
-    debugLog(`📡 Searching for shops only...`, 'info');
+    debugLog(`📡 Searching for shops within polygon...`, 'info');
 
     try {
-        debugLog(`📤 Searching for "store" type`, 'info');
+        // Search within the calculated radius
+        const searchRadius = Math.min(radius, 5000); // Limit to 5km for performance
+        debugLog(`📤 Searching within ${Math.round(searchRadius)}m radius`, 'info');
         
-        const results = await searchByType(center, Math.min(radius, 5000), 'store');
+        // Try multiple place types to find more results
+        const typesToSearch = ['store', 'establishment', 'point_of_interest'];
+        let foundResults = false;
         
-        if (results && results.length > 0) {
-            allResults = results;
-            debugLog(`  ✓ Found ${results.length} shops`, 'success');
+        for (const type of typesToSearch) {
+            try {
+                debugLog(`🔎 Trying type: "${type}"`, 'info');
+                const results = await searchByType(center, searchRadius, type);
+                
+                if (results && results.length > 0) {
+                    // Filter results to only include places inside the polygon
+                    const filteredResults = results.filter(place => {
+                        if (!place.geometry || !place.geometry.location) return false;
+                        return google.maps.geometry.poly.containsLocation(place.geometry.location, polygon);
+                    });
+                    
+                    if (filteredResults.length > 0) {
+                        allResults = filteredResults;
+                        const elapsed = Date.now() - startTime;
+                        debugLog(`  ✓ Found ${results.length} places, ${filteredResults.length} inside polygon using "${type}" in ${elapsed}ms`, 'success');
+                        foundResults = true;
+                        break; // Stop if we found results
+                    }
+                }
+            } catch (typeError) {
+                debugLog(`  ⚠️ Error with type "${type}": ${typeError.message}`, 'warning');
+                // Continue to next type
+            }
+        }
+        
+        if (!foundResults) {
+            debugLog(`  ℹ️ No results found with any search type`, 'info');
         }
     } catch (error) {
         debugLog(`  ❌ Error searching for shops: ${error.message}`, 'error');
+        // Don't throw, just log the error
     }
 
-    debugLog(`✅ All requests completed. Total unique places: ${allResults.length}`, 'success');
+    const totalTime = Date.now() - startTime;
+    debugLog(`✅ Search completed in ${totalTime}ms. Total places in polygon: ${allResults.length}`, 'success');
     document.getElementById('loadingResults').style.display = 'none';
     
     if (allResults.length > 0) {
@@ -422,7 +479,19 @@ async function searchPlaces() {
         debugLog(`✅ Results displayed successfully`, 'success');
     } else {
         debugLog('⚠️ No places found in this area', 'warning');
-        document.getElementById('noResults').innerHTML = '<i class="fas fa-store-slash fa-3x text-muted mb-3"></i><p class="text-muted">لم يتم العثور على متاجر في هذه المنطقة<br><small>حاول توسيع الدائرة أو اختيار منطقة أخرى</small></p>';
+        document.getElementById('noResults').innerHTML = `
+            <i class="fas fa-store-slash fa-3x text-muted mb-3"></i>
+            <p class="text-muted">لم يتم العثور على متاجر في هذه المنطقة</p>
+            <small class="text-muted">جرب:</small>
+            <ul class="list-unstyled small text-muted">
+                <li>• رسم منطقة أكبر</li>
+                <li>• اختيار منطقة تجارية مختلفة</li>
+                <li>• التأكد من الاتصال بالإنترنت</li>
+            </ul>
+            <button class="btn btn-sm btn-primary mt-2" onclick="searchPlaces()">
+                <i class="fas fa-sync"></i> إعادة المحاولة
+            </button>
+        `;
         document.getElementById('noResults').style.display = 'block';
     }
 }
@@ -433,11 +502,26 @@ function searchByType(location, radius, type) {
         const request = {
             location: location,
             radius: radius,
-            type: [type]
+            type: [type],
+            // Optimize request for speed
+            rankBy: google.maps.places.RankBy.PROMINENCE // Get best results first
         };
+
+        // Set timeout to prevent hanging
+        let hasResponded = false;
+        const timeoutId = setTimeout(() => {
+            if (!hasResponded) {
+                hasResponded = true;
+                debugLog(`  ⏱️ Timeout for "${type}" - trying next option`, 'warning');
+                resolve([]); // Resolve with empty array instead of rejecting
+            }
+        }, 15000); // 15 second timeout (increased)
 
         try {
             placesService.nearbySearch(request, function(results, status, pagination) {
+                if (hasResponded) return; // Ignore if already timed out
+                hasResponded = true;
+                clearTimeout(timeoutId);
                 debugLog(`  📥 Raw response for "${type}": status=${status}, results=${results ? results.length : 'null'}`, 'info');
                 
                 if (status === google.maps.places.PlacesServiceStatus.OK) {
@@ -455,30 +539,34 @@ function searchByType(location, radius, type) {
                     debugLog('  1️⃣ Enable Places API (New)', 'error');
                     debugLog('  2️⃣ Set up Billing (REQUIRED)', 'error');
                     debugLog('  3️⃣ Wait 5 minutes after setup', 'error');
-                    document.getElementById('loadingResults').style.display = 'none';
-                    document.getElementById('noResults').innerHTML = `
-                        <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
-                        <h5 class="text-danger">Google Places API غير مفعل</h5>
-                        <div class="alert alert-danger text-start">
-                            <h6>⚠️ يجب عليك:</h6>
-                            <ol>
-                                <li><strong>تفعيل Places API (New)</strong><br>
-                                    <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" class="btn btn-sm btn-danger mt-1">
-                                        <i class="fas fa-external-link-alt"></i> تفعيل الآن
-                                    </a>
-                                </li>
-                                <li><strong>إضافة بيانات الدفع (Billing)</strong> - مطلوب حتى للباقة المجانية<br>
-                                    <a href="https://console.cloud.google.com/billing" target="_blank" class="btn btn-sm btn-danger mt-1">
-                                        <i class="fas fa-credit-card"></i> إضافة الآن
-                                    </a>
-                                </li>
-                                <li><strong>انتظر 5-10 دقائق</strong> ثم أعد تحميل الصفحة</li>
-                            </ol>
-                            <p class="mb-0 small"><strong>ملاحظة:</strong> ستحصل على رصيد $200 مجاناً شهرياً</p>
-                        </div>
-                    `;
-                    document.getElementById('noResults').style.display = 'block';
-                    reject(new Error('REQUEST_DENIED - Places API not enabled or Billing not set up'));
+                    
+                    // Only show error UI on first failure
+                    if (type === 'store') {
+                        document.getElementById('loadingResults').style.display = 'none';
+                        document.getElementById('noResults').innerHTML = `
+                            <i class="fas fa-exclamation-triangle fa-3x text-danger mb-3"></i>
+                            <h5 class="text-danger">Google Places API غير مفعل</h5>
+                            <div class="alert alert-danger text-start">
+                                <h6>⚠️ يجب عليك:</h6>
+                                <ol>
+                                    <li><strong>تفعيل Places API (New)</strong><br>
+                                        <a href="https://console.cloud.google.com/apis/library/places-backend.googleapis.com" target="_blank" class="btn btn-sm btn-danger mt-1">
+                                            <i class="fas fa-external-link-alt"></i> تفعيل الآن
+                                        </a>
+                                    </li>
+                                    <li><strong>إضافة بيانات الدفع (Billing)</strong> - مطلوب حتى للباقة المجانية<br>
+                                        <a href="https://console.cloud.google.com/billing" target="_blank" class="btn btn-sm btn-danger mt-1">
+                                            <i class="fas fa-credit-card"></i> إضافة الآن
+                                        </a>
+                                    </li>
+                                    <li><strong>انتظر 5-10 دقائق</strong> ثم أعد تحميل الصفحة</li>
+                                </ol>
+                                <p class="mb-0 small"><strong>ملاحظة:</strong> ستحصل على رصيد $200 مجاناً شهرياً</p>
+                            </div>
+                        `;
+                        document.getElementById('noResults').style.display = 'block';
+                    }
+                    resolve([]); // Resolve with empty array instead of rejecting
                 } else if (status === google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
                     debugLog(`  ⚠️ QUERY LIMIT for "${type}" - retrying...`, 'warning');
                     setTimeout(() => {
@@ -493,8 +581,11 @@ function searchByType(location, radius, type) {
                 }
             });
         } catch (error) {
+            if (hasResponded) return; // Already handled
+            hasResponded = true;
+            clearTimeout(timeoutId);
             debugLog(`  ❌ Exception caught for "${type}": ${error.message}`, 'error');
-            reject(error);
+            resolve([]); // Resolve with empty array to prevent unhandled promise rejection
         }
     });
 }
@@ -513,8 +604,16 @@ function displayResults(places) {
     document.getElementById('resultsCount').textContent = places.length;
     document.getElementById('resultsTable').style.display = 'block';
 
+    // Limit display to first 20 for performance
+    const displayLimit = 20;
+    const placesToDisplay = places.slice(0, displayLimit);
+    
+    if (places.length > displayLimit) {
+        debugLog(`⚡ Displaying first ${displayLimit} of ${places.length} results for speed`, 'info');
+    }
+
     let displayedCount = 0;
-    places.forEach((place, index) => {
+    placesToDisplay.forEach((place, index) => {
         // Validate required data
         if (!place.name || !place.geometry) {
             debugLog(`  ⚠️ Skipping place with missing data at index ${index}`, 'warning');
@@ -558,12 +657,31 @@ function displayResults(places) {
         tbody.appendChild(row);
     });
     
-    debugLog(`✅ Displayed ${displayedCount} places in table`, 'success');
+    // Add row showing there are more results
+    if (places.length > displayLimit) {
+        const moreRow = document.createElement('tr');
+        moreRow.innerHTML = `
+            <td colspan="5" class="text-center text-muted">
+                <i class="fas fa-info-circle"></i> 
+                عرض أول ${displayLimit} نتيجة من ${places.length} (لتحسين الأداء)
+                <br><small>جميع المتاجر متوفرة على الخريطة</small>
+            </td>
+        `;
+        tbody.appendChild(moreRow);
+    }
+    
+    debugLog(`✅ Displayed ${displayedCount} places in table (${places.length} total)`, 'success');
 }
 
 function addMarkers(places) {
     clearMarkers();
+    
+    const startTime = Date.now();
+    debugLog(`📍 Adding ${places.length} markers to map...`, 'info');
 
+    // Batch marker creation for better performance
+    const bounds = new google.maps.LatLngBounds();
+    
     places.forEach((place, index) => {
         if (!place.geometry || !place.geometry.location) return;
 
@@ -571,7 +689,8 @@ function addMarkers(places) {
             position: place.geometry.location,
             map: map,
             title: place.name,
-            icon: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png'
+            icon: 'https://maps.google.com/mapfiles/ms/icons/red-dot.png',
+            optimized: true // Enable marker optimization
         });
 
         marker.addListener('click', () => {
@@ -579,7 +698,16 @@ function addMarkers(places) {
         });
 
         markers.push(marker);
+        bounds.extend(place.geometry.location);
     });
+    
+    // Fit map to show all markers
+    if (markers.length > 0) {
+        map.fitBounds(bounds);
+    }
+    
+    const elapsed = Date.now() - startTime;
+    debugLog(`✅ Added ${markers.length} markers in ${elapsed}ms`, 'success');
 }
 
 function showPlaceDetails(index) {
@@ -712,11 +840,19 @@ window.gm_authFailure = function() {
 
 // Catch unhandled promise rejections from Google Maps
 window.addEventListener('unhandledrejection', function(event) {
+    // Ignore timeout errors as they're handled elsewhere
+    if (event.reason && event.reason.message && event.reason.message.includes('timeout')) {
+        debugLog(`⏱️ Search timeout handled`, 'warning');
+        event.preventDefault();
+        return;
+    }
+    
     debugLog(`❌ Unhandled Promise Rejection: ${event.reason}`, 'error');
     console.error('Unhandled rejection:', event.reason);
     
     // Hide loading spinner
-    document.getElementById('loadingResults').style.display = 'none';
+    const loadingEl = document.getElementById('loadingResults');
+    if (loadingEl) loadingEl.style.display = 'none';
     
     // Show detailed error message
     document.getElementById('noResults').innerHTML = `
@@ -763,7 +899,38 @@ window.addEventListener('unhandledrejection', function(event) {
 </script>
 
 <!-- Load Google Maps API at the end so initMap is already defined -->
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCeaKlnTU88qhTp7za2H301HWPPT7zhGyo&libraries=places,drawing,geometry&language=ar&callback=initMap"></script>
+@php
+    $googleMapsApiKey = config('services.google_maps.api_key');
+@endphp
+
+@if(empty($googleMapsApiKey))
+<script>
+    document.getElementById('map').innerHTML = `
+        <div class="alert alert-danger m-3">
+            <h5><i class="fas fa-exclamation-triangle"></i> Google Maps API Key غير موجود</h5>
+            <p>يرجى إضافة GOOGLE_MAPS_API_KEY في ملف .env</p>
+            <p>قم بالخطوات التالية:</p>
+            <ol class="text-start">
+                <li>افتح <strong>.env</strong> file</li>
+                <li>أضف السطر: <code>GOOGLE_MAPS_API_KEY=your_api_key_here</code></li>
+                <li>احصل على API Key من: <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a></li>
+                <li>فعّل هذه الخدمات:
+                    <ul>
+                        <li>Maps JavaScript API</li>
+                        <li>Places API (New)</li>
+                        <li>Geocoding API</li>
+                    </ul>
+                </li>
+                <li>أضف Billing Account (مطلوب)</li>
+                <li>احفظ وأعد تحميل الصفحة</li>
+            </ol>
+        </div>
+    `;
+    document.getElementById('debugConsole').innerHTML = '<span style="color: #ff0000">[ERROR] GOOGLE_MAPS_API_KEY not found in .env file</span>';
+</script>
+@else
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ $googleMapsApiKey }}&libraries=places,drawing,geometry&language=ar&callback=initMap&loading=async"></script>
+@endif
 
 <style>
 #map {
