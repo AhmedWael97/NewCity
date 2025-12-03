@@ -218,7 +218,7 @@
         
         <div class="mobile-categories">
             <a href="{{ url('/') }}">🏠 الرئيسية</a>
-            {{-- <a href="{{ route('marketplace.index') }}">🛒 السوق المفتوح</a> --}}
+            <a href="{{ route('marketplace.index') }}">🛒 السوق المفتوح</a>
             @if(isset($navCategories))
                 @foreach($navCategories as $category)
                     <div class="mobile-category-group">
