@@ -142,7 +142,7 @@
                         @foreach($items as $item)
                         <tr>
                             <td>
-                                <input type="checkbox" name="item_ids[]" value="{{ $item->id }}" 
+                                <input type="checkbox" name="item_ids[]" value="{{ $item->slug }}" 
                                        class="item-checkbox" form="bulkActionForm">
                             </td>
                             <td>
@@ -200,22 +200,22 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('admin.marketplace.show', $item->id) }}" class="btn btn-info" title="عرض">
+                                    <a href="{{ route('admin.marketplace.show', $item->slug) }}" class="btn btn-info" title="عرض">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     @if($item->status === 'pending')
-                                    <form action="{{ route('admin.marketplace.approve', $item->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('admin.marketplace.approve', $item->slug) }}" method="POST" class="d-inline">
                                         @csrf
                                         <button type="submit" class="btn btn-success" title="الموافقة">
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>
                                     <button type="button" class="btn btn-warning" title="الرفض" 
-                                            onclick="showRejectModal({{ $item->id }}, '{{ $item->title }}')">
+                                            onclick="showRejectModal({{ $item->slug }}, '{{ $item->title }}')">
                                         <i class="fas fa-times"></i>
                                     </button>
                                     @endif
-                                    <form action="{{ route('admin.marketplace.destroy', $item->id) }}" method="POST" class="d-inline">
+                                    <form action="{{ route('admin.marketplace.destroy', $item->slug) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger" title="حذف"

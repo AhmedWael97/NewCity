@@ -7,7 +7,7 @@
             <h4 class="mb-0"><i class="fas fa-edit"></i> تعديل الإعلان</h4>
         </div>
         <div class="card-body">
-            <form action="{{ route('marketplace.update', $item->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('marketplace.update', $item->slug) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 

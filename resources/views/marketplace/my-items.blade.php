@@ -103,18 +103,15 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a href="{{ route('marketplace.show', $item->id) }}" class="btn btn-info" title="عرض">
+                                    <a href="{{ route('marketplace.show', $item->slug) }}" class="btn btn-info" title="عرض">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     @if($item->status !== 'sold')
-                                    <a href="{{ route('marketplace.edit', $item->id) }}" class="btn btn-primary" title="تعديل">
+                                    <a href="{{ route('marketplace.edit', $item->slug) }}" class="btn btn-primary" title="تعديل">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     @endif
-                                    <button type="button" class="btn btn-secondary" title="رمز QR" 
-                                            onclick="showQrModal({{ $item->id }}, '{{ addslashes($item->title) }}')">
-                                        <i class="fas fa-qrcode"></i>
-                                    </button>
+                                   
                                 </div>
                                 <div class="btn-group btn-group-sm mt-1">
                                     @if($item->status === 'active' && $item->remainingViews() < 20)
