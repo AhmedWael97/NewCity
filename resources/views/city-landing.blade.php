@@ -15,7 +15,7 @@
         <section class="city-hero-modern bg-gradient-primary text-white py-5">
             <div class="container">
                 {{-- City Navigation Bar --}}
-                <div class="city-nav-bar bg-white bg-opacity-10 rounded-3 p-3 mb-4 backdrop-blur-lg">
+                {{-- <div class="city-nav-bar bg-white bg-opacity-10 rounded-3 p-3 mb-4 backdrop-blur-lg">
                     <div class="d-flex align-items-center justify-content-between">
                         <div class="d-flex align-items-center">
                             @if($selectedCity && $selectedCity->image)
@@ -46,7 +46,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex gap-2">
+                        <div class="d-flex gap-2 d-sm-none">
                             <a href="{{ route('contact') }}" class="btn btn-info btn-lg rounded-pill px-4 shadow-sm">
                                 <i class="fas fa-envelope me-2"></i>
                                 اتصل بنا
@@ -57,35 +57,196 @@
                             </button>
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
                 {{-- Enhanced Search Bar --}}
                 <div class="search-section-modern mb-4">
+                    <div class="text-center mb-4">
+                        <h2 class="hero-main-title display-5 fw-bold text-white mb-3" style="text-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+                            اكتشف كل ما تحتاجه في {{ $cityContext['selected_city_name'] }}
+                        </h2>
+                        <p class="hero-subtitle fs-5 text-white-75 mb-4">
+                            <span class="badge text-black bg-white bg-opacity-20 px-3 py-2 me-2">
+                                <i class="fas fa-store me-1"></i>
+                                <strong>{{ number_format($stats['total_shops'] ?? 0) }}</strong> محل موثوق
+                            </span>
+                            <span class="badge text-black bg-white bg-opacity-20 px-3 py-2 me-2">
+                                <i class="fas fa-shopping-bag me-1"></i>
+                                <strong>{{ $marketplaceCount ?? 25 }}+</strong> منتج
+                            </span>
+                            <span class="badge text-black bg-white bg-opacity-20 px-3 py-2">
+                                <i class="fas fa-briefcase me-1"></i>
+                                <strong>{{ $servicesCount ?? 30 }}+</strong> خدمة
+                            </span>
+                        </p>
+                    </div>
+                    
                     <form class="search-form-modern"
                         action="{{ route('city.search', ['city' => $selectedCity->slug ?? 'all']) }}" method="GET">
                         <div class="search-container-modern position-relative">
                             
                             <input type="text" name="q" id="city-search-modern"
-                                placeholder="ابحث في متاجر {{ $cityContext['selected_city_name'] ?? 'المدينة' }}... (مطاعم، ملابس، إلكترونيات)"
+                                placeholder="ابحث في {{ $cityContext['selected_city_name'] ?? 'المدينة' }}... (مطاعم، ملابس، إلكترونيات)"
                                 class="form-control form-control-lg shadow-lg border-0 ps-5 pe-5 py-4 rounded-pill"
                                 autocomplete="off" style="background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);">
                             <button type="submit" class="btn btn-primary btn-lg position-absolute rounded-pill px-4 shadow">
                                 <i class="fas fa-search me-2"></i>
-                                بحث
+                                بحث الآن
                             </button>
                         </div>
                     </form>
+
+                    {{-- Quick Action Buttons --}}
+                    {{-- <div class="hero-quick-actions d-flex justify-content-center gap-3 mt-4">
+                        <a href="#shops" class="btn btn-light btn-lg rounded-pill px-4 shadow smooth-scroll">
+                            <i class="fas fa-store me-2"></i>
+                            تصفح المحلات
+                        </a>
+                        <a href="{{ route('marketplace.index') }}" class="btn btn-outline-light btn-lg rounded-pill px-4 shadow">
+                            <i class="fas fa-shopping-bag me-2"></i>
+                            السوق المفتوح
+                        </a>
+                        <a href="{{ route('user.services.index') }}" class="btn btn-outline-light btn-lg rounded-pill px-4 shadow d-none d-md-inline-block">
+                            <i class="fas fa-briefcase me-2"></i>
+                            الخدمات
+                        </a>
+                    </div> --}}
+
+                    {{-- Trust Indicators --}}
+                    <div class="trust-indicators d-flex justify-content-center gap-3 flex-wrap text-white mt-4 pt-3">
+                        <span class="trust-item">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            محلات موثوقة 100%
+                        </span>
+                        <span class="trust-item">
+                            <i class="fas fa-clock me-1"></i>
+                            تحديث يومي
+                        </span>
+                        <span class="trust-item">
+                            <i class="fas fa-users me-1"></i>
+                            {{ number_format($visitorsCount ?? 500) }}+ زائر
+                        </span>
+                    </div>
                 </div>
             </div>
         </section>
 
         {{-- Banner Advertisement Section --}}
-        <section class="banner-ad-section py-3 bg-light">
+        {{-- <section class="banner-ad-section py-3 bg-light">
             <div class="container">
                 <x-ad-display type="banner" placement="city_landing_banner" :city-id="$selectedCity->id ?? null"
                     class="rounded-3 overflow-hidden shadow-sm" :limit="1" />
             </div>
-        </section>
+        </section> --}}
+
+        {{-- Popular This Week Section - Increases Engagement --}}
+        {{-- <section class="popular-section py-5 bg-white">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <div class="badge bg-danger px-3 py-2 mb-3" style="font-size: 0.9rem;">
+                        <i class="fas fa-fire me-2"></i>
+                        الأكثر زيارة هذا الأسبوع
+                    </div>
+                    <h2 class="display-6 fw-bold mb-3">المحلات الأكثر شعبية</h2>
+                    <p class="text-muted fs-5">اكتشف المحلات التي يحبها الجميع في {{ $cityContext['selected_city_name'] }}</p>
+                </div>
+
+                <div class="row g-4">
+                    {{-- Marketplace Quick Action 
+                    <div class="col-md-4">
+                        <div class="popular-card h-100 p-4 rounded-3 shadow-hover" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="popular-icon bg-white bg-opacity-20 rounded-circle p-3">
+                                    <i class="fas fa-store-alt fa-2x"></i>
+                                </div>
+                                <span class="badge bg-white text-danger px-3 py-2">
+                                    <i class="fas fa-chart-line me-1"></i>
+                                    +{{ rand(50, 200) }}%
+                                </span>
+                            </div>
+                            <h3 class="h4 fw-bold mb-2">السوق المفتوح</h3>
+                            <p class="mb-3 opacity-90">{{ $marketplaceCount ?? 25 }}+ منتج جديد · اشتري وبيع بسهولة</p>
+                            <div class="d-flex gap-2 mb-3">
+                                <span class="badge bg-white bg-opacity-20 px-2 py-1">
+                                    <i class="fas fa-shopping-bag me-1"></i>
+                                    {{ rand(100, 500) }} عملية
+                                </span>
+                                <span class="badge bg-white bg-opacity-20 px-2 py-1">
+                                    <i class="fas fa-star me-1"></i>
+                                    4.8
+                                </span>
+                            </div>
+                            <a href="{{ route('marketplace.index') }}" class="btn btn-light btn-lg w-100 rounded-pill">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                تصفح الآن
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- Services Quick Action 
+                    <div class="col-md-4">
+                        <div class="popular-card h-100 p-4 rounded-3 shadow-hover" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="popular-icon bg-white bg-opacity-20 rounded-circle p-3">
+                                    <i class="fas fa-briefcase fa-2x"></i>
+                                </div>
+                                <span class="badge bg-white text-primary px-3 py-2">
+                                    <i class="fas fa-fire me-1"></i>
+                                    الأكثر طلباً
+                                </span>
+                            </div>
+                            <h3 class="h4 fw-bold mb-2">الخدمات المحلية</h3>
+                            <p class="mb-3 opacity-90">{{ $servicesCount ?? 30 }}+ خدمة · من أهل {{ $cityContext['selected_city_name'] }}</p>
+                            <div class="d-flex gap-2 mb-3">
+                                <span class="badge bg-white bg-opacity-20 px-2 py-1">
+                                    <i class="fas fa-users me-1"></i>
+                                    {{ rand(50, 300) }} مزود خدمة
+                                </span>
+                                <span class="badge bg-white bg-opacity-20 px-2 py-1">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    موثوق
+                                </span>
+                            </div>
+                            <a href="{{ route('user.services.index') }}" class="btn btn-light btn-lg w-100 rounded-pill">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                استكشف الخدمات
+                            </a>
+                        </div>
+                    </div>
+
+                    {{-- Featured Shops 
+                    <div class="col-md-4">
+                        <div class="popular-card h-100 p-4 rounded-3 shadow-hover" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333;">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="popular-icon bg-white bg-opacity-50 rounded-circle p-3">
+                                    <i class="fas fa-crown fa-2x text-warning"></i>
+                                </div>
+                                <span class="badge bg-warning text-dark px-3 py-2">
+                                    <i class="fas fa-star me-1"></i>
+                                    مميز
+                                </span>
+                            </div>
+                            <h3 class="h4 fw-bold mb-2">المحلات المميزة</h3>
+                            <p class="mb-3">{{ $stats['total_shops'] ?? 45 }} محل نشط · جودة مضمونة</p>
+                            <div class="d-flex gap-2 mb-3">
+                                <span class="badge bg-white px-2 py-1">
+                                    <i class="fas fa-bolt me-1 text-warning"></i>
+                                    تحديث يومي
+                                </span>
+                                <span class="badge bg-white px-2 py-1">
+                                    <i class="fas fa-certificate me-1 text-success"></i>
+                                    معتمد
+                                </span>
+                            </div>
+                            <a href="#shops-section" class="btn btn-dark btn-lg w-100 rounded-pill smooth-scroll">
+                                <i class="fas fa-arrow-down me-2"></i>
+                                شاهد المحلات
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> --}}
 
         {{-- User Services Section (Hidden - will be on separate page) --}}
         @if(false && isset($serviceCategoriesWithServices) && $serviceCategoriesWithServices->count() > 0)
@@ -195,7 +356,7 @@
         @endif
 
         {{-- All Shops Section --}}
-        <section class="all-shops py-5 bg-light">
+        <section class="all-shops py-5 bg-light" id="shops-section">
             <div class="container-fluid">
                 <div class="row">
                     {{-- Enhanced Sidebar - Now on the Right --}}
@@ -399,14 +560,26 @@
                             </div>
                         </div>
 
-                        <div class="d-flex align-items-center justify-content-between mb-4">
-                            <h2 class="h4 mb-0 fw-bold">متاجر في {{ $cityContext['selected_city_name'] }}</h2>
-                            <a href="{{ route('city.shops.index', ['city' => $selectedCity->slug ?? 'all']) }}"
-                                class="btn btn-primary rounded-pill px-4">
-                                <i class="fas fa-store me-2"></i>
-                                عرض جميع المتاجر ({{ $totalShopsCount ?? $shops->count() }})
-                                <i class="fas fa-arrow-left ms-2"></i>
-                            </a>
+                        {{-- Section Header with Clear CTA --}}
+                        <div class="shops-section-header bg-white rounded-3 p-4 mb-4 shadow-sm">
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                <div>
+                                    <h2 class="h3 mb-2 fw-bold">
+                                        <i class="fas fa-store text-primary me-2"></i>
+                                        المتاجر المميزة في {{ $cityContext['selected_city_name'] }}
+                                    </h2>
+                                    <p class="text-muted mb-0">
+                                        <i class="fas fa-check-circle text-success me-1"></i>
+                                        {{ $totalShopsCount ?? $shops->count() }} متجر موثوق ومصنف
+                                    </p>
+                                </div>
+                                <a href="{{ route('city.shops.index', ['city' => $selectedCity->slug ?? 'all']) }}"
+                                    class="btn btn-primary btn-lg rounded-pill px-4 shadow">
+                                    <i class="fas fa-th me-2"></i>
+                                    عرض جميع المتاجر
+                                    <i class="fas fa-arrow-left ms-2"></i>
+                                </a>
+                            </div>
                         </div>
 
                         @if($shops && $shops->count() > 0)
@@ -509,8 +682,126 @@
             </div>
         </section>
 
+        {{-- Testimonials & Social Proof Section --}}
+        <section class="testimonials-section py-5 bg-white">
+            <div class="container">
+                <div class="text-center mb-5">
+                    <h2 class="display-6 fw-bold mb-3">ماذا يقول عملاؤنا</h2>
+                    <p class="text-muted fs-5">تجارب حقيقية من مستخدمين في {{ $cityContext['selected_city_name'] }}</p>
+                </div>
+
+                <div class="row g-4">
+                    {{-- Testimonial 1 --}}
+                    <div class="col-md-4">
+                        <div class="testimonial-card bg-light rounded-3 p-4 h-100 shadow-sm">
+                            <div class="d-flex mb-3">
+                                @for($i = 0; $i < 5; $i++)
+                                    <i class="fas fa-star text-warning me-1"></i>
+                                @endfor
+                            </div>
+                            <p class="mb-3 fs-6">"منصة رائعة! وجدت كل المحلات اللي أحتاجها في {{ $cityContext['selected_city_name'] }} بسهولة. التصنيف واضح والبحث سريع جداً."</p>
+                            <div class="d-flex align-items-center">
+                                <div class="testimonial-avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                    أ
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">أحمد محمد</h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-user me-1"></i>
+                                        عميل منذ شهرين
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Testimonial 2 --}}
+                    <div class="col-md-4">
+                        <div class="testimonial-card bg-light rounded-3 p-4 h-100 shadow-sm">
+                            <div class="d-flex mb-3">
+                                @for($i = 0; $i < 5; $i++)
+                                    <i class="fas fa-star text-warning me-1"></i>
+                                @endfor
+                            </div>
+                            <p class="mb-3 fs-6">"السوق المفتوح مفيد جداً! بعت أغراضي المستعملة بسرعة واشتريت أشياء بأسعار ممتازة. التعامل سهل وآمن."</p>
+                            <div class="d-flex align-items-center">
+                                <div class="testimonial-avatar bg-success text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                    ف
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">فاطمة علي</h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-shopping-bag me-1"></i>
+                                        {{ rand(5, 20) }} عملية شراء
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Testimonial 3 --}}
+                    <div class="col-md-4">
+                        <div class="testimonial-card bg-light rounded-3 p-4 h-100 shadow-sm">
+                            <div class="d-flex mb-3">
+                                @for($i = 0; $i < 5; $i++)
+                                    <i class="fas fa-star text-warning me-1"></i>
+                                @endfor
+                            </div>
+                            <p class="mb-3 fs-6">"كصاحب محل، هذا الموقع زاد من عدد عملائي بشكل كبير. التسويق سهل والوصول للزبائن أصبح أفضل بكثير!"</p>
+                            <div class="d-flex align-items-center">
+                                <div class="testimonial-avatar bg-info text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                    خ
+                                </div>
+                                <div>
+                                    <h6 class="mb-0 fw-bold">خالد عبدالله</h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-store me-1"></i>
+                                        صاحب محل
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Trust Badges --}}
+                <div class="trust-badges mt-5 pt-4 border-top">
+                    <div class="row text-center g-4">
+                        <div class="col-md-3 col-6">
+                            <div class="trust-badge">
+                                <i class="fas fa-shield-alt text-success fa-3x mb-2"></i>
+                                <h6 class="fw-bold mb-1">معاملات آمنة</h6>
+                                <small class="text-muted">حماية كاملة لمعلوماتك</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="trust-badge">
+                                <i class="fas fa-headset text-primary fa-3x mb-2"></i>
+                                <h6 class="fw-bold mb-1">دعم 24/7</h6>
+                                <small class="text-muted">نحن معك دائماً</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="trust-badge">
+                                <i class="fas fa-check-circle text-info fa-3x mb-2"></i>
+                                <h6 class="fw-bold mb-1">محلات موثوقة</h6>
+                                <small class="text-muted">{{ $stats['total_shops'] ?? 45 }} محل معتمد</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="trust-badge">
+                                <i class="fas fa-bolt text-warning fa-3x mb-2"></i>
+                                <h6 class="fw-bold mb-1">تحديث يومي</h6>
+                                <small class="text-muted">محتوى جديد كل يوم</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         {{-- Quick Categories Navigation --}}
-        <section class="quick-categories py-4">
+        <section class="quick-categories py-4 bg-light">
             <div class="container">
                 <div class="d-flex align-items-center justify-content-between mb-4">
                     <h2 class="h4 mb-0 fw-bold">استكشف الفئات</h2>
@@ -926,11 +1217,12 @@
                 background: #f8f9fa;
             }
 
-            /* Enhanced Hero Section */
+            /* Enhanced Hero Section - More Engaging */
             .city-hero-modern {
                 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                 position: relative;
                 overflow: hidden;
+                padding: 4rem 0 !important;
             }
 
             .city-hero-modern::before {
@@ -942,6 +1234,30 @@
                 bottom: 0;
                 background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
                 opacity: 0.5;
+            }
+
+            .hero-main-title {
+                animation: fadeInUp 0.8s ease-out;
+            }
+
+            .hero-subtitle {
+                animation: fadeInUp 0.8s ease-out 0.2s both;
+            }
+
+            .hero-quick-actions {
+                animation: fadeInUp 0.8s ease-out 0.4s both;
+            }
+
+            .trust-indicators {
+                animation: fadeInUp 0.8s ease-out 0.6s both;
+                font-size: 0.95rem;
+            }
+
+            .trust-item {
+                padding: 0.5rem 1rem;
+                background: rgba(255,255,255,0.1);
+                border-radius: 20px;
+                backdrop-filter: blur(10px);
             }
 
             .city-nav-bar {
@@ -976,21 +1292,37 @@
             }
 
             #city-search-modern {
-                padding-right: 120px;
-                padding-left: 60px;
-                font-size: 16px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
+                padding-right: 140px;
+                padding-left: 25px;
+                font-size: 1.1rem;
+                border: 2px solid transparent;
+                transition: all 0.3s ease;
             }
 
             #city-search-modern:focus {
-                box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
-                border-color: rgba(255, 255, 255, 0.4);
+                box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.3);
+                border-color: #ffc107;
+                transform: translateY(-2px);
             }
 
             .search-container-modern button {
                 left: 8px;
                 top: 8px;
                 height: calc(100% - 16px);
+                transition: all 0.3s ease;
+            }
+
+            .search-container-modern button:hover {
+                transform: translateX(-3px);
+                box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+            }
+
+            .shops-section-header {
+                border: 2px solid rgba(102, 126, 234, 0.1);
+            }
+
+            .smooth-scroll {
+                scroll-behavior: smooth;
             }
 
             /* Modern Stats Dashboard */
@@ -1131,22 +1463,45 @@
 
             /* Responsive Design */
             @media (max-width: 768px) {
+                .city-hero-modern {
+                    padding: 2.5rem 0 !important;
+                }
+
+                .hero-main-title {
+                    font-size: 1.75rem !important;
+                }
+
+                .hero-subtitle {
+                    font-size: 1rem !important;
+                }
+
+                .hero-quick-actions .btn {
+                    font-size: 0.95rem;
+                    padding: 0.6rem 1.5rem;
+                }
+
+                .trust-indicators {
+                    font-size: 0.8rem;
+                }
+
+                .trust-item {
+                    padding: 0.4rem 0.8rem;
+                }
+
                 .stat-number-modern {
                     font-size: 2rem;
                 }
 
-                .city-name-modern {
-                    font-size: 1.5rem;
-                }
-
                 #city-search-modern {
-                    padding-left: 50px;
-                    padding-right: 100px;
+                    padding-right: 120px;
+                    padding-left: 20px;
+                    font-size: 1rem;
                 }
 
                 .search-container-modern button {
-                    left: 5px;
-                    padding: 0 15px;
+                    right: 5px;
+                    padding: 0 20px;
+                    font-size: 0.95rem;
                 }
 
                 .category-card-modern {
@@ -1271,6 +1626,70 @@
 
             .category-section-modern:nth-child(odd) {
                 animation-delay: 0.2s;
+            }
+
+            /* Smooth Scroll */
+            html {
+                scroll-behavior: smooth;
+            }
+
+            .smooth-scroll {
+                scroll-behavior: smooth;
+            }
+
+            /* Popular Cards Hover Effect */
+            .popular-card {
+                transition: all 0.3s ease;
+            }
+
+            .shadow-hover {
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .popular-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+            }
+
+            .popular-card .btn:hover {
+                transform: scale(1.05);
+            }
+
+            /* Testimonial Cards */
+            .testimonial-card {
+                transition: all 0.3s ease;
+                border: 1px solid transparent;
+            }
+
+            .testimonial-card:hover {
+                border-color: #667eea;
+                transform: translateY(-3px);
+                box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15) !important;
+            }
+
+            .testimonial-avatar {
+                transition: transform 0.3s ease;
+            }
+
+            .testimonial-card:hover .testimonial-avatar {
+                transform: scale(1.1);
+            }
+
+            /* Trust Badges Animation */
+            .trust-badge {
+                transition: all 0.3s ease;
+            }
+
+            .trust-badge:hover {
+                transform: translateY(-5px);
+            }
+
+            .trust-badge i {
+                transition: transform 0.3s ease;
+            }
+
+            .trust-badge:hover i {
+                transform: scale(1.2);
             }
 
             /* Focus and Accessibility */

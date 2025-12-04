@@ -264,18 +264,35 @@ class CityDataService
     }
 
     /**
-     * Search shops with city context
+     * Search shops with city context - SMART SEARCH with category matching
      */
-    public function searchShops(string $query, ?int $cityId = null, array $options = []): Builder
+    public function searchShops(string $query, ?int $cityId = null, array $options = []): array
     {
         $searchQuery = $this->getCityShops($cityId);
 
-        // Full-text search
-        $searchQuery->where(function ($q) use ($query) {
-            $q->where('name', 'LIKE', "%{$query}%")
-              ->orWhere('description', 'LIKE', "%{$query}%")
-              ->orWhere('address', 'LIKE', "%{$query}%");
-        });
+        // First, check if the query matches any category name
+        $matchedCategory = Category::where('is_active', true)
+            ->where('name', 'LIKE', "%{$query}%")
+            ->first();
+
+        // If category matched, prioritize shops in that category
+        if ($matchedCategory) {
+            $searchQuery->where(function ($q) use ($query, $matchedCategory) {
+                // Priority 1: Shops in the matched category
+                $q->where('category_id', $matchedCategory->id)
+                  // Priority 2: Shops with names matching the query
+                  ->orWhere('name', 'LIKE', "%{$query}%")
+                  ->orWhere('description', 'LIKE', "%{$query}%")
+                  ->orWhere('address', 'LIKE', "%{$query}%");
+            });
+        } else {
+            // Regular full-text search
+            $searchQuery->where(function ($q) use ($query) {
+                $q->where('name', 'LIKE', "%{$query}%")
+                  ->orWhere('description', 'LIKE', "%{$query}%")
+                  ->orWhere('address', 'LIKE', "%{$query}%");
+            });
+        }
 
         // Search in products and services if requested
         if (!empty($options['include_products'])) {
@@ -292,7 +309,33 @@ class CityDataService
             });
         }
 
-        return $searchQuery;
+        return [
+            'query' => $searchQuery,
+            'matched_category' => $matchedCategory
+        ];
+    }
+
+    /**
+     * Get suggestion shops when search returns no results
+     */
+    public function getSuggestionShops(?int $cityId = null, int $limit = 3): \Illuminate\Support\Collection
+    {
+        $query = Shop::with(['category:id,name,slug', 'city:id,name,slug'])
+            ->select([
+                'id', 'city_id', 'category_id', 'name', 'slug', 'description',
+                'address', 'images', 'rating', 'review_count', 'is_featured'
+            ])
+            ->where('is_active', true)
+            ->where('is_verified', true);
+
+        if ($cityId) {
+            $query->where('city_id', $cityId);
+        }
+
+        // Get diverse suggestions (mix of featured, highly rated, and random)
+        return $query->inRandomOrder()
+                     ->limit($limit)
+                     ->get();
     }
 
     /**

@@ -224,7 +224,7 @@ class CityController extends Controller
     }
 
     /**
-     * Search within a city
+     * Search within a city - SMART SEARCH with category matching and suggestions
      */
     public function search(Request $request, City $city)
     {
@@ -234,10 +234,20 @@ class CityController extends Controller
             return redirect()->route('city.landing', $city->slug);
         }
 
-        $shops = $this->cityDataService->searchShops($query, $city->id, [
+        // Get smart search results with category matching
+        $searchResult = $this->cityDataService->searchShops($query, $city->id, [
             'include_products' => true,
             'include_services' => true
-        ])->paginate(20);
+        ]);
+
+        $shops = $searchResult['query']->paginate(20);
+        $matchedCategory = $searchResult['matched_category'];
+        
+        // If no results found, get suggestion shops
+        $suggestionShops = null;
+        if ($shops->isEmpty()) {
+            $suggestionShops = $this->cityDataService->getSuggestionShops($city->id, 3);
+        }
 
         $seoData = [
             'title' => "نتائج البحث عن \"{$query}\" في {$city->name} - اكتشف المدن",
@@ -246,7 +256,7 @@ class CityController extends Controller
             'noindex' => strlen($query) < 3,
         ];
 
-        return view('city.search', compact('city', 'query', 'shops', 'seoData'));
+        return view('city.search', compact('city', 'query', 'shops', 'matchedCategory', 'suggestionShops', 'seoData'));
     }
 
     /**

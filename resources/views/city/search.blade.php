@@ -22,6 +22,18 @@
                     في {{ $city->name }} - 
                     <span class="fw-bold">{{ $shops->total() }}</span> نتيجة
                 </p>
+                @if(isset($matchedCategory) && $matchedCategory)
+                    <div class="mt-2">
+                        <span class="badge bg-primary">
+                            <i class="{{ $matchedCategory->icon ?? 'fas fa-tag' }} me-1"></i>
+                            عرض نتائج من فئة: {{ $matchedCategory->name }}
+                        </span>
+                        <a href="{{ route('city.category.shops', [$city->slug, $matchedCategory->slug]) }}" class="badge bg-success text-decoration-none">
+                            <i class="fas fa-eye me-1"></i>
+                            عرض جميع محلات {{ $matchedCategory->name }}
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -53,6 +65,34 @@
                 <i class="fas fa-arrow-right"></i> العودة إلى {{ $city->name }}
             </a>
         </div>
+
+        <!-- Suggestion Shops -->
+        @if(isset($suggestionShops) && $suggestionShops->isNotEmpty())
+            <div class="mt-5">
+                <div class="text-center mb-4">
+                    <h4 class="fw-bold">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                        ربما يعجبك أيضاً
+                    </h4>
+                    <p class="text-muted">جرب هذه المحلات المميزة في {{ $city->name }}</p>
+                </div>
+                
+                <div class="row g-4">
+                    @foreach($suggestionShops as $shop)
+                        <div class="col-md-6 col-lg-4">
+                            <x-shop-card :shop="$shop" :cityName="$city->name" />
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="{{ route('city.shops.index', $city->slug) }}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-store me-2"></i>
+                        تصفح جميع المحلات في {{ $city->name }}
+                    </a>
+                </div>
+            </div>
+        @endif
     @else
         <!-- Search Results -->
         <div class="row g-4">
