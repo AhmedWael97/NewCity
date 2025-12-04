@@ -72,10 +72,9 @@ class MarketplaceWebController extends Controller
     /**
      * Show item details
      */
-    public function show($id)
+    public function show(MarketplaceItem $marketplace_item)
     {
-        $item = MarketplaceItem::with(['user', 'category', 'city', 'activeSponsorship'])
-            ->findOrFail($id);
+        $item = $marketplace_item->load(['user', 'category', 'city', 'activeSponsorship']);
 
         // Check if item can be viewed
         if (!$item->canBeViewed() && (!Auth::check() || !$item->isOwnedBy(Auth::user()))) {
@@ -173,9 +172,9 @@ class MarketplaceWebController extends Controller
     /**
      * Show edit form
      */
-    public function edit($id)
+    public function edit(MarketplaceItem $marketplace_item)
     {
-        $item = MarketplaceItem::findOrFail($id);
+        $item = $marketplace_item;
 
         if (!$item->isOwnedBy(Auth::user())) {
             abort(403, 'You do not have permission to edit this item');
@@ -190,9 +189,9 @@ class MarketplaceWebController extends Controller
     /**
      * Update item
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, MarketplaceItem $marketplace_item)
     {
-        $item = MarketplaceItem::findOrFail($id);
+        $item = $marketplace_item;
 
         if (!$item->isOwnedBy(Auth::user())) {
             abort(403, 'You do not have permission to edit this item');
@@ -269,9 +268,9 @@ class MarketplaceWebController extends Controller
     /**
      * Delete item
      */
-    public function destroy($id)
+    public function destroy(MarketplaceItem $marketplace_item)
     {
-        $item = MarketplaceItem::findOrFail($id);
+        $item = $marketplace_item;
 
         if (!$item->isOwnedBy(Auth::user())) {
             abort(403, 'You do not have permission to delete this item');
@@ -296,9 +295,9 @@ class MarketplaceWebController extends Controller
     /**
      * Mark item as sold
      */
-    public function markAsSold($id)
+    public function markAsSold(MarketplaceItem $marketplace_item)
     {
-        $item = MarketplaceItem::findOrFail($id);
+        $item = $marketplace_item;
 
         if (!$item->isOwnedBy(Auth::user())) {
             abort(403);
@@ -313,9 +312,9 @@ class MarketplaceWebController extends Controller
     /**
      * Record contact attempt
      */
-    public function recordContact($id)
+    public function recordContact(MarketplaceItem $marketplace_item)
     {
-        $item = MarketplaceItem::findOrFail($id);
+        $item = $marketplace_item;
         $item->incrementContactCount();
 
         return response()->json([
@@ -328,9 +327,9 @@ class MarketplaceWebController extends Controller
     /**
      * Show sponsorship packages
      */
-    public function sponsorshipPackages($id)
+    public function sponsorshipPackages(MarketplaceItem $marketplace_item)
     {
-        $item = MarketplaceItem::findOrFail($id);
+        $item = $marketplace_item;
 
         if (!$item->isOwnedBy(Auth::user())) {
             abort(403);
@@ -344,9 +343,9 @@ class MarketplaceWebController extends Controller
     /**
      * Purchase sponsorship
      */
-    public function purchaseSponsorship(Request $request, $id)
+    public function purchaseSponsorship(Request $request, MarketplaceItem $marketplace_item)
     {
-        $item = MarketplaceItem::findOrFail($id);
+        $item = $marketplace_item;
 
         if (!$item->isOwnedBy(Auth::user())) {
             abort(403);
@@ -396,8 +395,9 @@ class MarketplaceWebController extends Controller
     /**
      * Download QR code for an item
      */
-    public function downloadQrCode(MarketplaceItem $item)
+    public function downloadQrCode(MarketplaceItem $marketplace_item)
     {
+        $item = $marketplace_item;
         // Check if user owns this item
         if (!Auth::check() || !$item->isOwnedBy(Auth::user())) {
             abort(403, 'غير مصرح لك بتحميل رمز QR لهذا الإعلان');

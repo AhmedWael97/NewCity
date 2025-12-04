@@ -90,9 +90,9 @@
                     🏠 الرئيسية
                 </a>
                 
-                {{-- <a href="{{ route('marketplace.index') }}" class="category-nav-item {{ request()->routeIs('marketplace.*') ? 'active' : '' }}">
+                <a href="{{ route('marketplace.index') }}" class="category-nav-item {{ request()->routeIs('marketplace.*') ? 'active' : '' }}">
                     🛒 السوق المفتوح
-                </a> --}}
+                </a>
                 
                 <a href="{{ route('news.index') }}" class="category-nav-item {{ request()->routeIs('news.*') ? 'active' : '' }}">
                     📰 الأخبار

@@ -12,11 +12,66 @@ class MarketplaceItem extends Model
 {
     use SoftDeletes;
 
+    /**
+     * Boot the model
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($item) {
+            if (empty($item->slug)) {
+                $item->slug = static::generateUniqueSlug($item->title);
+            }
+        });
+
+        static::updating(function ($item) {
+            if ($item->isDirty('title') && empty($item->slug)) {
+                $item->slug = static::generateUniqueSlug($item->title);
+            }
+        });
+    }
+
+    /**
+     * Generate a unique slug from the title
+     */
+    public static function generateUniqueSlug($title, $id = null)
+    {
+        $slug = \Illuminate\Support\Str::slug($title);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        $query = static::withTrashed()->where('slug', $slug);
+        if ($id) {
+            $query->where('id', '!=', $id);
+        }
+
+        while ($query->exists()) {
+            $slug = $originalSlug . '-' . $counter;
+            $counter++;
+            $query = static::withTrashed()->where('slug', $slug);
+            if ($id) {
+                $query->where('id', '!=', $id);
+            }
+        }
+
+        return $slug;
+    }
+
+    /**
+     * Get the route key for the model
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     protected $fillable = [
         'user_id',
         'category_id',
         'city_id',
         'title',
+        'slug',
         'description',
         'price',
         'condition',

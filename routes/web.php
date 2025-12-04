@@ -132,9 +132,9 @@ Route::get('/suggest-shop/data', [App\Http\Controllers\ShopSuggestionController:
 // Marketplace - Public Routes
 Route::prefix('marketplace')->name('marketplace.')->group(function () {
     Route::get('/', [App\Http\Controllers\MarketplaceWebController::class, 'index'])->name('index');
-    // Note: {id} route moved after auth routes to prevent conflict with /create
-    Route::post('/{id}/contact', [App\Http\Controllers\MarketplaceWebController::class, 'recordContact'])->name('contact');
-    Route::get('/{id}/qr', [App\Http\Controllers\MarketplaceWebController::class, 'generateQrCode'])->name('qr');
+    // Note: {marketplace_item} route moved after auth routes to prevent conflict with /create
+    Route::post('/{marketplace_item}/contact', [App\Http\Controllers\MarketplaceWebController::class, 'recordContact'])->name('contact');
+    Route::get('/{marketplace_item}/qr', [App\Http\Controllers\MarketplaceWebController::class, 'generateQrCode'])->name('qr');
 });
 
 Route::middleware('auth')->group(function () {
@@ -180,13 +180,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/create', [App\Http\Controllers\MarketplaceWebController::class, 'create'])->name('create');
         Route::post('/', [App\Http\Controllers\MarketplaceWebController::class, 'store'])->name('store');
         Route::get('/my-items', [App\Http\Controllers\MarketplaceWebController::class, 'myItems'])->name('my-items');
-        Route::get('/{id}/edit', [App\Http\Controllers\MarketplaceWebController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [App\Http\Controllers\MarketplaceWebController::class, 'update'])->name('update');
-        Route::delete('/{id}', [App\Http\Controllers\MarketplaceWebController::class, 'destroy'])->name('destroy');
-        Route::post('/{id}/mark-sold', [App\Http\Controllers\MarketplaceWebController::class, 'markAsSold'])->name('mark-sold');
-        Route::get('/{id}/sponsor', [App\Http\Controllers\MarketplaceWebController::class, 'sponsorshipPackages'])->name('sponsor');
-        Route::post('/{id}/sponsor', [App\Http\Controllers\MarketplaceWebController::class, 'purchaseSponsorship'])->name('sponsor.purchase');
-        Route::get('/{id}/qr/download', [App\Http\Controllers\MarketplaceWebController::class, 'downloadQrCode'])->name('qr.download');
+        Route::get('/{marketplace_item}/edit', [App\Http\Controllers\MarketplaceWebController::class, 'edit'])->name('edit');
+        Route::put('/{marketplace_item}', [App\Http\Controllers\MarketplaceWebController::class, 'update'])->name('update');
+        Route::delete('/{marketplace_item}', [App\Http\Controllers\MarketplaceWebController::class, 'destroy'])->name('destroy');
+        Route::post('/{marketplace_item}/mark-sold', [App\Http\Controllers\MarketplaceWebController::class, 'markAsSold'])->name('mark-sold');
+        Route::get('/{marketplace_item}/sponsor', [App\Http\Controllers\MarketplaceWebController::class, 'sponsorshipPackages'])->name('sponsor');
+        Route::post('/{marketplace_item}/sponsor', [App\Http\Controllers\MarketplaceWebController::class, 'purchaseSponsorship'])->name('sponsor.purchase');
+        Route::get('/{marketplace_item}/qr/download', [App\Http\Controllers\MarketplaceWebController::class, 'downloadQrCode'])->name('qr.download');
     });
     
     // Rating routes
@@ -199,8 +199,8 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-// Marketplace - Public {id} route (must be AFTER auth routes to avoid conflicts)
-Route::get('/marketplace/{id}', [App\Http\Controllers\MarketplaceWebController::class, 'show'])->name('marketplace.show');
+// Marketplace - Public {marketplace_item} route (must be AFTER auth routes to avoid conflicts)
+Route::get('/marketplace/{marketplace_item}', [App\Http\Controllers\MarketplaceWebController::class, 'show'])->name('marketplace.show');
 
 // Shop Owner routes
 Route::middleware(['auth'])->prefix('shop-owner')->name('shop-owner.')->group(function () {
