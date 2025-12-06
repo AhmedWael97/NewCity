@@ -1057,6 +1057,22 @@
                         <span>إرسال إشعار</span>
                     </a>
                 </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.site-settings.index') ? 'active' : '' }}" 
+                       href="{{ route('admin.site-settings.index') }}">
+                        <i class="fas fa-paint-brush"></i>
+                        <span>إعدادات الموقع</span>
+                    </a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.site-settings.seo') ? 'active' : '' }}" 
+                       href="{{ route('admin.site-settings.seo') }}">
+                        <i class="fas fa-search"></i>
+                        <span>إعدادات SEO</span>
+                    </a>
+                </li>
             </ul>
         </div>
 

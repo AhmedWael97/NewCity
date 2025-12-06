@@ -5,24 +5,24 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ data_get($seoData, 'title', 'SENÚ سنو') }}</title>
-    <meta name="description" content="{{ data_get($seoData, 'description', 'منصة لاكتشاف المتاجر والخدمات المحلية') }}">
-    <meta name="keywords" content="{{ data_get($seoData, 'keywords', 'متاجر, خدمات, مصر, سنو') }}">
+    <title>{{ $citySettings['meta_title_ar'] ?? data_get($seoData, 'title', 'SENÚ سنو') }}</title>
+    <meta name="description" content="{{ $citySettings['meta_description_ar'] ?? data_get($seoData, 'description', 'منصة لاكتشاف المتاجر والخدمات المحلية') }}">
+    <meta name="keywords" content="{{ $citySettings['meta_keywords_ar'] ?? data_get($seoData, 'keywords', 'متاجر, خدمات, مصر, سنو') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <meta name="author" content="SENÚ سنو">
+    <meta name="author" content="{{ $citySettings['name_ar'] ?? 'SENÚ سنو' }}">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="{{ data_get($seoData, 'canonical', url('/')) }}">
 
-    <meta property="og:title" content="{{ data_get($seoData, 'title', 'SENÚ سنو') }}">
-    <meta property="og:description" content="{{ data_get($seoData, 'description', '') }}">
-    <meta property="og:image" content="{{ data_get($seoData, 'og_image', asset('images/og-default.jpg')) }}">
+    <meta property="og:title" content="{{ $citySettings['meta_title_ar'] ?? data_get($seoData, 'title', 'SENÚ سنو') }}">
+    <meta property="og:description" content="{{ $citySettings['meta_description_ar'] ?? data_get($seoData, 'description', '') }}">
+    <meta property="og:image" content="{{ $citySettings['og_image'] ?? data_get($seoData, 'og_image', asset('images/og-default.jpg')) }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="ar_EG">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.svg') }}">
+    <link rel="icon" type="image/x-icon" href="{{ $citySettings['favicon'] ?? asset('favicon.svg') }}">
+    <link rel="apple-touch-icon" href="{{ $citySettings['favicon'] ?? asset('favicon.svg') }}">
 
     @stack('head')
 
@@ -99,7 +99,75 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+        
+        /* City-specific custom colors */
+        :root {
+            --city-primary-color: {{ $citySettings['primary_color'] ?? '#3B82F6' }};
+            --city-secondary-color: {{ $citySettings['secondary_color'] ?? '#10B981' }};
+            --city-accent-color: {{ $citySettings['accent_color'] ?? '#F59E0B' }};
+        }
+        
+        .btn-primary {
+            background-color: var(--city-primary-color) !important;
+            border-color: var(--city-primary-color) !important;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--city-secondary-color) !important;
+            border-color: var(--city-secondary-color) !important;
+        }
+        
+        .text-primary {
+            color: var(--city-primary-color) !important;
+        }
+        
+        .bg-primary {
+            background-color: var(--city-primary-color) !important;
+        }
+        
+        .border-primary {
+            border-color: var(--city-primary-color) !important;
+        }
+        
+        a {
+            color: var(--city-primary-color);
+        }
+        
+        a:hover {
+            color: var(--city-secondary-color);
+        }
     </style>
+    
+    @if(!empty($citySettings['google_analytics_id']))
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $citySettings['google_analytics_id'] }}"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', '{{ $citySettings['google_analytics_id'] }}');
+    </script>
+    @endif
+    
+    @if(!empty($citySettings['facebook_pixel_id']))
+    <!-- Facebook Pixel Code -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '{{ $citySettings['facebook_pixel_id'] }}');
+        fbq('track', 'PageView');
+    </script>
+    <noscript>
+        <img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id={{ $citySettings['facebook_pixel_id'] }}&ev=PageView&noscript=1"/>
+    </noscript>
+    @endif
 </head>
 
 <body>

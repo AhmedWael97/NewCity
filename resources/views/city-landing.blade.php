@@ -1081,12 +1081,11 @@
                             <div class="card-header bg-light">
                                 <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>معلومات إضافية</h6>
                             </div>
-            /* Mobile App Modal Styles */
-            .bg-gradient-app {
-                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-            }
-
-            /* Google Play Store Button */nput type="url" class="form-control" name="facebook"
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">صفحة الفيسبوك</label>
+                                        <input type="url" class="form-control" name="facebook"
                                             placeholder="https://facebook.com/...">
                                     </div>
                                     <div class="col-md-6 mb-3">

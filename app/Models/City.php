@@ -19,6 +19,30 @@ class City extends Model
         'description',
         'image',
         'is_active',
+        // Contact Information
+        'contact_phone',
+        'contact_email',
+        'contact_address',
+        'contact_whatsapp',
+        // SEO Settings
+        'meta_title',
+        'meta_title_ar',
+        'meta_description',
+        'meta_description_ar',
+        'meta_keywords',
+        'meta_keywords_ar',
+        // Branding
+        'logo',
+        'favicon',
+        'og_image',
+        // Social Media
+        'facebook_url',
+        'twitter_url',
+        'instagram_url',
+        'youtube_url',
+        // Analytics
+        'google_analytics_id',
+        'facebook_pixel_id',
     ];
 
     protected $casts = [
@@ -76,6 +100,54 @@ class City extends Model
         }
         
         return url('storage/' . $value);
+    }
+
+    /**
+     * Get the full URL for the city logo
+     */
+    public function getLogoUrlAttribute()
+    {
+        if (!$this->logo) {
+            return null;
+        }
+        
+        if (str_starts_with($this->logo, 'http://') || str_starts_with($this->logo, 'https://')) {
+            return $this->logo;
+        }
+        
+        return asset('storage/' . $this->logo);
+    }
+
+    /**
+     * Get the full URL for the city favicon
+     */
+    public function getFaviconUrlAttribute()
+    {
+        if (!$this->favicon) {
+            return null;
+        }
+        
+        if (str_starts_with($this->favicon, 'http://') || str_starts_with($this->favicon, 'https://')) {
+            return $this->favicon;
+        }
+        
+        return asset('storage/' . $this->favicon);
+    }
+
+    /**
+     * Get the full URL for the OG image
+     */
+    public function getOgImageUrlAttribute()
+    {
+        if (!$this->og_image) {
+            return null;
+        }
+        
+        if (str_starts_with($this->og_image, 'http://') || str_starts_with($this->og_image, 'https://')) {
+            return $this->og_image;
+        }
+        
+        return asset('storage/' . $this->og_image);
     }
 
     /**

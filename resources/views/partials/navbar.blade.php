@@ -4,7 +4,24 @@
         <div class="nav-top">
             <div class="nav-brand">
                 <a href="{{ url('/') }}" style="display: flex; align-items: center; text-decoration: none;">
-                    <img src="{{ asset('images/senu-logo.svg') }}" alt="SENÚ سنو" style="height: 85px;">
+                    @php
+                        $logoUrl = null;
+                        // Try city logo first
+                        if(!empty($citySettings['logo'])) {
+                            $logoUrl = $citySettings['logo'];
+                        }
+                        // Fallback to site-wide logo
+                        elseif($siteLogo = \App\Models\AppSetting::get('site_logo')) {
+                            $logoUrl = asset('storage/' . $siteLogo);
+                        }
+                        // Final fallback to default logo
+                        else {
+                            $logoUrl = asset('images/senu-logo.svg');
+                        }
+                        
+                        $logoAlt = $citySettings['name_ar'] ?? \App\Models\AppSetting::get('site_name_ar', 'SENÚ سنو');
+                    @endphp
+                    <img src="{{ $logoUrl }}" alt="{{ $logoAlt }}" style="height: 85px;">
                 </a>
             </div>
 
@@ -100,6 +117,10 @@
                 
                 <a href="{{ route('forum.index') }}" class="category-nav-item {{ request()->routeIs('forum.*') ? 'active' : '' }}">
                     💬 المنتدى
+                </a>
+                
+                <a href="{{ route('user.services.index') }}" class="category-nav-item {{ request()->routeIs('user.services.*') ? 'active' : '' }}">
+                    🔧 الخدمات
                 </a>
                 
                 <!-- Debug: Show categories count -->
@@ -218,6 +239,9 @@
         
         <div class="mobile-categories">
             <a href="{{ url('/') }}">🏠 الرئيسية</a>
+            <a href="{{ route('news.index') }}">📰 الأخبار</a>
+            <a href="{{ route('forum.index') }}">💬 المنتدى</a>
+            <a href="{{ route('user.services.index') }}">🔧 الخدمات</a>
             {{-- <a href="{{ route('marketplace.index') }}">🛒 السوق المفتوح</a> --}}
             @if(isset($navCategories))
                 @foreach($navCategories as $category)

@@ -90,6 +90,30 @@ class AdminCityController extends Controller
             'longitude' => 'nullable|numeric|between:-180,180',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'nullable|boolean',
+            // Contact Information
+            'contact_phone' => 'nullable|string|max:20',
+            'contact_email' => 'nullable|email|max:255',
+            'contact_address' => 'nullable|string',
+            'contact_whatsapp' => 'nullable|string|max:20',
+            // SEO Settings
+            'meta_title' => 'nullable|string|max:255',
+            'meta_title_ar' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_description_ar' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:255',
+            'meta_keywords_ar' => 'nullable|string|max:255',
+            // Branding
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'favicon' => 'nullable|image|mimes:png,ico|max:1024',
+            'og_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            // Social Media
+            'facebook_url' => 'nullable|url|max:255',
+            'twitter_url' => 'nullable|url|max:255',
+            'instagram_url' => 'nullable|url|max:255',
+            'youtube_url' => 'nullable|url|max:255',
+            // Analytics
+            'google_analytics_id' => 'nullable|string|max:50',
+            'facebook_pixel_id' => 'nullable|string|max:50',
         ]);
 
         try {
@@ -100,6 +124,24 @@ class AdminCityController extends Controller
             if ($request->hasFile('image')) {
                 $imagePath = $request->file('image')->store('cities', 'public');
                 $city->image = $imagePath;
+            }
+
+            // Handle logo upload
+            if ($request->hasFile('logo')) {
+                $logoPath = $request->file('logo')->store('cities/logos', 'public');
+                $city->logo = $logoPath;
+            }
+
+            // Handle favicon upload
+            if ($request->hasFile('favicon')) {
+                $faviconPath = $request->file('favicon')->store('cities/favicons', 'public');
+                $city->favicon = $faviconPath;
+            }
+
+            // Handle OG image upload
+            if ($request->hasFile('og_image')) {
+                $ogImagePath = $request->file('og_image')->store('cities/og-images', 'public');
+                $city->og_image = $ogImagePath;
             }
 
             $city->save();
@@ -158,6 +200,30 @@ class AdminCityController extends Controller
             'longitude' => 'nullable|numeric|between:-180,180',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'is_active' => 'nullable|boolean',
+            // Contact Information
+            'contact_phone' => 'nullable|string|max:20',
+            'contact_email' => 'nullable|email|max:255',
+            'contact_address' => 'nullable|string',
+            'contact_whatsapp' => 'nullable|string|max:20',
+            // SEO Settings
+            'meta_title' => 'nullable|string|max:255',
+            'meta_title_ar' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+            'meta_description_ar' => 'nullable|string|max:500',
+            'meta_keywords' => 'nullable|string|max:255',
+            'meta_keywords_ar' => 'nullable|string|max:255',
+            // Branding
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
+            'favicon' => 'nullable|image|mimes:png,ico|max:1024',
+            'og_image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            // Social Media
+            'facebook_url' => 'nullable|url|max:255',
+            'twitter_url' => 'nullable|url|max:255',
+            'instagram_url' => 'nullable|url|max:255',
+            'youtube_url' => 'nullable|url|max:255',
+            // Analytics
+            'google_analytics_id' => 'nullable|string|max:50',
+            'facebook_pixel_id' => 'nullable|string|max:50',
         ]);
 
         try {
@@ -172,6 +238,33 @@ class AdminCityController extends Controller
                 
                 $imagePath = $request->file('image')->store('cities', 'public');
                 $city->image = $imagePath;
+            }
+
+            // Handle logo upload
+            if ($request->hasFile('logo')) {
+                if ($city->logo) {
+                    Storage::disk('public')->delete($city->logo);
+                }
+                $logoPath = $request->file('logo')->store('cities/logos', 'public');
+                $city->logo = $logoPath;
+            }
+
+            // Handle favicon upload
+            if ($request->hasFile('favicon')) {
+                if ($city->favicon) {
+                    Storage::disk('public')->delete($city->favicon);
+                }
+                $faviconPath = $request->file('favicon')->store('cities/favicons', 'public');
+                $city->favicon = $faviconPath;
+            }
+
+            // Handle OG image upload
+            if ($request->hasFile('og_image')) {
+                if ($city->og_image) {
+                    Storage::disk('public')->delete($city->og_image);
+                }
+                $ogImagePath = $request->file('og_image')->store('cities/og-images', 'public');
+                $city->og_image = $ogImagePath;
             }
 
             $city->save();

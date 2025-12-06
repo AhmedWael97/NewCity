@@ -166,6 +166,219 @@
                             </div>
                         </div>
 
+                        <!-- Contact Information -->
+                        <div class="card mt-4">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="m-0 font-weight-bold">
+                                    <i class="fas fa-address-book"></i> معلومات الاتصال (خاصة بكل مدينة)
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="contact_phone"
+                                            label="رقم الهاتف"
+                                            icon="phone"
+                                            placeholder="+20 123 456 7890"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="contact_whatsapp"
+                                            label="رقم واتساب"
+                                            icon="whatsapp"
+                                            placeholder="+20 123 456 7890"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="contact_email"
+                                            type="email"
+                                            label="البريد الإلكتروني"
+                                            icon="envelope"
+                                            placeholder="info@city.com"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.textarea
+                                            name="contact_address"
+                                            label="العنوان"
+                                            :rows="2"
+                                            placeholder="العنوان الكامل للمدينة..."
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Branding -->
+                        <div class="card mt-4">
+                            <div class="card-header bg-warning text-white">
+                                <h6 class="m-0 font-weight-bold">
+                                    <i class="fas fa-palette"></i> العلامة التجارية (Logo & Favicon)
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label>شعار المدينة (Logo)</label>
+                                        <input type="file" name="logo" class="form-control" accept="image/*">
+                                        <small class="text-muted">PNG, JPG, SVG (Max 2MB)</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>أيقونة المدينة (Favicon)</label>
+                                        <input type="file" name="favicon" class="form-control" accept=".png,.ico">
+                                        <small class="text-muted">PNG, ICO (Max 1MB)</small>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>صورة المشاركة (OG Image)</label>
+                                        <input type="file" name="og_image" class="form-control" accept="image/*">
+                                        <small class="text-muted">1200x630px (Max 2MB)</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SEO Settings -->
+                        <div class="card mt-4">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="m-0 font-weight-bold">
+                                    <i class="fas fa-search"></i> إعدادات SEO (خاصة بكل مدينة)
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="meta_title"
+                                            label="Meta Title (English)"
+                                            icon="heading"
+                                            placeholder="Best City Services"
+                                            maxlength="60"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="meta_title_ar"
+                                            label="Meta Title (عربي)"
+                                            icon="heading"
+                                            placeholder="أفضل خدمات المدينة"
+                                            maxlength="60"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.textarea
+                                            name="meta_description"
+                                            label="Meta Description (English)"
+                                            :rows="3"
+                                            placeholder="City description for search engines..."
+                                            maxlength="160"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.textarea
+                                            name="meta_description_ar"
+                                            label="Meta Description (عربي)"
+                                            :rows="3"
+                                            placeholder="وصف المدينة لمحركات البحث..."
+                                            maxlength="160"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="meta_keywords"
+                                            label="Meta Keywords (English)"
+                                            icon="tags"
+                                            placeholder="city, services, local business"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="meta_keywords_ar"
+                                            label="Meta Keywords (عربي)"
+                                            icon="tags"
+                                            placeholder="مدينة، خدمات، أعمال محلية"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="card mt-4">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="m-0 font-weight-bold">
+                                    <i class="fas fa-share-alt"></i> روابط التواصل الاجتماعي
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="facebook_url"
+                                            label="Facebook"
+                                            icon="facebook"
+                                            placeholder="https://facebook.com/citypage"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="twitter_url"
+                                            label="Twitter"
+                                            icon="twitter"
+                                            placeholder="https://twitter.com/cityaccount"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="instagram_url"
+                                            label="Instagram"
+                                            icon="instagram"
+                                            placeholder="https://instagram.com/cityaccount"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="youtube_url"
+                                            label="YouTube"
+                                            icon="youtube"
+                                            placeholder="https://youtube.com/citychannel"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Analytics -->
+                        <div class="card mt-4">
+                            <div class="card-header bg-secondary text-white">
+                                <h6 class="m-0 font-weight-bold">
+                                    <i class="fas fa-chart-line"></i> أدوات التحليل والتتبع
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="google_analytics_id"
+                                            label="Google Analytics ID"
+                                            icon="google"
+                                            placeholder="G-XXXXXXXXXX"
+                                        />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-form.input
+                                            name="facebook_pixel_id"
+                                            label="Facebook Pixel ID"
+                                            icon="facebook"
+                                            placeholder="1234567890"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Action Buttons -->
                         <div class="form-group mt-4">
                             <button type="submit" class="btn btn-primary">

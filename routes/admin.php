@@ -211,6 +211,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
         Route::post('/clear-cache', [AdminSettingsController::class, 'clearCache'])->name('clear-cache');
     });
 
+    // Site Settings (Logo, Favicon, SEO)
+    Route::prefix('site-settings')->as('site-settings.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('index');
+        Route::post('/update', [\App\Http\Controllers\Admin\SettingsController::class, 'update'])->name('update');
+        Route::get('/seo', [\App\Http\Controllers\Admin\SettingsController::class, 'seo'])->name('seo');
+        Route::post('/seo/update', [\App\Http\Controllers\Admin\SettingsController::class, 'updateSeo'])->name('seo.update');
+    });
+
     // Logs Management
     Route::prefix('logs')->as('logs.')->group(function () {
         Route::get('/', [AdminLogsController::class, 'index'])->name('index');
