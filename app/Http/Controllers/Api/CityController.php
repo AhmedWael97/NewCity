@@ -652,10 +652,12 @@ class CityController extends Controller
             'success' => true,
             'data' => [
                 'services' => \App\Http\Resources\UserServiceResource::collection($services),
-                'total' => $services->total(),
-                'per_page' => $services->perPage(),
-                'current_page' => $services->currentPage(),
-                'last_page' => $services->lastPage(),
+                'meta' => [
+                    'total' => $services->total(),
+                    'current_page' => $services->currentPage(),
+                    'last_page' => $services->lastPage(),
+                    'per_page' => $services->perPage(),
+                ]
             ]
         ]);
     }
