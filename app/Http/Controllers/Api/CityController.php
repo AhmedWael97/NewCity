@@ -586,7 +586,7 @@ class CityController extends Controller
         }
 
         $query = \App\Models\UserService::query()
-            ->with(['user:id,name,avatar', 'serviceCategory:id,name,icon,slug'])
+            ->with(['user', 'city', 'serviceCategory'])
             ->where('city_id', $city->id)
             ->where('is_active', true)
             ->where('is_verified', true);
@@ -649,15 +649,12 @@ class CityController extends Controller
         $services = $query->paginate($perPage);
 
         return response()->json([
-            'success' => true,
-            'data' => [
-                'services' => $services->items(),
-                'meta' => [
-                    'total' => $services->total(),
-                    'per_page' => $services->perPage(),
-                    'current_page' => $services->currentPage(),
-                    'last_page' => $services->lastPage(),
-                ]
+            'data' => \App\Http\Resources\UserServiceResource::collection($services),
+            'meta' => [
+                'total' => $services->total(),
+                'per_page' => $services->perPage(),
+                'current_page' => $services->currentPage(),
+                'last_page' => $services->lastPage(),
             ]
         ]);
     }

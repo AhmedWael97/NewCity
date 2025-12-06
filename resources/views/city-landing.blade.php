@@ -526,84 +526,198 @@
                     <p class="text-muted fs-5">تجارب حقيقية من مستخدمين في {{ $cityContext['selected_city_name'] }}</p>
                 </div>
 
-                <div class="row g-4">
-                    {{-- Testimonial 1 --}}
-                    <div class="col-md-4">
-                        <div class="testimonial-card bg-light rounded-3 p-4 h-100 shadow-sm">
-                            <div class="d-flex mb-3">
-                                @for($i = 0; $i < 5; $i++)
-                                    <i class="fas fa-star text-warning me-1"></i>
-                                @endfor
-                            </div>
-                            <p class="mb-3 fs-6">"منصة رائعة! وجدت كل المحلات اللي أحتاجها في
-                                {{ $cityContext['selected_city_name'] }} بسهولة. التصنيف واضح والبحث سريع جداً."</p>
-                            <div class="d-flex align-items-center">
-                                <div class="testimonial-avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
-                                    style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
-                                    أ
+                {{-- Testimonials Slider --}}
+                <div class="position-relative">
+                    <div class="testimonials-slider-wrapper overflow-hidden">
+                        <div class="testimonials-slider d-flex gap-4 pb-3" id="testimonialsSlider">
+                            {{-- Testimonial 1 --}}
+                            <div class="testimonial-slide flex-shrink-0">
+                                <div class="testimonial-card bg-light rounded-3 p-4 shadow-sm" style="width: 350px; min-height: 280px;">
+                                    <div class="d-flex mb-3">
+                                        @for($i = 0; $i < 5; $i++)
+                                            <i class="fas fa-star text-warning me-1"></i>
+                                        @endfor
+                                    </div>
+                                    <p class="mb-3 fs-6">"أنا كصاحب محل، الموقع ده زودلي عدد زبايني كتير. التسويق بقى سهل والوصول للناس بقى أحسن! بجد، ألف شكر وتحية للي عملوا البرنامج ده 🤩"</p>
+                                    <div class="d-flex align-items-center">
+                                        <div class="testimonial-avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                            أ
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">أحمد محمود</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-store me-1"></i>
+                                                صاحب محل
+                                            </small>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h6 class="mb-0 fw-bold">أحمد محمد</h6>
-                                    <small class="text-muted">
-                                        <i class="fas fa-user me-1"></i>
-                                        عميل منذ شهرين
-                                    </small>
+                            </div>
+
+                            {{-- Testimonial 2 --}}
+                            <div class="testimonial-slide flex-shrink-0">
+                                <div class="testimonial-card bg-light rounded-3 p-4 shadow-sm" style="width: 350px; min-height: 280px;">
+                                    <div class="d-flex mb-3">
+                                        @for($i = 0; $i < 5; $i++)
+                                            <i class="fas fa-star text-warning me-1"></i>
+                                        @endfor
+                                    </div>
+                                    <p class="mb-3 fs-6">"الموقع ده كان هو 'المنقذ' بالنسبالنا اللي عرفنا منه كل حاجة محتاجينها خصوصا ان احنا لسه ناقلين جديد💪🏻"</p>
+                                    <div class="d-flex align-items-center">
+                                        <div class="testimonial-avatar bg-success text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                            م
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">محمد علي</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-home me-1"></i>
+                                                مقيم جديد
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Testimonial 3 --}}
+                            <div class="testimonial-slide flex-shrink-0">
+                                <div class="testimonial-card bg-light rounded-3 p-4 shadow-sm" style="width: 350px; min-height: 280px;">
+                                    <div class="d-flex mb-3">
+                                        @for($i = 0; $i < 5; $i++)
+                                            <i class="fas fa-star text-warning me-1"></i>
+                                        @endfor
+                                    </div>
+                                    <p class="mb-3 fs-6">"أحسن حاجة إن الخرايط بتاعتهم دقيقة كنت بدور على محل معين وبفضلهم وصلت على طول من غير ما أتوه ☺️"</p>
+                                    <div class="d-flex align-items-center">
+                                        <div class="testimonial-avatar bg-info text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                            س
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">سارة أحمد</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-user me-1"></i>
+                                                عميلة نشطة
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Testimonial 4 --}}
+                            <div class="testimonial-slide flex-shrink-0">
+                                <div class="testimonial-card bg-light rounded-3 p-4 shadow-sm" style="width: 350px; min-height: 280px;">
+                                    <div class="d-flex mb-3">
+                                        @for($i = 0; $i < 5; $i++)
+                                            <i class="fas fa-star text-warning me-1"></i>
+                                        @endfor
+                                    </div>
+                                    <p class="mb-3 fs-6">"احسن حاجة ان الموقع بيتطور باستمرار. وبيضيفوا خدمات ومحلات جديدة، والبحث سريع وما بيعلقش زي تطبيقات تانية 😍"</p>
+                                    <div class="d-flex align-items-center">
+                                        <div class="testimonial-avatar bg-warning text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                            ه
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">هشام خالد</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-mobile-alt me-1"></i>
+                                                مستخدم التطبيق
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Testimonial 5 --}}
+                            <div class="testimonial-slide flex-shrink-0">
+                                <div class="testimonial-card bg-light rounded-3 p-4 shadow-sm" style="width: 350px; min-height: 280px;">
+                                    <div class="d-flex mb-3">
+                                        @for($i = 0; $i < 5; $i++)
+                                            <i class="fas fa-star text-warning me-1"></i>
+                                        @endfor
+                                    </div>
+                                    <p class="mb-3 fs-6">"أخيرًا لقينا منصة بتتكلم عن المنطقة بتاعتنا بس! حاسس انه زي 'دليل تليفون' خاص بالحي بتاعي، بعرف مين أحسن حد بيقدم أي خدمة👍🏻"</p>
+                                    <div class="d-flex align-items-center">
+                                        <div class="testimonial-avatar bg-danger text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                            ن
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">نور الدين</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-map-marker-alt me-1"></i>
+                                                ساكن المنطقة
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Testimonial 6 --}}
+                            <div class="testimonial-slide flex-shrink-0">
+                                <div class="testimonial-card bg-light rounded-3 p-4 shadow-sm" style="width: 350px; min-height: 280px;">
+                                    <div class="d-flex mb-3">
+                                        @for($i = 0; $i < 5; $i++)
+                                            <i class="fas fa-star text-warning me-1"></i>
+                                        @endfor
+                                    </div>
+                                    <p class="mb-3 fs-6">"كنت محتاج سباك ضروري في نص الليل، وبفضل التصنيفات الواضحة لقيت واحد كويس قريب مني. الابلكيشن ده 'نجدني' بجد"</p>
+                                    <div class="d-flex align-items-center">
+                                        <div class="testimonial-avatar bg-purple text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold; background-color: #6f42c1;">
+                                            ع
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">عمر حسن</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-tools me-1"></i>
+                                                باحث عن خدمات
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Testimonial 7 --}}
+                            <div class="testimonial-slide flex-shrink-0">
+                                <div class="testimonial-card bg-light rounded-3 p-4 shadow-sm" style="width: 350px; min-height: 280px;">
+                                    <div class="d-flex mb-3">
+                                        @for($i = 0; $i < 5; $i++)
+                                            <i class="fas fa-star text-warning me-1"></i>
+                                        @endfor
+                                    </div>
+                                    <p class="mb-3 fs-6">"التطبيق بيعرض صور المحلات كأنها حقيقية. كل التفاصيل موجودة شغل نضيف"</p>
+                                    <div class="d-flex align-items-center">
+                                        <div class="testimonial-avatar bg-teal text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold; background-color: #20c997;">
+                                            ف
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold">فريد يوسف</h6>
+                                            <small class="text-muted">
+                                                <i class="fas fa-camera me-1"></i>
+                                                مهتم بالتفاصيل
+                                            </small>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {{-- Testimonial 2 --}}
-                    <div class="col-md-4">
-                        <div class="testimonial-card bg-light rounded-3 p-4 h-100 shadow-sm">
-                            <div class="d-flex mb-3">
-                                @for($i = 0; $i < 5; $i++)
-                                    <i class="fas fa-star text-warning me-1"></i>
-                                @endfor
-                            </div>
-                            <p class="mb-3 fs-6">"السوق المفتوح مفيد جداً! بعت أغراضي المستعملة بسرعة واشتريت أشياء بأسعار
-                                ممتازة. التعامل سهل وآمن."</p>
-                            <div class="d-flex align-items-center">
-                                <div class="testimonial-avatar bg-success text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
-                                    style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
-                                    ف
-                                </div>
-                                <div>
-                                    <h6 class="mb-0 fw-bold">فاطمة علي</h6>
-                                    <small class="text-muted">
-                                        <i class="fas fa-shopping-bag me-1"></i>
-                                        {{ rand(5, 20) }} عملية شراء
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{-- Testimonial 3 --}}
-                    <div class="col-md-4">
-                        <div class="testimonial-card bg-light rounded-3 p-4 h-100 shadow-sm">
-                            <div class="d-flex mb-3">
-                                @for($i = 0; $i < 5; $i++)
-                                    <i class="fas fa-star text-warning me-1"></i>
-                                @endfor
-                            </div>
-                            <p class="mb-3 fs-6">"كصاحب محل، هذا الموقع زاد من عدد عملائي بشكل كبير. التسويق سهل والوصول
-                                للزبائن أصبح أفضل بكثير!"</p>
-                            <div class="d-flex align-items-center">
-                                <div class="testimonial-avatar bg-info text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
-                                    style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
-                                    خ
-                                </div>
-                                <div>
-                                    <h6 class="mb-0 fw-bold">خالد عبدالله</h6>
-                                    <small class="text-muted">
-                                        <i class="fas fa-store me-1"></i>
-                                        صاحب محل
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    {{-- Slider Navigation Buttons --}}
+                    <button class="testimonial-slider-btn testimonial-slider-prev position-absolute top-50 start-0 translate-middle-y btn btn-white rounded-circle shadow-lg d-none d-md-flex align-items-center justify-content-center"
+                            style="width: 50px; height: 50px; z-index: 10; margin-left: -25px;" 
+                            onclick="scrollTestimonials('prev')">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                    <button class="testimonial-slider-btn testimonial-slider-next position-absolute top-50 end-0 translate-middle-y btn btn-white rounded-circle shadow-lg d-none d-md-flex align-items-center justify-content-center"
+                            style="width: 50px; height: 50px; z-index: 10; margin-right: -25px;" 
+                            onclick="scrollTestimonials('next')">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
                 </div>
 
                 {{-- Trust Badges --}}
@@ -1736,6 +1850,87 @@
                 }
             }
 
+            /* Testimonials Slider Styles */
+            .testimonials-slider-wrapper {
+                position: relative;
+                padding: 0 2rem;
+            }
+
+            .testimonials-slider {
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-behavior: smooth;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(102, 126, 234, 0.3) transparent;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .testimonials-slider::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            .testimonials-slider::-webkit-scrollbar-track {
+                background: transparent;
+                border-radius: 10px;
+            }
+
+            .testimonials-slider::-webkit-scrollbar-thumb {
+                background: rgba(102, 126, 234, 0.3);
+                border-radius: 10px;
+            }
+
+            .testimonials-slider::-webkit-scrollbar-thumb:hover {
+                background: rgba(102, 126, 234, 0.5);
+            }
+
+            .testimonial-slide {
+                transition: transform 0.3s ease;
+            }
+
+            .testimonial-slide:hover {
+                transform: translateY(-5px);
+            }
+
+            .testimonial-card {
+                transition: all 0.3s ease;
+            }
+
+            .testimonial-card:hover {
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+            }
+
+            .testimonial-slider-btn {
+                transition: all 0.3s ease;
+                border: 2px solid #f0f0f0;
+            }
+
+            .testimonial-slider-btn:hover {
+                background: #667eea !important;
+                border-color: #667eea !important;
+                color: white !important;
+                transform: scale(1.1);
+            }
+
+            .testimonial-slider-btn i {
+                transition: transform 0.3s ease;
+            }
+
+            .testimonial-slider-btn:hover i {
+                transform: scale(1.2);
+            }
+
+            /* Mobile responsiveness for testimonials slider */
+            @media (max-width: 768px) {
+                .testimonials-slider-wrapper {
+                    padding: 0;
+                }
+
+                .testimonial-card {
+                    width: 320px !important;
+                    min-height: 260px !important;
+                }
+            }
+
             /* Focus and Accessibility */
             .btn:focus,
             .form-control:focus {
@@ -2189,30 +2384,68 @@
                 }
             }
 
+            // Testimonials Slider Function
+            function scrollTestimonials(direction) {
+                const slider = document.getElementById('testimonialsSlider');
+                const scrollAmount = 370; // Width of one card + gap
+                
+                if (direction === 'next') {
+                    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                } else {
+                    slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                }
+            }
+
             // Auto-hide navigation buttons if not needed
             document.addEventListener('DOMContentLoaded', function() {
-                const slider = document.getElementById('serviceCategoriesSlider');
-                const prevBtn = document.querySelector('.service-slider-prev');
-                const nextBtn = document.querySelector('.service-slider-next');
+                // Service Categories Slider
+                const serviceSlider = document.getElementById('serviceCategoriesSlider');
+                const servicePrevBtn = document.querySelector('.service-slider-prev');
+                const serviceNextBtn = document.querySelector('.service-slider-next');
                 
-                if (slider && prevBtn && nextBtn) {
-                    function updateButtonVisibility() {
-                        const isScrollable = slider.scrollWidth > slider.clientWidth;
-                        const isAtStart = slider.scrollLeft <= 10;
-                        const isAtEnd = slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 10;
+                if (serviceSlider && servicePrevBtn && serviceNextBtn) {
+                    function updateServiceButtonVisibility() {
+                        const isScrollable = serviceSlider.scrollWidth > serviceSlider.clientWidth;
+                        const isAtStart = serviceSlider.scrollLeft <= 10;
+                        const isAtEnd = serviceSlider.scrollLeft >= serviceSlider.scrollWidth - serviceSlider.clientWidth - 10;
                         
                         if (!isScrollable) {
-                            prevBtn.classList.add('d-none');
-                            nextBtn.classList.add('d-none');
+                            servicePrevBtn.classList.add('d-none');
+                            serviceNextBtn.classList.add('d-none');
                         } else {
-                            prevBtn.classList.toggle('d-none', isAtStart);
-                            nextBtn.classList.toggle('d-none', isAtEnd);
+                            servicePrevBtn.classList.toggle('d-none', isAtStart);
+                            serviceNextBtn.classList.toggle('d-none', isAtEnd);
                         }
                     }
                     
-                    slider.addEventListener('scroll', updateButtonVisibility);
-                    window.addEventListener('resize', updateButtonVisibility);
-                    updateButtonVisibility();
+                    serviceSlider.addEventListener('scroll', updateServiceButtonVisibility);
+                    window.addEventListener('resize', updateServiceButtonVisibility);
+                    updateServiceButtonVisibility();
+                }
+
+                // Testimonials Slider
+                const testimonialSlider = document.getElementById('testimonialsSlider');
+                const testimonialPrevBtn = document.querySelector('.testimonial-slider-prev');
+                const testimonialNextBtn = document.querySelector('.testimonial-slider-next');
+                
+                if (testimonialSlider && testimonialPrevBtn && testimonialNextBtn) {
+                    function updateTestimonialButtonVisibility() {
+                        const isScrollable = testimonialSlider.scrollWidth > testimonialSlider.clientWidth;
+                        const isAtStart = testimonialSlider.scrollLeft <= 10;
+                        const isAtEnd = testimonialSlider.scrollLeft >= testimonialSlider.scrollWidth - testimonialSlider.clientWidth - 10;
+                        
+                        if (!isScrollable) {
+                            testimonialPrevBtn.classList.add('d-none');
+                            testimonialNextBtn.classList.add('d-none');
+                        } else {
+                            testimonialPrevBtn.classList.toggle('d-none', isAtStart);
+                            testimonialNextBtn.classList.toggle('d-none', isAtEnd);
+                        }
+                    }
+                    
+                    testimonialSlider.addEventListener('scroll', updateTestimonialButtonVisibility);
+                    window.addEventListener('resize', updateTestimonialButtonVisibility);
+                    updateTestimonialButtonVisibility();
                 }
             });
 
