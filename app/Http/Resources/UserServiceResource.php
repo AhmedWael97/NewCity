@@ -43,7 +43,7 @@ class UserServiceResource extends JsonResource
             'is_verified' => (bool) ($this->is_verified ?? false),
             'is_featured' => (bool) ($this->is_featured ?? false),
             'featured_until' => $this->featured_until?->toISOString(),
-            'rating' => (float) round($this->rating ?? 0, 1),
+            'rating' => $this->rating ? (float) round($this->rating, 1) : 0,
             'total_reviews' => (int) ($this->total_reviews ?? 0),
             'review_count' => (int) ($this->review_count ?? 0),
             'total_views' => (int) ($this->total_views ?? 0),
