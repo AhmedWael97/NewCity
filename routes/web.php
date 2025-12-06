@@ -30,6 +30,15 @@ Route::get('/new-migrate', function() {
     return "Migration Completed";
 });
 
+Route::get('/seed-services', function() {
+    \Artisan::call('db:seed', ['--class' => 'RealServicesSeeder']);
+    return "✅ Services Seeded Successfully! <br><br>
+            📊 18 Categories Created<br>
+            👥 33 Users Created<br>
+            🛠️ 33 Services Created<br><br>
+            <a href='/admin/user-services'>View Services in Admin</a>";
+});
+
 
 
 Route::get('/clear-cache', function() {

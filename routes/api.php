@@ -93,6 +93,9 @@ Route::prefix('v1')->group(function () {
         Route::get('/maintenance-status', [App\Http\Controllers\Api\AppSettingsController::class, 'maintenanceStatus']);
     });
 
+    // Ticket categories (public endpoint)
+    Route::get('/tickets/categories', [App\Http\Controllers\Api\TicketApiController::class, 'categories']);
+
     // Advertisement endpoints (public - no auth required)
     Route::prefix('ads')->group(function () {
         // Get advertisements
@@ -211,6 +214,16 @@ Route::prefix('v1')->group(function () {
 
         // Notification actions
         Route::post('/notifications/opened', [App\Http\Controllers\Api\NotificationController::class, 'opened']);
+
+        // Support Tickets - User endpoints
+        Route::prefix('tickets')->group(function () {
+            Route::get('/', [App\Http\Controllers\Api\TicketApiController::class, 'index']);
+            Route::post('/', [App\Http\Controllers\Api\TicketApiController::class, 'store']);
+            Route::get('/statistics', [App\Http\Controllers\Api\TicketApiController::class, 'statistics']);
+            Route::get('/{id}', [App\Http\Controllers\Api\TicketApiController::class, 'show']);
+            Route::post('/{id}/reply', [App\Http\Controllers\Api\TicketApiController::class, 'reply']);
+            Route::post('/{id}/rate', [App\Http\Controllers\Api\TicketApiController::class, 'rate']);
+        });
 
         // Admin routes
         Route::middleware('role:admin,super_admin')->prefix('admin')->name('api.admin.')->group(function () {

@@ -1,0 +1,350 @@
+{
+  "info": {
+    "name": "Support Ticket API",
+    "description": "API endpoints for mobile support ticket system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_postman_id": "ticket-api-collection",
+    "version": "1.0.0"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://your-domain.com/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "your-auth-token-here",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Tickets",
+      "item": [
+        {
+          "name": "Get Ticket Categories",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tickets/categories",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "categories"]
+            },
+            "description": "Get all available ticket categories with English and Arabic labels"
+          },
+          "response": []
+        },
+        {
+          "name": "List User Tickets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tickets?status=open&page=1",
+              "host": ["{{base_url}}"],
+              "path": ["tickets"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "open",
+                  "description": "Filter by status: open, in_progress, waiting_user, resolved, closed"
+                },
+                {
+                  "key": "priority",
+                  "value": "high",
+                  "description": "Filter by priority: low, medium, high, urgent",
+                  "disabled": true
+                },
+                {
+                  "key": "category",
+                  "value": "technical_issue",
+                  "description": "Filter by category",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                }
+              ]
+            },
+            "description": "Get paginated list of user's tickets with optional filters"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "subject",
+                  "value": "App crashes on startup",
+                  "type": "text",
+                  "description": "Ticket subject (required)"
+                },
+                {
+                  "key": "category",
+                  "value": "technical_issue",
+                  "type": "text",
+                  "description": "Category (required): technical_issue, shop_complaint, payment_issue, etc."
+                },
+                {
+                  "key": "priority",
+                  "value": "high",
+                  "type": "text",
+                  "description": "Priority (required): low, medium, high, urgent"
+                },
+                {
+                  "key": "description",
+                  "value": "When I try to open the app, it crashes immediately. I'm using Android 13 on Samsung Galaxy S21.",
+                  "type": "text",
+                  "description": "Detailed description (required)"
+                },
+                {
+                  "key": "city_id",
+                  "value": "1",
+                  "type": "text",
+                  "description": "Related city ID (optional)"
+                },
+                {
+                  "key": "shop_id",
+                  "value": "",
+                  "type": "text",
+                  "description": "Related shop ID (optional)",
+                  "disabled": true
+                },
+                {
+                  "key": "attachments[]",
+                  "type": "file",
+                  "src": [],
+                  "description": "File attachments (optional, max 10MB, jpg/png/pdf/doc)",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets",
+              "host": ["{{base_url}}"],
+              "path": ["tickets"]
+            },
+            "description": "Create a new support ticket with optional file attachments"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Ticket Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tickets/15",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "15"]
+            },
+            "description": "Get detailed information about a specific ticket including all replies"
+          },
+          "response": []
+        },
+        {
+          "name": "Reply to Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "message",
+                  "value": "I'm using Samsung Galaxy S21, Android version 13",
+                  "type": "text",
+                  "description": "Reply message (required)"
+                },
+                {
+                  "key": "attachments[]",
+                  "type": "file",
+                  "src": [],
+                  "description": "File attachments (optional)",
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/15/reply",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "15", "reply"]
+            },
+            "description": "Add a reply to an existing ticket"
+          },
+          "response": []
+        },
+        {
+          "name": "Rate Ticket",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rating\": 5,\n  \"feedback\": \"Excellent support! The issue was resolved quickly and professionally.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/tickets/15/rate",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "15", "rate"]
+            },
+            "description": "Rate a resolved or closed ticket (1-5 stars)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/tickets/statistics",
+              "host": ["{{base_url}}"],
+              "path": ["tickets", "statistics"]
+            },
+            "description": "Get user's ticket statistics and counts"
+          },
+          "response": []
+        }
+      ],
+      "description": "Support ticket management endpoints"
+    },
+    {
+      "name": "Sample Responses",
+      "item": [
+        {
+          "name": "Success Response - Create Ticket",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": [
+            {
+              "name": "Create Ticket - Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/tickets"
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Ticket created successfully\",\n  \"data\": {\n    \"id\": 15,\n    \"ticket_number\": \"TICK-2025-015\",\n    \"subject\": \"App crashes on startup\",\n    \"description\": \"When I open the app, it immediately crashes...\",\n    \"category\": \"technical_issue\",\n    \"category_label\": \"مشكلة تقنية\",\n    \"priority\": \"high\",\n    \"priority_label\": \"عالية\",\n    \"status\": \"open\",\n    \"status_label\": \"مفتوح\",\n    \"city\": {\n      \"id\": 1,\n      \"name\": \"الرياض\"\n    },\n    \"shop\": null,\n    \"attachments\": [\n      {\n        \"name\": \"screenshot.jpg\",\n        \"path\": \"support_tickets/xyz123.jpg\",\n        \"url\": \"/storage/support_tickets/xyz123.jpg\",\n        \"size\": 245678,\n        \"mime\": \"image/jpeg\"\n      }\n    ],\n    \"created_at\": \"2025-12-06T10:30:00+03:00\",\n    \"created_at_human\": \"just now\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Error Response - Validation",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": [
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/tickets"
+                }
+              },
+              "status": "Unprocessable Entity",
+              "code": 422,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation error\",\n  \"errors\": {\n    \"subject\": [\"The subject field is required.\"],\n    \"category\": [\"The selected category is invalid.\"]\n  }\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -15,54 +15,13 @@
         <section class="city-hero-modern bg-gradient-primary text-white py-5">
             <div class="container">
                 {{-- City Navigation Bar --}}
-                {{-- <div class="city-nav-bar bg-white bg-opacity-10 rounded-3 p-3 mb-4 backdrop-blur-lg">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                            @if($selectedCity && $selectedCity->image)
-                                <div class="city-icon-modern rounded-circle overflow-hidden me-3 shadow"
-                                    style="width: 60px; height: 60px;">
-                                    <img src="{{ $selectedCity->image }}" alt="{{ $cityContext['selected_city_name'] }}"
-                                        class="w-100 h-100 object-fit-cover"
-                                        onerror="this.parentElement.innerHTML='<div class=\'bg-white bg-opacity-20 rounded-circle p-2 d-flex align-items-center justify-content-center\' style=\'width: 60px; height: 60px;\'><i class=\'fas fa-map-marked-alt text-white\' style=\'font-size: 1.5rem;\'></i></div>'">
-                                </div>
-                            @else
-                                <div class="city-icon-modern bg-white bg-opacity-20 rounded-circle p-2 me-3">
-                                    <i class="fas fa-map-marked-alt text-white" style="font-size: 1.5rem;"></i>
-                                </div>
-                            @endif
-                            <div>
-                                <h1 class="city-name-modern h3 mb-1 fw-bold">
-                                    {{ $cityContext['selected_city_name'] ?? 'مدينتك' }}
-                                </h1>
-                                <div class="city-meta d-flex align-items-center text-white-75">
-                                    <span class="me-3">
-                                        <i class="fas fa-store me-1"></i>
-                                        {{ number_format($stats['total_shops'] ?? 0) }} متجر
-                                    </span>
-                                    <span>
-                                        <i class="fas fa-th-large me-1"></i>
-                                        {{ $stats['total_categories'] ?? 0 }} فئة
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="d-flex gap-2 d-sm-none">
-                            <a href="{{ route('contact') }}" class="btn btn-info btn-lg rounded-pill px-4 shadow-sm">
-                                <i class="fas fa-envelope me-2"></i>
-                                اتصل بنا
-                            </a>
-                            <button onclick="showCityModal()" class="btn btn-light btn-lg rounded-pill px-4 shadow-sm">
-                                <i class="fas fa-exchange-alt me-2"></i>
-                                تغيير المدينة
-                            </button>
-                        </div>
-                    </div>
-                </div> --}}
+                
 
                 {{-- Enhanced Search Bar --}}
                 <div class="search-section-modern mb-4">
                     <div class="text-center mb-4">
-                        <h2 class="hero-main-title display-5 fw-bold text-white mb-3" style="text-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+                        <h2 class="hero-main-title display-5 fw-bold text-white mb-3"
+                            style="text-shadow: 0 2px 10px rgba(0,0,0,0.2);">
                             اكتشف كل ما تحتاجه في {{ $cityContext['selected_city_name'] }}
                         </h2>
                         <p class="hero-subtitle fs-5 text-white-75 mb-4">
@@ -80,11 +39,11 @@
                             </span>
                         </p>
                     </div>
-                    
+
                     <form class="search-form-modern"
                         action="{{ route('city.search', ['city' => $selectedCity->slug ?? 'all']) }}" method="GET">
                         <div class="search-container-modern position-relative">
-                            
+
                             <input type="text" name="q" id="city-search-modern"
                                 placeholder="ابحث في {{ $cityContext['selected_city_name'] ?? 'المدينة' }}... (مطاعم، ملابس، إلكترونيات)"
                                 class="form-control form-control-lg shadow-lg border-0 ps-5 pe-5 py-4 rounded-pill"
@@ -102,11 +61,13 @@
                             <i class="fas fa-store me-2"></i>
                             تصفح المحلات
                         </a>
-                        <a href="{{ route('marketplace.index') }}" class="btn btn-outline-light btn-lg rounded-pill px-4 shadow">
+                        <a href="{{ route('marketplace.index') }}"
+                            class="btn btn-outline-light btn-lg rounded-pill px-4 shadow">
                             <i class="fas fa-shopping-bag me-2"></i>
                             السوق المفتوح
                         </a>
-                        <a href="{{ route('user.services.index') }}" class="btn btn-outline-light btn-lg rounded-pill px-4 shadow d-none d-md-inline-block">
+                        <a href="{{ route('user.services.index') }}"
+                            class="btn btn-outline-light btn-lg rounded-pill px-4 shadow d-none d-md-inline-block">
                             <i class="fas fa-briefcase me-2"></i>
                             الخدمات
                         </a>
@@ -131,122 +92,7 @@
             </div>
         </section>
 
-        {{-- Banner Advertisement Section --}}
-        {{-- <section class="banner-ad-section py-3 bg-light">
-            <div class="container">
-                <x-ad-display type="banner" placement="city_landing_banner" :city-id="$selectedCity->id ?? null"
-                    class="rounded-3 overflow-hidden shadow-sm" :limit="1" />
-            </div>
-        </section> --}}
-
-        {{-- Popular This Week Section - Increases Engagement --}}
-        {{-- <section class="popular-section py-5 bg-white">
-            <div class="container">
-                <div class="text-center mb-5">
-                    <div class="badge bg-danger px-3 py-2 mb-3" style="font-size: 0.9rem;">
-                        <i class="fas fa-fire me-2"></i>
-                        الأكثر زيارة هذا الأسبوع
-                    </div>
-                    <h2 class="display-6 fw-bold mb-3">المحلات الأكثر شعبية</h2>
-                    <p class="text-muted fs-5">اكتشف المحلات التي يحبها الجميع في {{ $cityContext['selected_city_name'] }}</p>
-                </div>
-
-                <div class="row g-4">
-                    {{-- Marketplace Quick Action 
-                    <div class="col-md-4">
-                        <div class="popular-card h-100 p-4 rounded-3 shadow-hover" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white;">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="popular-icon bg-white bg-opacity-20 rounded-circle p-3">
-                                    <i class="fas fa-store-alt fa-2x"></i>
-                                </div>
-                                <span class="badge bg-white text-danger px-3 py-2">
-                                    <i class="fas fa-chart-line me-1"></i>
-                                    +{{ rand(50, 200) }}%
-                                </span>
-                            </div>
-                            <h3 class="h4 fw-bold mb-2">السوق المفتوح</h3>
-                            <p class="mb-3 opacity-90">{{ $marketplaceCount ?? 25 }}+ منتج جديد · اشتري وبيع بسهولة</p>
-                            <div class="d-flex gap-2 mb-3">
-                                <span class="badge bg-white bg-opacity-20 px-2 py-1">
-                                    <i class="fas fa-shopping-bag me-1"></i>
-                                    {{ rand(100, 500) }} عملية
-                                </span>
-                                <span class="badge bg-white bg-opacity-20 px-2 py-1">
-                                    <i class="fas fa-star me-1"></i>
-                                    4.8
-                                </span>
-                            </div>
-                            <a href="{{ route('marketplace.index') }}" class="btn btn-light btn-lg w-100 rounded-pill">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                تصفح الآن
-                            </a>
-                        </div>
-                    </div>
-
-                    {{-- Services Quick Action 
-                    <div class="col-md-4">
-                        <div class="popular-card h-100 p-4 rounded-3 shadow-hover" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="popular-icon bg-white bg-opacity-20 rounded-circle p-3">
-                                    <i class="fas fa-briefcase fa-2x"></i>
-                                </div>
-                                <span class="badge bg-white text-primary px-3 py-2">
-                                    <i class="fas fa-fire me-1"></i>
-                                    الأكثر طلباً
-                                </span>
-                            </div>
-                            <h3 class="h4 fw-bold mb-2">الخدمات المحلية</h3>
-                            <p class="mb-3 opacity-90">{{ $servicesCount ?? 30 }}+ خدمة · من أهل {{ $cityContext['selected_city_name'] }}</p>
-                            <div class="d-flex gap-2 mb-3">
-                                <span class="badge bg-white bg-opacity-20 px-2 py-1">
-                                    <i class="fas fa-users me-1"></i>
-                                    {{ rand(50, 300) }} مزود خدمة
-                                </span>
-                                <span class="badge bg-white bg-opacity-20 px-2 py-1">
-                                    <i class="fas fa-check-circle me-1"></i>
-                                    موثوق
-                                </span>
-                            </div>
-                            <a href="{{ route('user.services.index') }}" class="btn btn-light btn-lg w-100 rounded-pill">
-                                <i class="fas fa-arrow-left me-2"></i>
-                                استكشف الخدمات
-                            </a>
-                        </div>
-                    </div>
-
-                    {{-- Featured Shops 
-                    <div class="col-md-4">
-                        <div class="popular-card h-100 p-4 rounded-3 shadow-hover" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%); color: #333;">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div class="popular-icon bg-white bg-opacity-50 rounded-circle p-3">
-                                    <i class="fas fa-crown fa-2x text-warning"></i>
-                                </div>
-                                <span class="badge bg-warning text-dark px-3 py-2">
-                                    <i class="fas fa-star me-1"></i>
-                                    مميز
-                                </span>
-                            </div>
-                            <h3 class="h4 fw-bold mb-2">المحلات المميزة</h3>
-                            <p class="mb-3">{{ $stats['total_shops'] ?? 45 }} محل نشط · جودة مضمونة</p>
-                            <div class="d-flex gap-2 mb-3">
-                                <span class="badge bg-white px-2 py-1">
-                                    <i class="fas fa-bolt me-1 text-warning"></i>
-                                    تحديث يومي
-                                </span>
-                                <span class="badge bg-white px-2 py-1">
-                                    <i class="fas fa-certificate me-1 text-success"></i>
-                                    معتمد
-                                </span>
-                            </div>
-                            <a href="#shops-section" class="btn btn-dark btn-lg w-100 rounded-pill smooth-scroll">
-                                <i class="fas fa-arrow-down me-2"></i>
-                                شاهد المحلات
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> --}}
+       
 
         {{-- User Services Section (Hidden - will be on separate page) --}}
         @if(false && isset($serviceCategoriesWithServices) && $serviceCategoriesWithServices->count() > 0)
@@ -260,7 +106,8 @@
                                     خدمات مقدمة من المستخدمين
                                 </h2>
                                 <p class="text-muted mb-0">اكتشف أفضل الخدمات المقدمة من أهل
-                                    {{ $cityContext['selected_city_name'] }}</p>
+                                    {{ $cityContext['selected_city_name'] }}
+                                </p>
                             </div>
                             @auth
                                 <a href="{{ route('user.services.create') }}" class="btn btn-primary rounded-pill px-4">
@@ -640,7 +487,7 @@
                                 <i class="fas fa-users text-primary" style="font-size: 2.5rem;"></i>
                             </div>
                             <div class="stat-number-modern h2 mb-1 text-primary fw-bold">
-                                {{ number_format( rand(10,100)) }},
+                                {{ number_format(rand(10, 100)) }},
                             </div>
                             <div class="stat-label-modern text-muted">مستخدم نشط</div>
                         </div>
@@ -699,9 +546,11 @@
                                     <i class="fas fa-star text-warning me-1"></i>
                                 @endfor
                             </div>
-                            <p class="mb-3 fs-6">"منصة رائعة! وجدت كل المحلات اللي أحتاجها في {{ $cityContext['selected_city_name'] }} بسهولة. التصنيف واضح والبحث سريع جداً."</p>
+                            <p class="mb-3 fs-6">"منصة رائعة! وجدت كل المحلات اللي أحتاجها في
+                                {{ $cityContext['selected_city_name'] }} بسهولة. التصنيف واضح والبحث سريع جداً."</p>
                             <div class="d-flex align-items-center">
-                                <div class="testimonial-avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                <div class="testimonial-avatar bg-primary text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                    style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
                                     أ
                                 </div>
                                 <div>
@@ -723,9 +572,11 @@
                                     <i class="fas fa-star text-warning me-1"></i>
                                 @endfor
                             </div>
-                            <p class="mb-3 fs-6">"السوق المفتوح مفيد جداً! بعت أغراضي المستعملة بسرعة واشتريت أشياء بأسعار ممتازة. التعامل سهل وآمن."</p>
+                            <p class="mb-3 fs-6">"السوق المفتوح مفيد جداً! بعت أغراضي المستعملة بسرعة واشتريت أشياء بأسعار
+                                ممتازة. التعامل سهل وآمن."</p>
                             <div class="d-flex align-items-center">
-                                <div class="testimonial-avatar bg-success text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                <div class="testimonial-avatar bg-success text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                    style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
                                     ف
                                 </div>
                                 <div>
@@ -747,9 +598,11 @@
                                     <i class="fas fa-star text-warning me-1"></i>
                                 @endfor
                             </div>
-                            <p class="mb-3 fs-6">"كصاحب محل، هذا الموقع زاد من عدد عملائي بشكل كبير. التسويق سهل والوصول للزبائن أصبح أفضل بكثير!"</p>
+                            <p class="mb-3 fs-6">"كصاحب محل، هذا الموقع زاد من عدد عملائي بشكل كبير. التسويق سهل والوصول
+                                للزبائن أصبح أفضل بكثير!"</p>
                             <div class="d-flex align-items-center">
-                                <div class="testimonial-avatar bg-info text-white rounded-circle me-3 d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
+                                <div class="testimonial-avatar bg-info text-white rounded-circle me-3 d-flex align-items-center justify-content-center"
+                                    style="width: 50px; height: 50px; font-size: 1.2rem; font-weight: bold;">
                                     خ
                                 </div>
                                 <div>
@@ -1019,13 +872,72 @@
                             </div>
                             <h3 class="h5 mb-2">تطبيق الجوال</h3>
                             <p class="text-muted mb-3">حمّل التطبيق للوصول السريع</p>
-                            <button class="btn btn-success" onclick="alert('قريباً على متاجر التطبيقات')">قريباً</button>
+                            <div class="d-flex flex-column gap-2">
+                                <a href="https://play.google.com/store/apps/details?id=com.senu.app" target="_blank"
+                                    class="btn btn-google-play btn-sm px-3 py-2 d-flex align-items-center justify-content-center gap-2">
+                                    <i class="fab fa-google-play"></i>
+                                    <span>Google Play</span>
+                                </a>
+                                <button class="btn btn-app-store text-white btn-sm px-3 py-2 d-flex align-items-center justify-content-center gap-2 disabled" 
+                                    style="cursor: not-allowed;">
+                                    <i class="fab fa-apple"></i>
+                                    <span>App Store (قريباً)</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </main>
+
+    {{-- Mobile App Download Popup Modal --}}
+    <div class="modal fade" id="mobileAppModal" tabindex="-1" aria-labelledby="mobileAppModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header border-0 bg-gradient-app text-white">
+                    <h5 class="modal-title fw-bold" id="mobileAppModalLabel">
+                        <i class="fas fa-mobile-alt me-2"></i>
+                        حمّل تطبيقنا الآن!
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <div class="mb-4">
+                        <i class="fas fa-mobile-alt text-primary" style="font-size: 4rem;"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3">احصل على تجربة أفضل مع تطبيق الجوال</h5>
+                    <p class="text-muted mb-4">
+                        تصفح المتاجر، السوق المفتوح، والخدمات بسهولة من هاتفك. احصل على إشعارات فورية بأحدث العروض!
+                    </p>
+                    <div class="d-flex flex-column gap-3">
+                        <a href="https://play.google.com/store/apps/details?id=com.senu.app" target="_blank"
+                            class="btn btn-google-play btn-lg px-4 py-3 d-flex align-items-center justify-content-center gap-2 shadow">
+                            <i class="fab fa-google-play fa-lg"></i>
+                            <div class="text-start">
+                                <small class="d-block" style="font-size: 0.7rem;">متاح الآن على</small>
+                                <strong>Google Play</strong>
+                            </div>
+                        </a>
+                        <button class="btn btn-app-store btn-lg px-4 py-3 d-flex align-items-center justify-content-center gap-2 shadow disabled text-white" 
+                            style="cursor: not-allowed;">
+                            <i class="fab fa-apple fa-lg"></i>
+                            <div class="text-start">
+                                <small class="d-block" style="font-size: 0.7rem;">قريباً على</small>
+                                <strong>App Store</strong>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="mt-4">
+                        <small class="text-muted">
+                            <i class="fas fa-shield-alt me-1"></i>
+                            آمن وموثوق - أكثر من 1000+ تحميل
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{-- City Selection Modal (Simple & Working) --}}
     <x-city-modal-simple :show-modal="!session('selected_city')" />
@@ -1169,16 +1081,12 @@
                             <div class="card-header bg-light">
                                 <h6 class="mb-0"><i class="fas fa-info-circle me-2"></i>معلومات إضافية</h6>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12 mb-3">
-                                        <label class="form-label">الموقع الإلكتروني</label>
-                                        <input type="url" class="form-control" name="website"
-                                            placeholder="https://www.example.com">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label class="form-label">صفحة الفيسبوك</label>
-                                        <input type="url" class="form-control" name="facebook"
+            /* Mobile App Modal Styles */
+            .bg-gradient-app {
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            }
+
+            /* Google Play Store Button */nput type="url" class="form-control" name="facebook"
                                             placeholder="https://facebook.com/...">
                                     </div>
                                     <div class="col-md-6 mb-3">
@@ -1215,6 +1123,73 @@
                 font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
                 direction: rtl;
                 background: #f8f9fa;
+            }
+
+            /* Announcement Bar Styles */
+            .announcement-bar {
+                background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                animation: slideDown 0.5s ease-out;
+                position: relative;
+                z-index: 1000;
+            }
+
+            /* Google Play Store Button */
+            .btn-google-play {
+                background: linear-gradient(135deg, #3bccff 0%, #2c9eda 100%);
+                color: white;
+                font-weight: 600;
+                border: none;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .btn-google-play:hover {
+                background: linear-gradient(135deg, #2c9eda 0%, #1a7bb8 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(44, 158, 218, 0.4);
+                color: white;
+            }
+
+            /* Apple App Store Button */
+            .btn-app-store {
+                background: linear-gradient(135deg, #000000 0%, #434343 100%);
+                color: white;
+                font-weight: 600;
+                border: none;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+                opacity: 0.7;
+            }
+
+            .btn-app-store.disabled {
+                cursor: not-allowed;
+                opacity: 0.6;
+            }
+
+            @keyframes slideDown {
+                from {
+                    transform: translateY(-100%);
+                    opacity: 0;
+                }
+
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .announcement-bar {
+                    font-size: 0.85rem;
+                    py: 1.5;
+                }
+
+                .announcement-bar .btn-light,
+                .announcement-bar .badge {
+                    font-size: 0.75rem;
+                    padding: 0.25rem 0.5rem;
+                }
             }
 
             /* Enhanced Hero Section - More Engaging */
@@ -1255,7 +1230,7 @@
 
             .trust-item {
                 padding: 0.5rem 1rem;
-                background: rgba(255,255,255,0.1);
+                background: rgba(255, 255, 255, 0.1);
                 border-radius: 20px;
                 backdrop-filter: blur(10px);
             }
@@ -2105,11 +2080,11 @@
                 document.querySelectorAll('.shop-image-modern img').forEach(img => {
                     img.addEventListener('error', function () {
                         this.parentElement.innerHTML = `
-                                <div class="w-100 h-100 d-flex align-items-center justify-content-center" 
-                                     style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                    <i class="fas fa-store text-white" style="font-size: 3rem;"></i>
-                                </div>
-                            `;
+                                        <div class="w-100 h-100 d-flex align-items-center justify-content-center" 
+                                             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                            <i class="fas fa-store text-white" style="font-size: 3rem;"></i>
+                                        </div>
+                                    `;
                     });
                 });
 
@@ -2122,9 +2097,9 @@
                 notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
                 notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; max-width: 300px;';
                 notification.innerHTML = `
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    `;
+                                ${message}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            `;
 
                 document.body.appendChild(notification);
 
@@ -2172,7 +2147,7 @@
                         window.location.href = '{{ route("login") }}';
                     }, 1500);
                 @endauth
-                    }
+                            }
 
             // Save current city to localStorage and cookie for persistence
             document.addEventListener('DOMContentLoaded', function () {
@@ -2301,6 +2276,18 @@
                         button.disabled = false;
                         button.innerHTML = '<i class="fas fa-paper-plane me-2"></i>إرسال الاقتراح';
                     });
+            });
+        </script>
+    @endpush
+
+    @push('scripts')
+        <script>
+            // Show mobile app popup every time the page loads
+            document.addEventListener('DOMContentLoaded', function() {
+                setTimeout(function() {
+                    const mobileAppModal = new bootstrap.Modal(document.getElementById('mobileAppModal'));
+                    mobileAppModal.show();
+                }, 2000); // Show after 2 seconds
             });
         </script>
     @endpush

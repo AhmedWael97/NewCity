@@ -5165,6 +5165,336 @@
                 ]
             }
         },
+        "/api/v1/tickets": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Get user's tickets",
+                "operationId": "2af269aaca04386d55b333d600e8665d",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "open",
+                                "in_progress",
+                                "waiting_user",
+                                "resolved",
+                                "closed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "priority",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "low",
+                                "medium",
+                                "high",
+                                "urgent"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of tickets"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Create a new support ticket",
+                "operationId": "802a3518f7d2ce4a91cd591ea6b07a22",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "subject",
+                                    "category",
+                                    "priority",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "subject": {
+                                        "type": "string",
+                                        "maxLength": 255
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": [
+                                            "technical_issue",
+                                            "shop_complaint",
+                                            "payment_issue",
+                                            "account_problem",
+                                            "feature_request",
+                                            "bug_report",
+                                            "content_issue",
+                                            "other"
+                                        ]
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "enum": [
+                                            "low",
+                                            "medium",
+                                            "high",
+                                            "urgent"
+                                        ]
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    },
+                                    "city_id": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "shop_id": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "attachments[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ticket created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/{id}": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Get ticket details",
+                "operationId": "6bf3ff3e3a1ddad21e7da8fde64c401b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ticket details"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Ticket not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/{id}/reply": {
+            "post": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Reply to a ticket",
+                "operationId": "5e5ac0da42f37fbd75f126722f08434d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "message"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    },
+                                    "attachments[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reply added successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Ticket not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/{id}/rate": {
+            "post": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Rate a resolved/closed ticket",
+                "operationId": "a9d0f3ce101bd65abec0b21b376ecae5",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "rating"
+                                ],
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "maximum": 5,
+                                        "minimum": 1
+                                    },
+                                    "feedback": {
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rating submitted successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Ticket not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/statistics": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Get user's ticket statistics",
+                "operationId": "283bbed829dad564f8a0dbd287e3534d",
+                "responses": {
+                    "200": {
+                        "description": "Ticket statistics"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/categories": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Get ticket categories with labels",
+                "operationId": "548d7d27ca6f7623520ed8868b29017d",
+                "responses": {
+                    "200": {
+                        "description": "List of ticket categories"
+                    }
+                }
+            }
+        },
         "/api/v1/user/profile": {
             "get": {
                 "tags": [
@@ -6462,6 +6792,10 @@
         {
             "name": "Shop Reviews",
             "description": "Endpoints for shop reviews management"
+        },
+        {
+            "name": "Support Tickets",
+            "description": "Support ticket management endpoints"
         },
         {
             "name": "User Profile",

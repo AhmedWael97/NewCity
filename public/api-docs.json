@@ -5758,6 +5758,373 @@
                     }
                 }
             }
+        },
+        "/api/v1/tickets/categories": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Get ticket categories",
+                "description": "Get all available ticket categories with labels in both English and Arabic",
+                "operationId": "getTicketCategories",
+                "responses": {
+                    "200": {
+                        "description": "List of ticket categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "technical_issue"
+                                                    },
+                                                    "label_en": {
+                                                        "type": "string",
+                                                        "example": "Technical Issue"
+                                                    },
+                                                    "label_ar": {
+                                                        "type": "string",
+                                                        "example": "مشكلة تقنية"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/tickets": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Get user's tickets",
+                "description": "Get paginated list of user's tickets with optional filters",
+                "operationId": "getUserTickets",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["open", "in_progress", "waiting_user", "resolved", "closed"]
+                        }
+                    },
+                    {
+                        "name": "priority",
+                        "in": "query",
+                        "description": "Filter by priority",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["low", "medium", "high", "urgent"]
+                        }
+                    },
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "Filter by category",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of tickets"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Create a new support ticket",
+                "description": "Create a new support ticket with optional file attachments",
+                "operationId": "createTicket",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": ["subject", "category", "priority", "description"],
+                                "properties": {
+                                    "subject": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "App crashes on startup"
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "enum": ["technical_issue", "shop_complaint", "payment_issue", "account_problem", "feature_request", "bug_report", "content_issue", "other"],
+                                        "example": "technical_issue"
+                                    },
+                                    "priority": {
+                                        "type": "string",
+                                        "enum": ["low", "medium", "high", "urgent"],
+                                        "example": "high"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "When I try to open the app, it crashes immediately."
+                                    },
+                                    "city_id": {
+                                        "type": "integer",
+                                        "nullable": true,
+                                        "example": 1
+                                    },
+                                    "shop_id": {
+                                        "type": "integer",
+                                        "nullable": true
+                                    },
+                                    "attachments[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ticket created successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/statistics": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Get user's ticket statistics",
+                "description": "Get statistics and counts for user's tickets",
+                "operationId": "getTicketStatistics",
+                "responses": {
+                    "200": {
+                        "description": "Ticket statistics"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/{id}": {
+            "get": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Get ticket details",
+                "description": "Get detailed information about a specific ticket including all replies",
+                "operationId": "getTicketDetails",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ticket details"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Ticket not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/{id}/reply": {
+            "post": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Reply to a ticket",
+                "description": "Add a reply to an existing ticket with optional attachments",
+                "operationId": "replyToTicket",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": ["message"],
+                                "properties": {
+                                    "message": {
+                                        "type": "string",
+                                        "example": "I'm using Samsung Galaxy S21, Android 13"
+                                    },
+                                    "attachments[]": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "format": "binary"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reply added successfully"
+                    },
+                    "400": {
+                        "description": "Cannot reply to closed ticket"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Ticket not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/tickets/{id}/rate": {
+            "post": {
+                "tags": [
+                    "Support Tickets"
+                ],
+                "summary": "Rate a resolved/closed ticket",
+                "description": "Rate a ticket and provide feedback (1-5 stars)",
+                "operationId": "rateTicket",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Ticket ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": ["rating"],
+                                "properties": {
+                                    "rating": {
+                                        "type": "integer",
+                                        "minimum": 1,
+                                        "maximum": 5,
+                                        "example": 5
+                                    },
+                                    "feedback": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "maxLength": 500,
+                                        "example": "Excellent support!"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rating submitted successfully"
+                    },
+                    "400": {
+                        "description": "Can only rate resolved or closed tickets"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Ticket not found"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -6470,6 +6837,10 @@
         {
             "name": "User Services",
             "description": "User services management endpoints"
+        },
+        {
+            "name": "Support Tickets",
+            "description": "Support ticket management endpoints for mobile applications"
         }
     ]
 }
