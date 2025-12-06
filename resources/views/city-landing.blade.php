@@ -94,116 +94,105 @@
 
        
 
-        {{-- User Services Section (Hidden - will be on separate page) --}}
-        @if(false && isset($serviceCategoriesWithServices) && $serviceCategoriesWithServices->count() > 0)
-            <section class="services-section py-5">
+        {{-- User Services Section - Category Slider --}}
+        @if(isset($serviceCategoriesWithServices) && $serviceCategoriesWithServices->count() > 0)
+            <section class="services-section nt-2">
                 <div class="container">
                     <div class="section-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h2 class="h3 mb-2 fw-bold">
+                                <h2 class="h4 mb-2 fw-bold">
                                     <i class="fas fa-tools text-primary me-2"></i>
-                                    خدمات مقدمة من المستخدمين
+                                    خدمات المستخدمين
                                 </h2>
-                                <p class="text-muted mb-0">اكتشف أفضل الخدمات المقدمة من أهل
-                                    {{ $cityContext['selected_city_name'] }}
-                                </p>
+                                
                             </div>
-                            @auth
-                                <a href="{{ route('user.services.create') }}" class="btn btn-primary rounded-pill px-4">
-                                    <i class="fas fa-plus me-2"></i>
-                                    أضف خدمتك
+                            <div class="d-flex gap-2">
+                                @auth
+                                    <a href="{{ route('user.services.create') }}" class="btn btn-primary rounded-pill px-4">
+                                        <i class="fas fa-plus me-2"></i>
+                                        أضف خدمتك
+                                    </a>
+                                @endauth
+                                <a href="{{ route('user.services.index') }}" class="btn btn-outline-primary rounded-pill px-4">
+                                    <i class="fas fa-th me-2"></i>
+                                     الكل
                                 </a>
-                            @endauth
+                            </div>
                         </div>
                     </div>
 
-                    @foreach($serviceCategoriesWithServices as $serviceCategory)
-                        <div class="service-category-section mb-5">
-                            <div class="category-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
-                                <div class="d-flex align-items-center justify-content-between">
-                                    <div class="d-flex align-items-center">
-                                        <div class="category-icon-large bg-success bg-opacity-10 rounded-circle p-3 me-3">
-                                            <i class="{{ $serviceCategory->icon ?? 'fas fa-wrench' }} text-success"
-                                                style="font-size: 1.5rem;"></i>
-                                        </div>
-                                        <div>
-                                            <h3 class="h5 mb-1 fw-bold">{{ $serviceCategory->name }}</h3>
-                                            <p class="text-muted mb-0">
-                                                <i class="fas fa-concierge-bell me-1"></i>
-                                                {{ $serviceCategory->services_count }} خدمة متاحة
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row g-4">
-                                @foreach($serviceCategory->userServices as $service)
-                                    <div class="col-lg-3 col-md-6">
-                                        <div class="service-card bg-white rounded-3 shadow-sm h-100 overflow-hidden">
-                                            @if($service->images && is_array($service->images) && count($service->images) > 0)
-                                                <div class="service-image" style="height: 180px; overflow: hidden;">
-                                                    <img src="{{ $service->images[0] }}" alt="{{ $service->title }}"
-                                                        class="w-100 h-100 object-fit-cover"
-                                                        onerror="this.src='/images/placeholder-service.jpg'">
-                                                </div>
-                                            @else
-                                                <div class="service-image bg-light d-flex align-items-center justify-content-center"
-                                                    style="height: 180px;">
-                                                    <i class="{{ $serviceCategory->icon ?? 'fas fa-wrench' }} text-muted"
-                                                        style="font-size: 3rem;"></i>
-                                                </div>
-                                            @endif
-
-                                            <div class="p-3">
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <div
-                                                        class="service-provider-avatar bg-primary bg-opacity-10 rounded-circle p-2 me-2">
-                                                        <i class="fas fa-user text-primary"></i>
+                    {{-- Service Categories Slider --}}
+                    <div class="position-relative">
+                        <div class="service-categories-slider-wrapper overflow-hidden">
+                            <div class="service-categories-slider d-flex gap-3 pb-3" id="serviceCategoriesSlider">
+                                @foreach($serviceCategoriesWithServices as $serviceCategory)
+                                    <div class="service-category-card flex-shrink-0">
+                                        <a href="{{ route('city.services', ['city' => $selectedCity->slug ?? 'all', 'category' => $serviceCategory->id]) }}" 
+                                           class="text-decoration-none">
+                                            <div class="bg-white rounded-3 shadow-sm p-4 h-100 hover-lift" style="width: 280px;">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="category-icon-large bg-success bg-opacity-10 rounded-circle p-3 me-3">
+                                                        <i class="{{ $serviceCategory->icon ?? 'fas fa-wrench' }} text-success"
+                                                            style="font-size: 1.8rem;"></i>
                                                     </div>
-                                                    <small class="text-muted">{{ $service->user->name }}</small>
-                                                </div>
-
-                                                <h5 class="service-title h6 mb-2 fw-bold">
-                                                    <a href="{{ route('user.services.show', $service->slug) }}"
-                                                        class="text-decoration-none text-dark">
-                                                        {{ Str::limit($service->title, 40) }}
-                                                    </a>
-                                                </h5>
-
-                                                <p class="service-description text-muted small mb-3">
-                                                    {{ Str::limit($service->description, 60) }}
-                                                </p>
-
-                                                <div class="d-flex align-items-center justify-content-between">
-                                                    <div class="service-price">
-                                                        @if($service->price_type === 'fixed')
-                                                            <span class="text-success fw-bold">{{ number_format($service->price) }}
-                                                                جنيه</span>
-                                                        @else
-                                                            <span class="text-muted"><i class="fas fa-handshake me-1"></i>تفاوض</span>
-                                                        @endif
+                                                    <div class="flex-grow-1">
+                                                        <h3 class="h6 mb-2 fw-bold text-dark">{{ $serviceCategory->name_ar }}</h3>
+                                                        <div class="d-flex align-items-center text-muted small">
+                                                            <i class="fas fa-concierge-bell me-1"></i>
+                                                            <span>{{ $serviceCategory->services_count }} خدمة متاحة</span>
+                                                        </div>
                                                     </div>
-                                                    <a href="{{ route('user.services.show', $service->slug) }}"
-                                                        class="btn btn-sm btn-outline-primary rounded-pill">
-                                                        التفاصيل
-                                                        <i class="fas fa-arrow-left ms-1"></i>
-                                                    </a>
                                                 </div>
+                                                
+                                                @if($serviceCategory->userServices->count() > 0)
+                                                    <div class="mt-3 pt-3 border-top">
+                                                        <div class="d-flex align-items-center justify-content-between">
+                                                            <div class="d-flex -mx-1">
+                                                                @foreach($serviceCategory->userServices->take(3) as $service)
+                                                                    @if($service->images && is_array($service->images) && count($service->images) > 0)
+                                                                        <div class="position-relative" style="margin-right: -8px;">
+                                                                            <img src="{{ $service->images[0] }}" 
+                                                                                 alt="{{ $service->title }}"
+                                                                                 class="rounded-circle border border-2 border-white"
+                                                                                 style="width: 32px; height: 32px; object-fit: cover;"
+                                                                                 onerror="this.src='/images/placeholder-service.jpg'">
+                                                                        </div>
+                                                                    @endif
+                                                                @endforeach
+                                                            </div>
+                                                            <small class="text-primary fw-bold">
+                                                                تصفح الخدمات
+                                                                <i class="fas fa-arrow-left ms-1"></i>
+                                                            </small>
+                                                        </div>
+                                                    </div>
+                                                @endif
                                             </div>
-                                        </div>
+                                        </a>
                                     </div>
                                 @endforeach
                             </div>
                         </div>
-                    @endforeach
+
+                        {{-- Slider Navigation Buttons --}}
+                        <button class="service-slider-btn service-slider-prev position-absolute top-50 start-0 translate-middle-y btn btn-white rounded-circle shadow-lg d-none d-md-flex align-items-center justify-content-center"
+                                style="width: 45px; height: 45px; z-index: 10; margin-left: -20px;" 
+                                onclick="scrollServiceCategories('prev')">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                        <button class="service-slider-btn service-slider-next position-absolute top-50 end-0 translate-middle-y btn btn-white rounded-circle shadow-lg d-none d-md-flex align-items-center justify-content-center"
+                                style="width: 45px; height: 45px; z-index: 10; margin-right: -20px;" 
+                                onclick="scrollServiceCategories('next')">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                    </div>
                 </div>
             </section>
         @endif
 
         {{-- All Shops Section --}}
-        <section class="all-shops py-5 bg-light" id="shops-section">
+        <section class="all-shops  bg-light" id="shops-section">
             <div class="container-fluid">
                 <div class="row">
                     {{-- Enhanced Sidebar - Now on the Right --}}
@@ -1666,6 +1655,87 @@
                 transform: scale(1.2);
             }
 
+            /* Service Categories Slider Styles */
+            .service-categories-slider-wrapper {
+                position: relative;
+                padding: 0 2rem;
+            }
+
+            .service-categories-slider {
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-behavior: smooth;
+                scrollbar-width: thin;
+                scrollbar-color: rgba(102, 126, 234, 0.3) transparent;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .service-categories-slider::-webkit-scrollbar {
+                height: 6px;
+            }
+
+            .service-categories-slider::-webkit-scrollbar-track {
+                background: transparent;
+                border-radius: 10px;
+            }
+
+            .service-categories-slider::-webkit-scrollbar-thumb {
+                background: rgba(102, 126, 234, 0.3);
+                border-radius: 10px;
+            }
+
+            .service-categories-slider::-webkit-scrollbar-thumb:hover {
+                background: rgba(102, 126, 234, 0.5);
+            }
+
+            .service-category-card {
+                transition: transform 0.3s ease;
+            }
+
+            .service-category-card:hover {
+                transform: translateY(-5px);
+            }
+
+            .hover-lift {
+                transition: all 0.3s ease;
+            }
+
+            .hover-lift:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
+            }
+
+            .service-slider-btn {
+                transition: all 0.3s ease;
+                border: 2px solid #f0f0f0;
+            }
+
+            .service-slider-btn:hover {
+                background: #667eea !important;
+                border-color: #667eea !important;
+                color: white !important;
+                transform: scale(1.1);
+            }
+
+            .service-slider-btn i {
+                transition: transform 0.3s ease;
+            }
+
+            .service-slider-btn:hover i {
+                transform: scale(1.2);
+            }
+
+            /* Mobile responsiveness for slider */
+            @media (max-width: 768px) {
+                .service-categories-slider-wrapper {
+                    padding: 0;
+                }
+
+                .service-category-card .bg-white {
+                    width: 260px !important;
+                }
+            }
+
             /* Focus and Accessibility */
             .btn:focus,
             .form-control:focus {
@@ -2106,6 +2176,45 @@
                     notification.remove();
                 }, 5000);
             }
+
+            // Service Categories Slider Function
+            function scrollServiceCategories(direction) {
+                const slider = document.getElementById('serviceCategoriesSlider');
+                const scrollAmount = 300; // Width of one card + gap
+                
+                if (direction === 'next') {
+                    slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                } else {
+                    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            }
+
+            // Auto-hide navigation buttons if not needed
+            document.addEventListener('DOMContentLoaded', function() {
+                const slider = document.getElementById('serviceCategoriesSlider');
+                const prevBtn = document.querySelector('.service-slider-prev');
+                const nextBtn = document.querySelector('.service-slider-next');
+                
+                if (slider && prevBtn && nextBtn) {
+                    function updateButtonVisibility() {
+                        const isScrollable = slider.scrollWidth > slider.clientWidth;
+                        const isAtStart = slider.scrollLeft <= 10;
+                        const isAtEnd = slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 10;
+                        
+                        if (!isScrollable) {
+                            prevBtn.classList.add('d-none');
+                            nextBtn.classList.add('d-none');
+                        } else {
+                            prevBtn.classList.toggle('d-none', isAtStart);
+                            nextBtn.classList.toggle('d-none', isAtEnd);
+                        }
+                    }
+                    
+                    slider.addEventListener('scroll', updateButtonVisibility);
+                    window.addEventListener('resize', updateButtonVisibility);
+                    updateButtonVisibility();
+                }
+            });
 
             // Function to track user interactions (for analytics)
             function trackInteraction(action, category = 'City Landing') {
