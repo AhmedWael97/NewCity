@@ -96,7 +96,7 @@
 
         {{-- User Services Section - Category Slider --}}
         @if(isset($serviceCategoriesWithServices) && $serviceCategoriesWithServices->count() > 0)
-            <section class="services-section nt-2">
+            <section class="services-section mt-2">
                 <div class="container">
                     <div class="section-header-modern bg-white rounded-3 p-4 mb-4 shadow-sm">
                         <div class="d-flex align-items-center justify-content-between">
