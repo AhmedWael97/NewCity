@@ -119,7 +119,7 @@
                     💬 المنتدى
                 </a>
                 
-                <a href="{{ route('user.services.index') }}" class="category-nav-item {{ request()->routeIs('user.services.*') ? 'active' : '' }}">
+                <a href="{{ route('city.services', ['city' => $selectedCity->slug ?? 'all']) }}" class="category-nav-item {{ request()->routeIs('user.services.*') ? 'active' : '' }}">
                     🔧 الخدمات
                 </a>
                 
@@ -241,7 +241,7 @@
             <a href="{{ url('/') }}">🏠 الرئيسية</a>
             <a href="{{ route('news.index') }}">📰 الأخبار</a>
             <a href="{{ route('forum.index') }}">💬 المنتدى</a>
-            <a href="{{ route('user.services.index') }}">🔧 الخدمات</a>
+            <a href="{{ route('city.services', ['city' => $selectedCity->slug ?? 'all']) }}">🔧 الخدمات</a>
             {{-- <a href="{{ route('marketplace.index') }}">🛒 السوق المفتوح</a> --}}
             @if(isset($navCategories))
                 @foreach($navCategories as $category)

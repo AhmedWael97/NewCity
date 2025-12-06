@@ -513,7 +513,7 @@ class LandingController extends Controller
     /**
      * Show city services page
      */
-    public function cityServices(City $city)
+    public function cityServices(Request $request, City $city)
     {
         // Update session to selected city
         session([
@@ -532,27 +532,65 @@ class LandingController extends Controller
             'should_show_modal' => false,
         ];
 
-        // Get service categories with services for this city
-        $serviceCategoriesWithServices = Cache::remember("city_service_categories_{$city->slug}", 3600, function () use ($city) {
-            return \App\Models\ServiceCategory::whereHas('userServices', function ($query) use ($city) {
-                $query->where('city_id', $city->id)
-                      ->where('is_active', true);
-            })
-            ->withCount(['userServices as services_count' => function ($query) use ($city) {
-                $query->where('city_id', $city->id)
-                      ->where('is_active', true);
-            }])
-            ->with(['userServices' => function ($query) use ($city) {
-                $query->where('city_id', $city->id)
-                      ->where('is_active', true)
-                      ->with('user')
-                      ->latest()
-                      ->paginate(12);
-            }])
+        // Build query for services
+        $query = \App\Models\UserService::query()
+            ->with(['user', 'serviceCategory'])
+            ->where('city_id', $city->id)
             ->where('is_active', true)
-            ->orderByDesc('services_count')
-            ->get();
-        });
+            ->where('is_verified', true);
+
+        // Search filter
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        // Category filter
+        if ($request->filled('category')) {
+            $query->where('service_category_id', $request->category);
+        }
+
+        // Pricing type filter
+        if ($request->filled('pricing_type')) {
+            $query->where('pricing_type', $request->pricing_type);
+        }
+
+        // Sort
+        $sort = $request->input('sort', 'latest');
+        switch ($sort) {
+            case 'latest':
+                $query->orderBy('created_at', 'desc');
+                break;
+            case 'rating':
+                $query->orderBy('rating', 'desc');
+                break;
+            case 'featured':
+                $query->orderByRaw('is_featured DESC, featured_until DESC NULLS LAST');
+                break;
+            default:
+                $query->orderBy('created_at', 'desc');
+        }
+
+        // Get paginated services
+        $services = $query->paginate(24);
+
+        // Get service categories for filter
+        $serviceCategories = \App\Models\ServiceCategory::whereHas('userServices', function ($q) use ($city) {
+            $q->where('city_id', $city->id)
+              ->where('is_active', true)
+              ->where('is_verified', true);
+        })
+        ->withCount(['userServices' => function ($q) use ($city) {
+            $q->where('city_id', $city->id)
+              ->where('is_active', true)
+              ->where('is_verified', true);
+        }])
+        ->where('is_active', true)
+        ->orderBy('name_ar')
+        ->get();
 
         // Get all cities for modal
         $cities = $this->cityDataService->getCitiesForSelection();
@@ -568,7 +606,8 @@ class LandingController extends Controller
         return view('city.services', compact(
             'city',
             'cityContext',
-            'serviceCategoriesWithServices',
+            'services',
+            'serviceCategories',
             'cities',
             'seoData'
         ));
