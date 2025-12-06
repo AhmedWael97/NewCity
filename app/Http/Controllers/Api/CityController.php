@@ -649,8 +649,9 @@ class CityController extends Controller
         $services = $query->paginate($perPage);
 
         return response()->json([
-            'data' => \App\Http\Resources\UserServiceResource::collection($services),
-            'meta' => [
+            'success' => true,
+            'data' => [
+                'services' => \App\Http\Resources\UserServiceResource::collection($services),
                 'total' => $services->total(),
                 'per_page' => $services->perPage(),
                 'current_page' => $services->currentPage(),
