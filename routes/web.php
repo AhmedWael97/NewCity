@@ -71,6 +71,9 @@ Route::get('/select-city', function () {
     ]);
 })->name('select.city.page')->middleware(['auto.load.city']);
 
+// City Suggestion Route
+Route::post('/city-suggestion', [CityController::class, 'storeSuggestion'])->name('city.suggestion');
+
 // Home route - redirect to city selection if no city selected
 Route::get('/', function () {
     if (session()->has('selected_city')) {

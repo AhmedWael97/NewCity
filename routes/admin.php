@@ -84,6 +84,14 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->gro
         Route::delete('/{suggestion}', [App\Http\Controllers\Admin\AdminShopSuggestionController::class, 'destroy'])->name('destroy');
     });
     
+    // City Suggestions Management
+    Route::prefix('city-suggestions')->name('city-suggestions.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AdminCitySuggestionController::class, 'index'])->name('index');
+        Route::get('/{suggestion}', [App\Http\Controllers\Admin\AdminCitySuggestionController::class, 'show'])->name('show');
+        Route::patch('/{suggestion}/status', [App\Http\Controllers\Admin\AdminCitySuggestionController::class, 'updateStatus'])->name('update-status');
+        Route::delete('/{suggestion}', [App\Http\Controllers\Admin\AdminCitySuggestionController::class, 'destroy'])->name('destroy');
+    });
+    
     // Marketplace Management
     Route::prefix('marketplace')->name('marketplace.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\AdminMarketplaceController::class, 'index'])->name('index');

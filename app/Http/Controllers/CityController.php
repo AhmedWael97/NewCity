@@ -273,4 +273,46 @@ class CityController extends Controller
         return response()->view('sitemaps.cities', compact('cities'))
             ->header('Content-Type', 'application/xml');
     }
+
+    /**
+     * Store city suggestion from users
+     */
+    public function storeSuggestion(Request $request)
+    {
+        $validated = $request->validate([
+            'city_name' => 'required|string|max:255',
+            'phone' => 'required|string|max:20',
+            'group_url' => 'required|url|max:500',
+        ], [
+            'city_name.required' => 'اسم المدينة مطلوب',
+            'city_name.max' => 'اسم المدينة يجب ألا يتجاوز 255 حرف',
+            'phone.required' => 'رقم الهاتف مطلوب',
+            'phone.max' => 'رقم الهاتف يجب ألا يتجاوز 20 رقم',
+            'group_url.required' => 'رابط المجموعة مطلوب',
+            'group_url.url' => 'رابط المجموعة غير صحيح',
+            'group_url.max' => 'رابط المجموعة يجب ألا يتجاوز 500 حرف',
+        ]);
+
+        try {
+            // Create city suggestion in database
+            \App\Models\CitySuggestion::create([
+                'city_name' => $validated['city_name'],
+                'phone' => $validated['phone'],
+                'group_url' => $validated['group_url'],
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'status' => 'pending',
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'شكراً لك! تم إرسال اقتراحك بنجاح وسنقوم بمراجعته قريباً.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء حفظ الاقتراح. الرجاء المحاولة مرة أخرى.'
+            ], 500);
+        }
+    }
 }

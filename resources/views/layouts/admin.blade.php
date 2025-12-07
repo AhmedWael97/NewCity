@@ -818,6 +818,19 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.city-suggestions.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.city-suggestions.index') }}">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>اقتراحات المدن</span>
+                        @php
+                            $citySuggestionsCount = \App\Models\CitySuggestion::where('status', 'pending')->count();
+                        @endphp
+                        @if($citySuggestionsCount > 0)
+                            <span class="badge badge-danger badge-counter ms-2">{{ $citySuggestionsCount }}</span>
+                        @endif
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.ratings.*') ? 'active' : '' }}" 
                        href="{{ route('admin.ratings.index') }}">
                         <i class="fas fa-star"></i>
