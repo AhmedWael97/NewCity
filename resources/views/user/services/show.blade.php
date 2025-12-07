@@ -68,15 +68,16 @@
                     </div>
 
                     <!-- Images -->
-                    @if($service->images && count($service->images) > 0)
+                    @if($service->images && is_array($service->images) && count($service->images) > 0)
                         <div id="serviceCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
                             <div class="carousel-inner rounded">
                                 @foreach($service->images as $index => $image)
                                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
-                                        <img src="{{ $image }}" 
+                                        <img src="{{ asset('storage/' . $image) }}" 
                                              class="d-block w-100" 
-                                             alt="Service Image"
-                                             style="height: 400px; object-fit: cover;">
+                                             alt="Service Image {{ $index + 1 }}"
+                                             style="height: 400px; object-fit: cover;"
+                                             onerror="this.src='{{ asset('images/placeholder.jpg') }}'">
                                     </div>
                                 @endforeach
                             </div>
@@ -87,7 +88,25 @@
                                 <button class="carousel-control-next" type="button" data-bs-target="#serviceCarousel" data-bs-slide="next">
                                     <span class="carousel-control-next-icon"></span>
                                 </button>
+                                
+                                <!-- Indicators -->
+                                <div class="carousel-indicators">
+                                    @foreach($service->images as $index => $image)
+                                        <button type="button" 
+                                                data-bs-target="#serviceCarousel" 
+                                                data-bs-slide-to="{{ $index }}" 
+                                                class="{{ $index === 0 ? 'active' : '' }}"
+                                                aria-label="Slide {{ $index + 1 }}"></button>
+                                    @endforeach
+                                </div>
                             @endif
+                        </div>
+                    @else
+                        <div class="bg-light rounded mb-4 d-flex align-items-center justify-content-center" style="height: 300px;">
+                            <div class="text-center text-muted">
+                                <i class="bi bi-image fs-1 mb-2"></i>
+                                <p class="mb-0">لا توجد صور متاحة</p>
+                            </div>
                         </div>
                     @endif
 
@@ -137,7 +156,11 @@
                                     <i class="bi bi-telephone-fill text-primary fs-4 me-3"></i>
                                     <div>
                                         <small class="text-muted d-block">الهاتف</small>
-                                        <strong>{{ $service->phone }}</strong>
+                                        <strong>
+                                            <a href="tel:{{ $service->phone }}" class="text-decoration-none">
+                                                {{ $service->phone }}
+                                            </a>
+                                        </strong>
                                     </div>
                                 </div>
                             </div>
@@ -148,7 +171,13 @@
                                     <i class="bi bi-whatsapp text-success fs-4 me-3"></i>
                                     <div>
                                         <small class="text-muted d-block">واتساب</small>
-                                        <strong>{{ $service->whatsapp }}</strong>
+                                        <strong>
+                                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $service->whatsapp) }}" 
+                                               target="_blank" 
+                                               class="text-decoration-none text-success">
+                                                {{ $service->whatsapp }}
+                                            </a>
+                                        </strong>
                                     </div>
                                 </div>
                             </div>

@@ -115,10 +115,10 @@ class UserServiceController extends Controller
             'phone' => $request->phone,
             'whatsapp' => $request->whatsapp,
             'address' => $request->address,
+            'service_areas' => $serviceAreas,
             'requirements' => $request->requirements,
             'images' => $imagePaths,
             'availability' => $availability,
-            'service_areas' => $serviceAreas,
             'is_active' => true,
             'is_verified' => false,
         ]);
@@ -133,7 +133,7 @@ class UserServiceController extends Controller
     public function show(UserService $service)
     {
         // Load relationships
-        $service->load(['user', 'city', 'category']);
+        $service->load(['user', 'city', 'serviceCategory']);
         
         // Check if user is the owner (for showing owner-specific actions)
         $isOwner = Auth::check() && $service->user_id === Auth::id();

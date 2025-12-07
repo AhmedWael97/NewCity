@@ -131,9 +131,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-// Public Service View (no auth required)
-Route::get('/user/services/{service}', [App\Http\Controllers\User\UserServiceController::class, 'show'])->name('user.services.show');
-
 // Shop Suggestion Routes (public)
 Route::post('/suggest-shop', [App\Http\Controllers\ShopSuggestionController::class, 'store'])->name('suggest-shop.store');
 Route::get('/suggest-shop/data', [App\Http\Controllers\ShopSuggestionController::class, 'getCitiesAndCategories'])->name('suggest-shop.data');
@@ -207,6 +204,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/shop/{shop}/user', [RatingController::class, 'getUserRating'])->name('user-rating');
     });
 });
+
+// Public Service View (no auth required) - AFTER auth routes to avoid conflicts with /user/services/create
+Route::get('/user/services/{service}', [App\Http\Controllers\User\UserServiceController::class, 'show'])->name('user.services.show');
 
 // Marketplace - Public {marketplace_item} route (must be AFTER auth routes to avoid conflicts)
 Route::get('/marketplace/{marketplace_item}', [App\Http\Controllers\MarketplaceWebController::class, 'show'])->name('marketplace.show');
