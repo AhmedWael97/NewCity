@@ -452,21 +452,24 @@ class LandingController extends Controller
         $serviceCategoriesWithServices = Cache::remember($serviceCacheKey, 3600, function () use ($city) {
             return \App\Models\ServiceCategory::whereHas('userServices', function ($query) use ($city) {
                 $query->where('city_id', $city->id)
-                      ->where('is_active', true);
+                      ->where('is_active', true)
+                      ->where('is_verified', true);
             })
             ->withCount(['userServices as services_count' => function ($query) use ($city) {
                 $query->where('city_id', $city->id)
-                      ->where('is_active', true);
+                      ->where('is_active', true)
+                      ->where('is_verified', true);
             }])
             ->with(['userServices' => function ($query) use ($city) {
                 $query->where('city_id', $city->id)
                       ->where('is_active', true)
+                      ->where('is_verified', true)
                       ->with('user')
                       ->latest()
                       ->take(4);
             }])
+            ->where('is_active', true)
             ->orderByDesc('services_count')
-            ->limit(3)
             ->get();
         });
         
