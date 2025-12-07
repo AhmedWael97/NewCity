@@ -12,8 +12,9 @@
 @section('content')
     <main class="city-landing">
         {{-- Modern City Header Section --}}
-        <section class="city-hero-modern bg-gradient-primary text-white py-5">
-            <div class="container">
+        <section class="city-hero-modern  text-white py-5" style="background-image: url('{{ asset('images/city-background.png') }}'); background-size: cover; background-position: center; background-repeat: no-repeat; position: relative;">
+            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;"></div>
+            <div class="container" style="position: relative; z-index: 1;">
                 {{-- City Navigation Bar --}}
                 
 
@@ -1296,7 +1297,7 @@
 
             /* Enhanced Hero Section - More Engaging */
             .city-hero-modern {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
                 position: relative;
                 overflow: hidden;
                 padding: 4rem 0 !important;
@@ -1309,8 +1310,8 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-                opacity: 0.5;
+                /* background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); */
+                /* opacity: 0.5; */
             }
 
             .hero-main-title {
