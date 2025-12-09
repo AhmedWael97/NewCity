@@ -360,51 +360,45 @@ class UserServiceController extends Controller
     {
         return ServiceAnalytics::whereHas('userService', function($query) use ($userId) {
             $query->where('user_id', $userId);
-        })->where('metric_type', 'view')->sum('value');
+        })->sum('views');
     }
 
     private function getTotalContacts($userId)
     {
         return ServiceAnalytics::whereHas('userService', function($query) use ($userId) {
             $query->where('user_id', $userId);
-        })->where('metric_type', 'contact')->sum('value');
+        })->sum('contacts');
     }
 
     private function getMonthlyViews($userId)
     {
         return ServiceAnalytics::whereHas('userService', function($query) use ($userId) {
             $query->where('user_id', $userId);
-        })->where('metric_type', 'view')
-          ->where('date', '>=', now()->startOfMonth())
-          ->sum('value');
+        })->where('date', '>=', now()->startOfMonth())
+          ->sum('views');
     }
 
     private function getMonthlyContacts($userId)
     {
         return ServiceAnalytics::whereHas('userService', function($query) use ($userId) {
             $query->where('user_id', $userId);
-        })->where('metric_type', 'contact')
-          ->where('date', '>=', now()->startOfMonth())
-          ->sum('value');
+        })->where('date', '>=', now()->startOfMonth())
+          ->sum('contacts');
     }
 
     private function getServiceAnalytics($serviceId)
     {
         $analytics = ServiceAnalytics::where('user_service_id', $serviceId)
-            ->selectRaw('metric_type, SUM(value) as total, DATE(date) as date')
-            ->groupBy('metric_type', 'date')
             ->orderBy('date', 'desc')
             ->get();
 
+        $monthStart = now()->startOfMonth();
+        
         return [
-            'total_views' => $analytics->where('metric_type', 'view')->sum('total'),
-            'total_contacts' => $analytics->where('metric_type', 'contact')->sum('total'),
-            'this_month_views' => $analytics->where('metric_type', 'view')
-                ->where('date', '>=', now()->startOfMonth()->toDateString())
-                ->sum('total'),
-            'this_month_contacts' => $analytics->where('metric_type', 'contact')
-                ->where('date', '>=', now()->startOfMonth()->toDateString())
-                ->sum('total'),
+            'total_views' => $analytics->sum('views'),
+            'total_contacts' => $analytics->sum('contacts'),
+            'this_month_views' => $analytics->where('date', '>=', $monthStart)->sum('views'),
+            'this_month_contacts' => $analytics->where('date', '>=', $monthStart)->sum('contacts'),
             'daily_data' => $analytics->groupBy('date'),
         ];
     }
@@ -415,17 +409,17 @@ class UserServiceController extends Controller
         
         $data = ServiceAnalytics::where('user_service_id', $serviceId)
             ->where('date', '>=', $thirtyDaysAgo)
-            ->selectRaw('DATE(date) as date, metric_type, SUM(value) as total')
-            ->groupBy('date', 'metric_type')
             ->orderBy('date')
-            ->get();
+            ->get()
+            ->keyBy('date');
 
         $chartData = [];
         for ($i = 29; $i >= 0; $i--) {
             $date = now()->subDays($i)->toDateString();
+            $record = $data->get($date);
             $chartData[$date] = [
-                'views' => $data->where('date', $date)->where('metric_type', 'view')->sum('total'),
-                'contacts' => $data->where('date', $date)->where('metric_type', 'contact')->sum('total'),
+                'views' => $record ? $record->views : 0,
+                'contacts' => $record ? $record->contacts : 0,
             ];
         }
 
@@ -434,16 +428,40 @@ class UserServiceController extends Controller
 
     private function recordAnalytics($serviceId, $metricType, $metricValue = null)
     {
-        ServiceAnalytics::create([
-            'user_service_id' => $serviceId,
-            'metric_type' => $metricType,
-            'metric_value' => $metricValue,
-            'value' => 1,
-            'date' => now()->toDateString(),
-            'hour' => now()->hour,
-            'user_agent' => request()->header('User-Agent'),
-            'ip_address' => request()->ip(),
-        ]);
+        $today = now()->toDateString();
+        
+        // Get or create today's analytics record
+        $analytics = ServiceAnalytics::firstOrCreate(
+            [
+                'user_service_id' => $serviceId,
+                'date' => $today,
+            ],
+            [
+                'views' => 0,
+                'contacts' => 0,
+                'phone_clicks' => 0,
+                'whatsapp_clicks' => 0,
+                'unique_visitors' => 0,
+                'referrer_sources' => json_encode([]),
+                'visitor_locations' => json_encode([]),
+            ]
+        );
+        
+        // Increment the appropriate counter
+        switch ($metricType) {
+            case 'view':
+                $analytics->increment('views');
+                break;
+                
+            case 'contact':
+                $analytics->increment('contacts');
+                if ($metricValue === 'phone') {
+                    $analytics->increment('phone_clicks');
+                } elseif ($metricValue === 'whatsapp') {
+                    $analytics->increment('whatsapp_clicks');
+                }
+                break;
+        }
     }
 
     private function calculateSubscriptionExpiry($planId)

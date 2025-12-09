@@ -23,17 +23,25 @@ use App\Http\Controllers\Admin\AdminNewsController;
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin', 'permission.guard:admin'])->group(function () {
     
     // Dashboard
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/system-health', [AdminDashboardController::class, 'systemHealth'])->name('system.health');
+    
+    // Debug permissions (remove in production)
+    Route::get('/debug-permissions', function() {
+        return view('admin.debug-permissions');
+    })->name('debug.permissions');
     
     // User Management
     Route::resource('users', AdminUserController::class);
     Route::post('users/bulk-action', [AdminUserController::class, 'bulkAction'])->name('users.bulk-action');
     Route::post('users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::post('users/{user}/verify', [AdminUserController::class, 'verify'])->name('users.verify');
+    
+    // Role & Permission Management
+    Route::resource('roles', App\Http\Controllers\Admin\AdminRoleController::class);
     
     // Shop Management
     Route::resource('shops', AdminShopController::class);

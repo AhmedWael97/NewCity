@@ -1,0 +1,232 @@
+{
+	"info": {
+		"_postman_id": "suggestion-api-collection",
+		"name": "City App - Suggestions API",
+		"description": "API endpoints for submitting shop and city suggestions",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Suggestions",
+			"item": [
+				{
+					"name": "Suggest Shop",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"shop_name\": \"مطعم الأصالة\",\n    \"city_id\": 1,\n    \"category_id\": 5,\n    \"location\": \"حي النزهة، شارع الملك فهد\",\n    \"phone\": \"0551234567\",\n    \"whatsapp\": \"0551234567\",\n    \"description\": \"مطعم يقدم أشهى المأكولات التقليدية\",\n    \"google_maps_link\": \"https://maps.google.com/?q=24.7136,46.6753\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/suggestions/shop",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"suggestions",
+								"shop"
+							]
+						},
+						"description": "Submit a shop suggestion with required information including shop name, city, category, and contact details."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"shop_name\": \"مطعم الأصالة\",\n    \"city_id\": 1,\n    \"category_id\": 5,\n    \"location\": \"حي النزهة، شارع الملك فهد\",\n    \"phone\": \"0551234567\",\n    \"whatsapp\": \"0551234567\",\n    \"description\": \"مطعم يقدم أشهى المأكولات التقليدية\",\n    \"google_maps_link\": \"https://maps.google.com/?q=24.7136,46.6753\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/suggestions/shop",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"suggestions",
+										"shop"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"شكراً لك! تم إرسال اقتراحك بنجاح وسنقوم بمراجعته قريباً.\",\n    \"data\": {\n        \"suggestion_id\": 1,\n        \"status\": \"pending\"\n    }\n}"
+						},
+						{
+							"name": "Validation Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"shop_name\": \"\",\n    \"city_id\": 999,\n    \"phone\": \"\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/suggestions/shop",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"suggestions",
+										"shop"
+									]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"بيانات غير صحيحة\",\n    \"errors\": {\n        \"shop_name\": [\n            \"اسم المتجر مطلوب\"\n        ],\n        \"city_id\": [\n            \"المدينة المحددة غير موجودة\"\n        ],\n        \"category_id\": [\n            \"التصنيف مطلوب\"\n        ],\n        \"phone\": [\n            \"رقم الهاتف مطلوب\"\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Suggest City",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"city_name\": \"الرياض\",\n    \"phone\": \"0551234567\",\n    \"group_url\": \"https://chat.whatsapp.com/example123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/suggestions/city",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"suggestions",
+								"city"
+							]
+						},
+						"description": "Submit a city suggestion with city name, contact phone, and main group URL (WhatsApp, Telegram, etc.)."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"city_name\": \"الرياض\",\n    \"phone\": \"0551234567\",\n    \"group_url\": \"https://chat.whatsapp.com/example123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/suggestions/city",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"suggestions",
+										"city"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"success\": true,\n    \"message\": \"شكراً لك! تم إرسال اقتراحك بنجاح وسنقوم بمراجعته قريباً.\",\n    \"data\": {\n        \"suggestion_id\": 1,\n        \"status\": \"pending\"\n    }\n}"
+						},
+						{
+							"name": "Validation Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"city_name\": \"\",\n    \"phone\": \"\",\n    \"group_url\": \"invalid-url\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/suggestions/city",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"suggestions",
+										"city"
+									]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [],
+							"cookie": [],
+							"body": "{\n    \"success\": false,\n    \"message\": \"بيانات غير صحيحة\",\n    \"errors\": {\n        \"city_name\": [\n            \"اسم المدينة مطلوب\"\n        ],\n        \"phone\": [\n            \"رقم الهاتف مطلوب\"\n        ],\n        \"group_url\": [\n            \"رابط المجموعة غير صحيح\"\n        ]\n    }\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		}
+	]
+}

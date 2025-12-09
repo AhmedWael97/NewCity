@@ -91,12 +91,15 @@
                                         @endswitch
                                     </td>
                                     <td>
+                                        @can('view-shops')
                                         <a href="{{ route('admin.shop-suggestions.show', $suggestion) }}" 
                                            class="btn btn-sm btn-info" 
                                            title="عرض التفاصيل">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
                                         
+                                        @can('approve-shops')
                                         @if($suggestion->status == 'pending')
                                             <form action="{{ route('admin.shop-suggestions.update-status', $suggestion) }}" 
                                                   method="POST" 
@@ -110,7 +113,11 @@
                                                     <i class="fas fa-check"></i>
                                                 </button>
                                             </form>
-                                            
+                                        @endif
+                                        @endcan
+                                        
+                                        @can('reject-shops')
+                                        @if($suggestion->status == 'pending')
                                             <form action="{{ route('admin.shop-suggestions.update-status', $suggestion) }}" 
                                                   method="POST" 
                                                   class="d-inline">
@@ -124,7 +131,9 @@
                                                 </button>
                                             </form>
                                         @endif
+                                        @endcan
                                         
+                                        @can('delete-shops')
                                         <form action="{{ route('admin.shop-suggestions.destroy', $suggestion) }}" 
                                               method="POST" 
                                               class="d-inline"
@@ -137,6 +146,7 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </td>
                                 </tr>
                             @endforeach

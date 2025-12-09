@@ -200,9 +200,13 @@
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm">
+                                    @can('view-marketplace')
                                     <a href="{{ route('admin.marketplace.show', $item->slug) }}" class="btn btn-info" title="عرض">
                                         <i class="fas fa-eye"></i>
                                     </a>
+                                    @endcan
+                                    
+                                    @can('approve-marketplace')
                                     @if($item->status === 'pending')
                                     <form action="{{ route('admin.marketplace.approve', $item->slug) }}" method="POST" class="d-inline">
                                         @csrf
@@ -210,11 +214,17 @@
                                             <i class="fas fa-check"></i>
                                         </button>
                                     </form>
+                                    @endcan
+                                    
+                                    @can('reject-marketplace')
                                     <button type="button" class="btn btn-warning" title="الرفض" 
                                             onclick="showRejectModal({{ $item->slug }}, '{{ $item->title }}')">
                                         <i class="fas fa-times"></i>
                                     </button>
                                     @endif
+                                    @endcan
+                                    
+                                    @can('delete-marketplace')
                                     <form action="{{ route('admin.marketplace.destroy', $item->slug) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -223,6 +233,7 @@
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
+                                    @endcan
                                 </div>
                             </td>
                         </tr>

@@ -205,7 +205,10 @@ class City extends Model
         return $this->banners()
             ->where('is_active', true)
             ->where('start_date', '<=', now())
-            ->where('end_date', '>=', now())
+            ->where(function($query) {
+                $query->whereNull('end_date')
+                      ->orWhere('end_date', '>=', now());
+            })
             ->orderBy('priority', 'asc');
     }
 

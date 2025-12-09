@@ -186,6 +186,16 @@ class AuthController extends Controller
             ], 422);
         }
 
+        // Check if user exists and is active before attempting authentication
+        $user = User::where('email', $request->email)->first();
+        
+        if (!$user || !$user->is_active) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials or account is deactivated'
+            ], 401);
+        }
+
         if (!Auth::attempt($request->only('email', 'password'))) {
             return response()->json([
                 'success' => false,
@@ -194,13 +204,6 @@ class AuthController extends Controller
         }
 
         $user = Auth::user();
-
-        if (!$user->is_active) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Account is deactivated'
-            ], 403);
-        }
 
         $token = $user->createToken('auth-token')->plainTextToken;
 
@@ -378,6 +381,181 @@ class AuthController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Password reset successfully'
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/auth/deactivate-account",
+     *     summary="Deactivate user account",
+     *     description="Deactivate the authenticated user's account. The account will be disabled and user won't be able to login until reactivated. Data is preserved in the database.",
+     *     tags={"Authentication"},
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"password"},
+     *             @OA\Property(property="password", type="string", format="password", example="password123", description="Current password for security verification")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Account deactivated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Account deactivated successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Invalid password",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid password")
+     *         )
+     *     )
+     * )
+     * Deactivate user account
+     */
+    public function deactivateAccount(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = $request->user();
+
+        // Verify password for security
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid password'
+            ], 422);
+        }
+
+        // Deactivate account
+        $user->update(['is_active' => false]);
+
+        // Revoke all tokens
+        $user->tokens()->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account deactivated successfully. You can reactivate it by logging in again.'
+        ]);
+    }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/auth/reactivate-account",
+     *     summary="Reactivate user account",
+     *     description="Reactivate a previously deactivated account using email and password. This endpoint does not require authentication.",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="password123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Account reactivated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Account reactivated successfully"),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="user", ref="#/components/schemas/User"),
+     *                 @OA\Property(property="token", type="string", example="1|abcdef123456..."),
+     *                 @OA\Property(property="token_type", type="string", example="Bearer")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid credentials",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid credentials")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation failed"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     * Reactivate a deactivated account
+     */
+    public function reactivateAccount(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        // Find user by email
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        // Verify password
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid credentials'
+            ], 401);
+        }
+
+        // Reactivate account if it was deactivated
+        if (!$user->is_active) {
+            $user->update(['is_active' => true]);
+        }
+
+        // Generate new token
+        $token = $user->createToken('auth-token')->plainTextToken;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Account reactivated successfully',
+            'data' => [
+                'user' => $user->load('userRole'),
+                'token' => $token,
+                'token_type' => 'Bearer'
+            ]
         ]);
     }
 }

@@ -72,22 +72,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="user_type">نوع المستخدم <span class="text-danger">*</span></label>
-                                    <select class="form-control @error('user_type') is-invalid @enderror" id="user_type" name="user_type" required>
-                                        <option value="">اختر النوع</option>
-                                        <option value="user" {{ old('user_type', $user->user_type) == 'user' ? 'selected' : '' }}>مستخدم عادي</option>
-                                        <option value="shop_owner" {{ old('user_type', $user->user_type) == 'shop_owner' ? 'selected' : '' }}>صاحب متجر</option>
-                                        <option value="admin" {{ old('user_type', $user->user_type) == 'admin' ? 'selected' : '' }}>مدير</option>
-                                    </select>
-                                    @error('user_type')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="city_id">المدينة</label>
                                     <select class="form-control @error('city_id') is-invalid @enderror" id="city_id" name="city_id">
@@ -104,7 +89,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="phone">رقم الهاتف</label>
                                     <input type="text" class="form-control @error('phone') is-invalid @enderror" 
@@ -157,6 +142,89 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Roles & Permissions -->
+                        @can('assign-roles')
+                        <div class="card mt-4">
+                            <div class="card-header bg-purple text-white">
+                                <h6 class="m-0 font-weight-bold">
+                                    <i class="fas fa-user-shield"></i> الأدوار والصلاحيات
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>الأدوار المخصصة</label>
+                                            <div class="row">
+                                                @foreach($roles as $role)
+                                                <div class="col-md-3 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input role-checkbox" 
+                                                               type="checkbox" 
+                                                               name="roles[]" 
+                                                               value="{{ $role->id }}"
+                                                               id="role_{{ $role->id }}"
+                                                               data-role="{{ $role->name }}"
+                                                               {{ in_array($role->id, old('roles', $userRoles)) ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="role_{{ $role->id }}">
+                                                            {{ $role->name }}
+                                                            @if(in_array($role->name, ['super_admin', 'admin']))
+                                                                <span class="badge bg-danger">نظام</span>
+                                                            @elseif($role->name === 'city_manager')
+                                                                <span class="badge bg-info">مدير مدينة</span>
+                                                            @endif
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                @endforeach
+                                            </div>
+                                            @error('roles')
+                                                <div class="text-danger mt-2">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endcan
+
+                        <!-- City Assignment (for city_manager role) -->
+                        @can('assign-cities')
+                        <div class="card mt-4" id="cityAssignmentCard" style="display: {{ in_array('city_manager', $user->roles->pluck('name')->toArray()) ? 'block' : 'none' }};">
+                            <div class="card-header bg-info text-white">
+                                <h6 class="m-0 font-weight-bold">
+                                    <i class="fas fa-city"></i> تخصيص المدن (لمدير المدينة)
+                                </h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle"></i> 
+                                    اختر المدن التي يمكن لهذا المستخدم إدارتها. هذا الخيار متاح فقط لدور "مدير مدينة".
+                                </div>
+                                <div class="row">
+                                    @foreach($cities as $city)
+                                    <div class="col-md-3 mb-2">
+                                        <div class="form-check">
+                                            <input class="form-check-input" 
+                                                   type="checkbox" 
+                                                   name="assigned_city_ids[]" 
+                                                   value="{{ $city->id }}"
+                                                   id="city_{{ $city->id }}"
+                                                   {{ in_array($city->id, old('assigned_city_ids', $user->assigned_city_ids ?? [])) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="city_{{ $city->id }}">
+                                                {{ $city->name }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                                @error('assigned_city_ids')
+                                    <div class="text-danger mt-2">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+                        @endcan
 
                         <!-- Status Section -->
                         <div class="card mt-4">
@@ -226,6 +294,21 @@
 @push('scripts')
 <script>
 $(document).ready(function() {
+    // Show/hide city assignment based on city_manager role
+    function toggleCityAssignment() {
+        var cityManagerChecked = $('.role-checkbox[data-role="city_manager"]').is(':checked');
+        if (cityManagerChecked) {
+            $('#cityAssignmentCard').slideDown();
+        } else {
+            $('#cityAssignmentCard').slideUp();
+        }
+    }
+    
+    // Check when any role checkbox changes
+    $('.role-checkbox').on('change', function() {
+        toggleCityAssignment();
+    });
+    
     // Auto-generate slug from name
     $('#name').on('input', function() {
         var name = $(this).val();

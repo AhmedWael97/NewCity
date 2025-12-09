@@ -7,9 +7,11 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h3 mb-0 text-gray-800">إدارة الإعلانات</h1>
+        @can('create-advertisements')
         <a href="{{ route('admin.advertisements.create') }}" class="btn btn-primary">
             <i class="fas fa-plus"></i> إضافة إعلان جديد
         </a>
+        @endcan
     </div>
 
     <!-- Statistics Cards -->
@@ -250,15 +252,21 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
+                                        @can('view-advertisements')
                                         <a href="{{ route('admin.advertisements.show', $ad) }}" 
                                            class="btn btn-outline-info" title="عرض">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        
+                                        @can('edit-advertisements')
                                         <a href="{{ route('admin.advertisements.edit', $ad) }}" 
                                            class="btn btn-outline-primary" title="تعديل">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        @endcan
                                         
+                                        @can('approve-advertisements')
                                         @if($ad->status === 'pending_review')
                                             <form action="{{ route('admin.advertisements.approve', $ad) }}" 
                                                   method="POST" class="d-inline">
@@ -269,6 +277,7 @@
                                                 </button>
                                             </form>
                                         @endif
+                                        @endcan
                                         
                                         @if($ad->status === 'active')
                                             <form action="{{ route('admin.advertisements.pause', $ad) }}" 
@@ -281,6 +290,7 @@
                                             </form>
                                         @endif
                                         
+                                        @can('delete-advertisements')
                                         <form action="{{ route('admin.advertisements.destroy', $ad) }}" 
                                               method="POST" class="d-inline"
                                               onsubmit="return confirm('هل أنت متأكد من حذف هذا الإعلان؟')">
@@ -290,6 +300,7 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

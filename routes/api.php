@@ -9,6 +9,7 @@ Route::prefix('v1')->group(function () {
         Route::post('/login', [App\Http\Controllers\Api\AuthController::class, 'login']);
         Route::post('/forgot-password', [App\Http\Controllers\Api\AuthController::class, 'forgotPassword']);
         Route::post('/reset-password', [App\Http\Controllers\Api\AuthController::class, 'resetPassword']);
+        Route::post('/reactivate-account', [App\Http\Controllers\Api\AuthController::class, 'reactivateAccount']);
     });
 
     // Public city and shop data
@@ -34,9 +35,9 @@ Route::prefix('v1')->group(function () {
     
     // User Services - Public endpoints
     Route::get('/user-services', [App\Http\Controllers\Api\UserServiceApiController::class, 'index']);
-    Route::get('/user-services/{userService}', [App\Http\Controllers\Api\UserServiceApiController::class, 'show']);
+    Route::get('/user-services/{id}', [App\Http\Controllers\Api\UserServiceApiController::class, 'show']);
     Route::get('/service-categories', [App\Http\Controllers\Api\UserServiceApiController::class, 'categories']);
-    Route::post('/user-services/{userService}/contact', [App\Http\Controllers\Api\UserServiceApiController::class, 'recordContact']);
+    Route::post('/user-services/{id}/contact', [App\Http\Controllers\Api\UserServiceApiController::class, 'recordContact']);
     
     // Marketplace - Public endpoints
     Route::get('/marketplace', [App\Http\Controllers\Api\MarketplaceController::class, 'index']);
@@ -109,6 +110,10 @@ Route::prefix('v1')->group(function () {
         Route::post('/{adId}/click', [App\Http\Controllers\Api\AdvertisementController::class, 'recordClick']);
     });
 
+    // Suggestions - Public endpoints (no auth required)
+    Route::post('/suggestions/shop', [App\Http\Controllers\Api\SuggestionController::class, 'suggestShop']);
+    Route::post('/suggestions/city', [App\Http\Controllers\Api\SuggestionController::class, 'suggestCity']);
+
     // Mobile App Control - Secured endpoints with API key
     Route::prefix('mobile')->middleware(['secure.api'])->group(function () {
         // Public mobile endpoints (no user auth required, but need API key)
@@ -124,7 +129,7 @@ Route::prefix('v1')->group(function () {
     });
 
     // Protected routes (authentication required)
-    Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware(['auth:sanctum', 'user.active'])->group(function () {
         // Auth user routes
         Route::prefix('auth')->group(function () {
             Route::get('/user', [App\Http\Controllers\Api\AuthController::class, 'user']);
@@ -132,6 +137,7 @@ Route::prefix('v1')->group(function () {
             Route::post('/logout', [App\Http\Controllers\Api\AuthController::class, 'logout']);
             Route::put('/profile', [App\Http\Controllers\Api\AuthController::class, 'updateProfile']);
             Route::post('/change-password', [App\Http\Controllers\Api\AuthController::class, 'changePassword']);
+            Route::post('/deactivate-account', [App\Http\Controllers\Api\AuthController::class, 'deactivateAccount']);
         });
 
         // Shop ratings
@@ -224,8 +230,13 @@ Route::prefix('v1')->group(function () {
             Route::post('/{id}/reply', [App\Http\Controllers\Api\TicketApiController::class, 'reply']);
             Route::post('/{id}/rate', [App\Http\Controllers\Api\TicketApiController::class, 'rate']);
         });
+    });
 
-        // Admin routes
+    // Public notification endpoint (accessible by guests and authenticated users)
+    Route::get('/admin/app-settings/notifications', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'notifications']);
+
+    // Admin routes (authentication required)
+    Route::middleware(['auth:sanctum'])->group(function () {
         Route::middleware('role:admin,super_admin')->prefix('admin')->name('api.admin.')->group(function () {
             // Cities management
             Route::apiResource('cities', App\Http\Controllers\Api\Admin\CityController::class);
@@ -256,8 +267,7 @@ Route::prefix('v1')->group(function () {
                 Route::post('/upload-logo', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'uploadLogo']);
                 Route::get('/statistics', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'statistics']);
                 
-                // Push Notifications
-                Route::get('/notifications', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'notifications']);
+                // Push Notifications (admin only - GET /notifications moved to public access above)
                 Route::post('/notifications', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'createNotification']);
                 Route::post('/notifications/{notification}/send', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'sendNotification']);
                 Route::delete('/notifications/{notification}', [App\Http\Controllers\Api\Admin\AppSettingsController::class, 'deleteNotification']);

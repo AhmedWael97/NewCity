@@ -9,12 +9,14 @@
         <h1 class="h3 mb-0 text-gray-800">
             <i class="fas fa-crown"></i> إدارة خطط الاشتراك
         </h1>
+        @can('create-subscriptions')
         <a href="{{ route('admin.subscription-plans.create') }}" class="btn btn-primary btn-icon-split">
             <span class="icon text-white-50">
                 <i class="fas fa-plus"></i>
             </span>
             <span class="text">إضافة خطة جديدة</span>
         </a>
+        @endcan
     </div>
 
     @if(session('success'))
@@ -153,16 +155,23 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group">
+                                            @can('view-subscriptions')
                                             <a href="{{ route('admin.subscription-plans.show', $plan) }}" 
                                                class="btn btn-sm btn-info" 
                                                title="عرض التفاصيل">
                                                 <i class="fas fa-eye"></i>
                                             </a>
+                                            @endcan
+                                            
+                                            @can('edit-subscriptions')
                                             <a href="{{ route('admin.subscription-plans.edit', $plan) }}" 
                                                class="btn btn-sm btn-warning" 
                                                title="تعديل">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+                                            @endcan
+                                            
+                                            @can('delete-subscriptions')
                                             <form action="{{ route('admin.subscription-plans.destroy', $plan) }}" 
                                                   method="POST" 
                                                   style="display: inline;"
@@ -173,6 +182,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

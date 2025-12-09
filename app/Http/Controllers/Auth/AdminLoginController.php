@@ -33,6 +33,9 @@ class AdminLoginController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
+            
+            // Explicitly set the guard in session
+            $request->session()->put('_guard', 'admin');
 
             return redirect()->intended(route('admin.dashboard'));
         }

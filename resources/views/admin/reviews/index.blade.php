@@ -133,11 +133,14 @@
                                     <small class="text-muted">{{ $review->created_at->diffForHumans() }}</small>
                                 </td>
                                 <td>
+                                    @can('view-reviews')
                                     <a href="{{ route('admin.reviews.show', $review->id) }}" 
                                        class="btn btn-sm btn-info" title="عرض">
                                         <i class="fas fa-eye text-white"></i>
                                     </a>
+                                    @endcan
                                     
+                                    @can('verify-reviews')
                                     @if(!$review->is_verified)
                                         <form action="{{ route('admin.reviews.verify', $review->id) }}" 
                                               method="POST" class="d-inline">
@@ -157,7 +160,9 @@
                                             </button>
                                         </form>
                                     @endif
+                                    @endcan
                                     
+                                    @can('delete-reviews')
                                     <form action="{{ route('admin.reviews.destroy', $review->id) }}" 
                                           method="POST" class="d-inline"
                                           onsubmit="return confirm('هل أنت متأكد من حذف هذا التقييم؟');">
@@ -167,6 +172,7 @@
                                             <i class="fas fa-trash text-white"></i>
                                         </button>
                                     </form>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

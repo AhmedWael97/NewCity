@@ -141,6 +141,7 @@
                                 <small class="text-muted">{{ $subscriber->ip_address }}</small>
                             </td>
                             <td>
+                                @can('delete-newsletter')
                                 <form action="{{ route('admin.newsletter.destroy', $subscriber) }}" 
                                       method="POST" 
                                       onsubmit="return confirm('هل أنت متأكد من حذف هذا المشترك؟')"
@@ -151,6 +152,7 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
+                                @endcan
                             </td>
                         </tr>
                         @empty

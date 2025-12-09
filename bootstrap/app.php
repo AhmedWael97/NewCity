@@ -30,6 +30,10 @@ return Application::configure(basePath: dirname(__DIR__))
         
         $middleware->alias([
             'role' => \App\Http\Middleware\CheckRole::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'permission.guard' => \App\Http\Middleware\SetPermissionGuard::class,
+            'city.access' => \App\Http\Middleware\CheckCityAccess::class,
             'city.selection' => \App\Http\Middleware\CitySelection::class,
             'city.context' => \App\Http\Middleware\CityContextMiddleware::class,
             'check.city' => \App\Http\Middleware\CheckCitySelection::class,
@@ -41,6 +45,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'app.status' => \App\Http\Middleware\CheckAppStatus::class,
             'app.version' => \App\Http\Middleware\CheckAppVersion::class,
             'secure.api' => \App\Http\Middleware\SecureApiAccess::class,
+            'user.active' => \App\Http\Middleware\EnsureUserIsActive::class,
         ]);
         
         // Apply city selection middleware to web routes

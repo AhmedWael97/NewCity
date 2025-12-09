@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Pagination\Paginator;
 use App\Models\Category;
 use App\Models\City;
@@ -30,6 +31,28 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Grant super_admin role all permissions automatically
+        Gate::before(function ($user, $ability) {
+            // Super admins get all access
+            if ($user->hasRole('super_admin')) {
+                return true;
+            }
+            
+            // For other users, check if they have the permission via Spatie
+            // Use getAllPermissions()->contains() as a workaround since hasPermissionTo() seems broken
+            if (method_exists($user, 'getAllPermissions')) {
+                try {
+                    $hasPermission = $user->getAllPermissions()->contains('name', $ability);
+                    return $hasPermission ? true : null;
+                } catch (\Exception $e) {
+                    // If permission doesn't exist, return null to allow other checks
+                    return null;
+                }
+            }
+            
+            return null;
+        });
+        
         // Register model observers for cache invalidation
         Shop::observe(ShopObserver::class);
         UserService::observe(UserServiceObserver::class);

@@ -10,9 +10,11 @@
             <i class="fas fa-chart-line"></i> التقارير والإحصائيات
         </h1>
         <div>
+            @can('create-reports')
             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#generateReportModal">
                 <i class="fas fa-plus"></i> إنشاء تقرير جديد
             </button>
+            @endcan
         </div>
     </div>
 

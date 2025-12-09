@@ -9,11 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -28,6 +29,7 @@ class User extends Authenticatable
         'avatar',
         'user_role_id',
         'city_id',
+        'assigned_city_ids',
         'preferred_city_id',
         'preferred_city_name',
         'user_type',
@@ -57,10 +59,43 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'assigned_city_ids' => 'array',
             'is_active' => 'boolean',
             'is_verified' => 'boolean',
             'date_of_birth' => 'date',
         ];
+    }
+
+    /**
+     * Get the guard name for Spatie permissions based on current authentication
+     */
+    public function guardName(): string
+    {
+        // Check which guard the user is authenticated with
+        if (auth()->guard('admin')->check() && auth()->guard('admin')->id() === $this->id) {
+            return 'admin';
+        }
+        if (auth()->guard('shop_owner')->check() && auth()->guard('shop_owner')->id() === $this->id) {
+            return 'shop_owner';
+        }
+        
+        // Fallback: check user_type to determine likely guard
+        if ($this->user_type === 'admin') {
+            return 'admin';
+        }
+        if ($this->user_type === 'shop_owner') {
+            return 'shop_owner';
+        }
+        
+        return 'web';
+    }
+    
+    /**
+     * Override Spatie's getDefaultGuardName to use our dynamic guard detection
+     */
+    public function getDefaultGuardName(): string
+    {
+        return $this->guardName();
     }
 
     // User type constants

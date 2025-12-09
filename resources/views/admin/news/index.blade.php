@@ -42,12 +42,17 @@
             <i class="fas fa-newspaper"></i> إدارة الأخبار
         </h1>
         <div>
+            @can('view-news')
             <a href="{{ route('admin.news.categories') }}" class="btn btn-info btn-sm">
                 <i class="fas fa-tags"></i> إدارة التصنيفات
             </a>
+            @endcan
+            
+            @can('create-news')
             <a href="{{ route('admin.news.create') }}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> إضافة خبر جديد
             </a>
+            @endcan
         </div>
     </div>
 
@@ -129,12 +134,19 @@
                                 @endif
                             </td>
                             <td>
+                                @can('view-news')
                                 <a href="{{ route('news.show', $item->slug) }}" class="btn btn-sm btn-info" target="_blank" title="عرض">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                @endcan
+                                
+                                @can('edit-news')
                                 <a href="{{ route('admin.news.edit', $item->id) }}" class="btn btn-sm btn-primary" title="تعديل">
                                     <i class="fas fa-edit"></i>
                                 </a>
+                                @endcan
+                                
+                                @can('delete-news')
                                 <form action="{{ route('admin.news.destroy', $item->id) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من حذف هذا الخبر؟');">
                                     @csrf
                                     @method('DELETE')
@@ -142,6 +154,7 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
+                                @endcan
                             </td>
                         </tr>
                         @empty

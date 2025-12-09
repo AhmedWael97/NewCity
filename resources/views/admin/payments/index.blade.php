@@ -219,10 +219,12 @@
                                     <small class="text-muted">{{ $payment->created_at->format('H:i') }}</small>
                                 </td>
                                 <td>
+                                    @can('view-payments')
                                     <a href="{{ route('admin.payments.show', $payment) }}" 
                                        class="btn btn-sm btn-primary">
                                         <i class="fas fa-eye"></i> عرض
                                     </a>
+                                    @endcan
                                 </td>
                             </tr>
                         @empty

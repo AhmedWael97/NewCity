@@ -9,11 +9,14 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminCategoryController extends Controller
 {
+
     /**
      * Display a listing of categories.
      */
     public function index(Request $request)
     {
+        $this->authorize('view-categories');
+        
         $query = Category::withCount(['shops']);
 
         // Search functionality
@@ -48,6 +51,8 @@ class AdminCategoryController extends Controller
      */
     public function create()
     {
+        $this->authorize('create-categories');
+        
         return view('admin.categories.create');
     }
 
@@ -56,6 +61,8 @@ class AdminCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create-categories');
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name',
             'slug' => 'required|string|max:255|unique:categories,slug',
@@ -94,6 +101,8 @@ class AdminCategoryController extends Controller
      */
     public function show(Category $category)
     {
+        $this->authorize('view-categories');
+        
         $category->load(['shops.city']);
         
         // Get category statistics
@@ -114,6 +123,8 @@ class AdminCategoryController extends Controller
      */
     public function edit(Category $category)
     {
+        $this->authorize('edit-categories');
+        
         return view('admin.categories.edit', compact('category'));
     }
 
@@ -122,6 +133,8 @@ class AdminCategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+        $this->authorize('edit-categories');
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'slug' => 'required|string|max:255|unique:categories,slug,' . $category->id,
@@ -160,6 +173,8 @@ class AdminCategoryController extends Controller
      */
     public function destroy(Category $category)
     {
+        $this->authorize('delete-categories');
+        
         // Check if category has shops
         if ($category->shops()->count() > 0) {
             return redirect()
@@ -184,6 +199,8 @@ class AdminCategoryController extends Controller
      */
     public function bulkDelete(Request $request)
     {
+        $this->authorize('delete-categories');
+        
         $request->validate([
             'category_ids' => 'required|array',
             'category_ids.*' => 'exists:categories,id'

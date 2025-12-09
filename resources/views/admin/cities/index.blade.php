@@ -9,11 +9,13 @@
         <h1 class="h3 mb-0 text-gray-800">
             <i class="fas fa-city"></i> إدارة المدن
         </h1>
+        @can('create-cities')
         <div>
             <a href="{{ route('admin.cities.create') }}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> إضافة مدينة جديدة
             </a>
         </div>
+        @endcan
     </div>
 
     <!-- Filters -->
@@ -149,9 +151,13 @@
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">
+                                        @can('view-cities')
                                         <a href="{{ route('admin.cities.show', $city) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        
+                                        @can('edit-cities')
                                         <a href="{{ route('admin.cities.edit', $city) }}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -164,7 +170,9 @@
                                                 <i class="fas fa-{{ $city->is_active ? 'pause' : 'play' }}"></i>
                                             </button>
                                         </form>
+                                        @endcan
 
+                                        @can('delete-cities')
                                         @if($city->shops_count == 0)
                                             <form method="POST" action="{{ route('admin.cities.destroy', $city) }}" class="d-inline" 
                                                   onsubmit="return confirm('هل أنت متأكد من حذف هذه المدينة؟')">
@@ -175,6 +183,7 @@
                                                 </button>
                                             </form>
                                         @endif
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

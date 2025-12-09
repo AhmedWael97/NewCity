@@ -191,6 +191,7 @@
                                     <td>{{ $thread->created_at->diffForHumans() }}</td>
                                     <td>
                                         <div class="btn-group btn-group-sm">
+                                            @can('approve-forum')
                                             @if(!$thread->is_approved)
                                             <form action="{{ route('admin.forum.threads.approve', $thread) }}" method="POST" class="d-inline">
                                                 @csrf
@@ -199,6 +200,9 @@
                                                 </button>
                                             </form>
                                             @endif
+                                            @endcan
+                                            
+                                            @can('edit-forum')
                                             <form action="{{ route('admin.forum.threads.pin', $thread) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 <button type="submit" class="btn btn-primary" title="{{ $thread->is_pinned ? 'إلغاء التثبيت' : 'تثبيت' }}">
@@ -211,6 +215,9 @@
                                                     <i class="fas fa-lock"></i>
                                                 </button>
                                             </form>
+                                            @endcan
+                                            
+                                            @can('delete-forum')
                                             <form action="{{ route('admin.forum.threads.destroy', $thread) }}" method="POST" class="d-inline" onsubmit="return confirm('هل أنت متأكد من الحذف؟')">
                                                 @csrf
                                                 @method('DELETE')
@@ -218,6 +225,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

@@ -1456,6 +1456,217 @@
                 ]
             }
         },
+        "/api/v1/auth/deactivate-account": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Deactivate user account",
+                "description": "Deactivate the authenticated user's account. The account will be disabled and user won't be able to login until reactivated. Data is preserved in the database.",
+                "operationId": "26443797c54c39034d7f4c8efc56fa19",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "password"
+                                ],
+                                "properties": {
+                                    "password": {
+                                        "description": "Current password for security verification",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account deactivated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Account deactivated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid password"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/reactivate-account": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Reactivate user account",
+                "description": "Reactivate a previously deactivated account using email and password. This endpoint does not require authentication.",
+                "operationId": "48026376d1930bd7654f68938f78fe80",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account reactivated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Account reactivated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|abcdef123456..."
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/categories": {
             "get": {
                 "tags": [
@@ -5165,6 +5376,325 @@
                 ]
             }
         },
+        "/api/v1/suggestions/shop": {
+            "post": {
+                "tags": [
+                    "Suggestions"
+                ],
+                "summary": "Submit a shop suggestion",
+                "description": "Submit a suggestion for a new shop to be added to the platform",
+                "operationId": "suggestShop",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "shop_name",
+                                    "city_id",
+                                    "category_id",
+                                    "phone"
+                                ],
+                                "properties": {
+                                    "shop_name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "مطعم الأصالة"
+                                    },
+                                    "city_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "category_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "حي النزهة، شارع الملك فهد"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "0551234567"
+                                    },
+                                    "whatsapp": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "0551234567"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "maxLength": 1000,
+                                        "example": "مطعم يقدم أشهى المأكولات التقليدية"
+                                    },
+                                    "google_maps_link": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "maxLength": 500,
+                                        "example": "https://maps.google.com/?q=24.7136,46.6753"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Suggestion submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "شكراً لك! تم إرسال اقتراحك بنجاح وسنقوم بمراجعته قريباً."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "suggestion_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "pending"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "بيانات غير صحيحة"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "shop_name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "اسم المتجر مطلوب"
+                                                    }
+                                                },
+                                                "city_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "المدينة المحددة غير موجودة"
+                                                    }
+                                                },
+                                                "category_id": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "التصنيف مطلوب"
+                                                    }
+                                                },
+                                                "phone": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "رقم الهاتف مطلوب"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "حدث خطأ أثناء حفظ الاقتراح. الرجاء المحاولة مرة أخرى."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/suggestions/city": {
+            "post": {
+                "tags": [
+                    "Suggestions"
+                ],
+                "summary": "Submit a city suggestion",
+                "description": "Submit a suggestion for a new city to be added to the platform",
+                "operationId": "suggestCity",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "city_name",
+                                    "phone",
+                                    "group_url"
+                                ],
+                                "properties": {
+                                    "city_name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "الرياض"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "0551234567"
+                                    },
+                                    "group_url": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "maxLength": 500,
+                                        "example": "https://chat.whatsapp.com/example123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Suggestion submitted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "شكراً لك! تم إرسال اقتراحك بنجاح وسنقوم بمراجعته قريباً."
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "suggestion_id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "pending"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "بيانات غير صحيحة"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "city_name": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "اسم المدينة مطلوب"
+                                                    }
+                                                },
+                                                "phone": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "رقم الهاتف مطلوب"
+                                                    }
+                                                },
+                                                "group_url": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "رابط المجموعة غير صحيح"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "حدث خطأ أثناء حفظ الاقتراح. الرجاء المحاولة مرة أخرى."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/tickets": {
             "get": {
                 "tags": [
@@ -5799,10 +6329,10 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Service ID",
+                        "description": "Service ID or Slug",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -5816,6 +6346,9 @@
                                 }
                             }
                         }
+                    },
+                    "404": {
+                        "description": "Service not found"
                     }
                 }
             }
@@ -6023,10 +6556,10 @@
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Service ID",
+                        "description": "Service ID or Slug",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         }
                     }
                 ],
@@ -6056,6 +6589,9 @@
                 "responses": {
                     "200": {
                         "description": "Contact recorded successfully"
+                    },
+                    "404": {
+                        "description": "Service not found"
                     }
                 }
             }
@@ -6804,6 +7340,10 @@
         {
             "name": "User Services",
             "description": "User services management endpoints"
+        },
+        {
+            "name": "Suggestions",
+            "description": "Suggestions"
         }
     ]
 }

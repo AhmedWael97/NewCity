@@ -736,6 +736,7 @@
         <div class="sidebar-menu p-3 overflow-auto" style="max-height: calc(100vh - 100px);">
             <ul class="nav flex-column">
                 <!-- Dashboard -->
+                @can('view-dashboard')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" 
                        href="{{ route('admin.dashboard') }}">
@@ -743,9 +744,14 @@
                         <span>لوحة التحكم</span>
                     </a>
                 </li>
+                @endcan
 
                 <!-- Users Management -->
+                @canany(['view-users', 'view-roles'])
                 <div class="sidebar-heading">إدارة المستخدمين</div>
+                @endcanany
+                
+                @can('view-users')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" 
                        href="{{ route('admin.users.index') }}">
@@ -753,9 +759,24 @@
                         <span>المستخدمين</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-roles')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.roles.index') }}">
+                        <i class="fas fa-user-shield"></i>
+                        <span>الأدوار والصلاحيات</span>
+                    </a>
+                </li>
+                @endcan
 
                 <!-- Shop Management -->
+                @canany(['view-shops', 'view-user-services'])
                 <div class="sidebar-heading">إدارة المتاجر</div>
+                @endcanany
+                
+                @can('view-shops')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.shops.index') ? 'active' : '' }}" 
                        href="{{ route('admin.shops.index') }}">
@@ -763,6 +784,9 @@
                         <span>جميع المتاجر</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('verify-shops')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.shops.pending') ? 'active' : '' }}" 
                        href="{{ route('admin.shops.pending') }}">
@@ -773,6 +797,9 @@
                         @endif
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-shops')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.shops.map') ? 'active' : '' }}" 
                        href="{{ route('admin.shops.map') }}">
@@ -780,6 +807,9 @@
                         <span>خريطة المتاجر</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-user-services')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.user-services.*') ? 'active' : '' }}" 
                        href="{{ route('admin.user-services.index') }}">
@@ -787,9 +817,14 @@
                         <span>خدمات المستخدمين</span>
                     </a>
                 </li>
+                @endcan
 
                 <!-- Content Management -->
+                @canany(['view-cities', 'view-categories', 'view-shop-suggestions', 'view-city-suggestions', 'view-reviews', 'view-news', 'view-marketplace'])
                 <div class="sidebar-heading">إدارة المحتوى</div>
+                @endcanany
+                
+                @can('view-cities')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.cities.*') ? 'active' : '' }}" 
                        href="{{ route('admin.cities.index') }}">
@@ -797,6 +832,9 @@
                         <span>المدن</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-categories')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" 
                        href="{{ route('admin.categories.index') }}">
@@ -804,6 +842,9 @@
                         <span>التصنيفات</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-shop-suggestions')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.shop-suggestions.*') ? 'active' : '' }}" 
                        href="{{ route('admin.shop-suggestions.index') }}">
@@ -817,6 +858,9 @@
                         @endif
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-city-suggestions')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.city-suggestions.*') ? 'active' : '' }}" 
                        href="{{ route('admin.city-suggestions.index') }}">
@@ -830,6 +874,9 @@
                         @endif
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-reviews')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.ratings.*') ? 'active' : '' }}" 
                        href="{{ route('admin.ratings.index') }}">
@@ -837,6 +884,9 @@
                         <span>التقييمات</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-reviews')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.reviews.*') ? 'active' : '' }}" 
                        href="{{ route('admin.reviews.index') }}">
@@ -844,6 +894,9 @@
                         <span>المراجعات</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-reviews')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.favorites.*') ? 'active' : '' }}" 
                        href="{{ route('admin.favorites.index') }}">
@@ -851,6 +904,9 @@
                         <span>المفضلات</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-news')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.news.*') ? 'active' : '' }}" 
                        href="{{ route('admin.news.index') }}">
@@ -858,6 +914,9 @@
                         <span>الأخبار</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-marketplace')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.marketplace.*') ? 'active' : '' }}" 
                        href="{{ route('admin.marketplace.index') }}">
@@ -871,8 +930,10 @@
                         @endif
                     </a>
                 </li>
+                @endcan
 
                 <!-- Community -->
+                @can('view-forum')
                 <div class="sidebar-heading">المجتمع</div>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.forum.*') ? 'active' : '' }}" 
@@ -890,8 +951,10 @@
                         @endif
                     </a>
                 </li>
+                @endcan
 
                 <!-- Tools -->
+                @can('view-dashboard')
                 <div class="sidebar-heading">الأدوات</div>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.qr-generator.*') ? 'active' : '' }}" 
@@ -900,6 +963,7 @@
                         <span>مولد رمز QR</span>
                     </a>
                 </li>
+                @endcan
 
                 {{-- Reports (Temporarily disabled - controller not implemented)
                 <!-- Reports -->
@@ -914,7 +978,11 @@
                 --}}
 
                 <!-- Business Management -->
+                @canany(['view-subscriptions', 'view-payments', 'view-tickets'])
                 <div class="sidebar-heading">إدارة الأعمال</div>
+                @endcanany
+                
+                @can('view-subscriptions')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.subscriptions.*') ? 'active' : '' }}" 
                        href="{{ route('admin.subscriptions.index') }}">
@@ -922,6 +990,9 @@
                         <span>خطط الاشتراك</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-payments')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}" 
                        href="{{ route('admin.payments.index') }}">
@@ -935,6 +1006,9 @@
                         @endif
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-tickets')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.tickets.*') ? 'active' : '' }}" 
                        href="{{ route('admin.tickets.index') }}">
@@ -948,8 +1022,10 @@
                         @endif
                     </a>
                 </li>
+                @endcan
 
                 <!-- Analytics & Reports -->
+                @can('view-advertisements')
                 <div class="sidebar-heading">التسويق والإعلانات</div>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.advertisements.*') ? 'active' : '' }}" 
@@ -965,9 +1041,14 @@
                         <span>تقارير الإعلانات</span>
                     </a>
                 </li>
+                @endcan
 
                 <!-- City Customization -->
+                @canany(['view-cities', 'view-banners'])
                 <div class="sidebar-heading">تخصيص المدن</div>
+                @endcanany
+                
+                @can('view-cities')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.city-styles.*') ? 'active' : '' }}" 
                        href="{{ route('admin.city-styles.index') }}">
@@ -975,6 +1056,9 @@
                         <span>تصاميم المدن</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-banners')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.city-banners.*') ? 'active' : '' }}" 
                        href="{{ route('admin.city-banners.index') }}">
@@ -982,8 +1066,10 @@
                         <span>إعلانات المدن</span>
                     </a>
                 </li>
+                @endcan
 
                 <!-- Analytics & Reports -->
+                @can('view-analytics')
                 <div class="sidebar-heading">التحليلات والتقارير</div>
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}" 
@@ -1013,9 +1099,14 @@
                         <span>خريطة النشاط الحرارية</span>
                     </a>
                 </li>
+                @endcan
 
                 <!-- User Engagement -->
+                @canany(['view-verifications', 'view-newsletter', 'view-dashboard'])
                 <div class="sidebar-heading">تفاعل المستخدمين</div>
+                @endcanany
+                
+                @can('view-verifications')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.verifications.*') ? 'active' : '' }}" 
                        href="{{ route('admin.verifications.index') }}">
@@ -1029,6 +1120,9 @@
                         @endif
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-newsletter')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.newsletter.*') ? 'active' : '' }}" 
                        href="{{ route('admin.newsletter.index') }}">
@@ -1036,6 +1130,9 @@
                         <span>النشرة البريدية</span>
                     </a>
                 </li>
+                @endcan
+                
+                @can('view-dashboard')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->routeIs('admin.feedback.*') ? 'active' : '' }}" 
                        href="{{ route('admin.feedback.index') }}">
@@ -1043,8 +1140,10 @@
                         <span>التقييمات والملاحظات</span>
                     </a>
                 </li>
+                @endcan
 
                 <!-- Settings -->
+                @can('view-app-settings')
                 <div class="sidebar-heading">الإعدادات</div>
                 
                 <li class="nav-item">
@@ -1086,6 +1185,7 @@
                         <span>إعدادات SEO</span>
                     </a>
                 </li>
+                @endcan
             </ul>
         </div>
 
@@ -1282,7 +1382,7 @@
                 <div class="modal-body">اضغط على "تسجيل الخروج" أدناه إذا كنت جاهزاً لإنهاء جلستك الحالية.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">إلغاء</button>
-                    <form method="POST" action="{{ route('logout') }}" class="d-inline">
+                    <form method="POST" action="{{ route('admin.logout') }}" class="d-inline">
                         @csrf
                         <button class="btn btn-primary" type="submit">تسجيل الخروج</button>
                     </form>

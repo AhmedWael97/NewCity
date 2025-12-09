@@ -7,9 +7,11 @@
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">إدارة المستخدمين</h1>
     <div class="d-flex gap-2">
+        @can('create-users')
         <a href="{{ route('admin.users.create') }}" class="btn btn-primary btn-sm">
             <i class="fas fa-plus"></i> إضافة مستخدم جديد
         </a>
+        @endcan
     </div>
 </div>
 
@@ -128,7 +130,8 @@
                             </th>
                             <th>المستخدم</th>
                             <th>البريد الإلكتروني</th>
-                            <th>الدور</th>
+                            <th>نوع المستخدم</th>
+                            <th>الأدوار</th>
                             <th>المدينة</th>
                             <th>الحالة</th>
                             <th>التحقق</th>
@@ -158,12 +161,35 @@
                                 </td>
                                 <td>{{ $user->email }}</td>
                                 <td>
-                                    @if($user->role == 'admin')
+                                    @if($user->user_type == 'admin')
                                         <span class="badge bg-danger text-white">مدير</span>
-                                    @elseif($user->role == 'shop_owner')
+                                    @elseif($user->user_type == 'shop_owner')
                                         <span class="badge bg-warning text-dark">صاحب متجر</span>
                                     @else
-                                        <span class="badge bg-info text-white">مستخدم</span>
+                                        <span class="badge bg-info text-white">مستخدم عادي</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($user->roles->count() > 0)
+                                        @foreach($user->roles as $role)
+                                            <span class="badge mb-1
+                                                @if($role->name === 'super_admin') bg-danger
+                                                @elseif($role->name === 'admin') bg-primary
+                                                @elseif($role->name === 'city_manager') bg-info
+                                                @elseif($role->name === 'editor') bg-warning text-dark
+                                                @else bg-secondary
+                                                @endif
+                                            ">
+                                                {{ $role->name }}
+                                            </span>
+                                        @endforeach
+                                    @else
+                                        <span class="badge bg-secondary">لا يوجد</span>
+                                    @endif
+                                    @if($user->hasRole('city_manager') && !empty($user->assigned_city_ids))
+                                        <br><small class="text-muted">
+                                            <i class="fas fa-city"></i> {{ count($user->assigned_city_ids) }} مدينة
+                                        </small>
                                     @endif
                                 </td>
                                 <td>{{ $user->city->name ?? 'غير محدد' }}</td>
@@ -188,12 +214,19 @@
                                 <td>{{ $user->created_at->format('Y-m-d') }}</td>
                                 <td>
                                     <div class="btn-group" role="group">
+                                        @can('view-users')
                                         <a href="{{ route('admin.users.show', $user) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        
+                                        @can('edit-users')
                                         <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        @endcan
+                                        
+                                        @can('verify-users')
                                         @if(!$user->email_verified_at)
                                             <form method="POST" action="{{ route('admin.users.verify', $user) }}" class="d-inline">
                                                 @csrf
@@ -203,6 +236,9 @@
                                                 </button>
                                             </form>
                                         @endif
+                                        @endcan
+                                        
+                                        @can('edit-users')
                                         <form method="POST" action="{{ route('admin.users.toggle-status', $user) }}" class="d-inline">
                                             @csrf
                                             @method('PATCH')
@@ -211,6 +247,9 @@
                                                 <i class="fas fa-{{ $user->status == 'active' ? 'ban' : 'check' }}"></i>
                                             </button>
                                         </form>
+                                        @endcan
+                                        
+                                        @can('delete-users')
                                         @if($user->id !== auth()->id())
                                             <form method="POST" action="{{ route('admin.users.destroy', $user) }}" class="d-inline" 
                                                   onsubmit="return confirm('هل أنت متأكد من حذف هذا المستخدم؟')">
@@ -221,6 +260,7 @@
                                                 </button>
                                             </form>
                                         @endif
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

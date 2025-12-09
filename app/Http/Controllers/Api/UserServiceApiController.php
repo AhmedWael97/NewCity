@@ -117,18 +117,27 @@ class UserServiceApiController extends Controller
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="Service ID",
-     *         @OA\Schema(type="integer")
+     *         description="Service ID or Slug",
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Service details",
      *         @OA\JsonContent(ref="#/components/schemas/UserService")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Service not found"
      *     )
      * )
      */
-    public function show(UserService $userService): JsonResponse
+    public function show($id): JsonResponse
     {
+        // Try to find by ID first, then by slug
+        $userService = UserService::where('id', $id)
+            ->orWhere('slug', $id)
+            ->firstOrFail();
+            
         $userService->load(['user', 'city', 'serviceCategory', 'reviews.reviewer']);
         
         // Record view
@@ -362,8 +371,8 @@ class UserServiceApiController extends Controller
      *         name="id",
      *         in="path",
      *         required=true,
-     *         description="Service ID",
-     *         @OA\Schema(type="integer")
+     *         description="Service ID or Slug",
+     *         @OA\Schema(type="string")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
@@ -375,11 +384,20 @@ class UserServiceApiController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Contact recorded successfully"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Service not found"
      *     )
      * )
      */
-    public function recordContact(Request $request, UserService $userService): JsonResponse
+    public function recordContact(Request $request, $id): JsonResponse
     {
+        // Try to find by ID first, then by slug
+        $userService = UserService::where('id', $id)
+            ->orWhere('slug', $id)
+            ->firstOrFail();
+            
         $validator = Validator::make($request->all(), [
             'type' => ['required', 'in:phone,whatsapp'],
         ]);
@@ -430,14 +448,41 @@ class UserServiceApiController extends Controller
      */
     private function recordAnalytics(UserService $service, string $type, string $value = null): void
     {
-        ServiceAnalytics::create([
-            'user_service_id' => $service->id,
-            'metric_type' => $type,
-            'metric_value' => $value,
-            'date' => now()->toDateString(),
-            'hour' => now()->hour,
-            'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent(),
-        ]);
+        $today = now()->toDateString();
+        
+        // Get or create today's analytics record
+        $analytics = ServiceAnalytics::firstOrCreate(
+            [
+                'user_service_id' => $service->id,
+                'date' => $today,
+            ],
+            [
+                'views' => 0,
+                'contacts' => 0,
+                'phone_clicks' => 0,
+                'whatsapp_clicks' => 0,
+                'unique_visitors' => 0,
+                'referrer_sources' => json_encode([]),
+                'visitor_locations' => json_encode([]),
+            ]
+        );
+        
+        // Increment the appropriate counter
+        switch ($type) {
+            case 'view':
+                $analytics->increment('views');
+                $service->increment('total_views');
+                break;
+                
+            case 'contact':
+                $analytics->increment('contacts');
+                if ($value === 'phone') {
+                    $analytics->increment('phone_clicks');
+                } elseif ($value === 'whatsapp') {
+                    $analytics->increment('whatsapp_clicks');
+                }
+                $service->increment('total_contacts');
+                break;
+        }
     }
 }

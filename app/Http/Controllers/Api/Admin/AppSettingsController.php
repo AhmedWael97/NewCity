@@ -260,7 +260,6 @@ class AppSettingsController extends Controller
      *     path="/api/v1/admin/app-settings/notifications",
      *     summary="Get push notifications list",
      *     tags={"Admin - App Settings"},
-     *     security={{"sanctum":{}}},
      *     @OA\Parameter(
      *         name="status",
      *         in="query",
@@ -282,35 +281,46 @@ class AppSettingsController extends Controller
      *     @OA\Response(
      *         response=200,
      *         description="Notifications list retrieved successfully"
-     *     )
+     *     ),
+     *     security={{"sanctum":{}}}
      * )
      */
     public function notifications(Request $request)
     {
-        $query = PushNotification::with('creator');
+        $isAuthenticated = auth('sanctum')->check();
+        
+        $query = PushNotification::query();
+        
+        // For guests: only show general notifications that have been sent
+        if (!$isAuthenticated) {
+            $query->where('status', 'sent')
+                  ->where('type', 'general');
+        } else {
+            // For authenticated admins: show all with filters and relations
+            $query->with('creator');
+            
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('type')) {
-            $query->where('type', $request->type);
+            if ($request->filled('type')) {
+                $query->where('type', $request->type);
+            }
         }
 
         $notifications = $query->orderBy('created_at', 'desc')->paginate(20);
 
-        $stats = [
+        $stats = $isAuthenticated ? [
             'total' => PushNotification::count(),
             'pending' => PushNotification::where('status', 'pending')->count(),
             'sent' => PushNotification::where('status', 'sent')->count(),
             'failed' => PushNotification::where('status', 'failed')->count(),
-        ];
+        ] : null;
 
-        return response()->json([
+        $response = [
             'success' => true,
             'data' => [
                 'notifications' => PushNotificationResource::collection($notifications),
-                'stats' => $stats,
                 'pagination' => [
                     'total' => $notifications->total(),
                     'current_page' => $notifications->currentPage(),
@@ -318,7 +328,13 @@ class AppSettingsController extends Controller
                     'per_page' => $notifications->perPage(),
                 ]
             ]
-        ]);
+        ];
+
+        if ($isAuthenticated && $stats) {
+            $response['data']['stats'] = $stats;
+        }
+
+        return response()->json($response);
     }
 
     /**

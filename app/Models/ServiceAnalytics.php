@@ -12,19 +12,20 @@ class ServiceAnalytics extends Model
 
     protected $fillable = [
         'user_service_id',
-        'metric_type',
-        'metric_value',
-        'value',
         'date',
-        'hour',
-        'user_agent',
-        'ip_address',
-        'metadata',
+        'views',
+        'contacts',
+        'phone_clicks',
+        'whatsapp_clicks',
+        'unique_visitors',
+        'referrer_sources',
+        'visitor_locations',
     ];
 
     protected $casts = [
         'date' => 'date',
-        'metadata' => 'array',
+        'referrer_sources' => 'array',
+        'visitor_locations' => 'array',
     ];
 
     /**

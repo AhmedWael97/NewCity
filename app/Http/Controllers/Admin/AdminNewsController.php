@@ -15,8 +15,11 @@ use Illuminate\Support\Str;
 
 class AdminNewsController extends Controller
 {
+
     public function index()
     {
+        $this->authorize('view-news');
+        
         $news = News::with(['category', 'city'])
             ->latest('created_at')
             ->paginate(20);
@@ -26,6 +29,8 @@ class AdminNewsController extends Controller
 
     public function create()
     {
+        $this->authorize('create-news');
+        
         $categories = NewsCategory::where('is_active', true)->orderBy('order')->get();
         $cities = City::orderBy('name')->get();
         
@@ -34,6 +39,8 @@ class AdminNewsController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create-news');
+        
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:news,slug',
@@ -86,6 +93,8 @@ class AdminNewsController extends Controller
 
     public function edit(News $news)
     {
+        $this->authorize('edit-news');
+        
         $categories = NewsCategory::where('is_active', true)->orderBy('order')->get();
         $cities = City::orderBy('name')->get();
         
@@ -94,6 +103,8 @@ class AdminNewsController extends Controller
 
     public function update(Request $request, News $news)
     {
+        $this->authorize('edit-news');
+        
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|unique:news,slug,' . $news->id,
@@ -174,6 +185,8 @@ class AdminNewsController extends Controller
 
     public function destroy(News $news)
     {
+        $this->authorize('delete-news');
+        
         $news->delete();
 
         return redirect()->route('admin.news.index')

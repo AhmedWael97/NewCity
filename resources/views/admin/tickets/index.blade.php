@@ -312,9 +312,13 @@
                                 </td>
                                 <td>
                                     <div class="btn-group">
+                                        @can('view-tickets')
                                         <a href="{{ route('admin.tickets.show', $ticket) }}" class="btn btn-primary btn-sm" title="عرض">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        
+                                        @can('edit-tickets')
                                         @if($ticket->status !== 'closed')
                                             <button type="button" class="btn btn-outline-info btn-sm" 
                                                     data-toggle="modal" data-target="#assignModal"
@@ -324,6 +328,7 @@
                                                 <i class="fas fa-user-plus"></i>
                                             </button>
                                         @endif
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

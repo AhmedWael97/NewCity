@@ -228,11 +228,15 @@
                                 <small class="text-muted">{{ $verification->verified_at->format('Y-m-d H:i') }}</small>
                             </td>
                             <td>
+                                @can('view-verifications')
                                 <a href="{{ route('admin.verifications.show', $verification) }}" 
                                    class="btn btn-sm btn-info" 
                                    title="التفاصيل">
                                     <i class="fas fa-eye"></i>
                                 </a>
+                                @endcan
+                                
+                                @can('delete-verifications')
                                 <form action="{{ route('admin.verifications.destroy', $verification) }}" 
                                       method="POST" 
                                       class="d-inline"
@@ -243,6 +247,7 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
+                                @endcan
                             </td>
                         </tr>
                         @empty

@@ -9,12 +9,14 @@
         <h1 class="h3 mb-0 text-gray-800">
             <i class="fas fa-tools"></i> إدارة خدمات المستخدمين
         </h1>
+        @can('create-user-services')
         <a href="{{ route('admin.user-services.create') }}" class="btn btn-primary btn-icon-split">
             <span class="icon text-white-50">
                 <i class="fas fa-plus"></i>
             </span>
             <span class="text">إضافة خدمة جديدة</span>
         </a>
+        @endcan
     </div>
 
     <!-- Filters -->
@@ -231,16 +233,23 @@
                                 </td>
                                 <td>
                                     <div class="d-flex gap-1 flex-nowrap">
+                                        @can('view-user-services')
                                         <a href="{{ route('admin.user-services.show', $service) }}" 
                                            class="btn btn-sm btn-info" 
                                            title="عرض">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        
+                                        @can('edit-user-services')
                                         <a href="{{ route('admin.user-services.edit', $service) }}" 
                                            class="btn btn-sm btn-primary" 
                                            title="تعديل">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        @endcan
+                                        
+                                        @can('delete-user-services')
                                         <form method="POST" action="{{ route('admin.user-services.destroy', $service) }}" 
                                               style="display: inline;"
                                               onsubmit="return confirm('هل أنت متأكد من حذف هذه الخدمة؟')">
@@ -250,6 +259,7 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

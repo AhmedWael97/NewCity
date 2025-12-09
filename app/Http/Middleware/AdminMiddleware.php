@@ -16,6 +16,14 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Force admin guard for downstream auth() / gate checks
+        Auth::shouldUse('admin');
+        
+        // Ensure session has the correct guard set
+        if (!$request->session()->has('_guard') || $request->session()->get('_guard') !== 'admin') {
+            $request->session()->put('_guard', 'admin');
+        }
+
         // Check if user is authenticated on admin guard
         if (!Auth::guard('admin')->check()) {
             return redirect()->route('admin.login');

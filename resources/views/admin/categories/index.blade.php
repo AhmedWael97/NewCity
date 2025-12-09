@@ -10,12 +10,17 @@
             <i class="fas fa-tags"></i> إدارة التصنيفات
         </h1>
         <div>
+            @can('view-categories')
             <a href="{{ route('admin.categories.hierarchy') }}" class="btn btn-info btn-sm">
                 <i class="fas fa-sitemap"></i> عرض الهيكل الشجري
             </a>
+            @endcan
+            
+            @can('create-categories')
             <a href="{{ route('admin.categories.create') }}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> إضافة تصنيف جديد
             </a>
+            @endcan
         </div>
     </div>
 
@@ -159,9 +164,13 @@
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">
+                                        @can('view-categories')
                                         <a href="{{ route('admin.categories.show', $category) }}" class="btn btn-info btn-sm">
                                             <i class="fas fa-eye"></i>
                                         </a>
+                                        @endcan
+                                        
+                                        @can('edit-categories')
                                         <a href="{{ route('admin.categories.edit', $category) }}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-edit"></i>
                                         </a>
@@ -174,7 +183,9 @@
                                                 <i class="fas fa-{{ $category->is_active ? 'pause' : 'play' }}"></i>
                                             </button>
                                         </form>
+                                        @endcan
 
+                                        @can('delete-categories')
                                         @if($category->shops_count == 0 && $category->children_count == 0)
                                             <form method="POST" action="{{ route('admin.categories.destroy', $category) }}" class="d-inline" 
                                                   onsubmit="return confirm('هل أنت متأكد من حذف هذا التصنيف؟')">
@@ -185,6 +196,7 @@
                                                 </button>
                                             </form>
                                         @endif
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

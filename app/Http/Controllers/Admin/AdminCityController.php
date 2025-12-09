@@ -9,11 +9,14 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminCityController extends Controller
 {
+
     /**
      * Display a listing of cities.
      */
     public function index(Request $request)
     {
+        $this->authorize('view-cities');
+        
         $query = City::withCount(['shops', 'users']);
 
         // Search functionality
@@ -72,6 +75,8 @@ class AdminCityController extends Controller
      */
     public function create()
     {
+        $this->authorize('create-cities');
+        
         return view('admin.cities.create');
     }
 
@@ -80,6 +85,8 @@ class AdminCityController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create-cities');
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:cities,slug',
@@ -162,6 +169,8 @@ class AdminCityController extends Controller
      */
     public function show(City $city)
     {
+        $this->authorize('view-cities');
+        
         $city->load(['shops.category', 'users']);
         
         // Get city statistics
@@ -182,6 +191,8 @@ class AdminCityController extends Controller
      */
     public function edit(City $city)
     {
+        $this->authorize('edit-cities');
+        
         return view('admin.cities.edit', compact('city'));
     }
 
@@ -190,6 +201,8 @@ class AdminCityController extends Controller
      */
     public function update(Request $request, City $city)
     {
+        $this->authorize('edit-cities');
+        
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255|unique:cities,slug,' . $city->id,
@@ -285,6 +298,8 @@ class AdminCityController extends Controller
      */
     public function destroy(City $city)
     {
+        $this->authorize('delete-cities');
+        
         // Check if city has shops
         if ($city->shops()->count() > 0) {
             return redirect()
@@ -316,6 +331,8 @@ class AdminCityController extends Controller
      */
     public function toggleStatus(City $city)
     {
+        $this->authorize('edit-cities');
+        
         $newStatus = $city->status === 'active' ? 'inactive' : 'active';
         
         $city->update([

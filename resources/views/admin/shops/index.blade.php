@@ -58,9 +58,11 @@
             <i class="fas fa-store"></i> إدارة المتاجر
         </h1>
         <div>
+            @can('create-shops')
             <a href="{{ route('admin.shops.create') }}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> إضافة متجر جديد
             </a>
+            @endcan
         </div>
     </div>
 
@@ -317,6 +319,7 @@
                                         </div>
                                     </td>
                                     <td>
+                                        @can('feature-shops')
                                         <form method="POST" action="{{ route('admin.shops.feature', $shop) }}" style="display: inline;">
                                             @csrf
                                             <button type="submit" 
@@ -326,19 +329,29 @@
                                                 <i class="fas fa-star"></i>
                                             </button>
                                         </form>
+                                        @else
+                                            <span class="badge bg-secondary">-</span>
+                                        @endcan
                                     </td>
                                     <td>
                                         <div class="d-flex gap-1 flex-nowrap">
+                                            @can('view-shops')
                                             <a href="{{ route('admin.shops.show', $shop) }}" 
                                                class="btn btn-sm btn-info" 
                                                title="عرض">
                                                 <i class="fas fa-eye"></i>
                                             </a>
+                                            @endcan
+                                            
+                                            @can('edit-shops')
                                             <a href="{{ route('admin.shops.edit', $shop) }}" 
                                                class="btn btn-sm btn-primary" 
                                                title="تعديل">
                                                 <i class="fas fa-edit"></i>
                                             </a>
+                                            @endcan
+                                            
+                                            @can('delete-shops')
                                             <form method="POST" action="{{ route('admin.shops.destroy', $shop) }}" 
                                                   style="display: inline;"
                                                   onsubmit="return confirm('هل أنت متأكد من حذف هذا المتجر؟')">
@@ -348,6 +361,7 @@
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </form>
+                                            @endcan
                                         </div>
                                     </td>
                                 </tr>

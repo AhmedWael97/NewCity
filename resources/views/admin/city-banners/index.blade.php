@@ -10,9 +10,11 @@
             <i class="fas fa-image"></i> إدارة إعلانات المدن (Banners)
         </h1>
         <div>
+            @can('create-banners')
             <a href="{{ route('admin.city-banners.create') }}" class="btn btn-primary btn-sm">
                 <i class="fas fa-plus"></i> إضافة إعلان جديد
             </a>
+            @endcan
         </div>
     </div>
 
@@ -156,10 +158,14 @@
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">
+                                        @can('edit-banners')
                                         <a href="{{ route('admin.city-banners.edit', $banner) }}" 
                                            class="btn btn-sm btn-warning" title="تعديل">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        @endcan
+                                        
+                                        @can('delete-banners')
                                         <form action="{{ route('admin.city-banners.destroy', $banner) }}" 
                                               method="POST" class="d-inline"
                                               onsubmit="return confirm('هل أنت متأكد من حذف هذا الإعلان؟')">
@@ -169,6 +175,7 @@
                                                 <i class="fas fa-trash"></i>
                                             </button>
                                         </form>
+                                        @endcan
                                     </div>
                                 </td>
                             </tr>

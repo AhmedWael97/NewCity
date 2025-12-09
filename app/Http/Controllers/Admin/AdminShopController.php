@@ -12,12 +12,21 @@ use Illuminate\Support\Str;
 
 class AdminShopController extends Controller
 {
+
     /**
      * Display a listing of shops.
      */
     public function index(Request $request)
     {
+        $this->authorize('view-shops');
+        
         $query = Shop::with(['city', 'category', 'owner']);
+        
+        // City Manager: filter by assigned cities
+        if (auth()->user()->hasRole('city_manager')) {
+            $assignedCities = auth()->user()->assigned_city_ids ?? [];
+            $query->whereIn('city_id', $assignedCities);
+        }
 
         // Search functionality
         if ($request->filled('search')) {
@@ -107,7 +116,15 @@ class AdminShopController extends Controller
      */
     public function create(Request $request)
     {
+        $this->authorize('create-shops');
+        
         $cities = City::orderBy('name')->get();
+        
+        // City Manager: filter cities
+        if (auth()->user()->hasRole('city_manager')) {
+            $assignedCities = auth()->user()->assigned_city_ids ?? [];
+            $cities = $cities->whereIn('id', $assignedCities);
+        }
         $categories = Category::orderBy('name')->get();
         $users = \App\Models\User::orderBy('name')->get();
         
@@ -125,6 +142,16 @@ class AdminShopController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create-shops');
+        
+        // City Manager: check city access
+        if (auth()->user()->hasRole('city_manager')) {
+            $assignedCities = auth()->user()->assigned_city_ids ?? [];
+            if (!in_array($request->city_id, $assignedCities)) {
+                abort(403, 'You do not have access to this city.');
+            }
+        }
+        
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'name' => 'required|string|max:255',
@@ -207,7 +234,15 @@ class AdminShopController extends Controller
      */
     public function edit(Shop $shop)
     {
+        $this->authorize('edit-shops');
+        
         $cities = City::orderBy('name')->get();
+        
+        // City Manager: filter cities
+        if (auth()->user()->hasRole('city_manager')) {
+            $assignedCities = auth()->user()->assigned_city_ids ?? [];
+            $cities = $cities->whereIn('id', $assignedCities);
+        }
         $categories = Category::orderBy('name')->get();
         $users = \App\Models\User::orderBy('name')->get();
         
@@ -219,6 +254,8 @@ class AdminShopController extends Controller
      */
     public function update(Request $request, Shop $shop)
     {
+        $this->authorize('edit-shops');
+        
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -277,6 +314,8 @@ class AdminShopController extends Controller
      */
     public function destroy(Shop $shop)
     {
+        $this->authorize('delete-shops');
+        
         try {
             // Delete associated images from storage
             if ($shop->images && is_array($shop->images)) {
@@ -343,6 +382,8 @@ class AdminShopController extends Controller
      */
     public function approve(Shop $shop)
     {
+        $this->authorize('verify-shops');
+        
         $shop->update([
             'status' => 'active',
             'is_verified' => true
@@ -358,6 +399,8 @@ class AdminShopController extends Controller
      */
     public function reject(Request $request, Shop $shop)
     {
+        $this->authorize('verify-shops');
+        
         $request->validate([
             'rejection_reason' => 'nullable|string|max:500'
         ]);
@@ -379,6 +422,8 @@ class AdminShopController extends Controller
      */
     public function toggleVerification(Shop $shop)
     {
+        $this->authorize('verify-shops');
+        
         $shop->update([
             'is_verified' => !$shop->is_verified
         ]);
@@ -395,6 +440,8 @@ class AdminShopController extends Controller
      */
     public function toggleFeatured(Shop $shop)
     {
+        $this->authorize('feature-shops');
+        
         $isFeatured = !$shop->is_featured;
         
         $shop->update([
@@ -415,6 +462,8 @@ class AdminShopController extends Controller
      */
     public function toggleStatus(Shop $shop)
     {
+        $this->authorize('toggle-shop-status');
+        
         $newStatus = $shop->status === 'active' ? 'inactive' : 'active';
         
         $shop->update([
@@ -545,6 +594,8 @@ class AdminShopController extends Controller
      */
     public function verify(Shop $shop)
     {
+        $this->authorize('verify-shops');
+        
         $shop->update([
             'is_verified' => true,
             'is_active' => true,
