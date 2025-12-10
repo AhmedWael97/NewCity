@@ -206,7 +206,7 @@ class AdminShopController extends Controller
             if ($suggestion) {
                 $suggestion->update([
                     'status' => 'completed',
-                    'reviewed_by' => auth()->guard('admin')->id(),
+                    'reviewed_by' => auth()->guard('web')->id(),
                     'reviewed_at' => now(),
                     'admin_notes' => ($suggestion->admin_notes ? $suggestion->admin_notes . "\n\n" : '') . 
                                    "تم إنشاء المتجر بنجاح (ID: {$shop->id})"

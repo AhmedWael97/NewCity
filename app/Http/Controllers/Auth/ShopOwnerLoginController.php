@@ -31,7 +31,7 @@ class ShopOwnerLoginController extends Controller
         $credentials['user_type'] = 'shop_owner'; // Only allow shop_owner role
         $credentials['is_active'] = true; // Only allow active users
 
-        if (Auth::guard('shop_owner')->attempt($credentials, $request->filled('remember'))) {
+        if (Auth::guard('web')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
             return redirect()->intended(route('shop-owner.dashboard'));
@@ -47,7 +47,7 @@ class ShopOwnerLoginController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::guard('shop_owner')->logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

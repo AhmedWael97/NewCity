@@ -23,35 +23,31 @@ class DatabaseSeeder extends Seeder
         // Run seeders in order
         $this->call([
            // UserRoleSeeder::class,
-            PermissionsSeeder::class,  // Seed permissions first (for both guards)
-            RolesSeeder::class,         // Then seed roles (for both guards)
+            PermissionsSeeder::class,  // Seed permissions first
+            RolesSeeder::class,         // Then seed roles
             //ArabicCategorySeeder::class,
             //EgyptianNewCitiesSeeder::class,
         ]);
 
-        // Create a super admin user with admin guard
+        // Create a super admin user with web guard
         $superAdmin = User::firstOrCreate(
             ['email' => 'admin@city.com'],
             [
                 'name' => 'Super Admin',
                 'password' => Hash::make('password'),
                 'user_role_id' => 4, // Super Admin role from user_roles table
-                'user_type' => 'admin', // Set user type for admin guard
+                'user_type' => 'admin', // Set user type for admin access
                 'is_active' => true,
                 'is_verified' => true,
             ]
         );
         
-        // Assign super_admin role for both web and admin guards
-        // This ensures the user has permissions on both the API/frontend (web) and admin panel (admin)
+        // Assign super_admin role for web guard
         if (!$superAdmin->hasRole('super_admin', 'web')) {
             $superAdmin->assignRole(\Spatie\Permission\Models\Role::where('name', 'super_admin')->where('guard_name', 'web')->first());
         }
-        if (!$superAdmin->hasRole('super_admin', 'admin')) {
-            $superAdmin->assignRole(\Spatie\Permission\Models\Role::where('name', 'super_admin')->where('guard_name', 'admin')->first());
-        }
         
-        $this->command->info('✓ Super Admin user created/updated with super_admin role for both guards');
+        $this->command->info('✓ Super Admin user created/updated with super_admin role');
         
         // Clear permission cache again after all assignments
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();

@@ -111,22 +111,22 @@ Route::group(['prefix' => 'city/{city:slug}', 'middleware' => ['city.context']],
 
 // Admin Authentication Routes
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::middleware('guest:admin')->group(function () {
+    Route::middleware('guest:web')->group(function () {
         Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [AdminLoginController::class, 'login']);
     });
-    Route::middleware('auth:admin')->group(function () {
+    Route::middleware('auth:web')->group(function () {
         Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
     });
 });
 
 // Shop Owner Authentication Routes
 Route::prefix('shop-owner')->name('shop-owner.')->group(function () {
-    Route::middleware('guest:shop_owner')->group(function () {
+    Route::middleware('guest:web')->group(function () {
         Route::get('/login', [ShopOwnerLoginController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [ShopOwnerLoginController::class, 'login']);
     });
-    Route::middleware('auth:shop_owner')->group(function () {
+    Route::middleware('auth:web')->group(function () {
         Route::post('/logout', [ShopOwnerLoginController::class, 'logout'])->name('logout');
     });
 });

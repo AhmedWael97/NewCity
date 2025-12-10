@@ -23,7 +23,7 @@ use App\Http\Controllers\Admin\AdminNewsController;
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->name('admin.')->middleware(['auth:admin', 'admin', 'permission.guard:admin'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'admin'])->group(function () {
     
     // Dashboard
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');

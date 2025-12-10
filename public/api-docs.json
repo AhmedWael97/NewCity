@@ -1456,6 +1456,217 @@
                 ]
             }
         },
+        "/api/v1/auth/deactivate-account": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Deactivate user account",
+                "description": "Deactivate the authenticated user's account. The account will be disabled and user won't be able to login until reactivated. Data is preserved in the database.",
+                "operationId": "26443797c54c39034d7f4c8efc56fa19",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "password"
+                                ],
+                                "properties": {
+                                    "password": {
+                                        "description": "Current password for security verification",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account deactivated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Account deactivated successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid password"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/auth/reactivate-account": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Reactivate user account",
+                "description": "Reactivate a previously deactivated account using email and password. This endpoint does not require authentication.",
+                "operationId": "48026376d1930bd7654f68938f78fe80",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Account reactivated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Account reactivated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "1|abcdef123456..."
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/categories": {
             "get": {
                 "tags": [
@@ -5548,7 +5759,8 @@
                 "tags": [
                     "Support Tickets"
                 ],
-                "summary": "Create a new support ticket",
+                "summary": "Create a new support ticket (authenticated or guest)",
+                "description": "Create a support ticket. For authenticated users, user_id is automatically set. For guests, guest fields (guest_name, guest_phone) are required.",
                 "operationId": "802a3518f7d2ce4a91cd591ea6b07a22",
                 "requestBody": {
                     "required": true,
@@ -5564,7 +5776,8 @@
                                 "properties": {
                                     "subject": {
                                         "type": "string",
-                                        "maxLength": 255
+                                        "maxLength": 255,
+                                        "example": "Unable to login to my account"
                                     },
                                     "category": {
                                         "type": "string",
@@ -5577,7 +5790,8 @@
                                             "bug_report",
                                             "content_issue",
                                             "other"
-                                        ]
+                                        ],
+                                        "example": "technical_issue"
                                     },
                                     "priority": {
                                         "type": "string",
@@ -5586,20 +5800,53 @@
                                             "medium",
                                             "high",
                                             "urgent"
-                                        ]
+                                        ],
+                                        "example": "medium"
                                     },
                                     "description": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "example": "I am unable to login to my account. The error message says invalid credentials."
                                     },
                                     "city_id": {
                                         "type": "integer",
+                                        "example": 1,
                                         "nullable": true
                                     },
                                     "shop_id": {
                                         "type": "integer",
+                                        "example": 5,
+                                        "nullable": true
+                                    },
+                                    "guest_name": {
+                                        "description": "Required for non-authenticated users",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "أحمد محمد",
+                                        "nullable": true
+                                    },
+                                    "guest_phone": {
+                                        "description": "Required for non-authenticated users",
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "01012345678",
+                                        "nullable": true
+                                    },
+                                    "guest_email": {
+                                        "description": "Optional for non-authenticated users",
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "guest@example.com",
+                                        "nullable": true
+                                    },
+                                    "guest_address": {
+                                        "description": "Optional for non-authenticated users",
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "القاهرة، مصر الجديدة",
                                         "nullable": true
                                     },
                                     "attachments[]": {
+                                        "description": "Optional attachments (max 5 files, 10MB each)",
                                         "type": "array",
                                         "items": {
                                             "type": "string",
@@ -5614,10 +5861,83 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Ticket created successfully"
+                        "description": "Ticket created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ticket created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "ticket_number": {
+                                                    "type": "string",
+                                                    "example": "TKT-20250101-0001"
+                                                },
+                                                "subject": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "open"
+                                                },
+                                                "guest_name": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "guest_phone": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "guest_email": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "guest_address": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "422": {
-                        "description": "Validation error"
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -5633,6 +5953,7 @@
                     "Support Tickets"
                 ],
                 "summary": "Get ticket details",
+                "description": "Get detailed information about a specific ticket including guest fields if submitted by a guest",
                 "operationId": "6bf3ff3e3a1ddad21e7da8fde64c401b",
                 "parameters": [
                     {
@@ -5640,16 +5961,73 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "integer",
+                            "example": 1
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Ticket details"
+                        "description": "Ticket details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer"
+                                                },
+                                                "ticket_number": {
+                                                    "type": "string"
+                                                },
+                                                "subject": {
+                                                    "type": "string"
+                                                },
+                                                "status": {
+                                                    "type": "string"
+                                                },
+                                                "guest_name": {
+                                                    "description": "Guest name if ticket was submitted by a guest",
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "guest_phone": {
+                                                    "description": "Guest phone if ticket was submitted by a guest",
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "guest_email": {
+                                                    "description": "Guest email if provided",
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "guest_address": {
+                                                    "description": "Guest address if provided",
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "replies": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "403": {
-                        "description": "Forbidden"
+                        "description": "Forbidden - User doesn't own this ticket"
                     },
                     "404": {
                         "description": "Ticket not found"

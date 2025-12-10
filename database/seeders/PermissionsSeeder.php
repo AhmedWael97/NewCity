@@ -141,12 +141,11 @@ class PermissionsSeeder extends Seeder
             'export-analytics',
         ];
 
-        // Create all permissions for both web and admin guards
+        // Create all permissions for web guard
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'admin']);
         }
 
-        $this->command->info('Created ' . count($permissions) . ' permissions for both web and admin guards');
+        $this->command->info('Created ' . count($permissions) . ' permissions for web guard');
     }
 }

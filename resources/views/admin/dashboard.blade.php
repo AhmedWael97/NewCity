@@ -60,6 +60,7 @@
 
     <!-- Statistics Cards -->
     <div class="row mb-4">
+        @can('view users')
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
@@ -79,7 +80,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
+        @can('view shops')
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
@@ -99,7 +102,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
+        @can('verify shops')
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
@@ -121,7 +126,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
+        @can('verify shops')
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
@@ -144,10 +151,12 @@
                 </div>
             </div>
         </div>
+        @endcan
     </div>
 
     <!-- Additional Statistics Cards - New Business Features -->
     <div class="row mb-4">
+        @can('view products')
         <div class="col-xl-2 col-md-4 mb-4">
             <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
@@ -163,7 +172,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
+        @can('view services')
         <div class="col-xl-2 col-md-4 mb-4">
             <div class="card border-left-info shadow h-100 py-2">
                 <div class="card-body">
@@ -179,7 +190,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
+        @can('view subscriptions')
         <div class="col-xl-2 col-md-4 mb-4">
             <div class="card border-left-primary shadow h-100 py-2">
                 <div class="card-body">
@@ -195,7 +208,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
+        @can('view support tickets')
         <div class="col-xl-2 col-md-4 mb-4">
             <div class="card border-left-warning shadow h-100 py-2">
                 <div class="card-body">
@@ -218,7 +233,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
+        @can('view cities')
         <div class="col-xl-2 col-md-4 mb-4">
             <div class="card border-left-secondary shadow h-100 py-2">
                 <div class="card-body">
@@ -234,7 +251,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
+        @can('view categories')
         <div class="col-xl-2 col-md-4 mb-4">
             <div class="card border-left-dark shadow h-100 py-2">
                 <div class="card-body">
@@ -250,11 +269,13 @@
                 </div>
             </div>
         </div>
+        @endcan
     </div>
 
     <!-- Quick Access Cards - New Features -->
     <div class="row mb-4">
         <!-- City Banners Management -->
+        @can('manage city banners')
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-warning shadow h-100">
                 <div class="card-body">
@@ -281,8 +302,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Featured Shops -->
+        @can('manage featured shops')
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-primary shadow h-100">
                 <div class="card-body">
@@ -306,8 +329,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- City Theme Configuration -->
+        @can('manage city styles')
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-success shadow h-100">
                 <div class="card-body">
@@ -331,8 +356,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Mobile App Settings -->
+        @can('manage app settings')
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card border-left-info shadow h-100">
                 <div class="card-body">
@@ -366,9 +393,11 @@
                 </div>
             </div>
         </div>
+        @endcan
     </div>
 
     <!-- Analytics Performance Section -->
+    @can('view analytics')
     <div class="row mb-4">
         <!-- Top Performing Shops -->
         <div class="col-lg-6">
@@ -436,7 +465,10 @@
             </div>
         </div>
     </div>
+    @endcan
 
+    
+    @if(auth()->user()->hasRole('super_admin'))
     <!-- New Features Guide -->
     <div class="row mb-4">
         <div class="col-12">
@@ -535,7 +567,10 @@
         </div>
     </div>
 
+    @endif
+
     <!-- Revenue and Growth Section -->
+    @can('view subscriptions')
     <div class="row mb-4">
         <!-- Revenue Chart -->
         <div class="col-lg-8">
@@ -622,6 +657,7 @@
                     @endif
 
                     <!-- Quick Actions -->
+                    @if(auth()->user()->hasRole('super_admin'))
                     <div class="mt-3">
                         <h6 class="text-dark">
                             <i class="fas fa-bolt"></i> إجراءات سريعة
@@ -638,12 +674,15 @@
                             </a>
                         </div>
                     </div>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
+    @endcan
 
     <!-- Charts Row -->
+    @can('view analytics')
     <div class="row mb-4">
         <!-- Monthly Statistics Chart -->
         <div class="col-lg-8">
@@ -677,10 +716,12 @@
             </div>
         </div>
     </div>
+    @endcan
 
     <!-- Recent Activities Row -->
     <div class="row">
         <!-- Recent Users -->
+        @can('view users')
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -710,8 +751,10 @@
                 </div>
             </div>
         </div>
+        @endcan
 
         <!-- Recent Shops -->
+        @can('view shops')
         <div class="col-lg-6">
             <div class="card shadow mb-4">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -741,9 +784,11 @@
                 </div>
             </div>
         </div>
+        @endcan
     </div>
 
     <!-- Top Rated Shops -->
+    @can('view shops')
     <div class="row">
         <div class="col-12">
             <div class="card shadow mb-4">
@@ -814,6 +859,7 @@
             </div>
         </div>
     </div>
+    @endcan
 </div>
 
 <style>

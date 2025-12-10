@@ -43,8 +43,8 @@
                     </small>
                 </div>
 
-                <!-- Guard Name (Hidden - Admin panel always uses admin guard) -->
-                <input type="hidden" name="guard_name" value="admin">
+                <!-- Guard Name (Hidden - Admin panel uses web guard) -->
+                <input type="hidden" name="guard_name" value="web">
 
                 <!-- Permissions Section -->
                 <div class="mb-4">

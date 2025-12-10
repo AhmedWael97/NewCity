@@ -67,35 +67,20 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the guard name for Spatie permissions based on current authentication
+     * Get the guard name for Spatie permissions
      */
     public function guardName(): string
     {
-        // Check which guard the user is authenticated with
-        if (auth()->guard('admin')->check() && auth()->guard('admin')->id() === $this->id) {
-            return 'admin';
-        }
-        if (auth()->guard('shop_owner')->check() && auth()->guard('shop_owner')->id() === $this->id) {
-            return 'shop_owner';
-        }
-        
-        // Fallback: check user_type to determine likely guard
-        if ($this->user_type === 'admin') {
-            return 'admin';
-        }
-        if ($this->user_type === 'shop_owner') {
-            return 'shop_owner';
-        }
-        
+        // Always use web guard
         return 'web';
     }
     
     /**
-     * Override Spatie's getDefaultGuardName to use our dynamic guard detection
+     * Override Spatie's getDefaultGuardName to use web guard
      */
     public function getDefaultGuardName(): string
     {
-        return $this->guardName();
+        return 'web';
     }
 
     // User type constants

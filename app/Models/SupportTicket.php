@@ -14,6 +14,10 @@ class SupportTicket extends Model
     protected $fillable = [
         'ticket_number',
         'user_id',
+        'guest_name',
+        'guest_phone',
+        'guest_email',
+        'guest_address',
         'city_id',
         'shop_id',
         'assigned_admin_id',
@@ -121,6 +125,27 @@ class SupportTicket extends Model
             'other' => 'أخرى',
             default => 'غير محدد'
         };
+    }
+
+    public function getSubmitterNameAttribute(): string
+    {
+        if ($this->user_id) {
+            return $this->user->name ?? 'مستخدم محذوف';
+        }
+        return $this->guest_name ?? 'زائر';
+    }
+
+    public function getSubmitterContactAttribute(): string
+    {
+        if ($this->user_id) {
+            return $this->user->email ?? 'غير متاح';
+        }
+        return $this->guest_phone ?? $this->guest_email ?? 'غير متاح';
+    }
+
+    public function isGuest(): bool
+    {
+        return $this->user_id === null;
     }
 
     public function scopeOpen($query)

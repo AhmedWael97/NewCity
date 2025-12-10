@@ -161,6 +161,18 @@ class AdminRatingController extends Controller
     }
 
     /**
+     * Verify a rating.
+     */
+    public function verify(Rating $rating)
+    {
+        $rating->update(['is_verified' => true]);
+
+        return redirect()
+            ->back()
+            ->with('success', 'تم التحقق من التقييم بنجاح');
+    }
+
+    /**
      * Toggle rating status.
      */
     public function toggleStatus(Rating $rating)

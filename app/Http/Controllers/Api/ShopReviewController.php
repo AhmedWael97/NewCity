@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
-use App\Models\ServiceReview;
+use App\Models\Rating;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,8 +47,7 @@ class ShopReviewController extends Controller
     {
         $shop = Shop::findOrFail($shopId);
         
-        $reviews = ServiceReview::where('reviewable_type', Shop::class)
-            ->where('reviewable_id', $shopId)
+        $reviews = Rating::where('shop_id', $shopId)
             ->with('user:id,name,email')
             ->orderBy('created_at', 'desc')
             ->paginate($request->get('per_page', 15));
@@ -104,8 +103,7 @@ class ShopReviewController extends Controller
         ]);
 
         // Check if user already reviewed this shop
-        $existingReview = ServiceReview::where('reviewable_type', Shop::class)
-            ->where('reviewable_id', $shopId)
+        $existingReview = Rating::where('shop_id', $shopId)
             ->where('user_id', Auth::id())
             ->first();
 
@@ -116,10 +114,9 @@ class ShopReviewController extends Controller
             ], 422);
         }
 
-        $review = ServiceReview::create([
+        $review = Rating::create([
             'user_id' => Auth::id(),
-            'reviewable_type' => Shop::class,
-            'reviewable_id' => $shopId,
+            'shop_id' => $shopId,
             'rating' => $validated['rating'],
             'comment' => $validated['comment'],
         ]);
@@ -170,8 +167,7 @@ class ShopReviewController extends Controller
     public function update(Request $request, $shopId, $reviewId)
     {
         $shop = Shop::findOrFail($shopId);
-        $review = ServiceReview::where('reviewable_type', Shop::class)
-            ->where('reviewable_id', $shopId)
+        $review = Rating::where('shop_id', $shopId)
             ->where('id', $reviewId)
             ->where('user_id', Auth::id())
             ->firstOrFail();
@@ -222,8 +218,7 @@ class ShopReviewController extends Controller
     public function destroy($shopId, $reviewId)
     {
         $shop = Shop::findOrFail($shopId);
-        $review = ServiceReview::where('reviewable_type', Shop::class)
-            ->where('reviewable_id', $shopId)
+        $review = Rating::where('shop_id', $shopId)
             ->where('id', $reviewId)
             ->where('user_id', Auth::id())
             ->firstOrFail();
@@ -244,12 +239,10 @@ class ShopReviewController extends Controller
      */
     private function updateShopRating(Shop $shop)
     {
-        $reviews = ServiceReview::where('reviewable_type', Shop::class)
-            ->where('reviewable_id', $shop->id)
-            ->get();
+        $reviews = Rating::where('shop_id', $shop->id)->get();
 
         $shop->review_count = $reviews->count();
-        $shop->rating = $reviews->count() > 0 ? $reviews->avg('rating') : 0;
+        $shop->rating = $reviews->count() > 0 ? round($reviews->avg('rating'), 1) : 0;
         $shop->save();
     }
 }

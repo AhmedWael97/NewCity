@@ -59,7 +59,7 @@ class AdminShopSuggestionController extends Controller
             'status' => $validated['status'],
             'admin_notes' => $validated['admin_notes'] ?? $suggestion->admin_notes,
             'reviewed_at' => now(),
-            'reviewed_by' => auth()->guard('admin')->id()
+            'reviewed_by' => auth()->guard('web')->id()
         ]);
 
         return redirect()

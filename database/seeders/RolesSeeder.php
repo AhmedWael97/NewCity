@@ -14,29 +14,22 @@ class RolesSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create roles for both web and admin guards
+        // Create roles for web guard
         $superAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
-        $superAdminAdmin = Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'admin']);
         
         $admin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        $adminAdmin = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'admin']);
         
         $cityManager = Role::firstOrCreate(['name' => 'city_manager', 'guard_name' => 'web']);
-        $cityManagerAdmin = Role::firstOrCreate(['name' => 'city_manager', 'guard_name' => 'admin']);
         
         $editor = Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'web']);
-        $editorAdmin = Role::firstOrCreate(['name' => 'editor', 'guard_name' => 'admin']);
         
         $viewer = Role::firstOrCreate(['name' => 'viewer', 'guard_name' => 'web']);
-        $viewerAdmin = Role::firstOrCreate(['name' => 'viewer', 'guard_name' => 'admin']);
 
-        // Get all permissions for both guards
+        // Get all permissions for web guard
         $allPermissionsWeb = Permission::where('guard_name', 'web')->get();
-        $allPermissionsAdmin = Permission::where('guard_name', 'admin')->get();
 
-        // Super Admin - All permissions (for both guards)
+        // Super Admin - All permissions
         $superAdmin->syncPermissions($allPermissionsWeb);
-        $superAdminAdmin->syncPermissions($allPermissionsAdmin);
 
         // Admin - All permissions except role/user management
         $adminPermissions = Permission::where('guard_name', 'web')
@@ -47,15 +40,6 @@ class RolesSeeder extends Seeder
             ->where('name', 'not like', 'delete-roles')
             ->get();
         $admin->syncPermissions($adminPermissions);
-        
-        $adminPermissionsAdmin = Permission::where('guard_name', 'admin')
-            ->where('name', 'not like', 'assign-roles')
-            ->where('name', 'not like', 'assign-cities')
-            ->where('name', 'not like', 'create-roles')
-            ->where('name', 'not like', 'edit-roles')
-            ->where('name', 'not like', 'delete-roles')
-            ->get();
-        $adminAdmin->syncPermissions($adminPermissionsAdmin);
 
         // City Manager - Can manage everything in their assigned cities
         $cityManagerPermissionNames = [
@@ -107,10 +91,6 @@ class RolesSeeder extends Seeder
         $cityManagerPermissions = Permission::where('guard_name', 'web')
             ->whereIn('name', $cityManagerPermissionNames)->get();
         $cityManager->syncPermissions($cityManagerPermissions);
-        
-        $cityManagerPermissionsAdmin = Permission::where('guard_name', 'admin')
-            ->whereIn('name', $cityManagerPermissionNames)->get();
-        $cityManagerAdmin->syncPermissions($cityManagerPermissionsAdmin);
 
         // Editor - Can create and edit content but not delete
         $editorPermissionNames = [
@@ -141,19 +121,11 @@ class RolesSeeder extends Seeder
         $editorPermissions = Permission::where('guard_name', 'web')
             ->whereIn('name', $editorPermissionNames)->get();
         $editor->syncPermissions($editorPermissions);
-        
-        $editorPermissionsAdmin = Permission::where('guard_name', 'admin')
-            ->whereIn('name', $editorPermissionNames)->get();
-        $editorAdmin->syncPermissions($editorPermissionsAdmin);
 
         // Viewer - Read-only access
         $viewerPermissions = Permission::where('guard_name', 'web')
             ->where('name', 'like', 'view-%')->get();
         $viewer->syncPermissions($viewerPermissions);
-        
-        $viewerPermissionsAdmin = Permission::where('guard_name', 'admin')
-            ->where('name', 'like', 'view-%')->get();
-        $viewerAdmin->syncPermissions($viewerPermissionsAdmin);
 
         // Assign super_admin role to existing admin users
         User::where('email', 'like', '%admin%')

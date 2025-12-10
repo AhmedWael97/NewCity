@@ -66,8 +66,8 @@ class AdminUserController extends Controller
         $this->authorize('create-users');
         
         $cities = City::where('is_active', true)->orderBy('name')->get();
-        // Only show admin guard roles in admin panel
-        $roles = Role::where('guard_name', 'admin')->get();
+        // Get roles for web guard
+        $roles = Role::where('guard_name', 'web')->get();
         $userTypes = ['regular', 'shop_owner', 'admin'];
         
         return view('admin.users.create', compact('cities', 'userTypes', 'roles'));
@@ -84,36 +84,22 @@ class AdminUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
+            'user_type' => 'required|in:regular,shop_owner,admin',
             'city_id' => 'nullable|exists:cities,id',
             'address' => 'nullable|string|max:500',
             'date_of_birth' => 'nullable|date|before:today',
             'is_verified' => 'boolean',
             'roles' => 'required|array|min:1',
-            'roles.*' => 'exists:roles,id,guard_name,admin',
+            'roles.*' => 'exists:roles,id,guard_name,web',
             'assigned_city_ids' => 'nullable|array',
             'assigned_city_ids.*' => 'exists:cities,id'
         ]);
-
-        // Auto-determine user_type based on assigned roles
-        $userType = 'regular';
-        if ($request->filled('roles')) {
-            $roleNames = Role::where('guard_name', 'admin')
-                ->whereIn('id', $request->roles)
-                ->pluck('name')
-                ->toArray();
-            
-            if (in_array('super_admin', $roleNames) || in_array('admin', $roleNames) || in_array('city_manager', $roleNames)) {
-                $userType = 'admin';
-            } elseif (in_array('shop_owner', $roleNames)) {
-                $userType = 'shop_owner';
-            }
-        }
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'user_type' => $userType,
+            'user_type' => $request->user_type,
             'city_id' => $request->city_id,
             'address' => $request->address,
             'date_of_birth' => $request->date_of_birth,
@@ -122,16 +108,16 @@ class AdminUserController extends Controller
             'assigned_city_ids' => $request->assigned_city_ids ?? [],
         ]);
         
-        // Assign roles (admin guard only)
+        // Assign roles
         if ($request->filled('roles')) {
-            // Get the actual Role models with admin guard
-            $adminRoles = Role::where('guard_name', 'admin')
+            // Get the actual Role models with web guard
+            $webRoles = Role::where('guard_name', 'web')
                 ->whereIn('id', $request->roles)
                 ->get();
             
             // Assign each role to the user
-            if ($adminRoles->isNotEmpty()) {
-                foreach ($adminRoles as $role) {
+            if ($webRoles->isNotEmpty()) {
+                foreach ($webRoles as $role) {
                     $user->assignRole($role);
                 }
             }
@@ -169,8 +155,8 @@ class AdminUserController extends Controller
         $this->authorize('edit-users');
         
         $cities = City::where('is_active', true)->orderBy('name')->get();
-        // Only show admin guard roles in admin panel
-        $roles = Role::where('guard_name', 'admin')->get();
+        // Get roles for web guard
+        $roles = Role::where('guard_name', 'web')->get();
         $userRoles = $user->roles->pluck('id')->toArray();
         $userTypes = ['regular', 'shop_owner', 'admin'];
         
@@ -188,35 +174,21 @@ class AdminUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8|confirmed',
+            'user_type' => 'required|in:regular,shop_owner,admin',
             'city_id' => 'nullable|exists:cities,id',
             'address' => 'nullable|string|max:500',
             'date_of_birth' => 'nullable|date|before:today',
             'is_verified' => 'boolean',
             'roles' => 'required|array|min:1',
-            'roles.*' => 'exists:roles,id,guard_name,admin',
+            'roles.*' => 'exists:roles,id,guard_name,web',
             'assigned_city_ids' => 'nullable|array',
             'assigned_city_ids.*' => 'exists:cities,id'
         ]);
 
-        // Auto-determine user_type based on assigned roles
-        $userType = 'regular';
-        if ($request->filled('roles')) {
-            $roleNames = Role::where('guard_name', 'admin')
-                ->whereIn('id', $request->roles)
-                ->pluck('name')
-                ->toArray();
-            
-            if (in_array('super_admin', $roleNames) || in_array('admin', $roleNames) || in_array('city_manager', $roleNames)) {
-                $userType = 'admin';
-            } elseif (in_array('shop_owner', $roleNames)) {
-                $userType = 'shop_owner';
-            }
-        }
-
         $updateData = [
             'name' => $request->name,
             'email' => $request->email,
-            'user_type' => $userType,
+            'user_type' => $request->user_type,
             'city_id' => $request->city_id,
             'address' => $request->address,
             'date_of_birth' => $request->date_of_birth,
@@ -234,19 +206,19 @@ class AdminUserController extends Controller
 
         $user->update($updateData);
         
-        // Sync roles (admin guard only)
+        // Sync roles
         if ($request->has('roles')) {
             // First, remove all existing roles from all guards
             $user->roles()->detach();
             
-            // Then get the actual Role models with admin guard
-            $adminRoles = Role::where('guard_name', 'admin')
+            // Then get the actual Role models with web guard
+            $webRoles = Role::where('guard_name', 'web')
                 ->whereIn('id', $request->roles ?? [])
                 ->get();
             
             // Assign each role to the user
-            if ($adminRoles->isNotEmpty()) {
-                foreach ($adminRoles as $role) {
+            if ($webRoles->isNotEmpty()) {
+                foreach ($webRoles as $role) {
                     $user->assignRole($role);
                 }
             }

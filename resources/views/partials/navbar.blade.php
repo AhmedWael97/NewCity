@@ -107,10 +107,10 @@
                     🏠 الرئيسية
                 </a>
                 
-                {{-- <a href="{{ route('marketplace.index') }}" class="category-nav-item {{ request()->routeIs('marketplace.*') ? 'active' : '' }}">
+                <a href="{{ route('marketplace.index') }}" class="category-nav-item {{ request()->routeIs('marketplace.*') ? 'active' : '' }}">
                     🛒 السوق المفتوح
                 </a>
-                 --}}
+                
                 <a href="{{ route('news.index') }}" class="category-nav-item {{ request()->routeIs('news.*') ? 'active' : '' }}">
                     📰 الأخبار
                 </a>
@@ -242,7 +242,7 @@
             <a href="{{ route('news.index') }}">📰 الأخبار</a>
             <a href="{{ route('forum.index') }}">💬 المنتدى</a>
             <a href="{{ route('city.services', ['city' => (isset($selectedCity) && $selectedCity) ? $selectedCity->slug : (session('selected_city') ?? 'all')]) }}">🔧 الخدمات</a>
-            {{-- <a href="{{ route('marketplace.index') }}">🛒 السوق المفتوح</a> --}}
+            <a href="{{ route('marketplace.index') }}">🛒 السوق المفتوح</a>
             @if(isset($navCategories))
                 @foreach($navCategories as $category)
                     <div class="mobile-category-group">

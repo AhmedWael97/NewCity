@@ -31,11 +31,8 @@ class AdminLoginController extends Controller
         $credentials['user_type'] = 'admin'; // Only allow admin role
         $credentials['is_active'] = true; // Only allow active users
 
-        if (Auth::guard('admin')->attempt($credentials, $request->filled('remember'))) {
+        if (Auth::guard('web')->attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            
-            // Explicitly set the guard in session
-            $request->session()->put('_guard', 'admin');
 
             return redirect()->intended(route('admin.dashboard'));
         }
@@ -50,7 +47,7 @@ class AdminLoginController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

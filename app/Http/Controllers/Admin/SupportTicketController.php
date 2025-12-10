@@ -73,7 +73,7 @@ class SupportTicketController extends Controller
      */
     public function show(SupportTicket $ticket)
     {
-        $ticket->load(['user', 'city', 'assignedTo', 'replies.user']);
+        $ticket->load(['user', 'city', 'shop', 'assignedTo', 'replies.user']);
         
         // Mark as read if viewing for first time
         if (!$ticket->admin_read_at) {

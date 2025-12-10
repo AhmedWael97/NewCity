@@ -18,7 +18,7 @@ use App\Http\Controllers\ShopOwner\ShopOwnerProfileController;
 |
 */
 
-Route::prefix('shop-owner')->name('shop-owner.')->middleware(['auth:shop_owner', 'shop-owner'])->group(function () {
+Route::prefix('shop-owner')->name('shop-owner.')->middleware(['auth:web', 'shop-owner'])->group(function () {
     
     // Dashboard
     Route::get('/', [ShopOwnerDashboardController::class, 'index'])->name('dashboard');

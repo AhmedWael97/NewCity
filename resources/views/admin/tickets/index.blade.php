@@ -251,6 +251,7 @@
                                     @endif
                                 </td>
                                 <td>
+                                    @if($ticket->user_id)
                                     <div class="d-flex align-items-center">
                                         <div class="avatar-sm rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mr-2">
                                             {{ substr($ticket->user->name ?? 'غ', 0, 1) }}
@@ -260,6 +261,28 @@
                                             <small class="text-muted">{{ $ticket->user->email ?? 'غير متاح' }}</small>
                                         </div>
                                     </div>
+                                    @else
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mr-2">
+                                            <i class="fas fa-user-circle"></i>
+                                        </div>
+                                        <div>
+                                            <div class="font-weight-bold">
+                                                {{ $ticket->guest_name ?? 'زائر' }}
+                                                <span class="badge badge-secondary badge-sm">زائر</span>
+                                            </div>
+                                            <small class="text-muted">
+                                                @if($ticket->guest_phone)
+                                                    <i class="fas fa-phone fa-xs"></i> {{ $ticket->guest_phone }}
+                                                @elseif($ticket->guest_email)
+                                                    <i class="fas fa-envelope fa-xs"></i> {{ $ticket->guest_email }}
+                                                @else
+                                                    غير متاح
+                                                @endif
+                                            </small>
+                                        </div>
+                                    </div>
+                                    @endif
                                 </td>
                                 <td>{{ $ticket->city->name_ar ?? 'غير محدد' }}</td>
                                 <td>

@@ -193,6 +193,52 @@
                             </div>
                         </div>
 
+                        <!-- User Type & Status -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-warning">نوع المستخدم والحالة</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="user_type">نوع المستخدم <span class="text-danger">*</span></label>
+                                            <select class="form-control @error('user_type') is-invalid @enderror" 
+                                                    id="user_type" name="user_type" required>
+                                                <option value="">-- اختر نوع المستخدم --</option>
+                                                <option value="regular" {{ old('user_type') == 'regular' ? 'selected' : '' }}>مستخدم عادي</option>
+                                                <option value="shop_owner" {{ old('user_type') == 'shop_owner' ? 'selected' : '' }}>صاحب متجر</option>
+                                                <option value="admin" {{ old('user_type') == 'admin' ? 'selected' : '' }}>مسؤول</option>
+                                            </select>
+                                            @error('user_type')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            <small class="form-text text-muted">
+                                                <i class="fas fa-info-circle"></i> يحدد نوع الحساب والصلاحيات الأساسية للمستخدم
+                                            </small>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="d-block">الحالة</label>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" 
+                                                       id="is_verified" name="is_verified" value="1" 
+                                                       {{ old('is_verified') ? 'checked' : '' }}>
+                                                <label class="custom-control-label" for="is_verified">
+                                                    <i class="fas fa-check-circle text-success"></i> مستخدم موثق
+                                                </label>
+                                            </div>
+                                            <small class="form-text text-muted">
+                                                تفعيل هذا الخيار يعني أن البريد الإلكتروني للمستخدم موثق
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Roles & Permissions -->
                         @can('assign-roles')
                         <div class="card mb-4">

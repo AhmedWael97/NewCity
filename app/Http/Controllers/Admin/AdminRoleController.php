@@ -17,8 +17,8 @@ class AdminRoleController extends Controller
     {
         $this->authorize('view-roles');
         
-        // Only show admin guard roles in admin panel
-        $roles = Role::where('guard_name', 'admin')->with('permissions')->withCount('users')->get();
+        // Get roles for web guard
+        $roles = Role::where('guard_name', 'web')->with('permissions')->withCount('users')->get();
         
         return view('admin.roles.index', compact('roles'));
     }
@@ -30,8 +30,8 @@ class AdminRoleController extends Controller
     {
         $this->authorize('create-roles');
         
-        // Only show admin guard permissions in admin panel
-        $permissions = Permission::where('guard_name', 'admin')->get()->groupBy(function($permission) {
+        // Get permissions for web guard
+        $permissions = Permission::where('guard_name', 'web')->get()->groupBy(function($permission) {
             // Group permissions by module (e.g., "view-shops" -> "shops")
             $parts = explode('-', $permission->name);
             return count($parts) > 1 ? $parts[1] : 'other';
@@ -51,22 +51,22 @@ class AdminRoleController extends Controller
             'name' => 'required|string|max:255|unique:roles,name',
             'guard_name' => 'nullable|string|max:255',
             'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,id,guard_name,admin'
+            'permissions.*' => 'exists:permissions,id,guard_name,web'
         ]);
         
-        // Always create admin guard roles in admin panel
+        // Create role with web guard
         $role = Role::create([
             'name' => $validated['name'],
-            'guard_name' => 'admin'
+            'guard_name' => 'web'
         ]);
         
         if (!empty($validated['permissions'])) {
-            // Filter to only sync permissions that belong to admin guard
-            $adminPermissionIds = Permission::where('guard_name', 'admin')
+            // Filter to only sync permissions that belong to web guard
+            $webPermissionIds = Permission::where('guard_name', 'web')
                 ->whereIn('id', $validated['permissions'])
                 ->pluck('id')
                 ->toArray();
-            $role->syncPermissions($adminPermissionIds);
+            $role->syncPermissions($webPermissionIds);
         }
         
         return redirect()->route('admin.roles.index')
@@ -92,15 +92,15 @@ class AdminRoleController extends Controller
     {
         $this->authorize('edit-roles');
         
-        // Only show admin guard permissions in admin panel
-        $permissions = Permission::where('guard_name', 'admin')->get()->groupBy(function($permission) {
+        // Get permissions for web guard
+        $permissions = Permission::where('guard_name', 'web')->get()->groupBy(function($permission) {
             $parts = explode('-', $permission->name);
             return count($parts) > 1 ? $parts[1] : 'other';
         });
         
-        // Only get permission IDs that match the admin guard
+        // Only get permission IDs that match the web guard
         $rolePermissions = $role->permissions()
-            ->where('guard_name', 'admin')
+            ->where('guard_name', 'web')
             ->pluck('permissions.id')
             ->toArray();
         
@@ -123,21 +123,21 @@ class AdminRoleController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:roles,name,' . $role->id,
             'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,id,guard_name,admin'
+            'permissions.*' => 'exists:permissions,id,guard_name,web'
         ]);
         
         $role->update([
             'name' => $validated['name']
         ]);
         
-        // Filter to only sync permissions that belong to admin guard
+        // Filter to only sync permissions that belong to web guard
         $permissionIds = $validated['permissions'] ?? [];
-        $adminPermissionIds = Permission::where('guard_name', 'admin')
+        $webPermissionIds = Permission::where('guard_name', 'web')
             ->whereIn('id', $permissionIds)
             ->pluck('id')
             ->toArray();
         
-        $role->syncPermissions($adminPermissionIds);
+        $role->syncPermissions($webPermissionIds);
         
         return redirect()->route('admin.roles.index')
             ->with('success', 'تم تحديث الدور بنجاح');
