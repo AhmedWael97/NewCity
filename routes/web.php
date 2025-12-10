@@ -39,6 +39,11 @@ Route::get('/seed-services', function() {
             <a href='/admin/user-services'>View Services in Admin</a>";
 });
 
+Route::get('/db-seed', function() {
+    \Artisan::call('db:seed', ['--force' => true]);
+    return "✅ Database Seeded Successfully!";
+});
+
 
 
 Route::get('/clear-cache', function() {
