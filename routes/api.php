@@ -96,6 +96,9 @@ Route::prefix('v1')->group(function () {
 
     // Ticket categories (public endpoint)
     Route::get('/tickets/categories', [App\Http\Controllers\Api\TicketApiController::class, 'categories']);
+    
+    // Support Tickets - Public endpoint (for guest submissions)
+    Route::post('/tickets', [App\Http\Controllers\Api\TicketApiController::class, 'store']);
 
     // Advertisement endpoints (public - no auth required)
     Route::prefix('ads')->group(function () {
@@ -221,10 +224,9 @@ Route::prefix('v1')->group(function () {
         // Notification actions
         Route::post('/notifications/opened', [App\Http\Controllers\Api\NotificationController::class, 'opened']);
 
-        // Support Tickets - User endpoints
+        // Support Tickets - User endpoints (authenticated only)
         Route::prefix('tickets')->group(function () {
             Route::get('/', [App\Http\Controllers\Api\TicketApiController::class, 'index']);
-            Route::post('/', [App\Http\Controllers\Api\TicketApiController::class, 'store']);
             Route::get('/statistics', [App\Http\Controllers\Api\TicketApiController::class, 'statistics']);
             Route::get('/{id}', [App\Http\Controllers\Api\TicketApiController::class, 'show']);
             Route::post('/{id}/reply', [App\Http\Controllers\Api\TicketApiController::class, 'reply']);

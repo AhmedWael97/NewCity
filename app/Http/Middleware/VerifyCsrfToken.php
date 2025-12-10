@@ -13,5 +13,7 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'api/v1/guest-device-tokens',
+        'api/v1/tickets',
+        'api/v1/tickets/*',
     ];
 }

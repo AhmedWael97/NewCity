@@ -51,7 +51,7 @@ class TicketApiController extends Controller
         $user = Auth::user();
         
         $query = SupportTicket::where('user_id', $user->id)
-            ->with(['city:id,name_ar,name_en', 'shop:id,name', 'assignedAdmin:id,name'])
+            ->with(['city:id,name', 'shop:id,name', 'assignedAdmin:id,name'])
             ->orderBy('created_at', 'desc');
         
         // Filter by status
@@ -87,7 +87,7 @@ class TicketApiController extends Controller
                     'status_label' => $this->getStatusLabel($ticket->status),
                     'city' => $ticket->city ? [
                         'id' => $ticket->city->id,
-                        'name' => app()->getLocale() === 'ar' ? $ticket->city->name_ar : $ticket->city->name_en
+                        'name' => $ticket->city->name
                     ] : null,
                     'shop' => $ticket->shop ? [
                         'id' => $ticket->shop->id,
@@ -240,7 +240,7 @@ class TicketApiController extends Controller
         ]);
 
         // Load relationships
-        $ticket->load(['city:id,name_ar,name_en', 'shop:id,name']);
+        $ticket->load(['city:id,name', 'shop:id,name']);
 
         return response()->json([
             'success' => true,
@@ -258,7 +258,7 @@ class TicketApiController extends Controller
                 'status_label' => $this->getStatusLabel($ticket->status),
                 'city' => $ticket->city ? [
                     'id' => $ticket->city->id,
-                    'name' => app()->getLocale() === 'ar' ? $ticket->city->name_ar : $ticket->city->name_en
+                    'name' => $ticket->city->name
                 ] : null,
                 'shop' => $ticket->shop ? [
                     'id' => $ticket->shop->id,
@@ -313,7 +313,7 @@ class TicketApiController extends Controller
     public function show($id)
     {
         $ticket = SupportTicket::with([
-            'city:id,name_ar,name_en',
+            'city:id,name',
             'shop:id,name',
             'assignedAdmin:id,name,email',
             'replies' => function ($query) {
@@ -359,7 +359,7 @@ class TicketApiController extends Controller
                 'status_label' => $this->getStatusLabel($ticket->status),
                 'city' => $ticket->city ? [
                     'id' => $ticket->city->id,
-                    'name' => app()->getLocale() === 'ar' ? $ticket->city->name_ar : $ticket->city->name_en
+                    'name' => $ticket->city->name
                 ] : null,
                 'shop' => $ticket->shop ? [
                     'id' => $ticket->shop->id,
