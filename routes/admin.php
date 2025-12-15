@@ -201,6 +201,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'admin'])->group
         Route::post('/reports', [AnalyticsController::class, 'generateReport'])->name('reports.generate');
     });
 
+    // API Analytics
+    Route::prefix('api-analytics')->as('api-analytics.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\ApiAnalyticsController::class, 'index'])->name('index');
+        Route::get('/recent', [App\Http\Controllers\Admin\ApiAnalyticsController::class, 'recent'])->name('recent');
+        Route::get('/export', [App\Http\Controllers\Admin\ApiAnalyticsController::class, 'export'])->name('export');
+        Route::get('/endpoint-stats', [App\Http\Controllers\Admin\ApiAnalyticsController::class, 'endpointStats'])->name('endpoint-stats');
+        Route::get('/{id}', [App\Http\Controllers\Admin\ApiAnalyticsController::class, 'show'])->name('show');
+    });
+
     // Newsletter & Feedback Management
     Route::prefix('newsletter')->as('newsletter.')->group(function () {
         Route::get('/', [App\Http\Controllers\Admin\NewsletterController::class, 'index'])->name('index');

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\City;
+use App\Models\ShopAnalytics;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @OA\Tag(
@@ -261,6 +263,21 @@ class CityController extends Controller
             ->with(['category:id,name,icon', 'city:id,name'])
             ->paginate($limit);
 
+        // Track featured shops view
+        if ($shops->isNotEmpty()) {
+            ShopAnalytics::track(
+                $shops->first()->id,
+                'featured_shops_view',
+                Auth::id(),
+                [
+                    'city_id' => $city->id,
+                    'total_results' => $shops->total(),
+                    'page' => $shops->currentPage(),
+                    'source' => 'api'
+                ]
+            );
+        }
+
         return response()->json([
             'success' => true,
             'data' => [
@@ -345,6 +362,20 @@ class CityController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate($limit);
 
+        // Track latest shops view
+        if ($shops->isNotEmpty()) {
+            ShopAnalytics::track(
+                $shops->first()->id,
+                'latest_shops_view',
+                Auth::id(),
+                [
+                    'city_id' => $city->id,
+                    'total_results' => $shops->total(),
+                    'page' => $shops->currentPage(),
+                    'source' => 'api'
+                ]
+            );
+        }
         
         return response()->json([
             'success' => true,

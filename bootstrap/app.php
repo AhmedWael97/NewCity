@@ -26,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Enable CORS for API
         $middleware->api(append: [
             \Illuminate\Http\Middleware\HandleCors::class,
+            \App\Http\Middleware\TrackApiRequest::class,
         ]);
         
         $middleware->alias([

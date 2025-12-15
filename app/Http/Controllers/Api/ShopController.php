@@ -7,9 +7,11 @@ use App\Http\Resources\ShopResource;
 use App\Http\Resources\ShopCollection;
 use App\Http\Resources\RatingResource;
 use App\Models\Shop;
+use App\Models\ShopAnalytics;
 use App\Models\Rating;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -140,6 +142,26 @@ class ShopController extends Controller
 
         $shops = $query->paginate(15);
 
+        // Track shop listing view
+        if ($shops->isNotEmpty()) {
+            ShopAnalytics::track(
+                $shops->first()->id,
+                'shop_list_view',
+                Auth::id(),
+                [
+                    'total_results' => $shops->total(),
+                    'page' => $shops->currentPage(),
+                    'filters' => [
+                        'search' => $request->search,
+                        'city_id' => $request->city_id,
+                        'category_id' => $request->category_id,
+                        'featured' => $request->featured,
+                        'verified' => $request->verified,
+                    ]
+                ]
+            );
+        }
+
         return response()->json([
             'success' => true,
             'data' => $shops
@@ -164,6 +186,18 @@ class ShopController extends Controller
                 $query->where('event_type', 'shop_view');
             }
         ]);
+
+        // Track shop view
+        ShopAnalytics::track(
+            $shop->id,
+            'shop_view',
+            Auth::id(),
+            [
+                'city_id' => $shop->city_id,
+                'category_id' => $shop->category_id,
+                'source' => 'api'
+            ]
+        );
 
         return response()->json([
             'success' => true,
@@ -213,6 +247,23 @@ class ShopController extends Controller
         }
 
         $shops = $query->take($limit)->get();
+
+        // Track nearby shop search
+        if ($shops->isNotEmpty()) {
+            ShopAnalytics::track(
+                $shops->first()->id,
+                'nearby_search',
+                Auth::id(),
+                [
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                    'radius' => $radius,
+                    'total_results' => $shops->count(),
+                    'category_id' => $request->category_id,
+                    'source' => 'api'
+                ]
+            );
+        }
 
         return response()->json([
             'success' => true,
