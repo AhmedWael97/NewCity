@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ServiceReview;
 use App\Models\UserService;
+use App\Services\AdminEmailQueueService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -71,7 +72,7 @@ class ServiceReviewController extends Controller
             }
         }
 
-        ServiceReview::create([
+        $review = ServiceReview::create([
             'user_service_id' => $service->id,
             'reviewer_id' => Auth::id(),
             'rating' => $request->rating,
@@ -81,6 +82,9 @@ class ServiceReviewController extends Controller
             'is_approved' => true, // Auto-approve for now
             'is_verified' => false,
         ]);
+
+        // Queue email notification to admins
+        AdminEmailQueueService::queueServiceRating($review->load('service'));
 
         // Update service rating
         $this->updateServiceRating($service);

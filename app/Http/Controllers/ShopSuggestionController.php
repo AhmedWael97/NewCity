@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ShopSuggestion;
 use App\Models\City;
 use App\Models\Category;
+use App\Services\AdminEmailQueueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -60,6 +61,9 @@ class ShopSuggestionController extends Controller
             'suggested_by_email' => $validated['suggested_by_email'] ?? null,
             'status' => 'pending',
         ]);
+
+        // Queue email notification to admins
+        AdminEmailQueueService::queueShopSuggestion($suggestion);
 
         if ($request->ajax()) {
             return response()->json([

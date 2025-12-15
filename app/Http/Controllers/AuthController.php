@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 use App\Models\City;
+use App\Services\AdminEmailQueueService;
 
 class AuthController extends Controller
 {
@@ -85,6 +86,9 @@ class AuthController extends Controller
             'phone' => $request->phone,
             'is_verified' => $request->user_type === 'regular' ? true : false,
         ]);
+
+        // Queue email notification to admins
+        AdminEmailQueueService::queueNewUser($user);
 
         Auth::login($user);
 

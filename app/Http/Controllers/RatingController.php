@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Rating;
 use App\Models\Shop;
+use App\Services\AdminEmailQueueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -53,6 +54,9 @@ class RatingController extends Controller
             'status' => 'pending',
         ]);
 
+        // Queue email notification to admins
+        AdminEmailQueueService::queueShopRating($rating->load('shop'));
+
         // Update shop rating
         $shop = Shop::find($shopId);
         $shop->updateRating();
@@ -62,7 +66,7 @@ class RatingController extends Controller
             'message' => 'تم إضافة التقييم بنجاح',
             'data' => [
                 'rating' => $rating->load('user'),
-                'shop_rating' => $shop->fresh(['rating', 'review_count'])
+                'shop_rating' => $shop->fresh()
             ]
         ]);
     }

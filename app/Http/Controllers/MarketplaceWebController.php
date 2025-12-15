@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MarketplaceItem;
 use App\Models\Category;
 use App\Models\City;
+use App\Services\AdminEmailQueueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -151,6 +152,9 @@ class MarketplaceWebController extends Controller
             'status' => 'pending', // Requires admin approval
             'max_views' => 50,
         ]);
+
+        // Queue email notification to admins
+        AdminEmailQueueService::queueNewMarketplaceItem($item->load(['user', 'city']));
 
         return redirect()->route('marketplace.my-items')
             ->with('success', 'تم إنشاء الإعلان بنجاح وهو الآن قيد المراجعة من قبل الإدارة');

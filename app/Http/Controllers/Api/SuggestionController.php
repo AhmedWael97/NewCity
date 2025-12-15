@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\ShopSuggestion;
 use App\Models\CitySuggestion;
+use App\Services\AdminEmailQueueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -126,6 +127,9 @@ class SuggestionController extends Controller
                 'status' => 'pending',
             ]);
 
+            // Queue email notification to admins (API request)
+            AdminEmailQueueService::queueShopSuggestion($suggestion->load('city'));
+
             return response()->json([
                 'success' => true,
                 'message' => 'شكراً لك! تم إرسال اقتراحك بنجاح وسنقوم بمراجعته قريباً.',
@@ -235,6 +239,9 @@ class SuggestionController extends Controller
                 'user_agent' => $request->userAgent(),
                 'status' => 'pending',
             ]);
+
+            // Queue email notification to admins (API request)
+            AdminEmailQueueService::queueCitySuggestion($suggestion);
 
             return response()->json([
                 'success' => true,

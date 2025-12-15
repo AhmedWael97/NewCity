@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\Shop;
 use App\Models\Category;
 use App\Services\CityDataService;
+use App\Services\AdminEmailQueueService;
 use Illuminate\Support\Facades\Cache;
 
 class CityController extends Controller
@@ -295,7 +296,7 @@ class CityController extends Controller
 
         try {
             // Create city suggestion in database
-            \App\Models\CitySuggestion::create([
+            $suggestion = \App\Models\CitySuggestion::create([
                 'city_name' => $validated['city_name'],
                 'phone' => $validated['phone'],
                 'group_url' => $validated['group_url'],
@@ -303,6 +304,9 @@ class CityController extends Controller
                 'user_agent' => $request->userAgent(),
                 'status' => 'pending',
             ]);
+
+            // Queue email notification to admins
+            AdminEmailQueueService::queueCitySuggestion($suggestion);
 
             return response()->json([
                 'success' => true,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Shop;
 use App\Models\Rating;
+use App\Services\AdminEmailQueueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -121,6 +122,9 @@ class ShopReviewController extends Controller
             'comment' => $validated['comment'],
             'status' => 'pending',
         ]);
+
+        // Queue email notification to admins (API request)
+        AdminEmailQueueService::queueShopRating($review->load('shop'));
 
         // Note: Shop rating will be updated when admin approves the review
         // $this->updateShopRating($shop);

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Models\UserRole;
+use App\Services\AdminEmailQueueService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -111,6 +112,9 @@ class AuthController extends Controller
             'date_of_birth' => $request->date_of_birth,
             'is_verified' => $request->user_type === 'regular', // Regular users are auto-verified
         ]);
+
+        // Queue email notification to admins (API registration)
+        AdminEmailQueueService::queueNewUser($user);
 
         $token = $user->createToken('auth-token')->plainTextToken;
 

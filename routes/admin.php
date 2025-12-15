@@ -364,4 +364,26 @@ Route::prefix('admin')->name('admin.')->middleware(['auth:web', 'admin'])->group
         Route::post('/reports/{report}/resolve', [App\Http\Controllers\Admin\AdminForumController::class, 'resolveReport'])->name('reports.resolve');
     });
     
+    // SMTP Settings
+    Route::prefix('smtp')->name('smtp.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AdminSmtpController::class, 'index'])->name('index');
+        Route::post('/', [App\Http\Controllers\Admin\AdminSmtpController::class, 'store'])->name('store');
+        Route::post('/test', [App\Http\Controllers\Admin\AdminSmtpController::class, 'test'])->name('test');
+        Route::delete('/{smtp}', [App\Http\Controllers\Admin\AdminSmtpController::class, 'destroy'])->name('destroy');
+        Route::post('/{smtp}/activate', [App\Http\Controllers\Admin\AdminSmtpController::class, 'activate'])->name('activate');
+    });
+    
+    // Email Queue Management
+    Route::prefix('email-queue')->name('email-queue.')->group(function () {
+        Route::get('/', [App\Http\Controllers\Admin\AdminEmailQueueController::class, 'index'])->name('index');
+        Route::get('/{email}', [App\Http\Controllers\Admin\AdminEmailQueueController::class, 'show'])->name('show');
+        Route::post('/{email}/retry', [App\Http\Controllers\Admin\AdminEmailQueueController::class, 'retry'])->name('retry');
+        Route::delete('/{email}', [App\Http\Controllers\Admin\AdminEmailQueueController::class, 'destroy'])->name('destroy');
+        Route::delete('/', [App\Http\Controllers\Admin\AdminEmailQueueController::class, 'clearSent'])->name('clear-sent');
+        
+        // Email Preferences
+        Route::get('/preferences/edit', [App\Http\Controllers\Admin\AdminEmailQueueController::class, 'preferences'])->name('preferences');
+        Route::put('/preferences', [App\Http\Controllers\Admin\AdminEmailQueueController::class, 'updatePreferences'])->name('preferences.update');
+    });
+    
 });

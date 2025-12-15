@@ -8,6 +8,7 @@ use App\Models\ServiceCategory;
 use App\Models\City;
 use App\Models\SubscriptionPlan;
 use App\Models\ServiceAnalytics;
+use App\Services\AdminEmailQueueService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -122,6 +123,9 @@ class UserServiceController extends Controller
             'is_active' => true,
             'is_verified' => false,
         ]);
+
+        // Queue email notification to admins
+        AdminEmailQueueService::queueNewService($service->load(['category', 'user']));
 
         return redirect()->route('user.services.index')
             ->with('success', 'تم إضافة خدمتك بنجاح');

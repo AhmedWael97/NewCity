@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\AdminEmailQueueService;
 use App\Http\Resources\UserServiceResource;
 use App\Http\Resources\ServiceCategoryResource;
 use App\Http\Resources\ServiceReviewResource;
@@ -256,6 +257,9 @@ class UserServiceApiController extends Controller
 
         $service = UserService::create($data);
         $service->load(['user', 'city', 'serviceCategory']);
+
+        // Queue email notification to admins (API request)
+        AdminEmailQueueService::queueNewService($service);
 
         return response()->json([
             'message' => 'Service created successfully',

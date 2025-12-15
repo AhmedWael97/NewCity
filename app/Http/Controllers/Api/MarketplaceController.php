@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\AdminEmailQueueService;
 use App\Models\MarketplaceItem;
 use App\Models\Category;
 use App\Models\City;
@@ -239,6 +240,9 @@ class MarketplaceController extends Controller
         ]);
 
         $item->load(['user', 'category', 'city']);
+
+        // Queue email notification to admins (API request)
+        AdminEmailQueueService::queueNewMarketplaceItem($item);
 
         return response()->json([
             'success' => true,
