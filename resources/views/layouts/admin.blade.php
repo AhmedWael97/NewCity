@@ -1072,10 +1072,17 @@
                 @can('view-analytics')
                 <div class="sidebar-heading">التحليلات والتقارير</div>
                 <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('admin.analytics.*') ? 'active' : '' }}" 
+                    <a class="nav-link {{ request()->routeIs('admin.analytics.*') && !request()->routeIs('admin.api-analytics.*') ? 'active' : '' }}" 
                        href="{{ route('admin.analytics.index') }}">
                         <i class="fas fa-chart-pie"></i>
                         <span>التحليلات المتقدمة</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('admin.api-analytics.*') ? 'active' : '' }}" 
+                       href="{{ route('admin.api-analytics.index') }}">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>تحليلات API</span>
                     </a>
                 </li>
                 <li class="nav-item">
