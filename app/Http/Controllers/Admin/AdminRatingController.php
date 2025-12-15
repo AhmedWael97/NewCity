@@ -102,10 +102,15 @@ class AdminRatingController extends Controller
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
             'comment' => 'nullable|string|max:1000',
-            'status' => 'required|in:active,hidden,reported',
+            'status' => 'required|in:pending,active,hidden,reported',
         ]);
 
         $rating->update($request->only(['rating', 'comment', 'status']));
+
+        // Update shop rating after status change
+        if ($rating->shop) {
+            $rating->shop->updateRating();
+        }
 
         return redirect()
             ->route('admin.ratings.index')
@@ -117,7 +122,13 @@ class AdminRatingController extends Controller
      */
     public function destroy(Rating $rating)
     {
+        $shop = $rating->shop;
         $rating->delete();
+
+        // Update shop rating after deletion
+        if ($shop) {
+            $shop->updateRating();
+        }
 
         return redirect()
             ->route('admin.ratings.index')
@@ -131,6 +142,11 @@ class AdminRatingController extends Controller
     {
         $rating->update(['status' => 'active']);
 
+        // Update shop rating after approval
+        if ($rating->shop) {
+            $rating->shop->updateRating();
+        }
+
         return redirect()
             ->back()
             ->with('success', 'تم الموافقة على التقييم');
@@ -142,6 +158,11 @@ class AdminRatingController extends Controller
     public function hide(Rating $rating)
     {
         $rating->update(['status' => 'hidden']);
+
+        // Update shop rating after hiding
+        if ($rating->shop) {
+            $rating->shop->updateRating();
+        }
 
         return redirect()
             ->back()
@@ -165,7 +186,15 @@ class AdminRatingController extends Controller
      */
     public function verify(Rating $rating)
     {
-        $rating->update(['is_verified' => true]);
+        $rating->update([
+            'is_verified' => true,
+            'status' => 'active'
+        ]);
+
+        // Update shop rating after verification
+        if ($rating->shop) {
+            $rating->shop->updateRating();
+        }
 
         return redirect()
             ->back()
@@ -180,6 +209,11 @@ class AdminRatingController extends Controller
         $newStatus = $rating->status === 'active' ? 'hidden' : 'active';
         
         $rating->update(['status' => $newStatus]);
+
+        // Update shop rating after status toggle
+        if ($rating->shop) {
+            $rating->shop->updateRating();
+        }
 
         $statusText = $newStatus === 'active' ? 'تم إظهار التقييم' : 'تم إخفاء التقييم';
 
@@ -199,29 +233,40 @@ class AdminRatingController extends Controller
             'action' => 'required|in:approve,hide,report,delete'
         ]);
 
-        $ratings = Rating::whereIn('id', $request->ratings);
-        $count = $ratings->count();
+        $ratingsQuery = Rating::whereIn('id', $request->ratings);
+        $count = $ratingsQuery->count();
+        
+        // Get affected shops before any operations
+        $affectedShopIds = $ratingsQuery->pluck('shop_id')->unique();
 
         switch ($request->action) {
             case 'approve':
-                $ratings->update(['status' => 'active']);
+                $ratingsQuery->update(['status' => 'active']);
                 $message = "تم الموافقة على {$count} تقييم";
                 break;
                 
             case 'hide':
-                $ratings->update(['status' => 'hidden']);
+                $ratingsQuery->update(['status' => 'hidden']);
                 $message = "تم إخفاء {$count} تقييم";
                 break;
                 
             case 'report':
-                $ratings->update(['status' => 'reported']);
+                $ratingsQuery->update(['status' => 'reported']);
                 $message = "تم الإبلاغ عن {$count} تقييم";
                 break;
                 
             case 'delete':
-                $ratings->delete();
+                $ratingsQuery->delete();
                 $message = "تم حذف {$count} تقييم";
                 break;
+        }
+
+        // Update ratings for all affected shops
+        foreach ($affectedShopIds as $shopId) {
+            $shop = \App\Models\Shop::find($shopId);
+            if ($shop) {
+                $shop->updateRating();
+            }
         }
 
         return redirect()

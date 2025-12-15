@@ -95,6 +95,11 @@ class ShopController extends Controller
         $query = Shop::query()
             ->active()
             ->with(['city', 'category', 'user'])
+            ->withCount([
+                'analytics as total_views' => function($query) {
+                    $query->where('event_type', 'shop_view');
+                }
+            ])
             ->orderBy('is_featured', 'desc')
             ->orderBy('rating', 'desc');
 
@@ -154,6 +159,11 @@ class ShopController extends Controller
         }
 
         $shop->load(['city', 'category', 'user']);
+        $shop->loadCount([
+            'analytics as total_views' => function($query) {
+                $query->where('event_type', 'shop_view');
+            }
+        ]);
 
         return response()->json([
             'success' => true,
@@ -190,6 +200,11 @@ class ShopController extends Controller
         $query = Shop::query()
             ->active()
             ->with(['city', 'category', 'user'])
+            ->withCount([
+                'analytics as total_views' => function($query) {
+                    $query->where('event_type', 'shop_view');
+                }
+            ])
             ->withinRadius($latitude, $longitude, $radius);
 
         // Filter by category if specified

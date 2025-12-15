@@ -119,10 +119,11 @@ class ShopReviewController extends Controller
             'shop_id' => $shopId,
             'rating' => $validated['rating'],
             'comment' => $validated['comment'],
+            'status' => 'pending',
         ]);
 
-        // Update shop rating
-        $this->updateShopRating($shop);
+        // Note: Shop rating will be updated when admin approves the review
+        // $this->updateShopRating($shop);
 
         return response()->json([
             'success' => true,
@@ -177,9 +178,11 @@ class ShopReviewController extends Controller
             'comment' => 'sometimes|required|string|min:10|max:1000',
         ]);
 
+        // Reset status to pending when user updates their review
+        $validated['status'] = 'pending';
         $review->update($validated);
 
-        // Update shop rating
+        // Update shop rating (will recalculate without this pending review)
         $this->updateShopRating($shop);
 
         return response()->json([
@@ -239,10 +242,6 @@ class ShopReviewController extends Controller
      */
     private function updateShopRating(Shop $shop)
     {
-        $reviews = Rating::where('shop_id', $shop->id)->get();
-
-        $shop->review_count = $reviews->count();
-        $shop->rating = $reviews->count() > 0 ? round($reviews->avg('rating'), 1) : 0;
-        $shop->save();
+        $shop->updateRating();
     }
 }

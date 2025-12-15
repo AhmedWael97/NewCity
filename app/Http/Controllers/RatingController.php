@@ -44,12 +44,13 @@ class RatingController extends Controller
             ], 409);
         }
 
-        // Create new rating
+        // Create new rating with pending status
         $rating = Rating::create([
             'user_id' => $userId,
             'shop_id' => $shopId,
             'rating' => $request->rating,
             'comment' => $request->comment,
+            'status' => 'pending',
         ]);
 
         // Update shop rating

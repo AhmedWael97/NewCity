@@ -190,6 +190,32 @@ class Shop extends Model
     }
 
     /**
+     * Get total views count from analytics
+     */
+    public function getTotalViewsAttribute()
+    {
+        return $this->analytics()
+            ->where('event_type', 'shop_view')
+            ->count();
+    }
+
+    /**
+     * Get total ratings for display
+     */
+    public function getTotalRatingsAttribute()
+    {
+        return $this->ratings()->where('status', 'active')->count();
+    }
+
+    /**
+     * Get average rating for display
+     */
+    public function getAverageRatingAttribute()
+    {
+        return $this->ratings()->where('status', 'active')->avg('rating') ?? 0;
+    }
+
+    /**
      * Get the category this shop belongs to
      */
     public function category(): BelongsTo
@@ -281,19 +307,27 @@ class Shop extends Model
     }
 
     /**
-     * Get average rating for this shop
+     * Get all analytics for this shop
      */
-    public function averageRating(): float
+    public function analytics(): HasMany
     {
-        return $this->ratings()->avg('rating') ?? 0;
+        return $this->hasMany(ShopAnalytics::class);
     }
 
     /**
-     * Get total rating count for this shop
+     * Get average rating for this shop (only active ratings)
+     */
+    public function averageRating(): float
+    {
+        return $this->ratings()->where('status', 'active')->avg('rating') ?? 0;
+    }
+
+    /**
+     * Get total rating count for this shop (only active ratings)
      */
     public function totalRatings(): int
     {
-        return $this->ratings()->count();
+        return $this->ratings()->where('status', 'active')->count();
     }
 
     /**

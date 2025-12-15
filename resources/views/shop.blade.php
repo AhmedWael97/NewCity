@@ -545,7 +545,7 @@
                             <div class="stat-item">
                                 <div class="stat-icon">👥</div>
                                 <div class="stat-info">
-                                    <span class="stat-number">{{ number_format($shop->views ?? 0) }}</span>
+                                    <span class="stat-number">{{ number_format($shop->total_views ?? 0) }}</span>
                                     <span class="stat-label" style="color: #016B61 !important">مشاهدة</span>
                                 </div>
                             </div>
@@ -566,7 +566,7 @@
                             <div class="stat-item">
                                 <div class="stat-icon">📅</div>
                                 <div class="stat-info">
-                                    <span class="stat-number">{{ $shop->created_at ? $shop->created_at->diffForHumans() : 'غير معروف' }}</span>
+                                    <span class="stat-number">{{ $shop->created_at ? $shop->created_at->locale('ar')->diffForHumans() : 'غير معروف' }}</span>
                                     <span class="stat-label" style="color: #016B61 !important">منذ التسجيل</span>
                                 </div>
                             </div>

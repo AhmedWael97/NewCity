@@ -31,6 +31,11 @@ class ShopController extends Controller
                           ->limit(5);
                 }
             ])
+            ->withCount([
+                'analytics as total_views' => function($query) {
+                    $query->where('event_type', 'shop_view');
+                }
+            ])
             ->firstOrFail();
 
         // Track shop view

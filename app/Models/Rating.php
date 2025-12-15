@@ -16,7 +16,8 @@ class Rating extends Model
         'rating',
         'comment',
         'is_verified',
-        'helpful_votes'
+        'helpful_votes',
+        'status'
     ];
 
     protected $casts = [
