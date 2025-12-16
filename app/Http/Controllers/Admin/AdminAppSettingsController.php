@@ -181,7 +181,7 @@ class AdminAppSettingsController extends Controller
             'image_url' => $imageUrl,
             'action_url' => $validated['action_url'] ?? null,
             'scheduled_at' => $validated['scheduled_at'] ?? null,
-            'created_by' => auth('admin')->user()?->id,
+            'created_by' => auth()->id(),
             'status' => 'pending',
         ]);
 
@@ -266,7 +266,7 @@ class AdminAppSettingsController extends Controller
             'body' => 'required|string|max:1000',
         ]);
 
-        $result = $this->notificationService->sendTestNotification(auth('admin')->id());
+        $result = $this->notificationService->sendTestNotification(auth()->id());
 
         if ($result['success']) {
             return response()->json(['success' => true, 'message' => 'Test notification sent successfully']);
