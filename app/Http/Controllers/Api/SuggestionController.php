@@ -121,7 +121,7 @@ class SuggestionController extends Controller
                 'phone' => $request->phone,
                 'whatsapp' => $request->whatsapp,
                 'description' => $request->description,
-                'google_maps_link' => $request->google_maps_link,
+                'google_maps_url' => $request->google_maps_link,
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'status' => 'pending',

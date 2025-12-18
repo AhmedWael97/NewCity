@@ -30,6 +30,8 @@ class ShopSuggestion extends Model
         'admin_notes',
         'reviewed_at',
         'reviewed_by',
+        'location',
+        
     ];
 
     protected $casts = [
