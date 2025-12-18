@@ -55,6 +55,16 @@ class Shop extends Model
         'verified_at' => 'datetime',
     ];
 
+    /**
+     * Attributes to append to model's array/JSON representation
+     */
+    protected $appends = [
+        'is_open_now',
+        'total_views',
+        'total_ratings',
+        'average_rating',
+    ];
+
     // Status constants
     const STATUS_PENDING = 'pending';
     const STATUS_APPROVED = 'approved';
