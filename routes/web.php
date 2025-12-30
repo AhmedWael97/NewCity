@@ -152,6 +152,22 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
     Route::get('/{marketplace_item}/qr', [App\Http\Controllers\MarketplaceWebController::class, 'generateQrCode'])->name('qr');
 });
 
+// Tawsela (Carpooling) - Public Routes
+Route::prefix('tawsela')->name('tawsela.')->group(function () {
+    Route::get('/', [App\Http\Controllers\TawselaController::class, 'index'])->name('index');
+    
+    // Authenticated routes must come before dynamic {id} route
+    Route::middleware('auth')->group(function () {
+        Route::get('/create', [App\Http\Controllers\TawselaController::class, 'create'])->name('create');
+        Route::get('/my-rides', [App\Http\Controllers\TawselaController::class, 'myRides'])->name('my-rides');
+        Route::get('/my-requests', [App\Http\Controllers\TawselaController::class, 'myRequests'])->name('my-requests');
+        Route::get('/messages', [App\Http\Controllers\TawselaController::class, 'messages'])->name('messages');
+    });
+    
+    // Dynamic route must be last to avoid catching static routes
+    Route::get('/{id}', [App\Http\Controllers\TawselaController::class, 'show'])->name('show');
+});
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -204,6 +220,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/{marketplace_item}/qr/download', [App\Http\Controllers\MarketplaceWebController::class, 'downloadQrCode'])->name('qr.download');
     });
     
+
     // Rating routes
     Route::prefix('ratings')->name('ratings.')->group(function () {
         Route::post('/', [RatingController::class, 'store'])->name('store');

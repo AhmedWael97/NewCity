@@ -48,6 +48,12 @@ Route::prefix('v1')->group(function () {
     // Marketplace Sponsorship Packages (public)
     Route::get('/marketplace/sponsorship-packages', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'packages']);
     
+    // Tawsela (Carpooling) - Public endpoints
+    Route::prefix('tawsela')->group(function () {
+        Route::get('/rides', [App\Http\Controllers\Api\TawselaController::class, 'index']);
+        Route::get('/rides/{id}', [App\Http\Controllers\Api\TawselaController::class, 'show']);
+    });
+    
     // Search endpoints
     Route::get('/search', [App\Http\Controllers\Api\SearchController::class, 'search']);
     Route::get('/search/suggestions', [App\Http\Controllers\Api\SearchController::class, 'suggestions']);
@@ -197,6 +203,27 @@ Route::prefix('v1')->group(function () {
         Route::put('/marketplace/{id}', [App\Http\Controllers\Api\MarketplaceController::class, 'update']);
         Route::delete('/marketplace/{id}', [App\Http\Controllers\Api\MarketplaceController::class, 'destroy']);
         Route::post('/marketplace/{id}/mark-sold', [App\Http\Controllers\Api\MarketplaceController::class, 'markAsSold']);
+
+        // Tawsela (Carpooling) - Authenticated endpoints
+        Route::prefix('tawsela')->group(function () {
+            Route::post('/rides', [App\Http\Controllers\Api\TawselaController::class, 'store']);
+            Route::put('/rides/{id}', [App\Http\Controllers\Api\TawselaController::class, 'update']);
+            Route::delete('/rides/{id}', [App\Http\Controllers\Api\TawselaController::class, 'destroy']);
+            Route::get('/my-rides', [App\Http\Controllers\Api\TawselaController::class, 'myRides']);
+            
+            // Ride requests
+            Route::post('/rides/{id}/request', [App\Http\Controllers\Api\TawselaController::class, 'requestRide']);
+            Route::get('/my-requests', [App\Http\Controllers\Api\TawselaController::class, 'myRequests']);
+            Route::get('/rides/{id}/requests', [App\Http\Controllers\Api\TawselaController::class, 'rideRequests']);
+            Route::post('/requests/{id}/accept', [App\Http\Controllers\Api\TawselaController::class, 'acceptRequest']);
+            Route::post('/requests/{id}/reject', [App\Http\Controllers\Api\TawselaController::class, 'rejectRequest']);
+            Route::post('/requests/{id}/cancel', [App\Http\Controllers\Api\TawselaController::class, 'cancelRequest']);
+            
+            // Messaging
+            Route::get('/messages', [App\Http\Controllers\Api\TawselaController::class, 'messages']);
+            Route::post('/messages', [App\Http\Controllers\Api\TawselaController::class, 'sendMessage']);
+            Route::get('/conversations', [App\Http\Controllers\Api\TawselaController::class, 'conversations']);
+        });
 
         // Marketplace Sponsorships - Authenticated endpoints
         Route::get('/my-marketplace-sponsorships', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'mySponsorships']);

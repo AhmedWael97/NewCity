@@ -126,22 +126,13 @@
             const headers = {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
             };
             
-            @auth
-            // Authenticated user - use bearer token
-            console.log('👤 User authenticated - using auth endpoint');
-            headers['Authorization'] = 'Bearer {{ auth()->user()->createToken("web-fcm")->plainTextToken ?? "" }}';
-            const endpoint = '/api/v1/device-tokens';
-            @else
-            // Guest user - use public endpoint
-            console.log('👤 Guest user - using public endpoint');
-            headers['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]')?.content || '';
+            // Use public guest endpoint for all users (authenticated users will have user_id in payload)
             const endpoint = '/api/v1/guest-device-tokens';
-            console.log('🔑 CSRF Token:', headers['X-CSRF-TOKEN']);
-            @endauth
-            
             console.log('🌐 Endpoint:', endpoint);
+            console.log('🔑 CSRF Token:', headers['X-CSRF-TOKEN']);
             console.log('📤 Sending request...');
             
             // Get city_id based on user type
@@ -150,6 +141,7 @@
             // For authenticated users, use their preferred city
             cityId = {{ auth()->user()->preferred_city_id ?? 'null' }};
             console.log('🌍 User preferred city_id:', cityId);
+            console.log('👤 User ID:', {{ auth()->id() }});
             @else
             // For guests, use session city (from city selection)
             cityId = {{ session('selected_city_id') ?? session('city_id') ?? 'null' }};
@@ -162,6 +154,12 @@
                 device_name: navigator.userAgent.substring(0, 255),
                 app_version: 'web-1.0'
             };
+            
+            // Add user_id if authenticated
+            @auth
+            payload.user_id = {{ auth()->id() }};
+            console.log('✅ Including user_id in payload:', payload.user_id);
+            @endauth
             
             // Add city_id if available
             if (cityId) {
