@@ -1,7 +1,7 @@
-# نظام توصيلة - Tawsela Carpooling System
+# نظام في طريقك - Fe-Tare2k Carpooling System
 
 ## نظرة عامة
-نظام توصيلة هو نظام مشاركة الرحلات الذي يسمح للمستخدمين بإضافة رحلاتهم ومشاركتها مع آخرين، مما يساعد في توفير المصاريف وحماية البيئة.
+نظام في طريقك هو نظام مشاركة الرحلات الذي يسمح للمستخدمين بإضافة رحلاتهم ومشاركتها مع آخرين، مما يساعد في توفير المصاريف وحماية البيئة.
 
 ## المميزات الرئيسية
 
@@ -104,7 +104,7 @@
 
 ### Public Endpoints
 
-#### GET /api/v1/tawsela/rides
+#### GET /api/v1/fe-tare2k/rides
 الحصول على قائمة الرحلات المتاحة
 
 **Parameters:**
@@ -147,12 +147,12 @@
 }
 ```
 
-#### GET /api/v1/tawsela/rides/{id}
+#### GET /api/v1/fe-tare2k/rides/{id}
 الحصول على تفاصيل رحلة معينة
 
 ### Authenticated Endpoints (require authentication)
 
-#### POST /api/v1/tawsela/rides
+#### POST /api/v1/fe-tare2k/rides
 إضافة رحلة جديدة
 
 **Request Body:**
@@ -184,16 +184,16 @@
 }
 ```
 
-#### PUT /api/v1/tawsela/rides/{id}
+#### PUT /api/v1/fe-tare2k/rides/{id}
 تحديث رحلة
 
-#### DELETE /api/v1/tawsela/rides/{id}
+#### DELETE /api/v1/fe-tare2k/rides/{id}
 حذف رحلة
 
-#### GET /api/v1/tawsela/my-rides
+#### GET /api/v1/fe-tare2k/my-rides
 الحصول على رحلات المستخدم الحالي
 
-#### POST /api/v1/tawsela/rides/{id}/request
+#### POST /api/v1/fe-tare2k/rides/{id}/request
 إرسال طلب للانضمام إلى رحلة
 
 **Request Body:**
@@ -211,29 +211,29 @@
 }
 ```
 
-#### GET /api/v1/tawsela/my-requests
+#### GET /api/v1/fe-tare2k/my-requests
 الحصول على طلبات المستخدم الحالي
 
-#### GET /api/v1/tawsela/rides/{id}/requests
+#### GET /api/v1/fe-tare2k/rides/{id}/requests
 الحصول على طلبات رحلة معينة (للسائق فقط)
 
-#### POST /api/v1/tawsela/requests/{id}/accept
+#### POST /api/v1/fe-tare2k/requests/{id}/accept
 قبول طلب انضمام
 
-#### POST /api/v1/tawsela/requests/{id}/reject
+#### POST /api/v1/fe-tare2k/requests/{id}/reject
 رفض طلب انضمام
 
-#### POST /api/v1/tawsela/requests/{id}/cancel
+#### POST /api/v1/fe-tare2k/requests/{id}/cancel
 إلغاء طلب انضمام
 
-#### GET /api/v1/tawsela/messages
+#### GET /api/v1/fe-tare2k/messages
 الحصول على رسائل المستخدم
 
 **Parameters:**
 - `ride_id` (optional) - Filter by ride
 - `user_id` (optional) - Filter by conversation with user
 
-#### POST /api/v1/tawsela/messages
+#### POST /api/v1/fe-tare2k/messages
 إرسال رسالة
 
 **Request Body:**
@@ -246,20 +246,20 @@
 }
 ```
 
-#### GET /api/v1/tawsela/conversations
+#### GET /api/v1/fe-tare2k/conversations
 الحصول على قائمة المحادثات
 
 ## Web Routes
 
 ### Public Routes
-- `GET /tawsela` - عرض قائمة الرحلات
-- `GET /tawsela/{id}` - عرض تفاصيل رحلة
+- `GET /fe-tare2k` - عرض قائمة الرحلات
+- `GET /fe-tare2k/{id}` - عرض تفاصيل رحلة
 
 ### Authenticated Routes
-- `GET /tawsela/create` - صفحة إضافة رحلة جديدة
-- `GET /tawsela/my-rides` - رحلاتي
-- `GET /tawsela/my-requests` - طلباتي
-- `GET /tawsela/messages` - المراسلات
+- `GET /fe-tare2k/create` - صفحة إضافة رحلة جديدة
+- `GET /fe-tare2k/my-rides` - رحلاتي
+- `GET /fe-tare2k/my-requests` - طلباتي
+- `GET /fe-tare2k/messages` - المراسلات
 
 ## Models
 
@@ -382,3 +382,4 @@ GOOGLE_MAPS_KEY=your_api_key_here
 ---
 تم التطوير بواسطة: GitHub Copilot
 تاريخ الإنشاء: 30 ديسمبر 2025
+تاريخ التحديث: 3 يناير 2026 - تغيير الاسم من توصيلة إلى في طريقك (fe-tare2k)

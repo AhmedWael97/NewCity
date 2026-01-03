@@ -6,7 +6,7 @@
         <div class="col-lg-8">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="fas fa-plus-circle"></i> إضافة رحلة جديدة</h4>
+                    <h4 class="mb-0"><i class="fas fa-plus-circle"></i> في طريقك</h4>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info">
@@ -23,7 +23,9 @@
                             <select name="city_id" class="form-select" required>
                                 <option value="">اختر المدينة</option>
                                 @foreach($cities as $city)
-                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                    <option value="{{ $city->id }}" {{ auth()->user()->city_id == $city->id ? 'selected' : '' }}>
+                                        {{ $city->name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -74,7 +76,13 @@
                                     <input type="text" id="startLocation" class="form-control mb-2" placeholder="ابحث عن موقع البداية" required>
                                     <input type="hidden" name="start_latitude" id="startLat">
                                     <input type="hidden" name="start_longitude" id="startLng">
-                                    <input type="text" name="start_address" id="startAddress" class="form-control" placeholder="العنوان بالتفصيل" required readonly>
+                                    <input type="text" name="start_address" id="startAddress" class="form-control mb-2" placeholder="العنوان بالتفصيل" required readonly>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mb-2" id="getCurrentLocationBtn">
+                                        <i class="fas fa-crosshairs"></i> موقعي الحالي
+                                    </button>
+                                    <small class="text-muted d-block mb-2">
+                                        <i class="fas fa-info-circle"></i> يمكنك النقر على الخريطة لتحديد الموقع
+                                    </small>
                                     <div id="startMap" style="height: 300px; margin-top: 10px; border-radius: 8px;"></div>
                                 </div>
 
@@ -97,7 +105,13 @@
                                     <input type="text" id="destLocation" class="form-control mb-2" placeholder="ابحث عن الوجهة" required>
                                     <input type="hidden" name="destination_latitude" id="destLat">
                                     <input type="hidden" name="destination_longitude" id="destLng">
-                                    <input type="text" name="destination_address" id="destAddress" class="form-control" placeholder="العنوان بالتفصيل" required readonly>
+                                    <input type="text" name="destination_address" id="destAddress" class="form-control mb-2" placeholder="العنوان بالتفصيل" required readonly>
+                                    <button type="button" class="btn btn-sm btn-outline-primary mb-2" id="getDestCurrentLocationBtn">
+                                        <i class="fas fa-crosshairs"></i> موقعي الحالي
+                                    </button>
+                                    <small class="text-muted d-block mb-2">
+                                        <i class="fas fa-info-circle"></i> يمكنك النقر على الخريطة لتحديد الموقع
+                                    </small>
                                     <div id="destMap" style="height: 300px; margin-top: 10px; border-radius: 8px;"></div>
                                 </div>
 
@@ -161,7 +175,7 @@
                             <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
                                 <i class="fas fa-check-circle"></i> نشر الرحلة
                             </button>
-                            <a href="{{ route('tawsela.index') }}" class="btn btn-outline-secondary">
+                            <a href="{{ route('fe-tare2k.index') }}" class="btn btn-outline-secondary">
                                 إلغاء
                             </a>
                         </div>
@@ -208,6 +222,7 @@
 let startMap, destMap;
 let startMarker, destMarker;
 let stopPoints = [];
+let geocoder;
 
 // Initialize maps
 function initMaps() {
@@ -216,8 +231,19 @@ function initMaps() {
         center: { lat: 30.0444, lng: 31.2357 }, // Cairo default
     };
     
+    geocoder = new google.maps.Geocoder();
+    
     startMap = new google.maps.Map(document.getElementById('startMap'), mapOptions);
     destMap = new google.maps.Map(document.getElementById('destMap'), mapOptions);
+    
+    // Add click listeners to maps
+    startMap.addListener('click', function(event) {
+        setStartLocation(event.latLng);
+    });
+    
+    destMap.addListener('click', function(event) {
+        setDestLocation(event.latLng);
+    });
     
     // Initialize autocomplete
     initAutocomplete();
@@ -234,6 +260,111 @@ function initMaps() {
         });
     }
 }
+
+// Set start location from coordinates
+function setStartLocation(location) {
+    document.getElementById('startLat').value = location.lat();
+    document.getElementById('startLng').value = location.lng();
+    
+    // Get address from coordinates
+    geocoder.geocode({ location: location }, function(results, status) {
+        if (status === 'OK' && results[0]) {
+            document.getElementById('startAddress').value = results[0].formatted_address;
+            document.getElementById('startLocation').value = results[0].formatted_address;
+        }
+    });
+    
+    startMap.setCenter(location);
+    startMap.setZoom(15);
+    
+    if (startMarker) startMarker.setMap(null);
+    startMarker = new google.maps.Marker({
+        position: location,
+        map: startMap,
+        title: 'نقطة البداية',
+        icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+    });
+}
+
+// Set destination location from coordinates
+function setDestLocation(location) {
+    document.getElementById('destLat').value = location.lat();
+    document.getElementById('destLng').value = location.lng();
+    
+    // Get address from coordinates
+    geocoder.geocode({ location: location }, function(results, status) {
+        if (status === 'OK' && results[0]) {
+            document.getElementById('destAddress').value = results[0].formatted_address;
+            document.getElementById('destLocation').value = results[0].formatted_address;
+        }
+    });
+    
+    destMap.setCenter(location);
+    destMap.setZoom(15);
+    
+    if (destMarker) destMarker.setMap(null);
+    destMarker = new google.maps.Marker({
+        position: location,
+        map: destMap,
+        title: 'الوجهة',
+        icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+    });
+}
+
+// Get current location for start
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('getCurrentLocationBtn')?.addEventListener('click', function() {
+        if (navigator.geolocation) {
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تحديد الموقع...';
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    setStartLocation(pos);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-crosshairs"></i> موقعي الحالي';
+                },
+                (error) => {
+                    alert('لا يمكن تحديد موقعك. تأكد من السماح للمتصفح بالوصول إلى موقعك.');
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-crosshairs"></i> موقعي الحالي';
+                }
+            );
+        } else {
+            alert('متصفحك لا يدعم خدمة تحديد الموقع');
+        }
+    });
+    
+    document.getElementById('getDestCurrentLocationBtn')?.addEventListener('click', function() {
+        if (navigator.geolocation) {
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تحديد الموقع...';
+            
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    setDestLocation(pos);
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-crosshairs"></i> موقعي الحالي';
+                },
+                (error) => {
+                    alert('لا يمكن تحديد موقعك. تأكد من السماح للمتصفح بالوصول إلى موقعك.');
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-crosshairs"></i> موقعي الحالي';
+                }
+            );
+        } else {
+            alert('متصفحك لا يدعم خدمة تحديد الموقع');
+        }
+    });
+});
 
 function initAutocomplete() {
     const startInput = document.getElementById('startLocation');
@@ -370,7 +501,7 @@ document.getElementById('rideForm').addEventListener('submit', async function(e)
     };
     
     try {
-        const response = await fetch('/api/v1/tawsela/rides', {
+        const response = await fetch('/api/v1/fe-tare2k/rides', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -384,7 +515,7 @@ document.getElementById('rideForm').addEventListener('submit', async function(e)
         
         if (result.success) {
             alert('تم نشر الرحلة بنجاح!');
-            window.location.href = '/tawsela/' + result.data.id;
+            window.location.href = '/fe-tare2k/' + result.data.id;
         } else {
             alert('حدث خطأ: ' + (result.message || 'يرجى المحاولة مرة أخرى'));
             submitBtn.disabled = false;

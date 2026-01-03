@@ -4,7 +4,7 @@
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2><i class="fas fa-car"></i> رحلاتي</h2>
-        <a href="{{ route('tawsela.create') }}" class="btn btn-primary">
+        <a href="{{ route('fe-tare2k.create') }}" class="btn btn-primary">
             <i class="fas fa-plus-circle"></i> إضافة رحلة جديدة
         </a>
     </div>
@@ -46,7 +46,7 @@
 <script>
 async function loadMyRides() {
     try {
-        const response = await fetch('/api/v1/tawsela/my-rides', {
+        const response = await fetch('/api/v1/fe-tare2k/my-rides', {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
                 'Accept': 'application/json'
@@ -75,7 +75,7 @@ function renderRides(rides) {
                 <i class="fas fa-car fa-3x text-muted mb-3"></i>
                 <h4>لم تقم بإضافة أي رحلات بعد</h4>
                 <p class="text-muted">ابدأ بإضافة رحلتك الأولى</p>
-                <a href="{{ route('tawsela.create') }}" class="btn btn-primary mt-3">
+                <a href="{{ route('fe-tare2k.create') }}" class="btn btn-primary mt-3">
                     <i class="fas fa-plus-circle"></i> إضافة رحلة
                 </a>
             </div>
@@ -121,7 +121,7 @@ function renderRides(rides) {
                 </div>
                 
                 <div class="d-flex gap-2">
-                    <a href="/tawsela/${ride.id}" class="btn btn-sm btn-outline-primary">
+                    <a href="/fe-tare2k/${ride.id}" class="btn btn-sm btn-outline-primary">
                         <i class="fas fa-eye"></i> عرض
                     </a>
                     <button onclick="viewRequests(${ride.id})" class="btn btn-sm btn-outline-info">
@@ -152,14 +152,14 @@ function getStatusText(status) {
 }
 
 async function viewRequests(rideId) {
-    window.location.href = `/tawsela/rides/${rideId}/requests`;
+    window.location.href = `/fe-tare2k/rides/${rideId}/requests`;
 }
 
 async function cancelRide(rideId) {
     if (!confirm('هل أنت متأكد من إلغاء هذه الرحلة؟')) return;
     
     try {
-        const response = await fetch(`/api/v1/tawsela/rides/${rideId}`, {
+        const response = await fetch(`/api/v1/fe-tare2k/rides/${rideId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

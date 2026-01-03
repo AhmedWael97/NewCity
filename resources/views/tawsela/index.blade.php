@@ -7,7 +7,7 @@
         <div class="hero-content text-center">
             <h1 class="hero-title mb-3">
                 <i class="fas fa-car"></i>
-                توصيلة - شارك رحلتك
+                في طريقك - شارك رحلتك
             </h1>
             <p class="lead">وفّر في المصاريف واحمي البيئة بمشاركة رحلتك مع الآخرين</p>
         </div>
@@ -19,7 +19,7 @@
     <div class="row mb-4">
         <div class="col-md-6 mb-3">
             @auth
-            <a href="{{ route('tawsela.create') }}" class="btn btn-primary btn-lg w-100">
+            <a href="{{ route('fe-tare2k.create') }}" class="btn btn-primary btn-lg w-100">
                 <i class="fas fa-plus-circle"></i> أضف رحلة جديدة
             </a>
             @else
@@ -261,7 +261,7 @@ async function loadRides(params = {}) {
     
     try {
         const queryString = new URLSearchParams(params).toString();
-        const response = await fetch(`/api/v1/tawsela/rides?${queryString}`);
+        const response = await fetch(`/api/v1/fe-tare2k/rides?${queryString}`);
         const data = await response.json();
         
         if (data.success) {
@@ -366,10 +366,10 @@ function renderRides(rides) {
                 ` : ''}
                 
                 <div class="d-flex gap-2">
-                    <a href="/tawsela/${ride.id}" class="btn btn-primary flex-grow-1">
+                    <a href="/fe-tare2k/${ride.id}" class="btn btn-primary flex-grow-1">
                         <i class="fas fa-eye"></i> عرض التفاصيل
                     </a>
-                    <a href="/tawsela/${ride.id}/request" class="btn btn-success">
+                    <a href="/fe-tare2k/${ride.id}/request" class="btn btn-success">
                         <i class="fas fa-paper-plane"></i> طلب الانضمام
                     </a>
                 </div>

@@ -48,8 +48,8 @@ Route::prefix('v1')->group(function () {
     // Marketplace Sponsorship Packages (public)
     Route::get('/marketplace/sponsorship-packages', [App\Http\Controllers\Api\MarketplaceSponsorshipController::class, 'packages']);
     
-    // Tawsela (Carpooling) - Public endpoints
-    Route::prefix('tawsela')->group(function () {
+    // Fe-Tare2k (Carpooling) - Public endpoints
+    Route::prefix('fe-tare2k')->group(function () {
         Route::get('/rides', [App\Http\Controllers\Api\TawselaController::class, 'index']);
         Route::get('/rides/{id}', [App\Http\Controllers\Api\TawselaController::class, 'show']);
     });
@@ -204,8 +204,8 @@ Route::prefix('v1')->group(function () {
         Route::delete('/marketplace/{id}', [App\Http\Controllers\Api\MarketplaceController::class, 'destroy']);
         Route::post('/marketplace/{id}/mark-sold', [App\Http\Controllers\Api\MarketplaceController::class, 'markAsSold']);
 
-        // Tawsela (Carpooling) - Authenticated endpoints
-        Route::prefix('tawsela')->group(function () {
+        // Fe-Tare2k (Carpooling) - Authenticated endpoints
+        Route::prefix('fe-tare2k')->group(function () {
             Route::post('/rides', [App\Http\Controllers\Api\TawselaController::class, 'store']);
             Route::put('/rides/{id}', [App\Http\Controllers\Api\TawselaController::class, 'update']);
             Route::delete('/rides/{id}', [App\Http\Controllers\Api\TawselaController::class, 'destroy']);

@@ -164,7 +164,7 @@ let map = null;
 // Load ride details
 async function loadRideDetails() {
     try {
-        const response = await fetch(`/api/v1/tawsela/rides/${rideId}`);
+        const response = await fetch(`/api/v1/fe-tare2k/rides/${rideId}`);
         const data = await response.json();
         
         if (data.success) {
@@ -510,7 +510,7 @@ document.getElementById('requestForm').addEventListener('submit', async function
     }
     
     try {
-        const response = await fetch(`/api/v1/tawsela/rides/${rideId}/request`, {
+        const response = await fetch(`/api/v1/fe-tare2k/rides/${rideId}/request`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -524,7 +524,7 @@ document.getElementById('requestForm').addEventListener('submit', async function
         
         if (result.success) {
             alert('تم إرسال طلبك بنجاح! سيتم إشعارك عند قبول الطلب.');
-            window.location.href = '/tawsela/my-requests';
+            window.location.href = '/fe-tare2k/my-requests';
         } else {
             alert('حدث خطأ: ' + (result.message || 'يرجى المحاولة مرة أخرى'));
         }

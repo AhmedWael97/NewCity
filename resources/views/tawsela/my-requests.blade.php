@@ -41,7 +41,7 @@
 <script>
 async function loadMyRequests() {
     try {
-        const response = await fetch('/api/v1/tawsela/my-requests', {
+        const response = await fetch('/api/v1/fe-tare2k/my-requests', {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
                 'Accept': 'application/json'
@@ -70,7 +70,7 @@ function renderRequests(requests) {
                 <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
                 <h4>لم تقم بإرسال أي طلبات بعد</h4>
                 <p class="text-muted">ابحث عن رحلة وقم بإرسال طلب للانضمام</p>
-                <a href="{{ route('tawsela.index') }}" class="btn btn-primary mt-3">
+                <a href="{{ route('fe-tare2k.index') }}" class="btn btn-primary mt-3">
                     <i class="fas fa-search"></i> ابحث عن رحلة
                 </a>
             </div>
@@ -135,14 +135,14 @@ function renderRequests(requests) {
                 ` : ''}
                 
                 <div class="d-flex gap-2">
-                    <a href="/tawsela/${request.ride_id}" class="btn btn-sm btn-outline-primary">
+                    <a href="/fe-tare2k/${request.ride_id}" class="btn btn-sm btn-outline-primary">
                         <i class="fas fa-eye"></i> عرض الرحلة
                     </a>
                     ${request.status === 'accepted' ? `
                         <a href="tel:${request.ride.user.phone}" class="btn btn-sm btn-success">
                             <i class="fas fa-phone"></i> اتصل بالسائق
                         </a>
-                        <a href="/tawsela/messages?ride_id=${request.ride_id}&user_id=${request.ride.user_id}" class="btn btn-sm btn-info">
+                        <a href="/fe-tare2k/messages?ride_id=${request.ride_id}&user_id=${request.ride.user_id}" class="btn btn-sm btn-info">
                             <i class="fas fa-comments"></i> المراسلة
                         </a>
                     ` : ''}
@@ -171,7 +171,7 @@ async function cancelRequest(requestId) {
     if (!confirm('هل أنت متأكد من إلغاء هذا الطلب؟')) return;
     
     try {
-        const response = await fetch(`/api/v1/tawsela/requests/${requestId}/cancel`, {
+        const response = await fetch(`/api/v1/fe-tare2k/requests/${requestId}/cancel`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',

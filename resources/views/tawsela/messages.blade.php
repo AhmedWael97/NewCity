@@ -127,7 +127,7 @@ let refreshInterval = null;
 // Load conversations
 async function loadConversations() {
     try {
-        const response = await fetch('/api/v1/tawsela/conversations', {
+        const response = await fetch('/api/v1/fe-tare2k/conversations', {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
                 'Accept': 'application/json'
@@ -213,7 +213,7 @@ async function selectConversation(userId, rideId, requestId) {
 // Load messages
 async function loadMessages(rideId, userId) {
     try {
-        const response = await fetch(`/api/v1/tawsela/messages?ride_id=${rideId}&user_id=${userId}`, {
+        const response = await fetch(`/api/v1/fe-tare2k/messages?ride_id=${rideId}&user_id=${userId}`, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('auth_token'),
                 'Accept': 'application/json'
@@ -287,7 +287,7 @@ document.getElementById('sendMessageForm').addEventListener('submit', async func
     }
     
     try {
-        const response = await fetch('/api/v1/tawsela/messages', {
+        const response = await fetch('/api/v1/fe-tare2k/messages', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

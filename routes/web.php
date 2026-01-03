@@ -152,8 +152,8 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
     Route::get('/{marketplace_item}/qr', [App\Http\Controllers\MarketplaceWebController::class, 'generateQrCode'])->name('qr');
 });
 
-// Tawsela (Carpooling) - Public Routes
-Route::prefix('tawsela')->name('tawsela.')->group(function () {
+// Fe-Tare2k (Carpooling) - Public Routes
+Route::prefix('fe-tare2k')->name('fe-tare2k.')->group(function () {
     Route::get('/', [App\Http\Controllers\TawselaController::class, 'index'])->name('index');
     
     // Authenticated routes must come before dynamic {id} route

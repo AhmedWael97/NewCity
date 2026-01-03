@@ -123,8 +123,8 @@
                     🔧 الخدمات
                 </a>
                 
-                <a href="{{ route('tawsela.index') }}" class="category-nav-item {{ request()->routeIs('tawsela.*') ? 'active' : '' }}">
-                    🚗 توصيلة
+                <a href="{{ route('fe-tare2k.index') }}" class="category-nav-item {{ request()->routeIs('fe-tare2k.*') ? 'active' : '' }}">
+                    🚗 في طريقك
                 </a>
                 
                 <!-- Debug: Show categories count -->
@@ -246,7 +246,7 @@
             <a href="{{ route('news.index') }}">📰 الأخبار</a>
             <a href="{{ route('forum.index') }}">💬 المنتدى</a>
             <a href="{{ route('city.services', ['city' => (isset($selectedCity) && $selectedCity) ? $selectedCity->slug : (session('selected_city') ?? 'all')]) }}">🔧 الخدمات</a>
-            <a href="{{ route('tawsela.index') }}">🚗 توصيلة</a>
+            <a href="{{ route('fe-tare2k.index') }}">🚗 في طريقك</a>
             <a href="{{ route('marketplace.index') }}">🛒 السوق المفتوح</a>
             @if(isset($navCategories))
                 @foreach($navCategories as $category)
